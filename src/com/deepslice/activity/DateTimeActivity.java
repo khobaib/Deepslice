@@ -88,25 +88,9 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 		}
 		initializeAllViews();
 		firstTime = true;	
-		checkAsap();
+		
 	}
-	public void checkAsap() {			
-		Date currentTime = Calendar.getInstance().getTime();
-		if(currentTime.getHours() > openTime.getHours() && currentTime.getHours() <closeTime.getHours()){			
-			startOrtderButton.setVisibility(View.VISIBLE);
-			Log.e("Tag","1");
-		}
-		else{
-			if(startOrtderButton.getText().toString().equals("ASAP")){
-				startOrtderButton.setVisibility(View.INVISIBLE);
-				Log.e("Tag","2");
-			}
-			else{
-				startOrtderButton.setVisibility(View.VISIBLE);
-				Log.e("Tag","3");
-			}
-		}
-		}
+
 		
 	
 	private void initializeAllViews() {
@@ -160,20 +144,27 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 					Utils.openErrorDialog(DateTimeActivity.this,
 							"Store is not open on selected time.\nPlease select some other time!");
 				}
-				checkAsap();
-			} else {
-				if (Integer.parseInt(timeStorage[0]) > openTime.getHours()
-						&& Integer.parseInt(timeStorage[0]) < closeTime
-								.getHours()) {
-					
-					startActivity(new Intent(new Intent(this,
-							CustomerDetailsActivity.class)));
-				} else {
-					startActivity(new Intent(new Intent(this,
-							CustomerDetailsActivity.class)));
 				
+			} else {				
+//				if (Integer.parseInt(timeStorage[0]) > openTime.getHours()
+//						&& Integer.parseInt(timeStorage[0]) < closeTime
+//								.getHours()) {
+//					
+//					startActivity(new Intent(new Intent(this,
+//							CustomerDetailsActivity.class)));
+//				}
+				//  Changed By Faysal///////////////////////////////////////////////////////////////
+				Date currentTime = Calendar.getInstance().getTime();
+				if (currentTime.getHours() > openTime.getHours()
+						&& currentTime.getHours() < closeTime.getHours()){
+					startActivity(new Intent(new Intent(this,
+							CustomerDetailsActivity.class)));
 				}
-				checkAsap();
+				else {
+					Utils.openErrorDialog(DateTimeActivity.this,
+							"Store is not open on selected time.\nPlease select some other time!");				
+				}	
+				/////////////////////////////////////////////////////////////////////////////
 			}
 
 			AppSharedPreference.putData(DateTimeActivity.this, "deliveryTime",
@@ -186,8 +177,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.timePicker:
 			firstTime = true;
-			timePickDiag.show();
-			
+			timePickDiag.show();			
 			break;
 
 		default:
@@ -208,8 +198,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 			} else {
 				dialogCount();
 			}
-			checkAsap();
-
+			
 		}
 
 	};
@@ -247,8 +236,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 				datePick.setText(formated);
 				startOrtderButton.setText(timePick.getText() + ", "
 						+ datePick.getText());
-			}
-			checkAsap();
+			}			
 		}
 	};
 
