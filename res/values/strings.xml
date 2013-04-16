@@ -1,0 +1,55 @@
+<resources>
+
+    <string name="app_name">Deepslice</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_menu">MenuActivity</string>
+    <string name="customerDetailHeader">Customer Details</string>
+    <string name="customerLoginHeader">Customer Login</string>
+    <string name="registerCheckBoxText">Send me DeepSlice\'s Discount via email or sms</string>
+    <string name="customDetailsText">Would you like to register for quicker ordering in the future? It only takes less than a minute.</string>
+    <string name="privacyPolicy">PRIVACY POLICY</string>
+    <string name="startOrdering">START ORDERING</string>
+    <string name="passWord">Password</string>
+    <string name="confirmPassword">Confirm</string>
+    <string name="yourPhone">Your Phone</string>
+    <string name="yourName">Your Name</string>
+    <string name="yourEmail">Your Email</string>
+    <string name="register">Register</string>
+    <string name="password">Password</string>
+    <string name="rememberme">Remember Me</string>
+    <string name="forgot">Forgot Password?</string>
+    <string name="cantaccess"><u>Can\'t access your account?</u></string>
+    <string name="notexisting"><u>Not an existing member?</u></string>
+    <string name="emailErrorMessage">Please enter as valid email.</string>
+    <string name="nameErrorMessage">Please enter your name.</string>
+    <string name="phoneErrorMessage">Please enter 10 digit mobile number.</string>
+    <string name="passwordErrorMessage">Enter a new password(min 8 character).</string>
+    <string name="deliveryAddress">Delivery Address</string>
+    <string name="continueButton">Continue</string>
+    <string name="unit">Unit</string>
+    <string name="streetNo">Street No.</string>
+    <string name="streetName">Street Name</string>
+    <string name="crossStreetName">Cross Street \nName</string>
+    <string name="deliveryInstructions">Delivery \nInformations</string>
+    <string name="previousCustomerDetails">Previous Customer Details</string>
+    <string name="startAewOrder">Start A ew Order</string>
+    <string name="differentaddress">Deliver to a Different Address</string>
+    <string name="deliveryAddressBody">Delivery Address:</string>
+    <string name="contactValue">Contact:</string>
+    <string name="selectedTimeValue">Selected \n Time:</string>
+    <string name="previousContactDetailsText">The following details have been saved on this device:</string>
+    <string name="unfinishedOrder">Unfinished Order</string>
+    <string name="unfinishedOrderText">An unfinished Delivery order was found with the following details:</string>
+    <string name="storeLocationValue">Store Location:</string>
+    <string name="continueUnfinishedOrder">Continue Unfinished Order</string>
+    <string name="continueUnfinishedOrderNewTime">Continue Unfinished Order with New Time</string>
+    <string name="pickUpOrDelivery">Pick Up Or Delivery</string>
+    <string name="pickUpDeliveryText">How would you like your order ?</string>
+    <string name="delivery">DELIVERY</string>
+    <string name="pickUp">PICK UP</string>
+    <string name="login">LOGIN</string>
+    <string name="creditText">Cash and credit card payments accepted</string>
+    <string name="pickUpFooterText">Ordered here on online before?</string>
+
+</resources>

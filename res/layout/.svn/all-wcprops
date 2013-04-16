@@ -1,0 +1,245 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/IbApps/!svn/ver/54/trunk/DeepSlice/res/layout
+END
+unfinished_order.xml
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/unfinished_order.xml
+END
+date_time_select.xml
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/date_time_select.xml
+END
+customer_details.xml
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/customer_details.xml
+END
+welcome.xml
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/welcome.xml
+END
+line_item_yello.xml
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/IbApps/!svn/ver/30/trunk/DeepSlice/res/layout/line_item_yello.xml
+END
+forgot.xml
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/forgot.xml
+END
+register.xml
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/register.xml
+END
+payment_options.xml
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/IbApps/!svn/ver/50/trunk/DeepSlice/res/layout/payment_options.xml
+END
+coupon.xml
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/IbApps/!svn/ver/50/trunk/DeepSlice/res/layout/coupon.xml
+END
+delivery_address.xml
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/IbApps/!svn/ver/52/trunk/DeepSlice/res/layout/delivery_address.xml
+END
+previous_customer_details.xml
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/previous_customer_details.xml
+END
+login.xml
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/IbApps/!svn/ver/52/trunk/DeepSlice/res/layout/login.xml
+END
+pay_cash.xml
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/IbApps/!svn/ver/52/trunk/DeepSlice/res/layout/pay_cash.xml
+END
+menu_empty.xml
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/menu_empty.xml
+END
+line_item_toppings.xml
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/IbApps/!svn/ver/47/trunk/DeepSlice/res/layout/line_item_toppings.xml
+END
+line_item_product.xml
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/IbApps/!svn/ver/52/trunk/DeepSlice/res/layout/line_item_product.xml
+END
+store_location_map.xml
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/store_location_map.xml
+END
+store_history.xml
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/IbApps/!svn/ver/51/trunk/DeepSlice/res/layout/store_history.xml
+END
+my_order.xml
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/IbApps/!svn/ver/50/trunk/DeepSlice/res/layout/my_order.xml
+END
+sub_menu_drinks.xml
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/IbApps/!svn/ver/50/trunk/DeepSlice/res/layout/sub_menu_drinks.xml
+END
+fav_add.xml
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/IbApps/!svn/ver/50/trunk/DeepSlice/res/layout/fav_add.xml
+END
+line_item.xml
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/line_item.xml
+END
+sub_menu.xml
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/IbApps/!svn/ver/50/trunk/DeepSlice/res/layout/sub_menu.xml
+END
+menu_scr.xml
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/IbApps/!svn/ver/59/trunk/DeepSlice/res/layout/menu_scr.xml
+END
+fav_list.xml
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/IbApps/!svn/ver/52/trunk/DeepSlice/res/layout/fav_list.xml
+END
+sub_menu_products.xml
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/IbApps/!svn/ver/50/trunk/DeepSlice/res/layout/sub_menu_products.xml
+END
+my_spinner_text.xml
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/my_spinner_text.xml
+END
+line_item_crust.xml
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/IbApps/!svn/ver/36/trunk/DeepSlice/res/layout/line_item_crust.xml
+END
+sub_menu_pizza.xml
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/IbApps/!svn/ver/50/trunk/DeepSlice/res/layout/sub_menu_pizza.xml
+END
+line_item_del.xml
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/line_item_del.xml
+END
+pick_up_or_delivery.xml
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/pick_up_or_delivery.xml
+END
+store_location_list.xml
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/store_location_list.xml
+END
+location_history.xml
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/IbApps/!svn/ver/51/trunk/DeepSlice/res/layout/location_history.xml
+END
+pizza_details.xml
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/IbApps/!svn/ver/52/trunk/DeepSlice/res/layout/pizza_details.xml
+END
+sub_menu_pizza3.xml
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/IbApps/!svn/ver/50/trunk/DeepSlice/res/layout/sub_menu_pizza3.xml
+END
+toppings.xml
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/IbApps/!svn/ver/24/trunk/DeepSlice/res/layout/toppings.xml
+END
+crusts.xml
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/IbApps/!svn/ver/35/trunk/DeepSlice/res/layout/crusts.xml
+END
+activity_menu.xml
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/activity_menu.xml
+END
+delivery_suburb.xml
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout/delivery_suburb.xml
+END
+deals_list.xml
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/IbApps/!svn/ver/54/trunk/DeepSlice/res/layout/deals_list.xml
+END

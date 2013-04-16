@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/backGround" >
+
+    <RelativeLayout
+        android:id="@+id/headerRelativeLayout"
+        style="@style/header" >
+
+        <ImageView
+            android:id="@+id/farwordImageView"
+            style="@style/farwordButton" />
+
+        <TextView
+            android:id="@+id/headerTextView"
+            style="@style/headerText"
+            android:text="Pizza Range"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        style="@style/logoImage" />
+
+    <EditText
+        android:id="@+id/autoCompleteTextView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dip"
+        android:layout_marginRight="20dip"
+        android:layout_marginTop="10dip"
+        android:hint="Enter Suburb / Post code"
+        android:inputType="text"
+        android:visibility="invisible" >
+    </EditText>
+
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/navBar"
+        android:layout_below="@+id/headerRelativeLayout" 
+        android:layout_marginTop="50dp"
+        >
+         <LinearLayout
+        android:id="@+id/zouterLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        >
+    <LinearLayout
+        android:id="@+id/outerLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        >
+
+    </LinearLayout>
+    
+             <LinearLayout
+        android:id="@+id/lowerLayout"
+        android:layout_alignParentBottom="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="10dip"
+        android:layout_marginBottom="10dip">
+ 
+ 		<ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pizza_create_own" 
+            android:layout_marginRight="5dip"/>
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pizza_halfnhalf" 
+            android:layout_marginLeft="5dip"/>
+        
+    </LinearLayout>
+    
+             
+             
+    </LinearLayout>
+</ScrollView>
+    <TableLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/navBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dip"
+        android:gravity="center" >
+
+        <TableRow
+            android:background="@drawable/m_nav_bg"
+            android:weightSum="3" >
+
+            <LinearLayout
+                android:id="@+id/search_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal" >
+
+                <Button
+                    android:id="@+id/mainMenu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/m_nav1" />
+            </LinearLayout>
+
+           
+            <RelativeLayout
+                android:id="@+id/setting_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal" >
+
+                <Button
+                    android:layout_centerHorizontal="true"
+                    
+                    android:id="@+id/callfriends"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/m_nav2" />
+
+                <TextView
+                    android:id="@+id/itemPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/total_bg2"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:paddingLeft="4dip"
+                    android:paddingRight="4dip"
+                    android:text="$100.23"
+                    android:textColor="#ffffff"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/cartDummy"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="match_parent"
+                	android:layout_height="40dip"
+                    android:orientation="vertical" >
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/cal_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal" >
+
+                <Button
+                    android:layout_centerHorizontal="true"
+                    
+                    android:id="@+id/favs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/m_nav3" />
+
+
+                <TextView
+                    android:id="@+id/favCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/total_bg2"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:paddingLeft="4dip"
+                    android:paddingRight="4dip"
+                    android:text=""
+                    android:textColor="#ffffff"
+                    android:textSize="14dip"
+                    android:textStyle="bold" />
+
+
+            </RelativeLayout>
+        </TableRow>
+    </TableLayout>
+
+</RelativeLayout>

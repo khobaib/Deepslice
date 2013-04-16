@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/backGround">
+
+    <RelativeLayout
+        android:id="@+id/headerRelativeLayout"
+        style="@style/header" >
+
+        <ImageView
+            android:id="@+id/farwordImageView"
+            style="@style/farwordButton" />
+
+        <TextView
+            android:id="@+id/headerTextView"
+            style="@style/headerText"
+            android:text="@string/customerDetailHeader"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/footerRelativeLayout"
+        style="@style/footer" >
+
+        <Button
+            android:id="@+id/startOrderingButton"
+            style="@style/buttonHVCenter"
+            android:textColor="#fff"
+            android:background="@drawable/btn_start_order" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        style="@style/logoImage" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/footerRelativeLayout"
+        android:layout_below="@+id/logoImageView" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TableLayout
+                android:id="@+id/nameTableLayout"
+                style="@style/tableStyle" >
+
+                <TableRow
+                    android:id="@+id/tableRow1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" 
+                    android:padding="5dip">
+
+                    <TextView
+                        android:id="@+id/nametextView"
+                        style="@style/textView"
+                        android:text="@string/yourName" />
+
+                    <EditText
+                        android:id="@+id/yourNameEditText"
+                        style="@style/tableEditText"
+                        android:inputType="textPersonName" >
+
+                    </EditText>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tableRow2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:padding="5dip">
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        style="@style/textView"
+                        android:text="@string/yourEmail" />
+
+                    <EditText
+                        android:id="@+id/yourEmailEditText"
+                        style="@style/tableEditText"
+                        android:inputType="textEmailAddress" />
+
+                </TableRow>
+            </TableLayout>
+
+            <LinearLayout
+                android:id="@+id/checkBoxLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nameTableLayout"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="vertical" >
+
+                <CheckBox
+                    android:id="@+id/checkBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="80dp"
+                    android:background="@drawable/checkbox_background"
+                    android:button="@drawable/mycheckbox"
+                    android:text="@string/registerCheckBoxText"
+                    android:textColor="#fff"
+                    android:textSize="13dip" />
+
+            </LinearLayout>
+
+            <TableLayout
+                android:id="@+id/phoneTableLayout"
+                style="@style/tableStyle"
+                android:layout_below="@+id/checkBoxLinearLayout" >
+
+                <TableRow
+                    android:id="@+id/tableRow3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dip" >
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        style="@style/textView"
+                        android:text="@string/yourPhone"/>
+
+                    <EditText
+                        android:id="@+id/yourPhoneEditText"
+                        style="@style/tableEditText" 
+                        android:inputType="number"/>
+                </TableRow>
+            </TableLayout>
+
+            <RelativeLayout
+                android:id="@+id/textLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/phoneTableLayout"
+                android:layout_marginBottom="5dip"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/textTextView"
+                    style="@style/textView"
+                    android:layout_marginTop="15dip"
+                    android:text="@string/customDetailsText" />
+
+                <Button
+                    android:id="@+id/registerButton"
+                    style="@style/buttonHCenter"
+                    android:layout_below="@+id/textTextView"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/btn_register"
+                    android:textColor="#fff" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

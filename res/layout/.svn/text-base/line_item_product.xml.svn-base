@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rede_box1" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="90dip"
+        android:layout_height="60dip"
+        android:scaleType="fitXY"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="5dip"
+        android:src="@drawable/sides_icon" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/imageView1"
+        android:maxLines="3"
+        android:text="TextView"
+        android:textColor="#ffffff"
+        android:textSize="15dip"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/imageView1"
+        android:layout_marginRight="5dip"
+        android:text="6712kj"
+        android:textColor="#ffff00"
+        android:textSize="14dip" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView3"
+        android:layout_marginRight="5dip"
+        android:layout_marginTop="5dip"
+        android:background="@drawable/side_arrow"
+        android:maxLines="1"
+        android:text="$3.95"
+        android:textColor="#ffffff"
+        android:textSize="14dip" />
+
+</RelativeLayout>

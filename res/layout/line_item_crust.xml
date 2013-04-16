@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android1="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rede_box1" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="90dip"
+        android:layout_height="60dip"
+        android1:scaleType="fitXY"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="5dip"
+        android:src="@drawable/sides_icon" />
+
+    <TextView
+        android1:id="@+id/textView1"
+        android1:layout_width="wrap_content"
+        android1:layout_height="wrap_content"
+        android1:layout_centerVertical="true"
+        android1:layout_toRightOf="@+id/imageView1"
+        android1:maxLines="1"
+        android1:text="TextView"
+        android1:textColor="#ffffff"
+        android1:textSize="15dip"
+        android1:textStyle="bold" />
+
+    <ImageView
+        android1:id="@+id/imageView2"
+        android1:layout_width="wrap_content"
+        android1:layout_height="wrap_content"
+        android1:layout_alignParentRight="true"
+        android1:layout_centerVertical="true"
+        android1:layout_marginRight="10dip"
+        android1:src="@drawable/tick" />
+
+</RelativeLayout>

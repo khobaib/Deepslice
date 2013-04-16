@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/IbApps/!svn/ver/55/trunk/DeepSlice/src/com/deepslice/utilities
+END
+Constants.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/src/com/deepslice/utilities/Constants.java
+END
+CarerOverlay.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/utilities/CarerOverlay.java
+END
+CurrentLocation.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/utilities/CurrentLocation.java
+END
+DistanceComparator.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/src/com/deepslice/utilities/DistanceComparator.java
+END
+Utilities.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/src/com/deepslice/utilities/Utilities.java
+END
+ResumableTaskStarter.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/IbApps/!svn/ver/51/trunk/DeepSlice/src/com/deepslice/utilities/ResumableTaskStarter.java
+END
+ResumableTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/IbApps/!svn/ver/51/trunk/DeepSlice/src/com/deepslice/utilities/ResumableTask.java
+END
+AppProperties.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/utilities/AppProperties.java
+END
+ResumableUrlTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/utilities/ResumableUrlTask.java
+END
+AppSharedPreference.java
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/IbApps/!svn/ver/50/trunk/DeepSlice/src/com/deepslice/utilities/AppSharedPreference.java
+END
+MyLocation.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/src/com/deepslice/utilities/MyLocation.java
+END
+Utils.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/src/com/deepslice/utilities/Utils.java
+END

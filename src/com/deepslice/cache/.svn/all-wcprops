@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/IbApps/!svn/ver/12/trunk/DeepSlice/src/com/deepslice/cache
+END
+ImageLoader.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/IbApps/!svn/ver/12/trunk/DeepSlice/src/com/deepslice/cache/ImageLoader.java
+END
+FileCache.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/IbApps/!svn/ver/12/trunk/DeepSlice/src/com/deepslice/cache/FileCache.java
+END
+MemoryCache.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/IbApps/!svn/ver/12/trunk/DeepSlice/src/com/deepslice/cache/MemoryCache.java
+END
+Utils.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/IbApps/!svn/ver/12/trunk/DeepSlice/src/com/deepslice/cache/Utils.java
+END

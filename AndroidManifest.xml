@@ -1,0 +1,76 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.deepslice.activity"
+    android:versionCode="1"
+    android:versionName="1.0" >
+ 
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="15" />
+
+   <uses-permission android:name="android.permission.INTERNET" />
+   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" /> 
+    <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
+	<uses-permission android:name="android.permission.CALL_PRIVILEGED"></uses-permission>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+
+        <activity android:name=".MenuActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        
+        <activity android:name=".WelcomeActivity" android:screenOrientation="portrait"   android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" 
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" android:label="DeepSlice" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity android:name=".LoginActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".StoreListActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".ForgotPassActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".PickupDeliverActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+        <activity android:name=".RegisterActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+        <activity android:name=".CustomerDetailsActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+        <activity android:name=".DeliveryAddress" android:screenOrientation="portrait"   android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+        <activity android:name="PreviousCustomerDetails" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar">
+        </activity>
+        
+        <activity android:name=".CityMapActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".DeliverySuburbActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        
+        <activity android:name=".DateTimeActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".FavAddActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+         
+         <activity android:name=".PizzaDetailsActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        
+         <activity android:name=".SubMenuActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+         <activity android:name=".PizzaSubMenuActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+          <activity android:name=".DrinksSubMenuActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+          <activity android:name=".ProductsListActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+          <activity android:name=".PizzaToppingsActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+          <activity android:name=".PizzaCrustActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".FavsListActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".MyOrderActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".CouponsActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".PaymentSelectionActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".PayByCashActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".LocationFromHistoryActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".StoreFromHistoryActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".DealsActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <activity android:name=".DealsListActivity" android:screenOrientation="portrait"  android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="adjustPan" android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        
+        <uses-library android:name="com.google.android.maps" />
+        
+    </application>
+
+</manifest>

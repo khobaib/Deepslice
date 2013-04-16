@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/backGround" >
+
+    <RelativeLayout
+        android:id="@id/headerRelativeLayout"
+        style="@style/header" >
+
+        <TextView
+            android:id="@+id/textView1"
+            style="@style/headerTextLeft"
+            android:text="@string/previousCustomerDetails"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@id/footerRelativeLayout"
+        style="@style/footer" >
+
+        <Button
+            android:id="@+id/differentAddressButton"
+            style="@style/buttonHCenter"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/yellow_butt_big"
+            android:text="@string/differentaddress" />
+
+        <Button
+            android:id="@+id/startANewOrderButton"
+            style="@style/buttonHCenter"
+            android:layout_below="@+id/differentAddressButton"
+            android:background="@drawable/yellow_butt_big"
+            android:text="@string/startAewOrder" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        style="@style/logoImage" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        style="@style/scrollView"
+        android:layout_above="@+id/footerRelativeLayout"
+        android:layout_below="@+id/detailsTextView"
+        android:layout_centerHorizontal="true" >
+
+        <RelativeLayout
+            android:id="@+id/body"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <LinearLayout
+                android:id="@+id/firstBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/red_box2"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:id="@+id/addressRelativeLayout"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:id="@+id/addressLinearLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            style="@style/textView"
+                            android:text="@string/deliveryAddressBody"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/addressValueLinearLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/addressLinearLayout"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/addressValueTextView"
+                            style="@style/textView"
+                            android:paddingLeft="10dp"
+                            android:text="Keota sarad sarani saradapark "
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/secodBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/firstBody"
+                android:background="@drawable/rede_box1"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:id="@+id/contactRelativeLayout"
+                    android:layout_marginRight="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:id="@+id/contactLinearLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/contactTextView"
+                            style="@style/textView"
+                            android:text="@string/contactValue"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/contactValueLinearLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/contactLinearLayout"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/contactValueTextView"
+                            style="@style/textView"
+                            android:paddingLeft="25dp"
+                            android:text="Keota sarad sarani saradapark"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/timeRelativeLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp" >
+
+                    <LinearLayout
+                        android:id="@+id/selectedTimeLinearLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/selectedTimeTextView"
+                            style="@style/textView"
+                            android:text="@string/selectedTimeValue"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/selectedTimevalueLinearLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/selectedTimeLinearLayout"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/selectedTimevalueTextView"
+                            style="@style/textView"
+                            android:paddingLeft="25dp"
+                            android:text="Keota sarad sarani saradapark"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/detailsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:layout_marginLeft="8dp"
+        android:layout_below="@+id/logoImageView"
+        android:text="@string/previousContactDetailsText"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</RelativeLayout>

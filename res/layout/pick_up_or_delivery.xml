@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/backGround" >
+
+    <RelativeLayout style="@style/header" >
+
+        <TextView
+            android:id="@+id/headerTextView"
+            style="@style/headerText"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="54dp"
+            android:text="@string/pickUpOrDelivery"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        style="@style/logoImage" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        style="@style/scrollView" 
+        android:layout_above="@+id/footerRelativeLayout"
+        android:layout_below="@+id/logoImageView" >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <TextView
+                android:id="@+id/bodyTextView"
+                style="@style/textView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:text="@string/pickUpDeliveryText" />
+            <Button
+                android:id="@+id/deliveryButton"
+                style="@style/buttonHVCenter"
+                android:layout_below="@+id/bodyTextView"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_delivery"
+                android:textColor="#fff" />
+            <Button
+                android:id="@+id/pickUpButton"
+                style="@style/buttonHVCenter"
+                android:layout_below="@+id/deliveryButton"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/btn_pickup"
+                android:textColor="#fff" />
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pickUpButton"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:src="@drawable/credit_cards" />
+            <TextView
+                android:id="@+id/creditText"
+                style="@style/textView"
+                android:layout_below="@+id/imageView1"
+                
+                android:layout_centerHorizontal="true"
+                android:text="@string/creditText"/>
+        </RelativeLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/footerRelativeLayout"
+        style="@style/footer"
+         >
+        <TextView
+            android:id="@+id/footerText"
+            style="@style/textView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:text="@string/pickUpFooterText" />
+        <Button
+            android:id="@+id/loginButton"
+            style="@style/buttonHVCenter"
+            android:layout_below="@+id/footerText"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/btn_login"
+            android:textColor="#fff"
+             />
+    </RelativeLayout>
+
+</RelativeLayout>

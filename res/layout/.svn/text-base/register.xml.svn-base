@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/backGround" >
+
+    <RelativeLayout
+        android:id="@+id/headerRelativeLayout"
+        style="@style/header" >
+
+        <ImageView
+            android:id="@+id/farwordImageView"
+            style="@style/farwordButton" />
+
+        <TextView
+            android:id="@+id/headerTextView"
+            style="@style/headerText"
+            android:text="@string/register"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        style="@style/logoImage" />
+
+    <RelativeLayout
+        android:id="@+id/footerRelativeLayout"
+        style="@style/footer" >
+
+        <Button
+            android:id="@+id/startOrderingButton"
+            style="@style/buttonHVCenter"
+            android:textColor="#fff"
+            android:background="@drawable/btn_start_order"/>
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/footerRelativeLayout"
+        android:layout_below="@+id/logoImageView" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TableLayout
+                android:id="@+id/nameTableLayout"
+                style="@style/tableStyle" >
+
+                <TableRow
+                    android:id="@+id/tableRow1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" 
+                    android:padding="5dip">
+
+                    <TextView
+                        android:id="@+id/passwordTextView"
+                        style="@style/textView"
+                        android:text="@string/password" />
+
+                    <EditText
+                        android:id="@+id/passwordEditText"
+                        style="@style/tableEditText" 
+                        android:inputType="textPassword">
+                    </EditText>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tableRow2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:padding="5dip">
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        style="@style/textView"
+                        android:text="@string/confirmPassword" android:layout_gravity="top"/>
+
+                    <EditText
+                        android:id="@+id/conformPasswordEditText"
+                        style="@style/tableEditText" 
+                        android:inputType="textPassword"/>
+                </TableRow>
+            </TableLayout>
+
+            <LinearLayout
+                android:id="@+id/checkBoxLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nameTableLayout"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical" >
+
+                <CheckBox
+                    android:id="@+id/checkBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="70dp"
+                    android:text="@string/registerCheckBoxText"
+                     android:background="@drawable/checkbox_background"
+                    android:button="@drawable/mycheckbox"
+                    android:textSize="13dip"
+                    android:textColor="#fff" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/textLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/checkBoxLinearLayout"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/privacyPolicyButton"
+                    style="@style/buttonHCenter"
+                    android:textColor="#fff"
+                    android:background="@drawable/btn_privacy" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/backGround" >
+
+    <RelativeLayout
+        android:id="@+id/headerRelativeLayout"
+        style="@style/header" >
+
+        <ImageView
+            android:id="@+id/farwordImageView"
+            style="@style/farwordButton" />
+
+        <TextView
+            android:id="@+id/headerTextView"
+            style="@style/headerText"
+            android:text="Payment Selection"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        style="@style/logoImage" />
+
+    <TableLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/navBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dip"
+        android:gravity="center" >
+    </TableLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logoImageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/calories" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="New items coming soon..."
+            android:textColor="#ffff00"
+            android:textSize="12dip" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relativeLayout1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
+        android:background="@drawable/footer">
+        
+        <RelativeLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:padding="10dip">    
+        
+        <TextView
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="15dip"
+            android:text="Order Total:"
+            android:textColor="#ffffff"
+            android:textSize="14dip"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/totalPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dip"
+            android:text="$"
+            android:textColor="#ffffff"
+            android:textSize="15dip" />
+        
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dip"
+        android:gravity="center_horizontal" >
+        
+        <Button
+            android:id="@+id/btnPayByCash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dip"
+            android:background="@drawable/yellow_butt"
+            android:text="Pay by Cash"
+            android:textSize="16dip"
+            android:textStyle="bold" />
+        
+        <Button
+            android:id="@+id/btnPayByCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dip"
+            android:background="@drawable/yellow_butt"
+            android:text="Pay by Card"
+            android:textSize="16dip"
+            android:textStyle="bold" />
+        
+    </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

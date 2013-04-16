@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/backGround">
+
+    <RelativeLayout
+        android:id="@+id/headerRelativeLayout"
+        style="@style/header" >
+
+        <ImageView
+            android:id="@+id/farwordImageView"
+            style="@style/farwordButton" />
+
+        <TextView
+            android:id="@+id/headerTextView"
+            style="@style/headerText"
+            android:text="Select Toppings"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        style="@style/logoImage" />
+
+    
+
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/logoImageView"
+        android:layout_above="@+id/footerRelativeLayout"
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/transparent"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="3dp" >
+
+    </ListView>
+<RelativeLayout
+        android:id="@+id/footerRelativeLayout"
+        style="@style/footer" >
+
+        <Button
+            android:id="@+id/startOrderingButton"
+            style="@style/buttonHVCenter"
+            android:textColor="#fff"
+            android:text="Done"
+            android:background="@drawable/green_butt" />
+    </RelativeLayout>
+</RelativeLayout>

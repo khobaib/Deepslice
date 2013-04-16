@@ -1,0 +1,197 @@
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/IbApps/!svn/ver/57/trunk/DeepSlice/src/com/deepslice/activity
+END
+SubMenuActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/SubMenuActivity.java
+END
+PreviousCustomerDetails.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/src/com/deepslice/activity/PreviousCustomerDetails.java
+END
+PizzaDetailsActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/PizzaDetailsActivity.java
+END
+DeliverySuburbActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/IbApps/!svn/ver/55/trunk/DeepSlice/src/com/deepslice/activity/DeliverySuburbActivity.java
+END
+ForgotPassActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/IbApps/!svn/ver/48/trunk/DeepSlice/src/com/deepslice/activity/ForgotPassActivity.java
+END
+CityMapActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/CityMapActivity.java
+END
+DeliveryAddress.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/DeliveryAddress.java
+END
+LoginActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/LoginActivity.java
+END
+StoreFromHistoryActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/StoreFromHistoryActivity.java
+END
+FavAddActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/FavAddActivity.java
+END
+CustomerDetailsActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/IbApps/!svn/ver/58/trunk/DeepSlice/src/com/deepslice/activity/CustomerDetailsActivity.java
+END
+RegisterActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/RegisterActivity.java
+END
+MyOrderActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/MyOrderActivity.java
+END
+MenuActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/MenuActivity.java
+END
+StoreListActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/StoreListActivity.java
+END
+PizzaCrustActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/PizzaCrustActivity.java
+END
+DateTimeActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/IbApps/!svn/ver/58/trunk/DeepSlice/src/com/deepslice/activity/DateTimeActivity.java
+END
+PizzaSubMenuActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/PizzaSubMenuActivity.java
+END
+FavsListActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/FavsListActivity.java
+END
+LocationFromHistoryActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/LocationFromHistoryActivity.java
+END
+PizzaToppingsActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/PizzaToppingsActivity.java
+END
+PizzaCrustsActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/PizzaCrustsActivity.java
+END
+PayByCashActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/IbApps/!svn/ver/58/trunk/DeepSlice/src/com/deepslice/activity/PayByCashActivity.java
+END
+CouponsActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/CouponsActivity.java
+END
+CustomViewGen.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/IbApps/!svn/ver/5/trunk/DeepSlice/src/com/deepslice/activity/CustomViewGen.java
+END
+PickupDeliverActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/PickupDeliverActivity.java
+END
+DealsActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/DealsActivity.java
+END
+PaymentSelectionActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/IbApps/!svn/ver/50/trunk/DeepSlice/src/com/deepslice/activity/PaymentSelectionActivity.java
+END
+DealsListActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/IbApps/!svn/ver/55/trunk/DeepSlice/src/com/deepslice/activity/DealsListActivity.java
+END
+DrinksSubMenuActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/DrinksSubMenuActivity.java
+END
+WelcomeActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/WelcomeActivity.java
+END
+ProductsListActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/IbApps/!svn/ver/60/trunk/DeepSlice/src/com/deepslice/activity/ProductsListActivity.java
+END

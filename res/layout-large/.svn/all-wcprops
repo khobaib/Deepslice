@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/IbApps/!svn/ver/50/trunk/DeepSlice/res/layout-large
+END
+line_item_del.xml
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout-large/line_item_del.xml
+END
+pick_up_or_delivery.xml
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout-large/pick_up_or_delivery.xml
+END
+store_location_list.xml
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout-large/store_location_list.xml
+END
+date_time_select.xml
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout-large/date_time_select.xml
+END
+line_item.xml
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout-large/line_item.xml
+END
+store_location_map.xml
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout-large/store_location_map.xml
+END
+menu_scr.xml
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/IbApps/!svn/ver/50/trunk/DeepSlice/res/layout-large/menu_scr.xml
+END
+welcome.xml
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout-large/welcome.xml
+END
+forgot.xml
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/res/layout-large/forgot.xml
+END

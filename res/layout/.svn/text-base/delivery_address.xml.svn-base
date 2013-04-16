@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout style="@style/backGround" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        style="@style/header" >
+
+        <TextView
+            android:id="@+id/headerTextView"
+            style="@style/headerText"
+            android:text="@string/deliveryAddress"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/footerRelativeLayout"
+        style="@style/footer" >
+
+        <Button
+            android:id="@+id/continueButton"
+            style="@style/buttonHVCenter"
+            android:textColor="#fff"
+            android:background="@drawable/btn_continue"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/deposlicepizza" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/footerRelativeLayout"
+        android:layout_below="@+id/logoImageView" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+		<TextView
+		    android:id="@+id/textView1"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentTop="true"
+		    android:layout_marginLeft="10dp"
+		    android:layout_marginTop="5dip"
+		    android:text="TextView this is text view for test size of the cview"
+		    android:textColor="#ffffff" />
+
+            <TableLayout
+                android:id="@+id/deliveryAddressTableLayout"
+                style="@style/tableStyle"
+                android:layout_below="@+id/textView1" >
+
+                <TableRow
+                    android:id="@+id/tableRow1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/unittextView"
+                        style="@style/textView"
+                        android:text="@string/unit"
+                        android:layout_weight="1"
+                         />
+                    
+                    <EditText
+                        android:id="@+id/unitEditText"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:inputType="number" />
+				
+					<TextView
+                        android:id="@+id/dmmmmm"
+                        style="@style/textView"
+                        android:layout_weight="6"/>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tableRow2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dip" >
+
+                    <TextView
+                        android:id="@+id/streetNotextView"
+                        style="@style/textView"
+                        android:layout_weight="1"
+                        android:text="@string/streetNo" />
+
+				<EditText
+				    android:id="@+id/streetNoEditText"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				    android:layout_weight="4"
+				    android:inputType="number|text" />
+					
+					<TextView
+                        android:id="@+id/dmmmmm2"
+                        style="@style/textView"
+                        android:layout_weight="6"/>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tableRow3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dip" >
+
+                    <TextView
+                        android:id="@+id/streetNametextView"
+                        style="@style/textView"
+                        android:layout_weight="1"
+                        android:text="@string/streetName" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/streetNameEditText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tableRow4"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dip"
+                    android:layout_marginTop="5dip">
+
+                    <TextView
+                        android:id="@+id/crossStreetNametextView"
+                        style="@style/textView"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/crossStreetName" />
+
+<EditText
+    android:id="@+id/crossStreetNameEditText"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="10"
+    android:lines="2" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tableRow5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dip" >
+
+                    <TextView
+                        android:id="@+id/deliveryInstructionstextView"
+                        style="@style/textView"
+                        android:layout_weight="1"
+                        android:text="@string/deliveryInstructions" />
+
+                    <EditText
+                        android:id="@+id/deliveryInstructionsEditText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        android:lines="3" />
+
+                </TableRow>
+            </TableLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+    
+
+</RelativeLayout>

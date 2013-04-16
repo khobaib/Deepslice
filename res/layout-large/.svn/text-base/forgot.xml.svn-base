@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/backGround">
+
+    <RelativeLayout
+        android:id="@+id/headerRelativeLayout"
+        style="@style/header" >
+
+        <ImageView
+            android:id="@+id/farwordImageView"
+            style="@style/farwordButton" />
+
+        <TextView
+            android:id="@+id/headerTextView"
+            style="@style/headerText"
+            android:text="@string/forgot"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/footerRelativeLayout"
+        style="@style/footer"
+        android:padding="5dip" >
+        
+        <TextView
+                    android:id="@+id/textTextView12"
+                    style="@style/textView"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dip"
+                    android:text="@string/notexisting" 
+                    android:layout_alignParentTop="true"/>
+
+        <Button
+            android:id="@+id/startOrderingButton"
+            style="@style/buttonHVCenter"
+            android:layout_below="@+id/textTextView12"
+            android:layout_marginBottom="5dip"
+            android:layout_marginTop="10dip"
+            android:background="@drawable/btn_register"
+            android:textColor="#fff" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        style="@style/logoImage" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/footerRelativeLayout"
+        android:layout_below="@+id/logoImageView"
+        android:layout_marginTop="5dip" >
+
+        <RelativeLayout
+            android:id="@+id/tblOuter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip" >
+
+            <TableLayout
+                android:id="@+id/nameTableLayout"
+                style="@style/tableStyle" android:layout_marginTop="55dip">
+
+                <TableRow
+                    android:id="@+id/tableRow1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="15dip"
+                    android:gravity="center_horizontal"
+                    android:padding="5dip" >
+
+                    <TextView
+                        android:id="@+id/nametextView"
+                        style="@style/textView"
+                        android:text="@string/yourEmail" />
+
+                    <EditText
+                        android:id="@+id/textEmail"
+                        style="@style/tableEditText" >
+                    </EditText>
+                </TableRow>
+            </TableLayout>
+
+            <RelativeLayout
+                android:id="@+id/textLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nameTableLayout"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/registerButton"
+                    style="@style/buttonHCenter"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/get_password"
+                    android:textColor="#fff" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

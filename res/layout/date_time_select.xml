@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/backGround" >
+
+    <RelativeLayout
+        android:id="@+id/headerRelativeLayout"
+        style="@style/header" >
+
+        <ImageView
+            android:id="@+id/farwordImageView"
+            style="@style/farwordButton" />
+
+        <TextView
+            android:id="@+id/headerTextView"
+            style="@style/headerText"
+            android:layout_marginRight="10dip"
+            android:text="Select date and time"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/footerRelativeLayout"
+        style="@style/footer" >
+
+        <TextView
+            android:id="@+id/textTextView12"
+            style="@style/textView"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dip"
+            android:text="Delivery:" />
+
+        <Button
+            android:id="@+id/startOrderingButton"
+            style="@style/buttonHVCenter"
+            android:layout_below="@+id/textTextView12"
+            android:layout_marginBottom="5dip"
+            android:layout_marginTop="5dip"
+            android:background="@drawable/green_butt"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"
+            android:text="ASAP"
+            android:textColor="#fff" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        style="@style/logoImage" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/footerRelativeLayout"
+        android:layout_below="@+id/textView4"
+        android:layout_marginTop="15dip" >
+
+        <RelativeLayout
+            android:id="@+id/tblOuter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dip" 
+            android:background="@drawable/datentime">
+
+            <TextView
+                android:id="@+id/datePicker"
+                android:layout_width="100dip"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="40dp"
+                android:background="@drawable/rate_240"
+                android:gravity="center_horizontal"
+                android:padding="5dip"
+                android:text="TextView"
+                android:textColor="#000000" />
+            
+            <TextView
+                android:id="@+id/timePicker"
+                android:layout_width="100dip"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="40dp"
+                android:background="@drawable/rate_240"
+                android:gravity="center_horizontal"
+                android:padding="5dip"
+                android:text="TextView"
+                android:textColor="#000000" />
+            
+        </RelativeLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logoImageView"
+        android:layout_centerHorizontal="true"
+        android:text="Selected Store"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:text="Store Name Here"
+        android:textColor="#ffff00"
+        android:textSize="18dip" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:text="The store current time is 2:00"
+        android:textColor="#ffffff" />
+<TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView3"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dip"
+                android:text="Your selected store is currently open. Please select your order date and time below:"
+                android:textColor="#ffffff" />
+</RelativeLayout>

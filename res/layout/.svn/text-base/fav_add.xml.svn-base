@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/backGround" >
+
+    <RelativeLayout
+        android:id="@+id/headerRelativeLayout"
+        style="@style/header" >
+
+        <ImageView
+            android:id="@+id/farwordImageView"
+            style="@style/farwordButton" />
+
+        <TextView
+            android:id="@+id/headerTextView"
+            style="@style/headerText"
+            android:text="Pizza Name"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        style="@style/logoImage" />
+
+    
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/navBar"
+        android:layout_below="@+id/logoImageView" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" 
+            android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/passwordTextView"
+                        style="@style/textView"
+                        android:layout_marginLeft="10dip"
+                        android:layout_marginTop="0dip"
+                        android:text="How many would you like?" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dip"
+                        android:gravity="center_horizontal" >
+
+                        <ImageView
+                            android:id="@+id/favArrowDown"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/fav_arrow_down" />
+
+                        <TextView
+                            android:id="@+id/favCountTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/fav_cb"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:text="1"
+                            android:textColor="#ffffff" />
+
+
+                        <ImageView
+                            android:id="@+id/favArrowUp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/fav_arrow_up" />
+
+                    </LinearLayout>
+
+<TextView
+    android:id="@+id/passwordTextView"
+    style="@style/textView"
+    android:layout_marginLeft="40dip"
+    android:layout_marginTop="10dip"
+    android:text="My Favourites"
+    android:textSize="16dip" />
+
+<TextView
+    android:id="@+id/passwordTextView"
+    style="@style/textView"
+    android:layout_marginLeft="40dip"
+    android:layout_marginRight="10dip"
+    android:layout_marginTop="10dip"
+    android:text="Give your customised item a name and save it to your list of favourites for easy ordering next time." />
+
+<EditText
+    android:id="@+id/favPizzaName"
+    style="@style/tableEditText"
+    android:layout_marginLeft="40dp"
+    android:layout_marginRight="40dip"
+    android:layout_marginTop="15dip"
+    android:inputType="textEmailAddress" >
+
+                    </EditText>
+<Button
+    android:id="@+id/buttonAddFav"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginLeft="10dip"
+    android:layout_marginRight="10dip"
+    android:layout_marginTop="5dip"
+    android:background="@drawable/yellow_butt_big"
+    android:text="Save to Favourites"
+    android:textColor="#000000"
+    android:textSize="22dip" />
+<Button
+    android:id="@+id/buttonAddOrders"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginLeft="10dip"
+    android:layout_marginRight="10dip"
+    android:layout_marginTop="5dip"
+    android:background="@drawable/box_red"
+    android:text="Add to Order"
+    android:textColor="#ffffff"
+    android:textSize="22dip" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <TableLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/navBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dip"
+        android:gravity="center" >
+
+        <TableRow
+            android:background="@drawable/m_nav_bg"
+            android:weightSum="3" >
+
+            <LinearLayout
+                android:id="@+id/search_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal" >
+
+                <Button
+                    android:id="@+id/mainMenu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/m_nav1" />
+            </LinearLayout>
+
+           
+           <RelativeLayout
+                android:id="@+id/setting_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal" >
+
+                <Button
+                    android:layout_centerHorizontal="true"
+                    
+                    android:id="@+id/callfriends"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/m_nav2" />
+
+                <TextView
+                    android:id="@+id/itemPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/total_bg2"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:paddingLeft="4dip"
+                    android:paddingRight="4dip"
+                    android:text="$100.23"
+                    android:textColor="#ffffff"
+                    android:textSize="14dip"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/cartDummy"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="match_parent"
+                	android:layout_height="40dip"
+                    android:orientation="vertical" >
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/cal_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal" >
+
+                <Button
+                    android:layout_centerHorizontal="true"
+                    
+                    android:id="@+id/favs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/m_nav3" />
+
+
+                <TextView
+                    android:id="@+id/favCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/total_bg2"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:paddingLeft="4dip"
+                    android:paddingRight="4dip"
+                    android:text=""
+                    android:textColor="#ffffff"
+                    android:textSize="14dip"
+                    android:textStyle="bold" />
+
+
+            </RelativeLayout>
+        </TableRow>
+    </TableLayout>
+</RelativeLayout>

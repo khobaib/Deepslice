@@ -1,0 +1,58 @@
+10
+
+dir
+57
+https://xp-dev.com/svn/IbApps/trunk/DeepSlice/res
+https://xp-dev.com/svn/IbApps
+
+
+
+2013-02-11T22:54:24.319027Z
+54
+ibabur
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e27aa18b-566d-47c0-9afc-97969e2c42f5
+
+drawable
+dir
+
+drawable-hdpi
+dir
+
+drawable-ldpi
+dir
+
+drawable-mdpi
+dir
+
+drawable-xhdpi
+dir
+
+layout
+dir
+
+layout-large
+dir
+
+menu
+dir
+
+values
+dir
+
+values-large
+dir
+

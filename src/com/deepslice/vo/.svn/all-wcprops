@@ -1,0 +1,131 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/IbApps/!svn/ver/55/trunk/DeepSlice/src/com/deepslice/vo
+END
+ToppingsAndSaucesVo.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/IbApps/!svn/ver/21/trunk/DeepSlice/src/com/deepslice/vo/ToppingsAndSaucesVo.java
+END
+LocationDetails.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/IbApps/!svn/ver/55/trunk/DeepSlice/src/com/deepslice/vo/LocationDetails.java
+END
+ProductCategory.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/IbApps/!svn/ver/13/trunk/DeepSlice/src/com/deepslice/vo/ProductCategory.java
+END
+LabelValueBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/IbApps/!svn/ver/24/trunk/DeepSlice/src/com/deepslice/vo/LabelValueBean.java
+END
+StoreLocationMod.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/src/com/deepslice/vo/StoreLocationMod.java
+END
+ToppingPricesVo.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/IbApps/!svn/ver/21/trunk/DeepSlice/src/com/deepslice/vo/ToppingPricesVo.java
+END
+OrderVo.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/IbApps/!svn/ver/43/trunk/DeepSlice/src/com/deepslice/vo/OrderVo.java
+END
+CouponsVo.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/IbApps/!svn/ver/48/trunk/DeepSlice/src/com/deepslice/vo/CouponsVo.java
+END
+ToppingSizesVo.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/IbApps/!svn/ver/21/trunk/DeepSlice/src/com/deepslice/vo/ToppingSizesVo.java
+END
+FavouritesVo.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/IbApps/!svn/ver/45/trunk/DeepSlice/src/com/deepslice/vo/FavouritesVo.java
+END
+StreetsBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/src/com/deepslice/vo/StreetsBean.java
+END
+AllProductsVo.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/IbApps/!svn/ver/34/trunk/DeepSlice/src/com/deepslice/vo/AllProductsVo.java
+END
+CustomerDetailsVo.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/src/com/deepslice/vo/CustomerDetailsVo.java
+END
+UserBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/IbApps/!svn/ver/48/trunk/DeepSlice/src/com/deepslice/vo/UserBean.java
+END
+ToppingsHashmapVo.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/IbApps/!svn/ver/45/trunk/DeepSlice/src/com/deepslice/vo/ToppingsHashmapVo.java
+END
+DeliveryAddressVo.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/src/com/deepslice/vo/DeliveryAddressVo.java
+END
+LocationPoints.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/src/com/deepslice/vo/LocationPoints.java
+END
+SubCategoryVo.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/IbApps/!svn/ver/13/trunk/DeepSlice/src/com/deepslice/vo/SubCategoryVo.java
+END
+StoreLocation.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/IbApps/!svn/ver/2/trunk/DeepSlice/src/com/deepslice/vo/StoreLocation.java
+END
+CouponDetailsVo.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/IbApps/!svn/ver/49/trunk/DeepSlice/src/com/deepslice/vo/CouponDetailsVo.java
+END
+DelLocations.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/IbApps/!svn/ver/50/trunk/DeepSlice/src/com/deepslice/vo/DelLocations.java
+END
