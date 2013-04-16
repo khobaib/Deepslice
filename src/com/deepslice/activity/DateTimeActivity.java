@@ -84,11 +84,31 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 			TextView storeOpenStatus = (TextView) findViewById(R.id.textView4);
 			storeOpenStatus
 					.setText("Your selected store is currently Closed. Please select your order date and time below:");
+		
 		}
 		initializeAllViews();
-		firstTime = true;
+		firstTime = true;	
+		checkAsap();
 	}
-
+	public void checkAsap() {			
+		Date currentTime = Calendar.getInstance().getTime();
+		if(currentTime.getHours() > openTime.getHours() && currentTime.getHours() <closeTime.getHours()){			
+			startOrtderButton.setVisibility(View.VISIBLE);
+			Log.e("Tag","1");
+		}
+		else{
+			if(startOrtderButton.getText().toString().equals("ASAP")){
+				startOrtderButton.setVisibility(View.INVISIBLE);
+				Log.e("Tag","2");
+			}
+			else{
+				startOrtderButton.setVisibility(View.VISIBLE);
+				Log.e("Tag","3");
+			}
+		}
+		}
+		
+	
 	private void initializeAllViews() {
 		startOrtderButton = (Button) findViewById(R.id.startOrderingButton);
 		startOrtderButton.setOnClickListener(this);
@@ -118,6 +138,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 				finish();
 			}
 		});
+		
 	}
 
 	@Override
@@ -127,45 +148,46 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 		case R.id.startOrderingButton:
 			String[] timeStorage = timePick.getText().toString().split("[:]");
 			// if(AppProperties.isLoogedIn)
-			if (!HelperSharedPreferences.getSharedPreferencesString(
-					DateTimeActivity.this, "emailName", "").equals("")
-					|| !HelperSharedPreferences.getSharedPreferencesString(
+			if (!HelperSharedPreferences.getSharedPreferencesString(DateTimeActivity.this, "emailName", "").equals("")|| !HelperSharedPreferences.getSharedPreferencesString(
 							DateTimeActivity.this, "userName", "").equals("")||AppProperties.isLoogedIn) {
-				if ((Integer.parseInt(timeStorage[0]) > openTime.getHours() && Integer
-						.parseInt(timeStorage[0]) < closeTime.getHours())
-						|| ("ASAP".equalsIgnoreCase(startOrtderButton.getText()
-								.toString()) && (cal.get(Calendar.HOUR_OF_DAY) > openTime
-								.getHours() && cal.get(Calendar.HOUR_OF_DAY) < closeTime
-								.getHours()))) {
+				if ((Integer.parseInt(timeStorage[0]) > openTime.getHours() && Integer.parseInt(timeStorage[0]) < closeTime.getHours())
+						|| ("ASAP".equalsIgnoreCase(startOrtderButton.getText().toString()) && (cal.get(Calendar.HOUR_OF_DAY) > openTime
+								.getHours() && cal.get(Calendar.HOUR_OF_DAY) < closeTime.getHours()))) {
 					startActivity(new Intent(new Intent(this,
 							MyOrderActivity.class)));
+					
 				} else {
 					Utils.openErrorDialog(DateTimeActivity.this,
 							"Store is not open on selected time.\nPlease select some other time!");
 				}
+				checkAsap();
 			} else {
 				if (Integer.parseInt(timeStorage[0]) > openTime.getHours()
 						&& Integer.parseInt(timeStorage[0]) < closeTime
 								.getHours()) {
-
+					
 					startActivity(new Intent(new Intent(this,
 							CustomerDetailsActivity.class)));
 				} else {
 					startActivity(new Intent(new Intent(this,
 							CustomerDetailsActivity.class)));
+				
 				}
-
+				checkAsap();
 			}
 
 			AppSharedPreference.putData(DateTimeActivity.this, "deliveryTime",
 					startOrtderButton.getText().toString());
+			
 			break;
 		case R.id.datePicker:
 			datePickDialog.show();
+			
 			break;
 		case R.id.timePicker:
 			firstTime = true;
 			timePickDiag.show();
+			
 			break;
 
 		default:
@@ -186,6 +208,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 			} else {
 				dialogCount();
 			}
+			checkAsap();
 
 		}
 
@@ -225,6 +248,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 				startOrtderButton.setText(timePick.getText() + ", "
 						+ datePick.getText());
 			}
+			checkAsap();
 		}
 	};
 
