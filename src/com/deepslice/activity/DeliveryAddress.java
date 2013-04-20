@@ -148,7 +148,13 @@ public class DeliveryAddress extends Activity implements OnClickListener {
 
 			/////////////////////////
 			
-			Intent intent=new Intent(this, DateTimeActivity.class);
+			//Intent intent=new Intent(this, DateTimeActivity.class);
+			Intent intent=new Intent(this,PaymentSelectionActivity.class);
+			String location=getIntent().getStringExtra("location");
+			String store=getIntent().getStringExtra("store");
+			String suburbId=getIntent().getStringExtra("suburbId");			
+			
+			
 			Bundle bundle = new Bundle();
 			bundle.putString("location",location);
 			bundle.putString("store",store);

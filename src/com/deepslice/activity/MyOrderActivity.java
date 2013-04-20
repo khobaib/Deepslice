@@ -3,8 +3,6 @@ package com.deepslice.activity;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.deepslice.activity.R.id;
 import com.deepslice.database.AppDao;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
@@ -36,29 +35,83 @@ public class MyOrderActivity extends Activity{
 		setContentView(R.layout.my_order);
 		
 		totalPrice=(TextView)findViewById(R.id.textTextView12);
+		
+		
 /////////////////		
+		/*
 		TextView moDeliveryStore=(TextView)findViewById(R.id.moDeliveryStore);
 		TextView moDeliveryAddress=(TextView)findViewById(R.id.moDeliveryAddress);
+		TextView moDeliveryTime=(TextView)findViewById(R.id.moDeliveryTime);
+		TextView moYourDetails=(TextView)findViewById(R.id.moYourDetails);
+		moDeliveryStore.setText("Delivery Store: "+AppProperties.NVL(locationObj.getLocName()));
+		moDeliveryAddress.setText(AppProperties.NVL(locationObj.getLocAddress())+" "+AppProperties.NVL(locationObj.getLocName())+", "+AppProperties.NVL(locationObj.getLocPhones()));
+		moDeliveryTime.setText(AppSharedPreference.getData(MyOrderActivity.this, "deliveryTime", ""));
+		if(dets.length()>5)
+			moYourDetails.setText(dets);
+		else
+			moYourDetails.setText("");
+		///////////////////////////////
+		ImageView startNewOrder=(ImageView)findViewById(R.id.startNewOrder);
+		startNewOrder.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(MyOrderActivity.this);
+				builder.setCancelable(true);
+				builder.setTitle("DeepSlice");
+				builder.setMessage("Are you want to clear current order and start new?");
+				builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+				builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+						
+						AppDao dao=null;
+						try {
+							dao=AppDao.getSingleton(getApplicationContext());
+							dao.openConnection();
+							
+							dao.cleanOrderTable();
+							
+						} catch (Exception ex)
+						{
+							System.out.println(ex.getMessage());
+						}finally{
+							if(null!=dao)
+								dao.closeConnection();
+						}
+						
+						AppSharedPreference.clearCouponInformation(MyOrderActivity.this);
+						
+						finish();
+					}
+				});
+				AlertDialog alerta = builder.create();
+				alerta.show();
+			}
+		});
+		*/
+		
+		TextView mOrderType = (TextView)findViewById(id.headerTextView);
+		
+		
 		
 		LocationDetails locationObj = AppProperties.getLocationObj(MyOrderActivity.this);
 		
-		moDeliveryStore.setText("Delivery Store: "+AppProperties.NVL(locationObj.getLocName()));
-		moDeliveryAddress.setText(AppProperties.NVL(locationObj.getLocAddress())+" "+AppProperties.NVL(locationObj.getLocName())+", "+AppProperties.NVL(locationObj.getLocPhones()));
 ///////////////////////////		
-		TextView moDeliveryTime=(TextView)findViewById(R.id.moDeliveryTime);
-		TextView moYourDetails=(TextView)findViewById(R.id.moYourDetails);
 		
-		moDeliveryTime.setText(AppSharedPreference.getData(MyOrderActivity.this, "deliveryTime", ""));
 		String dets=AppSharedPreference.getData(MyOrderActivity.this, "customerName", "");
 		dets+=", ";
 		dets+=AppSharedPreference.getData(MyOrderActivity.this, "customerEmail", "");
 		dets+=", ";
 		dets+=AppSharedPreference.getData(MyOrderActivity.this, "customerPhone", "");
 		
-		if(dets.length()>5)
-			moYourDetails.setText(dets);
-		else
-			moYourDetails.setText("");
+		String orderType=AppSharedPreference.getData(MyOrderActivity.this, "orderType", "");
+		
+		mOrderType.setText(orderType);
+		
 ///////////////////////////
 		ImageView addCoupon=(ImageView)findViewById(R.id.imageView2);
 		addCoupon.setOnClickListener(new OnClickListener() {
@@ -89,54 +142,28 @@ public class MyOrderActivity extends Activity{
 			
 			@Override
 			public void onClick(View v) {
-				Intent i=new Intent(MyOrderActivity.this,PaymentSelectionActivity.class);
+			//	Intent i=new Intent(MyOrderActivity.this,PaymentSelectionActivity.class);
+			//	startActivity(i);
+				
+				
+//				i have added //
+				
+				String orderType=AppSharedPreference.getData(MyOrderActivity.this, "orderType", null);
+				Intent i;
+				
+				if("Delivery".equalsIgnoreCase(orderType))
+					i=new Intent(MyOrderActivity.this,LocationFromHistoryActivity.class);
+				else
+					i=new Intent(MyOrderActivity.this,StoreFromHistoryActivity.class);
+				
 				startActivity(i);
+				finish();		
+			//////////////////////////////////////////////////////////////////////////////////////////////////	
+				
 //				finish();
 			}
 		});
 
-		///////////////////////////////
-		ImageView startNewOrder=(ImageView)findViewById(R.id.startNewOrder);
-		startNewOrder.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(MyOrderActivity.this);
-				builder.setCancelable(true);
-				builder.setTitle("DeepSlice");
-				builder.setMessage("Are you want to clear current order and start new?");
-				builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-					}
-				});
-				builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-						
-						AppDao dao=null;
-						try {
-							dao=AppDao.getSingleton(getApplicationContext());
-							dao.openConnection();
-						
-							dao.cleanOrderTable();
-
-						} catch (Exception ex)
-						{
-							System.out.println(ex.getMessage());
-						}finally{
-							if(null!=dao)
-								dao.closeConnection();
-						}
-					
-						AppSharedPreference.clearCouponInformation(MyOrderActivity.this);
-						
-						finish();
-					}
-				});
-				AlertDialog alerta = builder.create();
-				alerta.show();
-			}
-		});
 		
 		AppDao dao=null;
 		try {

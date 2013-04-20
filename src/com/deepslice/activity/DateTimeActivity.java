@@ -26,6 +26,7 @@ import com.deepslice.database.HelperSharedPreferences;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Utils;
+import com.deepslice.vo.DelLocations;
 import com.deepslice.vo.LocationDetails;
 
 public class DateTimeActivity extends Activity implements OnClickListener {
@@ -53,7 +54,11 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 		TextView storeName = (TextView) findViewById(R.id.textView2);
+		
+		
+		DelLocations eBean;
 		Bundle b = this.getIntent().getExtras();
+		
 		// String location=b.getString("location");
 		String store = b.getString("store");
 		storeName.setText(store);
@@ -190,6 +195,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 
 		@Override
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+			//Log.e("In the time picker dialog ------------------------",""+view.getId());
 			if (hourOfDay >= openTime.getHours()
 					&& hourOfDay <= closeTime.getHours()) {
 				timePick.setText(getFullTime(hourOfDay, minute));
@@ -200,6 +206,8 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 			}
 			
 		}
+	
+		
 
 	};
 
@@ -216,6 +224,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 		@Override
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
+			
 
 			Calendar cal = Calendar.getInstance();
 			if (year < cal.get(Calendar.YEAR)

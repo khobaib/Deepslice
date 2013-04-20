@@ -29,9 +29,29 @@ public class PaymentSelectionActivity extends Activity{
 			@Override
 			public void onClick(View v) {
 				
-				Intent i=new Intent();
-				i.setClass(PaymentSelectionActivity.this,PayByCashActivity.class);
-				startActivity(i);
+				String location=getIntent().getStringExtra("location");
+				String store=getIntent().getStringExtra("store");
+				String suburbId=getIntent().getStringExtra("suburbId");
+				
+				
+				Intent intent=new Intent();
+				intent.setClass(PaymentSelectionActivity.this,PayByCashActivity.class);
+				
+				Bundle bundle=new Bundle();
+				bundle.putString("location",location);
+				bundle.putString("store",store);
+				bundle.putString("suburbId",suburbId);
+				intent.putExtras(bundle);			
+				
+				
+				
+				startActivity(intent);
+				
+				
+				
+				
+				
+				
 //				finish();
 			}
 		});

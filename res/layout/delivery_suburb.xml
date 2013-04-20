@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/backGround">
+    style="@style/backGround" >
 
     <RelativeLayout
         android:id="@+id/headerRelativeLayout"
@@ -20,7 +20,7 @@
     <ImageView
         android:id="@+id/logoImageView"
         style="@style/logoImage" />
-
+
     <TextView
         android:id="@+id/tv"
         android:layout_width="wrap_content"
@@ -28,34 +28,33 @@
         android:layout_below="@+id/logoImageView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dip"
-        android:textColor="#ffffff"
-        android:text="Suburb or Post code" />
+        android:text="Suburb or Post code"
+        android:textColor="#ffffff" />
 
     <EditText
         android:id="@+id/autoCompleteTextView1"
-        android:inputType="text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv"
         android:layout_marginLeft="20dip"
         android:layout_marginRight="20dip"
         android:layout_marginTop="10dip"
-        android:hint="Enter atleast 3 characters">
-
+        android:hint="Enter atleast 3 characters"
+        android:inputType="text" >
     </EditText>
-    
+
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/autoCompleteTextView1"
-         android:background="@android:color/transparent"
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/transparent"
         android:cacheColorHint="@android:color/transparent"
         android:divider="@android:color/transparent"
-        android:dividerHeight="3dp"
-        android:layout_centerHorizontal="true" >
+        android:dividerHeight="3dp" >
     </ListView>
-
+
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="wrap_content"

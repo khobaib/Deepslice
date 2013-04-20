@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/backGround">
+    style="@style/backGround" >
 
     <RelativeLayout
         android:id="@+id/headerRelativeLayout"
@@ -9,19 +9,18 @@
         <ImageView
             android:id="@+id/farwordImageView"
             style="@style/farwordButton" />
-
+
         <TextView
             android:id="@+id/headerTextView"
             style="@style/headerText"
             android:text="Delivery"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-
     </RelativeLayout>
 
     <ImageView
         android:id="@+id/logoImageView"
         style="@style/logoImage" />
-
+
     <TextView
         android:id="@+id/tv"
         android:layout_width="wrap_content"
@@ -33,7 +32,7 @@
         android:textColor="#ffffff"
         android:textSize="18dip"
         android:textStyle="bold" />
-
+
     <Button
         android:id="@+id/addNewLocation"
         android:layout_width="wrap_content"
@@ -47,7 +46,7 @@
         android:textSize="20dip"
         android:textStyle="bold"
         android:typeface="serif" />
-
+
     <TextView
         android:id="@+id/tv22"
         android:layout_width="wrap_content"
@@ -61,15 +60,15 @@
         android:textStyle="bold" />
 
     <ListView
-        android:id="@+id/listView1" 
+        android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/tv22"
-         android:background="@android:color/transparent"
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/transparent"
         android:cacheColorHint="@android:color/transparent"
         android:divider="@android:color/transparent"
-        android:dividerHeight="3dp"
-        android:layout_centerHorizontal="true" >
+        android:dividerHeight="3dp" >
     </ListView>
-
+
 </RelativeLayout>

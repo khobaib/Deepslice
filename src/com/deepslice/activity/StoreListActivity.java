@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -145,10 +146,12 @@ public class StoreListActivity extends Activity {
 			    		currentLongitude=location.getLongitude();
 			    		
 			    		System.out.println(location.getLatitude()+"::"+location.getLongitude());
+			    	
 	    		    getDeliveryLocations(location.getLatitude(),location.getLongitude());
 
 			    	}catch(Exception e){
 				    e.printStackTrace();	
+				    
 				    }
 
 			        }
@@ -165,8 +168,11 @@ public class StoreListActivity extends Activity {
 		try{
 		
 			ArrayList<LocationPoints> locList = AppProperties.locationPointsList;
+			
+			
 			ArrayList<LocationPoints> selectedList = new ArrayList<LocationPoints>();
 
+			
 			double thisLati,thisLongi;
 			for (LocationPoints lPoint : locList) {
 				
@@ -184,7 +190,7 @@ public class StoreListActivity extends Activity {
 				
 	        	 System.out.println(dist);
 	        	 lPoint.setDistance(dist);
-	        	 if(dist <= 100*1000)
+	        	 if(dist <= 10000*1000)
 	        		 selectedList.add(lPoint);
 				
 				if(selectedList.size()>=10)
@@ -249,10 +255,13 @@ public class StoreListActivity extends Activity {
 			
 			try {
 				httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetLocationDetail.aspx?LocationID="+locationPoints.getLocationID());
-		
+			//	httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetLocationDetail.aspx?LocationID="+"02");
+			//	httpGet =new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetLocationPoints.aspx");
+				
 				response = client.execute(httpGet);
 				HttpEntity entity = response.getEntity();
 				InputStream content = entity.getContent();
+				Log.e("Response from Json",response.toString());
 				
 				serverResponseDLocs=Utils.convertStreamToString(content);
 				

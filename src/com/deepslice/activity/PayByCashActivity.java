@@ -51,6 +51,10 @@ public class PayByCashActivity extends Activity{
 		addCoupon.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				
+				
+				/* i have changed here
+				//////////////////////
 				String orderType=AppSharedPreference.getData(PayByCashActivity.this, "orderType", null);
 				Intent i;
 				
@@ -61,6 +65,31 @@ public class PayByCashActivity extends Activity{
 				
 				startActivity(i);
 				finish();
+				////////////////////////////
+				 */
+				
+				Intent intent = new Intent(PayByCashActivity.this,DateTimeActivity.class);
+				String location=getIntent().getStringExtra("location");
+				String store=getIntent().getStringExtra("store");
+				String suburbId=getIntent().getStringExtra("suburbId");
+				
+				
+				
+				
+				Bundle bundle=new Bundle();
+				bundle.putString("location",location);
+				bundle.putString("store",store);
+				bundle.putString("suburbId",suburbId);
+				intent.putExtras(bundle);			
+				
+				
+				
+				
+				
+				startActivity(intent);
+				finish();
+				
+				 
 			}
 		});
 		///////////////////////////////

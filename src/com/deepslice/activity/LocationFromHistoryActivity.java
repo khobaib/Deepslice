@@ -82,7 +82,9 @@ public class LocationFromHistoryActivity extends Activity {
 					
 					AppProperties.saveLocationObj(LocationFromHistoryActivity.this, eBean);
 					
-					Intent intent = new Intent(LocationFromHistoryActivity.this,DateTimeActivity.class);
+					//Intent intent = new Intent(LocationFromHistoryActivity.this,DateTimeActivity.class);
+					
+					Intent intent = new Intent(LocationFromHistoryActivity.this,PaymentSelectionActivity.class);
 					Bundle bundle = new Bundle();
 					bundle.putString("location",eBean.getLocSuburb()+" "+eBean.getLocPostalCode());
 					bundle.putString("store",eBean.getLocName());

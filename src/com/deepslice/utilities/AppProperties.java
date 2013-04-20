@@ -162,8 +162,7 @@ public class AppProperties {
 		AppSharedPreference.putData(ct, "l_longi", eBean.getLocLongitude());
 		AppSharedPreference.putData(ct, "l_lati", eBean.getLocLatitude());
 		AppSharedPreference.putData(ct, "l_open", eBean.getOpeningTime());
-		AppSharedPreference.putData(ct, "l_close", eBean.getClosingTime());
-		
+		AppSharedPreference.putData(ct, "l_close", eBean.getClosingTime());		
 		AppSharedPreference.putData(ct, "d_cstreet", eBean.getCrossStreetName());
 		AppSharedPreference.putData(ct, "d_inst", eBean.getDeliveryInstructions());
 		AppSharedPreference.putData(ct, "d_st_name", eBean.getStreetName());
