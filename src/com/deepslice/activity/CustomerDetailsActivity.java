@@ -26,6 +26,7 @@ public class CustomerDetailsActivity extends Activity implements
 	Button registerButton;
 	Button startOrtderButton;
 	CheckBox sendEmailCheckBox;
+	private Button btnLog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,17 @@ public class CustomerDetailsActivity extends Activity implements
 		sendEmailCheckBox = (CheckBox) findViewById(R.id.checkBox);
 		registerButton.setOnClickListener(this);
 		startOrtderButton.setOnClickListener(this);
+		
+		btnLog=(Button)findViewById(R.id.bLog);
+		btnLog.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent=new Intent(CustomerDetailsActivity.this,LoginActivity.class);
+				startActivity(intent);
+			}
+		});
 
 	}
 

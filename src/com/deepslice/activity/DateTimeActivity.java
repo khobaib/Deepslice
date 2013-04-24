@@ -171,7 +171,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 				else if (hr > openTime.getHours()
 						&& hr < closeTime.getHours()  && (yr >= cal.get(Calendar.YEAR)
 								|| mnth >= cal.get(Calendar.MONTH)
-								|| dy > cal.get(Calendar.DAY_OF_MONTH)) ){
+								|| dy >= cal.get(Calendar.DAY_OF_MONTH)) ){
 					startActivity(new Intent(new Intent(this,
 							CustomerDetailsActivity.class)));
 				}

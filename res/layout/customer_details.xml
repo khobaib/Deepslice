@@ -141,6 +141,15 @@
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/btn_register"
                     android:textColor="#fff" />
+                <Button
+                    android:id="@+id/bLog"
+                    style="@style/buttonHCenter"                   
+                    android:layout_below="@+id/registerButton"
+                    android:background="@drawable/login"
+                    android:layout_margin="12dp"
+                    android:textColor="#fff" />
+                
+                 
 
             </RelativeLayout>
         </RelativeLayout>
