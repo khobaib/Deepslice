@@ -14,7 +14,7 @@
             android:id="@+id/headerTextView"
             style="@style/headerText"
             android:text="Delivery"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceLarge" />
     </RelativeLayout>
 
     <ImageView
@@ -31,7 +31,8 @@
         android:text="Choose a delivery location"
         android:textColor="#ffffff"
         android:textSize="18dip"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
         android:id="@+id/addNewLocation"
@@ -45,7 +46,8 @@
         android:text="Add a New Address"
         android:textSize="20dip"
         android:textStyle="bold"
-        android:typeface="serif" />
+        android:typeface="serif"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/tv22"
@@ -57,7 +59,8 @@
         android:text="Recent Addresses"
         android:textColor="#ffffff"
         android:textSize="20dip"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ListView
         android:id="@+id/listView1"
