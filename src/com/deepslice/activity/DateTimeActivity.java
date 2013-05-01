@@ -43,7 +43,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 	DatePickerDialog datePickDialog = null;
 	TimePickerDialog timePickDiag = null;
 	Calendar cal;
-	int yr,mnth,dy,hr;
+//	int yr,mnth,dy,hr;
 	boolean isOpen;
 	boolean firstTime;
 
@@ -148,7 +148,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 					
 				} else {
 					Utils.openErrorDialog(DateTimeActivity.this,
-							"Store is not open on selected time.\nPlease select some other time! 1");
+							"Store is not open on selected time.\nPlease select some other time!");
 				}
 				
 			} else {				
@@ -161,23 +161,24 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 //				}
 				//  Changed By Faysal///////////////////////////////////////////////////////////////
 				Date currentTime = Calendar.getInstance().getTime();
-				Calendar cal = Calendar.getInstance();
+//				Calendar cal = Calendar.getInstance();
 				if (currentTime.getHours() > openTime.getHours()
-						&& currentTime.getHours() < closeTime.getHours()   
-						){
-					startActivity(new Intent(new Intent(this,
-							CustomerDetailsActivity.class)));
-				}
-				else if (hr > openTime.getHours()
-						&& hr < closeTime.getHours()  && (yr >= cal.get(Calendar.YEAR)
-								|| mnth >= cal.get(Calendar.MONTH)
-								|| dy >= cal.get(Calendar.DAY_OF_MONTH)) ){
+				        && currentTime.getHours() < closeTime.getHours()){
+//						&& currentTime.getHours() < closeTime.getHours()   
+//						){
+//					startActivity(new Intent(new Intent(this,
+//							CustomerDetailsActivity.class)));
+//				}
+//				else if (hr > openTime.getHours()
+//						&& hr < closeTime.getHours()  && (yr >= cal.get(Calendar.YEAR)
+//								|| mnth >= cal.get(Calendar.MONTH)
+//								|| dy >= cal.get(Calendar.DAY_OF_MONTH)) ){
 					startActivity(new Intent(new Intent(this,
 							CustomerDetailsActivity.class)));
 				}
 				else {
 					Utils.openErrorDialog(DateTimeActivity.this,
-							"Store is not open on selected time.\nPlease select some other time!  2");				
+							"Store is not open on selected time.\nPlease select some other time!");				
 				}	
 				/////////////////////////////////////////////////////////////////////////////
 			}
@@ -211,7 +212,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 				timePick.setText(getFullTime(hourOfDay, minute));
 				startOrtderButton.setText(timePick.getText() + ", "
 						+ datePick.getText());
-				hr=hourOfDay;
+//				hr=hourOfDay;
 				
 			} else {
 				dialogCount();
@@ -228,7 +229,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 			firstTime = false;
 			startOrtderButton.setText("ASAP");
 			Utils.openErrorDialog(DateTimeActivity.this,
-					"Store is not open on selected time.\nPlease select some other time!  3");
+					"Store is not open on selected time.\nPlease select some other time!");
 		}
 	}
 
@@ -257,9 +258,9 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 				datePick.setText(formated);
 				startOrtderButton.setText(timePick.getText() + ", "
 						+ datePick.getText());
-				yr=year;
-				mnth=monthOfYear;
-				dy=dayOfMonth;
+//				yr=year;
+//				mnth=monthOfYear;
+//				dy=dayOfMonth;
 			}			
 		}
 	};
