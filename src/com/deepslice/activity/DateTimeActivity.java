@@ -43,7 +43,8 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 	DatePickerDialog datePickDialog = null;
 	TimePickerDialog timePickDiag = null;
 	Calendar cal;
-//	int yr,mnth,dy,hr;
+	long setUpTime;
+	int yr, mnth, dy, hr;
 	boolean isOpen;
 	boolean firstTime;
 
@@ -55,11 +56,19 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 		TextView storeName = (TextView) findViewById(R.id.textView2);
-		
-		
+
+		cal = Calendar.getInstance();
+		Date d = cal.getTime();
+		Log.e("Time in millis :", cal.getTimeInMillis() + "");
+		Log.e("Date :", d + "");
+		Log.e("Hour", d.getHours() + "");
+		yr = cal.get(Calendar.YEAR);
+		mnth = cal.get(Calendar.MONTH);
+		dy = cal.get(Calendar.DAY_OF_MONTH);
+
 		DelLocations eBean;
 		Bundle b = this.getIntent().getExtras();
-		
+
 		// String location=b.getString("location");
 		String store = b.getString("store");
 		storeName.setText(store);
@@ -90,15 +99,13 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 			TextView storeOpenStatus = (TextView) findViewById(R.id.textView4);
 			storeOpenStatus
 					.setText("Your selected store is currently Closed. Please select your order date and time below:");
-		
+
 		}
 		initializeAllViews();
-		firstTime = true;	
-		
+		firstTime = true;
+
 	}
 
-		
-	
 	private void initializeAllViews() {
 		startOrtderButton = (Button) findViewById(R.id.startOrderingButton);
 		startOrtderButton.setOnClickListener(this);
@@ -128,7 +135,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 				finish();
 			}
 		});
-		
+
 	}
 
 	@Override
@@ -138,62 +145,59 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 		case R.id.startOrderingButton:
 			String[] timeStorage = timePick.getText().toString().split("[:]");
 			// if(AppProperties.isLoogedIn)
-			if (!HelperSharedPreferences.getSharedPreferencesString(DateTimeActivity.this, "emailName", "").equals("")|| !HelperSharedPreferences.getSharedPreferencesString(
-							DateTimeActivity.this, "userName", "").equals("")||AppProperties.isLoogedIn) {
-				if ((Integer.parseInt(timeStorage[0]) > openTime.getHours() && Integer.parseInt(timeStorage[0]) < closeTime.getHours())
-						|| ("ASAP".equalsIgnoreCase(startOrtderButton.getText().toString()) && (cal.get(Calendar.HOUR_OF_DAY) > openTime
-								.getHours() && cal.get(Calendar.HOUR_OF_DAY) < closeTime.getHours()))) {
+			if (!HelperSharedPreferences.getSharedPreferencesString(
+					DateTimeActivity.this, "emailName", "").equals("")
+					|| !HelperSharedPreferences.getSharedPreferencesString(
+							DateTimeActivity.this, "userName", "").equals("")
+					|| AppProperties.isLoogedIn) {
+				if ((Integer.parseInt(timeStorage[0]) > openTime.getHours() && Integer
+						.parseInt(timeStorage[0]) < closeTime.getHours())
+						|| ("ASAP".equalsIgnoreCase(startOrtderButton.getText()
+								.toString()) && (cal.get(Calendar.HOUR_OF_DAY) > openTime
+								.getHours() && cal.get(Calendar.HOUR_OF_DAY) < closeTime
+								.getHours()))) {
 					startActivity(new Intent(new Intent(this,
 							MyOrderActivity.class)));
-					
+
 				} else {
 					Utils.openErrorDialog(DateTimeActivity.this,
 							"Store is not open on selected time.\nPlease select some other time!");
 				}
-				
-			} else {				
-//				if (Integer.parseInt(timeStorage[0]) > openTime.getHours()
-//						&& Integer.parseInt(timeStorage[0]) < closeTime
-//								.getHours()) {
-//					
-//					startActivity(new Intent(new Intent(this,
-//							CustomerDetailsActivity.class)));
-//				}
-				//  Changed By Faysal///////////////////////////////////////////////////////////////
+
+			} else {
+				// if (Integer.parseInt(timeStorage[0]) > openTime.getHours()
+				// && Integer.parseInt(timeStorage[0]) < closeTime
+				// .getHours()) {
+				//
+				// startActivity(new Intent(new Intent(this,
+				// CustomerDetailsActivity.class)));
+				// }
+			
 				Date currentTime = Calendar.getInstance().getTime();
-//				Calendar cal = Calendar.getInstance();
+				// Calendar cal = Calendar.getInstance();
 				if (currentTime.getHours() > openTime.getHours()
-				        && currentTime.getHours() < closeTime.getHours()){
-//						&& currentTime.getHours() < closeTime.getHours()   
-//						){
-//					startActivity(new Intent(new Intent(this,
-//							CustomerDetailsActivity.class)));
-//				}
-//				else if (hr > openTime.getHours()
-//						&& hr < closeTime.getHours()  && (yr >= cal.get(Calendar.YEAR)
-//								|| mnth >= cal.get(Calendar.MONTH)
-//								|| dy >= cal.get(Calendar.DAY_OF_MONTH)) ){
+						&& currentTime.getHours() < closeTime.getHours()) {
+					
 					startActivity(new Intent(new Intent(this,
 							CustomerDetailsActivity.class)));
-				}
-				else {
+				} else {
 					Utils.openErrorDialog(DateTimeActivity.this,
-							"Store is not open on selected time.\nPlease select some other time!");				
-				}	
-				/////////////////////////////////////////////////////////////////////////////
+							"Store is not open on selected time.\nPlease select some other time!");
+				}
+			
 			}
 
 			AppSharedPreference.putData(DateTimeActivity.this, "deliveryTime",
 					startOrtderButton.getText().toString());
-			
+
 			break;
 		case R.id.datePicker:
 			datePickDialog.show();
-			
+
 			break;
 		case R.id.timePicker:
 			firstTime = true;
-			timePickDiag.show();			
+			timePickDiag.show();
 			break;
 
 		default:
@@ -206,21 +210,65 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 
 		@Override
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-			//Log.e("In the time picker dialog ------------------------",""+view.getId());
+			// Log.e("In the time picker dialog ------------------------",""+view.getId());
 			if (hourOfDay >= openTime.getHours()
 					&& hourOfDay <= closeTime.getHours()) {
-				timePick.setText(getFullTime(hourOfDay, minute));
-				startOrtderButton.setText(timePick.getText() + ", "
-						+ datePick.getText());
-//				hr=hourOfDay;
 				
+				
+//				timePick.setText(getFullTime(hourOfDay, minute));
+//				startOrtderButton.setText(timePick.getText() + ", "
+//						+ datePick.getText());
+				// hr=hourOfDay;
+
+//				Calendar calendar = Calendar.getInstance();
+//				calendar.set(yr, mnth, dy, hourOfDay, minute);
+//				setUpTime = calendar.getTimeInMillis();
+//				Log.e("Time: ", setUpTime + "");
+				
+				
+				if(yr>cal.get(Calendar.YEAR) || mnth>cal.get(Calendar.MONTH) || dy>cal.get(Calendar.DAY_OF_MONTH)){
+					timePick.setText(getFullTime(hourOfDay, minute));
+					startOrtderButton.setText(timePick.getText() + ", "
+							+ datePick.getText());
+					Log.e("It is vald","sd");
+					Log.e("year", yr + "");
+					Log.e("Month", mnth + "");
+					Log.e("Day", dy + "");
+				}
+				
+				else if (hourOfDay < cal.get(Calendar.HOUR_OF_DAY)  ) {
+					
+					minute= cal.get(Calendar.MINUTE);
+					hourOfDay = cal.get(Calendar.HOUR_OF_DAY);
+					view.setCurrentHour(hourOfDay);
+					view.setCurrentMinute(minute);
+					
+					Toast.makeText(DateTimeActivity.this,
+							"Please select future time !",
+							Toast.LENGTH_SHORT).show();
+				} else if (hourOfDay == cal.get(Calendar.HOUR_OF_DAY)
+						&& minute < cal.get(Calendar.MINUTE)) {
+					
+					minute= cal.get(Calendar.MINUTE);
+					hourOfDay = cal.get(Calendar.HOUR_OF_DAY);
+					view.setCurrentHour(hourOfDay);
+					view.setCurrentMinute(minute);
+					
+					Toast.makeText(DateTimeActivity.this,
+							"Please select future time !",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					timePick.setText(getFullTime(hourOfDay, minute));
+					startOrtderButton.setText(timePick.getText() + ", "
+							+ datePick.getText());
+				}
+				
+
 			} else {
 				dialogCount();
 			}
-			
+
 		}
-	
-		
 
 	};
 
@@ -237,12 +285,22 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 		@Override
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
-			
 
 			Calendar cal = Calendar.getInstance();
 			if (year < cal.get(Calendar.YEAR)
 					|| monthOfYear < cal.get(Calendar.MONTH)
 					|| dayOfMonth < cal.get(Calendar.DAY_OF_MONTH)) {
+				
+				
+				
+				
+				year= cal.get(Calendar.YEAR);
+				monthOfYear = cal.get(Calendar.MONTH);
+				dayOfMonth= cal.get(Calendar.DAY_OF_MONTH);
+				
+				view.updateDate(year, monthOfYear, dayOfMonth);
+				
+				
 				Toast.makeText(DateTimeActivity.this,
 						"Please Select future date!", Toast.LENGTH_SHORT)
 						.show();
@@ -258,10 +316,11 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 				datePick.setText(formated);
 				startOrtderButton.setText(timePick.getText() + ", "
 						+ datePick.getText());
-//				yr=year;
-//				mnth=monthOfYear;
-//				dy=dayOfMonth;
-			}			
+
+				yr = year;
+				mnth = monthOfYear;
+				dy = dayOfMonth;
+			}
 		}
 	};
 
