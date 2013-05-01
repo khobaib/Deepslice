@@ -44,8 +44,7 @@
         android:background="@drawable/yellow_butt_big"
         android:text="Add a New Store"
         android:textSize="20dip"
-        android:textStyle="bold"
-        android:typeface="serif" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv22"

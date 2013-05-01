@@ -130,8 +130,11 @@ public class LocationFromHistoryActivity extends Activity {
 				
 				TextView title = (TextView) convertView.findViewById(R.id.textView1);
 				TextView subtitle = (TextView) convertView.findViewById(R.id.textView2);
-				
-				title.setText(event.getUnit() +", "+event.getStreetNum()+ " "+event.getStreetName());
+				StringBuilder sb = new StringBuilder();
+				if(event.getUnit() != null && !event.getUnit().isEmpty())
+				    sb.append(event.getUnit() + ", ");
+				sb.append(event.getStreetNum() + ", "+ event.getStreetName());
+				title.setText(sb.toString());
 				subtitle.setText(event.getLocSuburb()  +" "+event.getLocPostalCode());
 
 				convertView.setTag(event);

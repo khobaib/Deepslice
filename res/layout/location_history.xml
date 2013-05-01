@@ -46,7 +46,6 @@
         android:text="Add a New Address"
         android:textSize="20dip"
         android:textStyle="bold"
-        android:typeface="serif"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView

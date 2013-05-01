@@ -33,7 +33,7 @@
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBdmdN-cBYzbFE70Zm-BNHu42WK-VxvBfg" />
+            android:value="AIzaSyCXPUbVkuwle7qJEnDxjKxB9wNPk6W1pwI" />
 
         <activity
             android:name=".MenuActivity"
