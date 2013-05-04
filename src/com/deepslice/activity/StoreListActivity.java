@@ -99,17 +99,24 @@ public class StoreListActivity extends Activity {
 					}
 //////
 					
-					Intent intent;
-					if(AppProperties.isLoogedIn)
-						intent=new Intent(StoreListActivity.this, MenuActivity.class);
-					else
-						intent=new Intent(StoreListActivity.this, CustomerDetailsActivity.class);
+//					Intent intent;
+//					if(AppProperties.isLoogedIn)
+//						intent=new Intent(StoreListActivity.this, MenuActivity.class);
+//					else
+//						intent=new Intent(StoreListActivity.this, CustomerDetailsActivity.class);
+	                   Intent intent = new Intent(StoreListActivity.this,PaymentSelectionActivity.class);
+	                    Bundle bundle = new Bundle();
+	                    bundle.putString("location",eBean.getLocSuburb()+" "+eBean.getLocPostalCode());
+	                    bundle.putString("store",eBean.getLocName());
+	                    bundle.putString("suburbId",eBean.getLocationID());
+	                    intent.putExtras(bundle);
+	                    startActivityForResult(intent, 56);
 					
-					Bundle bundle = new Bundle();
-					
-					bundle.putInt("position", position);
-					intent.putExtras(bundle);
-					startActivityForResult(intent, 56);
+//					Bundle bundle = new Bundle();
+//					
+//					bundle.putInt("position", position);
+//					intent.putExtras(bundle);
+//					startActivityForResult(intent, 56);
 				}
 			}
 		});

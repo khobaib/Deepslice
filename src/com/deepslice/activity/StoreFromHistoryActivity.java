@@ -82,12 +82,12 @@ public class StoreFromHistoryActivity extends Activity {
 					AppProperties.saveLocationObj(StoreFromHistoryActivity.this, eBean);
 					
 					
-					Intent intent;
-					if(AppProperties.isLoogedIn)
-						intent=new Intent(StoreFromHistoryActivity.this, MenuActivity.class);
-					else
-						intent=new Intent(StoreFromHistoryActivity.this, CustomerDetailsActivity.class);
-					
+//					Intent intent;
+//					if(AppProperties.isLoogedIn)
+//						intent=new Intent(StoreFromHistoryActivity.this, MenuActivity.class);
+//					else
+//						intent=new Intent(StoreFromHistoryActivity.this, CustomerDetailsActivity.class);
+					Intent intent = new Intent(StoreFromHistoryActivity.this,PaymentSelectionActivity.class);
 					Bundle bundle = new Bundle();
 					bundle.putString("location",eBean.getLocSuburb()+" "+eBean.getLocPostalCode());
 					bundle.putString("store",eBean.getLocName());

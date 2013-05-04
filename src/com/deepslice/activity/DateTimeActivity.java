@@ -156,8 +156,9 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 								.toString()) && (cal.get(Calendar.HOUR_OF_DAY) > openTime
 								.getHours() && cal.get(Calendar.HOUR_OF_DAY) < closeTime
 								.getHours()))) {
+				    Toast.makeText(DateTimeActivity.this, "Thank you, Your order is taken.",  Toast.LENGTH_SHORT).show();
 					startActivity(new Intent(new Intent(this,
-							MyOrderActivity.class)));
+					        PickupDeliverActivity.class)));
 
 				} else {
 					Utils.openErrorDialog(DateTimeActivity.this,
@@ -175,12 +176,25 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 			
 				Date currentTime = Calendar.getInstance().getTime();
 				// Calendar cal = Calendar.getInstance();
-				if (currentTime.getHours() > openTime.getHours()
-						&& currentTime.getHours() < closeTime.getHours()) {
-					
-					startActivity(new Intent(new Intent(this,
-							CustomerDetailsActivity.class)));
-				} else {
+				
+                if ((Integer.parseInt(timeStorage[0]) > openTime.getHours() && Integer
+                        .parseInt(timeStorage[0]) < closeTime.getHours())
+                        || ("ASAP".equalsIgnoreCase(startOrtderButton.getText()
+                                .toString()) && (cal.get(Calendar.HOUR_OF_DAY) > openTime
+                                .getHours() && cal.get(Calendar.HOUR_OF_DAY) < closeTime
+                                .getHours()))) {
+                    Toast.makeText(DateTimeActivity.this, "Thank you, Your order is taken. Please register/login so we can verify you.",  Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(new Intent(this,
+                            CustomerDetailsActivity.class)));
+
+                }
+//				if (currentTime.getHours() > openTime.getHours()
+//						&& currentTime.getHours() < closeTime.getHours()) {
+//					
+//					startActivity(new Intent(new Intent(this,
+//							CustomerDetailsActivity.class)));
+//				} 
+                else {
 					Utils.openErrorDialog(DateTimeActivity.this,
 							"Store is not open on selected time.\nPlease select some other time!");
 				}
