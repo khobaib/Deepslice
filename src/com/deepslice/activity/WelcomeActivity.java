@@ -1,11 +1,15 @@
 	package com.deepslice.activity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import com.deepslice.database.AppDao;
+import com.deepslice.utilities.AppProperties;
+import com.deepslice.vo.DelLocations;
+import com.deepslice.vo.LocationPoints;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -16,17 +20,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-
-import com.deepslice.database.AppDao;
-import com.deepslice.utilities.AppProperties;
-import com.deepslice.vo.DelLocations;
-import com.deepslice.vo.LocationPoints;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class WelcomeActivity extends Activity {
 
@@ -48,7 +46,7 @@ public class WelcomeActivity extends Activity {
 //				AppProperties.deliveryLocationsList=dao.getAllDeliveryLocations();
 			}
 //			dao.insertOrUpdateList(questionList);
-			
+			dao.cleanDeal();
 		} catch (Exception ex)
 		{
 			System.out.println(ex.getMessage());

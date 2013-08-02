@@ -9,6 +9,13 @@
         <item name="android:orientation">vertical</item>
     </style>
 
+    <style name="backGroundDeal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/menu_full_bg</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
     <style name="header">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">40dip</item>
@@ -97,7 +104,7 @@
         <item name="android:layout_centerVertical">true</item>
         <item name="android:textStyle">bold</item>
     </style>
-    
+
 
     <style name="logoImage">
         <item name="android:layout_width">80dip</item>
@@ -105,6 +112,13 @@
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_alignParentTop">true</item>
         <item name="android:src">@drawable/logo</item>
+    </style>
+    <style name="logoImageDeal">
+        <item name="android:layout_width">80dip</item>
+        <item name="android:layout_height">80dip</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:src">@drawable/deposlicepizza</item>
     </style>
     <style name="logoImage_h">
         <item name="android:layout_width">wrap_content</item>

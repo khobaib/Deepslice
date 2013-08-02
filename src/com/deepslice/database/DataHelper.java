@@ -1,9 +1,6 @@
 package com.deepslice.database;
 
 
-
-import com.deepslice.utilities.AppProperties;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,6 +8,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import com.deepslice.utilities.AppProperties;
 
 /**
  * This class handles all kind of database operations
@@ -48,6 +46,10 @@ public class DataHelper {
 			db.execSQL(TABLE_CREATE_DELIVERY_LOCATIONS);
 			
 			db.execSQL(TABLE_CREATE_LOCATIONS_HISTORY);
+
+            db.execSQL(TABLE_CREATE_DEAL_ORDERS);
+
+            db.execSQL(TABLE_CREATE_DEAL);
 		}
 
 		@Override
@@ -81,7 +83,9 @@ public class DataHelper {
 	
 	public static final String TABLE_NAME_DELIVERY_LOCATIONS = "delivery_locations";
 	public static final String TABLE_NAME_LOCATIONS_HISTORY= "locations_history";
-	
+
+    public static final String TABLE_NAME_DEAL = "deals";
+    public static final String TABLE_NAME_DEAL_ORDERS = "deal_orders";
 	
 	
 	static final int BUNDLE_INT = 0;
@@ -104,13 +108,18 @@ public class DataHelper {
 	static String[][] table_delivery_locations_columns = new String[][] { { "sr_no","SuburbName","SuburbAbbr","PostCode", "LocName", "LocPostalCode", "LocStreet", "LocAddress", "LocLongitude", "LocLatitude", "OpeningTime", "ClosingTime", "LocationID", "SuburbID"}, };
 	
 	static String[][] table_locations_history_columns = new String[][] { { "sr_no","LocationID","LocName","LocSuburb", "LocPostalCode", "LocStreet", "LocAddress", "LocPhones", "LocLongitude", "LocLatitude", "OpeningTime", "ClosingTime", "isDelivery","unit","streetNum","streetName","crossStreetName","deliveryInstructions",}, };
-	
-	/**
+
+    static String[][] table_deal_columns = new String[][] { { "sr_no", "CouponID","CouponTypeID", "CouponTypeCode","CouponCode","CouponAbbr","CouponDesc","DisplayText","IsPercentage","IsFixed","IsDiscountedProduct","Amount","MaxUsage","IsLimitedTimeOffer","EffectiveStartDate","EffectiveEndDate", "EffectiveTimeStart", "EffectiveTimeEnd","IsOnDelivery","IsOnPickup","IsOnSunday","IsOnMonday","IsOnTuesday","IsOnWednesday","IsOnThursday","IsOnFriday","IsOnSaturday","IsOnInternet","IsOnlyOnInternet","IsTaxable","IsPrerequisite","IsLocationBased","IsGreetingSpecials","Pic"}, };
+    static String[][] table_deal_order_columns = new String[][] { { "sr_no","CouponID","CouponTypeID","CouponCode", "CouponGroupID", "DiscountedPrice", "ProdID", "DisplayName","Quantity","isUpdate","Image"}, };
+
+    /**
 	 * Query for creating stories table
 	 * 
 	 */
+    private static final String TABLE_CREATE_DEAL = "create table "
+            + TABLE_NAME_DEAL+ " (sr_no integer primary key autoincrement, CouponID text,CouponTypeID text,CouponTypeCode text, CouponCode text, CouponAbbr text, CouponDesc text, DisplayText text, IsPercentage text, IsFixed text, IsDiscountedProduct text, Amount text, MaxUsage text,IsLimitedTimeOffer text,EffectiveStartDate text,EffectiveEndDate text,EffectiveTimeStart text,EffectiveTimeEnd text,IsOnDelivery text,IsOnPickup text,IsOnSunday text,IsOnMonday text,IsOnTuesday text,IsOnWednesday text,IsOnThursday text,IsOnFriday text,IsOnSaturday text,IsOnInternet text,IsOnlyOnInternet text,IsTaxable text,IsPrerequisite text,IsLocationBased text,IsGreetingSpecials text,Pic text);";
 
-	private static final String TABLE_CREATE_CATS = "create table "
+    private static final String TABLE_CREATE_CATS = "create table "
 		+ TABLE_NAME_CATS + " (sr_no integer primary key autoincrement,  ProdCatID text, ProdCatCode text,  ProdCatAbbr text, ProdCatDesc text, AllowPartialSelection text, PartialSelectionText text, PartialSelectionSurcharge text, AllowSubCat1 text, SubCat1Text text, AllowSubCat2 text, SubCat2Text text, ProductBarText text, AllowOptions text, OptionBarText text, OptionCounting text, Thumbnail text, FullImage text);";
 	
 	private static final String TABLE_CREATE_SUB_CAT = "create table "
@@ -140,7 +149,9 @@ public class DataHelper {
 	private static final String TABLE_CREATE_LOCATIONS_HISTORY = "create table "
 			+ TABLE_NAME_LOCATIONS_HISTORY+ " (sr_no integer primary key autoincrement, LocationID text,LocName text,LocSuburb text, LocPostalCode text, LocStreet text, LocAddress text, LocPhones text, LocLongitude text, LocLatitude text, OpeningTime text, ClosingTime text, isDelivery text,unit text,streetNum text,streetName text,crossStreetName text,deliveryInstructions text);";
 
-	/**
+    private static final String TABLE_CREATE_DEAL_ORDERS = "create table deal_orders (sr_no integer primary key autoincrement, CouponID text,CouponTypeID text,CouponCode text, CouponGroupID text, DiscountedPrice text, ProdID text, DisplayName text,Quantity text,isUpdate text ,Image text);";
+//private static final String TABLE_CREATE_DEAL_ORDERS="create table deal_orders (test_t text)";
+    /**
 	 * Constructor
 	 */
 	public DataHelper(Context ctx) {
@@ -164,6 +175,10 @@ public class DataHelper {
 		sqLiteDb.delete(TABLE_NAME_DELIVERY_LOCATIONS, null, null);
 		
 		sqLiteDb.delete(TABLE_NAME_LOCATIONS_HISTORY, null, null);
+
+        sqLiteDb.delete(TABLE_NAME_DEAL,null,null);
+
+        sqLiteDb.delete("deal_orders",null,null);
 	}
 
 	/**
@@ -191,9 +206,12 @@ public class DataHelper {
 
 	public void cleanOrderTable() {
 			sqLiteDb.delete(TABLE_NAME_ORDERS, null, null);
+        sqLiteDb.delete("deal_orders",null,null);
 	}
 
-	
+	public void cleanDealTable(){
+        sqLiteDb.delete(TABLE_NAME_DEAL,null,null);
+    }
 	/**
 	 * Close database connection
 	 */
@@ -278,7 +296,18 @@ public class DataHelper {
 
 		return sqLiteDb.insert(TABLE_NAME_ORDERS, null, vals);
 	}
-	
+
+    public synchronized long insertRecordDealOrder(String... values) {
+
+        ContentValues vals = new ContentValues();
+        int x=table_deal_order_columns.length;
+        for (int i = 0; i < values.length; i++) {
+            vals.put(table_deal_order_columns[0][i + 1], values[i]);
+        }
+
+        return sqLiteDb.insert("deal_orders", null, vals);
+    }
+
 	public synchronized long insertRecordLocHistory(String... values) { 
 
 		ContentValues vals = new ContentValues();
@@ -288,6 +317,29 @@ public class DataHelper {
 
 		return sqLiteDb.insert(TABLE_NAME_LOCATIONS_HISTORY, null, vals);
 	}
+
+    //rukshan .....
+    public synchronized long insertRecordDeal(String... values) {
+
+        ContentValues vals = new ContentValues();
+        for (int i = 0; i < values.length; i++) {
+            vals.put(table_deal_columns[0][i + 1], values[i]);
+        }
+        sqLiteDb.insert(TABLE_NAME_DEAL, null, vals);
+
+        return 0;
+    }
+
+    public synchronized Cursor getDealList(){
+        try {
+            return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_NAME_DEAL, null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+
 	public synchronized Cursor getLocationHistory(String isDelivery) {
 		try {
 			 String[] selectionArgs={isDelivery};
@@ -629,7 +681,76 @@ public synchronized String getCatCodeByCatId(String catId) {
 		} catch (Exception e) {
 			return null;
 		}
-	}	
+	}
+
+    public boolean deleteRecordDealOrder(String whereCause) {
+        return sqLiteDb.delete("deal_orders", whereCause, null) > 0;
+    }
+
+    public boolean deleteUnfinishedRecordDealOrder(String whereCause) {
+        return sqLiteDb.delete("deal_orders", whereCause, null) > 0;
+    }
+
+    public boolean isDealProductAvailable(String CouponGroupID,String couponID){
+        Cursor dataCount = sqLiteDb.rawQuery("select * from deal_orders where CouponGroupID=" +CouponGroupID +" AND CouponID="+couponID , null);
+        int i= dataCount.getCount();
+        boolean b=false;
+        if (i>0){
+            b=true;
+        }
+        return b;
+    }
+
+    public synchronized Cursor getDealOrdersList(){
+        try {
+            return sqLiteDb.rawQuery("SELECT * FROM deal_orders where isUpdate=1", null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public synchronized Cursor getDealOrderData(String CouponGroupID,String CouponID) {
+        try {
+            return sqLiteDb.rawQuery("SELECT DisplayName,Image,CouponGroupID,DiscountedPrice,Quantity FROM deal_orders where isUpdate=0 AND CouponGroupID="+CouponGroupID+" AND CouponID="+CouponID, null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public boolean updateDealOrder(){
+        try{
+            ContentValues  cv1 = new ContentValues();
+            cv1.put("isUpdate","1");
+            sqLiteDb.update("deal_orders",cv1,"isUpdate=0",null);
+        }catch (Exception e){
+
+        }
+        return true;
+    }
+
+    public boolean resetDealOrder(String couponID){
+        try{
+            ContentValues  cv1 = new ContentValues();
+            cv1.put("isUpdate","0");
+            sqLiteDb.update("deal_orders",cv1,"isUpdate=1 AND CouponID="+couponID,null);
+        }catch (Exception e){
+
+        }
+        return true;
+    }
+
+    public int getDealOrderCount(String couponID){
+        int b=0;
+        try{
+            Cursor dataCount = sqLiteDb.rawQuery("select * from deal_orders where CouponID=" +couponID , null);
+            b= dataCount.getCount();
+
+        }catch (Exception e){
+        }
+        return b;
+    }
+
+
 	
 	public boolean deleteRecordOrder(String whereCause) {
 		return sqLiteDb.delete(TABLE_NAME_ORDERS, whereCause, null) > 0;

@@ -1,7 +1,5 @@
 package com.deepslice.activity;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,22 +7,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.vo.AllProductsVo;
 import com.deepslice.vo.FavouritesVo;
+
+import java.util.ArrayList;
 
 public class FavsListActivity extends Activity{
 	
@@ -119,6 +112,10 @@ public class FavsListActivity extends Activity{
 						
 					}
 				});
+        Button buttonCancel=(Button)findViewById(R.id.buttonCancel);
+        buttonCancel.setVisibility(View.INVISIBLE);
+        Button buttonGetADeal=(Button)findViewById(R.id.buttonGetADeal);
+        buttonGetADeal.setVisibility(View.INVISIBLE);
 			}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////

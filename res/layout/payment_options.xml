@@ -39,7 +39,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"
         android:background="@drawable/calories" >
-
+
+
+
+
         <TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
@@ -51,7 +54,8 @@
             android:textSize="12dip" />
 
     </RelativeLayout>
-
+
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -65,7 +69,8 @@
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:padding="10dip">    
-        
+        
+
         <TextView
             android:id="@+id/button1"
             android:layout_width="wrap_content"
@@ -76,7 +81,9 @@
             android:textColor="#ffffff"
             android:textSize="14dip"
             android:textStyle="bold" />
-
+
+
+
         <TextView
             android:id="@+id/totalPrice"
             android:layout_width="wrap_content"
@@ -87,7 +94,8 @@
             android:textColor="#ffffff"
             android:textSize="15dip" />
         
-    </RelativeLayout>
+    </RelativeLayout>
+
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -95,7 +103,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dip"
         android:gravity="center_horizontal" >
-        
+        
+
         <Button
             android:id="@+id/btnPayByCash"
             android:layout_width="wrap_content"
@@ -105,14 +114,16 @@
             android:text="Pay by Cash"
             android:textSize="16dip"
             android:textStyle="bold" />
-        
+        
+
+
         <Button
             android:id="@+id/btnPayByCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
             android:background="@drawable/yellow_butt"
-            android:text="Pay by Card"
+            android:text="Pay by Credit Card"
             android:textSize="16dip"
             android:textStyle="bold" />
         

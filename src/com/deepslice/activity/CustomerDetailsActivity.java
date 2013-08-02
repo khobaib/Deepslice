@@ -6,12 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.deepslice.database.HelperSharedPreferences;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Constants;
@@ -41,8 +36,13 @@ public class CustomerDetailsActivity extends Activity implements
 				finish();
 			}
 		});
-	}
 
+	}
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+    }
 	private void initializeAllViews() {
 
 		nameEditText = (EditText) findViewById(R.id.yourNameEditText);
@@ -60,12 +60,18 @@ public class CustomerDetailsActivity extends Activity implements
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent intent=new Intent(CustomerDetailsActivity.this,LoginActivity.class);
-				startActivity(intent);
+                Intent i = new Intent(CustomerDetailsActivity.this, LoginActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivityForResult(i, 1245678);
+//				Intent intent=new Intent(CustomerDetailsActivity.this,LoginActivity.class);
+//				startActivity(intent);
 			}
 		});
 
 	}
+
+
+
 
 	@Override
 	public void onClick(View view) {
@@ -81,19 +87,31 @@ public class CustomerDetailsActivity extends Activity implements
            HelperSharedPreferences.putSharedPreferencesString(CustomerDetailsActivity.this,"emailName" ,emailEditText.getText().toString());
            HelperSharedPreferences.putSharedPreferencesLong(CustomerDetailsActivity.this,"phoneNo" ,Long.parseLong(phoneEditText.getText().toString()));
            HelperSharedPreferences.putSharedPreferencesBoolean(CustomerDetailsActivity.this,"sendEmailCheckbox" ,sendEmailCheckBox.isChecked());
-			startActivity(new Intent(this, RegisterActivity.class)
+                 AppSharedPreference.putData(CustomerDetailsActivity.this, "customerName", nameEditText.getText().toString());
+                 AppSharedPreference.putData(CustomerDetailsActivity.this, "customerEmail", emailEditText.getText().toString());
+                 AppSharedPreference.putData(CustomerDetailsActivity.this, "customerPhone", phoneEditText.getText().toString());
+                 startActivity(new Intent(this, RegisterActivity.class)
 					.putExtras(bundle));
 
 			 }
 			break;
 
 		case R.id.startOrderingButton:
-			if (velidateregisterButton())
+			if (velidateStartOverButton())
 				{
+
 				AppSharedPreference.putData(CustomerDetailsActivity.this, "customerName", nameEditText.getText().toString());
 				AppSharedPreference.putData(CustomerDetailsActivity.this, "customerEmail", emailEditText.getText().toString());
 				AppSharedPreference.putData(CustomerDetailsActivity.this, "customerPhone", phoneEditText.getText().toString());
-				startActivity(new Intent(new Intent(this, MyOrderActivity.class)));
+                    String orderType=AppSharedPreference.getData(CustomerDetailsActivity.this, "orderType", null);
+
+                    if("Delivery".equalsIgnoreCase(orderType)) {
+                        startActivity(new Intent(new Intent(this,LocationFromHistoryActivity.class)));
+                        finish();
+                    } else {
+                        startActivity(new Intent(new Intent(this,StoreFromHistoryActivity.class)));
+                        finish();
+                    }
 				}
 			break;
 
@@ -117,7 +135,7 @@ public class CustomerDetailsActivity extends Activity implements
 		if (nameEditText.getText().toString() != null
 				&& nameEditText.getText().toString().trim().length() > 0) {
 
-			if (emailEditText.getText().toString().trim() != null) {
+			if (emailEditText.getText().toString().trim() != null && !(emailEditText.getText().toString().trim().equalsIgnoreCase(""))) {
 
 				if (phoneEditText.getText().toString() != null
 						&& phoneEditText.getText().toString().trim().length() == 10) {
@@ -138,4 +156,29 @@ public class CustomerDetailsActivity extends Activity implements
 		return false;
 	}
 
+    private boolean velidateStartOverButton() {
+
+        if (nameEditText.getText().toString() != null
+                && nameEditText.getText().toString().trim().length() > 0) {
+
+            if (emailEditText.getText().toString().trim() != null) {
+
+                if (phoneEditText.getText().toString() != null
+                        && phoneEditText.getText().toString().trim().length() == 10) {
+                    return true;
+                } else {
+                    Toast.makeText(this, R.string.phoneErrorMessage,
+                            Toast.LENGTH_LONG).show();
+                }
+
+            } else {
+                Toast.makeText(this, R.string.emailErrorMessage,
+                        Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, R.string.nameErrorMessage, Toast.LENGTH_LONG)
+                    .show();
+        }
+        return false;
+    }
 }

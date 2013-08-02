@@ -1,24 +1,5 @@
 package com.deepslice.activity;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -31,20 +12,31 @@ import android.os.RecoverySystem.ProgressListener;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
+import android.widget.*;
 import com.deepslice.database.AppDao;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.ResumableTask;
 import com.deepslice.utilities.ResumableTaskStarter;
 import com.deepslice.vo.AllProductsVo;
+import com.deepslice.vo.DealOrderVo;
 import com.deepslice.vo.ProductCategory;
 import com.deepslice.vo.SubCategoryVo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class MenuActivity extends Activity {
 
@@ -61,7 +53,7 @@ public class MenuActivity extends Activity {
 		ImageView ivDrinks=(ImageView)findViewById(R.id.imageView2);
 		ImageView ivSides=(ImageView)findViewById(R.id.imageView3);
 		ImageView ivPasta=(ImageView)findViewById(R.id.imageView4);
-		ImageView ivDeals=(ImageView)findViewById(R.id.imageView5);
+		ImageButton ivDeals=(ImageButton)findViewById(R.id.imageView5);
 
 		ivPizza.setOnClickListener(new OnClickListener() {
 			@Override
@@ -88,9 +80,7 @@ public class MenuActivity extends Activity {
 		ivSides.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				
-				
-				
+
 				Intent intent=new Intent(MenuActivity.this,SubMenuActivity.class);
 				Bundle bundle=new Bundle();
 				bundle.putString("catType","Sides");
@@ -115,22 +105,22 @@ public class MenuActivity extends Activity {
 				
 			}
 		});
+
+        ivDeals.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String pastaId=getProdCatId("Deals");
+                Intent intent=new Intent(MenuActivity.this,DealsActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putString("catId",pastaId);
+                bundle.putString("subCatId","0");
+                bundle.putString("catType","Deals");
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
 		
-		ivDeals.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				
-				String pastaId=getProdCatId("Deals");
-				Intent intent=new Intent(MenuActivity.this,DealsActivity.class);
-				Bundle bundle=new Bundle();
-				bundle.putString("catId",pastaId);
-				bundle.putString("subCatId","0");
-				bundle.putString("catType","Deals");
-				intent.putExtras(bundle);
-				startActivity(intent);
-				
-			}
-		});
+
 
 		Button openFavs=(Button)findViewById(R.id.favs);
 		openFavs.setOnClickListener(new OnClickListener() {
@@ -543,41 +533,60 @@ public class MenuActivity extends Activity {
 	@Override
 	protected void onResume() {
 		// //////////////////////////////////////////////////////////////////////////////
-		AppDao dao = null;
-		try {
-			dao = AppDao.getSingleton(getApplicationContext());
-			dao.openConnection();
+        AppDao dao = null;
+        try {
+            dao = AppDao.getSingleton(getApplicationContext());
+            dao.openConnection();
+            ArrayList<String> orderInfo = dao.getOrderInfo();
+            ArrayList<DealOrderVo>dealOrderVos1= dao.getDealOrdersList();
+            TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
+            double tota=0.00;
+            int dealCount=0;
+            if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
+                dealCount=dealOrderVos1.size();
+                for (int x=0;x<dealOrderVos1.size();x++){
+                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
+                }
+            }
 
-			ArrayList<String> orderInfo = dao.getOrderInfo();
-			
-			TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-			if (null != orderInfo && orderInfo.size() == 2) {
-				itemsPrice.setText(orderInfo.get(0)+" Items "+"\n$" + orderInfo.get(1));
-				itemsPrice.setVisibility(View.VISIBLE);
-			}
-			else{
-				itemsPrice.setVisibility(View.INVISIBLE);
-				
-			}
-			
-			TextView favCount = (TextView) findViewById(R.id.favCount);
-			String fvs=dao.getFavCount();
-			if (null != fvs && !fvs.equals("0")) {
-				favCount.setText(fvs);
-				favCount.setVisibility(View.VISIBLE);
-			}
-			else{
-				favCount.setVisibility(View.INVISIBLE);
-			}
+            int orderInfoCount= 0;
+            double  orderInfoTotal=0.0;
+            if ((null != orderInfo && orderInfo.size() == 2) ) {
+                orderInfoCount=Integer.parseInt(orderInfo.get(0));
+                orderInfoTotal=Double.parseDouble(orderInfo.get(1));
+            }
+            int numPro=orderInfoCount+dealCount;
+            double subTotal=orderInfoTotal+tota;
+            DecimalFormat twoDForm = new DecimalFormat("#.##");
+            subTotal= Double.valueOf(twoDForm.format(subTotal));
+            if(numPro>0){
+                itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
+                itemsPrice.setVisibility(View.VISIBLE);
+            }
 
-			
+            else{
+                itemsPrice.setVisibility(View.INVISIBLE);
 
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
-		} finally {
-			if (null != dao)
-				dao.closeConnection();
-		}
+            }
+
+            TextView favCount = (TextView) findViewById(R.id.favCount);
+            String fvs=dao.getFavCount();
+            if (null != fvs && !fvs.equals("0")) {
+                favCount.setText(fvs);
+                favCount.setVisibility(View.VISIBLE);
+            }
+            else{
+                favCount.setVisibility(View.INVISIBLE);
+            }
+
+
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (null != dao)
+                dao.closeConnection();
+        }
 		// ///////////////////////////////////////////////////////////////////////
 
 		super.onResume();

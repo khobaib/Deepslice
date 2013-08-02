@@ -77,10 +77,9 @@
             android:id="@+id/loginButton"
             style="@style/buttonHVCenter"
             android:layout_below="@+id/footerText"
-            android:layout_marginTop="5dp"
             android:background="@drawable/btn_login"
             android:textColor="#fff"
-             />
+            android:layout_marginTop="5dp"/>
     </RelativeLayout>
 
 </RelativeLayout>

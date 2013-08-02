@@ -12,6 +12,7 @@ public class LocationDetails {
 	String LocLongitude = "";
 	String OpeningTime = "";
 	String ClosingTime = "";
+
 	
 	//delivery address related
 	private String unit;
@@ -19,8 +20,8 @@ public class LocationDetails {
 	private String streetName;
 	private String crossStreetName;
 	private String deliveryInstructions;
-	
-	
+
+
 	public String getLocationID() {
 		return LocationID;
 	}

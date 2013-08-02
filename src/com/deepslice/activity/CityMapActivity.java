@@ -1,13 +1,7 @@
 package com.deepslice.activity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -20,7 +14,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.CarerOverlay;
 import com.deepslice.utilities.MyLocation;
@@ -38,6 +31,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.maps.MapController;
 import com.google.android.maps.Overlay;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class CityMapActivity extends FragmentActivity implements
 		LocationListener, OnMarkerClickListener, OnInfoWindowClickListener {

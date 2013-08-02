@@ -3,10 +3,28 @@ package com.deepslice.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class AppSharedPreference {
 	
 	public static final String PREF_NAME="DeepSlice";
-	
+
+    public static void putHasMap(Context context,String key,HashMap<String,Boolean> value){
+        SharedPreferences myPrefs = context.getSharedPreferences(PREF_NAME, 1);
+        SharedPreferences.Editor prefsEditor = myPrefs.edit();
+        for (String s : value.keySet()) {
+            prefsEditor.putBoolean(s, value.get(s));
+        }
+
+    }
+
+    public static HashMap<String,Boolean> getHasMap(Context ct , String key, String defaultStr){
+        SharedPreferences myPrefs = ct.getSharedPreferences(PREF_NAME, 1);
+        HashMap<String, Boolean> map= (HashMap<String, Boolean>) myPrefs.getAll();
+        return map;
+    }
+
 	public static void putData(Context ct , String key , String value)
 	{
 		SharedPreferences myPrefs = ct.getSharedPreferences(PREF_NAME, 1);
@@ -85,6 +103,16 @@ public class AppSharedPreference {
         prefsEditor.commit();
 
 	}
+    public static void clearDealCoupon(Context ct,ArrayList<String> couponsId){
+        SharedPreferences myPrefs = ct.getSharedPreferences(PREF_NAME, 1);
+        SharedPreferences.Editor prefsEditor = myPrefs.edit();
+        for (int x=0;x<couponsId.size();x++){
+            prefsEditor.remove(couponsId.get(x));
+        }
+    }
+
+
+
 	
 
 }

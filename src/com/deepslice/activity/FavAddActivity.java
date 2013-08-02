@@ -1,32 +1,31 @@
 package com.deepslice.activity;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.view.WindowManager;
+import android.widget.*;
 import com.deepslice.database.AppDao;
 import com.deepslice.utilities.AppProperties;
+import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.vo.AllProductsVo;
+import com.deepslice.vo.DealOrderVo;
 import com.deepslice.vo.FavouritesVo;
 import com.deepslice.vo.OrderVo;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class FavAddActivity extends Activity {
 	TextView favCountTxt;
 	int currentCount=1;
 	AllProductsVo prodBean;
 	EditText editView;
-	String catType;
+	String catType,couponGroupID,productId="";
+    boolean isDeal=false;
+    DealOrderVo dealOrderVo;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -36,7 +35,16 @@ public class FavAddActivity extends Activity {
 		String itemName=b.getString("itemName");
 		catType=b.getString("catType");
 		prodBean=(AllProductsVo)b.getSerializable("prodBean");
-		
+        Button buttonAddOrders= (Button)findViewById(R.id.buttonAddOrders);
+        isDeal=b.getBoolean("isDeal",false);
+        if (isDeal){
+            dealOrderVo=(DealOrderVo)b.getSerializable("dealData");
+            couponGroupID=b.getString("couponGroupID");
+            productId=dealOrderVo.getProdID();
+            buttonAddOrders.setText("Add to Deal");
+        } else {
+            buttonAddOrders.setText("Add to Order");
+        }
 		TextView headerTextView=(TextView)findViewById(R.id.headerTextView);
 		headerTextView.setText(itemName);
 		
@@ -102,7 +110,7 @@ public class FavAddActivity extends Activity {
 
 		});
 		
-		Button buttonAddOrders= (Button)findViewById(R.id.buttonAddOrders);
+
 		buttonAddOrders.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				
@@ -110,10 +118,26 @@ public class FavAddActivity extends Activity {
 				try {
 					dao=AppDao.getSingleton(getApplicationContext());
 					dao.openConnection();
-					
+                    if (isDeal){
+                        dealOrderVo.setQuantity(String.valueOf(currentCount));
+                        if(dao.isDealProductAvailable(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID())){
+                            dao.deleteDuplicateDealOrderRec(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID());
+                            dao.resetDealOrder(dealOrderVo.getCouponID());
+                        }
+                        dao.insertDealOrder(dealOrderVo);
+                        if(dao.getDealOrderCount(dealOrderVo.getCouponID())==AppSharedPreference.getInteger(FavAddActivity.this,"numDeals",0)){
+                            AppSharedPreference.putBoolean(FavAddActivity.this,dealOrderVo.getCouponID(),true);
+                            Toast.makeText(FavAddActivity.this, "complete your deal by tapping GET A DEAL", Toast.LENGTH_LONG).show();
+                        }else {
+                            Toast.makeText(FavAddActivity.this, "Select product from deal groups", Toast.LENGTH_LONG).show();
+                        }
+                        finish();
+                    }else {
 						dao.insertOrder(getOrderBean());
-						Toast.makeText(FavAddActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
-						finish();
+                        Toast.makeText(FavAddActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+
 				} catch (Exception ex)
 				{
 					System.out.println(ex.getMessage());
@@ -221,38 +245,60 @@ protected void onResume() {
 }
 
 private void doOnResumeWork() {
-	AppDao dao = null;
-		try {
-			dao = AppDao.getSingleton(getApplicationContext());
-			dao.openConnection();
+    AppDao dao = null;
+    try {
+        dao = AppDao.getSingleton(getApplicationContext());
+        dao.openConnection();
+        ArrayList<String> orderInfo = dao.getOrderInfo();
+        ArrayList<DealOrderVo>dealOrderVos1= dao.getDealOrdersList();
+        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
+        double tota=0.00;
+        int dealCount=0;
+        if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
+            dealCount=dealOrderVos1.size();
+            for (int x=0;x<dealOrderVos1.size();x++){
+                tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
+            }
+        }
 
-			ArrayList<String> orderInfo = dao.getOrderInfo();
+        int orderInfoCount= 0;
+        double  orderInfoTotal=0.0;
+        if ((null != orderInfo && orderInfo.size() == 2) ) {
+            orderInfoCount=Integer.parseInt(orderInfo.get(0));
+            orderInfoTotal=Double.parseDouble(orderInfo.get(1));
+        }
+        int numPro=orderInfoCount+dealCount;
+        double subTotal=orderInfoTotal+tota;
+        DecimalFormat twoDForm = new DecimalFormat("#.##");
+        subTotal= Double.valueOf(twoDForm.format(subTotal));
+        if(numPro>0){
+            itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
+            itemsPrice.setVisibility(View.VISIBLE);
+        }
 
-			TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-			if (null != orderInfo && orderInfo.size() == 2) {
-				itemsPrice.setText(orderInfo.get(0)+" Items "+"\n$" + orderInfo.get(1));
-				itemsPrice.setVisibility(View.VISIBLE);
-			} else {
-				itemsPrice.setVisibility(View.INVISIBLE);
+        else{
+            itemsPrice.setVisibility(View.INVISIBLE);
 
-			}
+        }
 
-			TextView favCount = (TextView) findViewById(R.id.favCount);
-			String fvs = dao.getFavCount();
-			if (null != fvs && !fvs.equals("0")) {
-				favCount.setText(fvs);
-				favCount.setVisibility(View.VISIBLE);
-			} else {
-				favCount.setVisibility(View.INVISIBLE);
-			}
+        TextView favCount = (TextView) findViewById(R.id.favCount);
+        String fvs=dao.getFavCount();
+        if (null != fvs && !fvs.equals("0")) {
+            favCount.setText(fvs);
+            favCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            favCount.setVisibility(View.INVISIBLE);
+        }
 
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
-		} finally {
-			if (null != dao)
-				dao.closeConnection();
-		}
-	
+
+
+    } catch (Exception ex) {
+        System.out.println(ex.getMessage());
+    } finally {
+        if (null != dao)
+            dao.closeConnection();
+    }
 }
 
 }

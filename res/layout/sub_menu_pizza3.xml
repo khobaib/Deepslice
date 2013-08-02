@@ -54,19 +54,19 @@
             android:orientation="horizontal" 
             android:layout_above="@+id/navBar">
 
-            <ImageView
-                android:id="@+id/imageView1"
+            <ImageButton
+                android:id="@+id/imageButtonCreateUown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dip"
-                android:src="@drawable/pizza_create_own" />
+                android:background="@drawable/pizza_create_own"/>
 
-            <ImageView
-                android:id="@+id/imageView2"
+            <ImageButton
+                android:id="@+id/imageButtonHalf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dip"
-                android:src="@drawable/pizza_halfnhalf" />
+                android:background="@drawable/pizza_halfnhalf"/>
         </LinearLayout>
     <TableLayout
         xmlns:android="http://schemas.android.com/apk/res/android"

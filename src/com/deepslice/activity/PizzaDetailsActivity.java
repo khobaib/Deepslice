@@ -1,32 +1,23 @@
 package com.deepslice.activity;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.*;
+
+import com.deepslice.database.AppDao;
+import com.deepslice.utilities.AppProperties;
+import com.deepslice.utilities.AppSharedPreference;
+import com.deepslice.vo.*;
+
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.deepslice.database.AppDao;
-import com.deepslice.utilities.AppProperties;
-import com.deepslice.vo.AllProductsVo;
-import com.deepslice.vo.FavouritesVo;
-import com.deepslice.vo.LabelValueBean;
-import com.deepslice.vo.OrderVo;
-import com.deepslice.vo.SubCategoryVo;
-import com.deepslice.vo.ToppingsAndSaucesVo;
-import com.deepslice.vo.ToppingsHashmapVo;
 
 public class PizzaDetailsActivity extends Activity{
 
@@ -39,50 +30,93 @@ public class PizzaDetailsActivity extends Activity{
 	int SELECT_TOPPINGS=112233;
 	int SELECT_CRUST=112244;
 	
-	String crustName="", crustCatId="", crustSubCatId="";
-	
+	String crustName="", crustCatId="", crustSubCatId="",couponGroupID,productId="",curentPId;
+	boolean isDeal=false;
 	TextView selectedToppings,selectedSauces,selectedCrusts;
+    DealOrderVo dealOrderVo;
 	HashMap<String, ToppingsHashmapVo> toppingsSelected;
+    GlobalObject globalObject;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.pizza_details);
-		
 		Bundle b = this.getIntent().getExtras();
+        globalObject=(GlobalObject)getApplication();
+        Button buttonAddOrders= (Button)findViewById(R.id.buttonAddOrders);
+        TextView pDesc=(TextView)findViewById(R.id.pDesc);
+        TextView pKJ=(TextView)findViewById(R.id.pKJ);
+        TextView headerTextView=(TextView)findViewById(R.id.headerTextView);
+        selectedCrusts=(TextView)findViewById(R.id.selectedCrust);
+        if(b.containsKey("selectedProduct")){
+            selectedBean=(AllProductsVo)b.getSerializable("selectedProduct");
+            productId=selectedBean.getProdID();
+            pDesc.setText(selectedBean.getProdDesc());
+            pKJ.setText(selectedBean.getCaloriesQty()+"kj");
+        }
 
-		selectedBean=(AllProductsVo)b.getSerializable("selectedProduct");
-		
-		
-		TextView pDesc=(TextView)findViewById(R.id.pDesc);
-		pDesc.setText(selectedBean.getProdDesc());
-		
-		TextView pKJ=(TextView)findViewById(R.id.pKJ);
-		pKJ.setText(selectedBean.getCaloriesQty()+"kj");
+        isDeal=b.getBoolean("isDeal",false);
+        if (isDeal){
+        	RelativeLayout rlCount = (RelativeLayout) findViewById(R.id.rl_count);
+        	rlCount.setVisibility(View.GONE);
+            dealOrderVo=globalObject.getDealOrderVo();
+            couponGroupID=b.getString("couponGroupID");
+                        productId=dealOrderVo.getProdID();
+            buttonAddOrders.setText("Add to Deal");
+            headerTextView.setText("Add to Deal");
+            String defCrusts="";
+            for(ProdAndSubCategory subCategory:globalObject.getCouponData().getProdAndSubCategories()){
+                if(b.getString("prdID").equalsIgnoreCase(subCategory.getProdID())){
+                    defCrusts=subCategory.getSubCat2Code();
+                    break;
+                }
+            }
+            Log.d("...","de...."+defCrusts);
+            selectedCrusts.setText(defCrusts);
+        }else {
+            buttonAddOrders.setText("Add to Order");
+            selectedCrusts.setText("");
+        }
+
+        ImageView imageViewLogoH=(ImageView)findViewById(R.id.imageViewLogoHalf);
+        if (b.getBoolean("isHalf",false)){
+            imageViewLogoH.setVisibility(View.VISIBLE);
+        }else {
+            imageViewLogoH.setVisibility(View.INVISIBLE);
+        }
+
+
 		
 		selectedToppings=(TextView)findViewById(R.id.selectedToppings);
 		selectedSauces=(TextView)findViewById(R.id.selectedSauces);
-		selectedCrusts=(TextView)findViewById(R.id.selectedCrust);
-		selectedCrusts.setText("");
+
+
 		
 		favCountTxt=(TextView)findViewById(R.id.qVal);
 		Button favArrowDown= (Button)findViewById(R.id.buttonMinus);
 		favArrowDown.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if(currentCount>1)
-				{
-					currentCount--;
-					favCountTxt.setText(currentCount+"");
-				}
+                if(!isDeal){
+                    if(currentCount>1)
+                    {
+                        currentCount--;
+                        favCountTxt.setText(currentCount+"");
+                    }
+                }
+
 			}
 		});
 		Button favArrowUp= (Button)findViewById(R.id.buttonPlus);
 		favArrowUp.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if(currentCount<10)
-				{
-					currentCount++;
-					favCountTxt.setText(currentCount+"");
-				}
+                Log.d(",,,,",isDeal+".....");
+                if(!isDeal){
+                    if(currentCount<10)
+                    {
+                        currentCount++;
+                        favCountTxt.setText(currentCount+"");
+                    }
+                }
+
 			}
 		});
 		
@@ -95,7 +129,13 @@ public class PizzaDetailsActivity extends Activity{
 				Intent i=new Intent(PizzaDetailsActivity.this,PizzaToppingsActivity.class);
 				Bundle bundle=new Bundle();
 				AppProperties.selectedToppings=toppingsSelected;
-				bundle.putSerializable("selectedProduct",selectedBean);
+                if (isDeal){
+                    bundle.putSerializable("selectedProduct",globalObject.getDealOrderVo());
+                    bundle.putBoolean("isDeal",isDeal);
+                }  else {
+				    bundle.putSerializable("selectedProduct",selectedBean);
+                }
+              //  bundle.putSerializable("selectedProduct",selectedBean);
 				i.putExtras(bundle);
 				startActivityForResult(i, SELECT_TOPPINGS);
 
@@ -104,19 +144,30 @@ public class PizzaDetailsActivity extends Activity{
 		});
 		
 		LinearLayout ltCrusts= (LinearLayout)findViewById(R.id.ltCrusts);
+        final String pId=b.getString("prdID");
 		ltCrusts.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-
-				Intent i=new Intent(PizzaDetailsActivity.this,PizzaCrustActivity.class);
-				Bundle bundle=new Bundle();
-				bundle.putString("catId", crustCatId);
-				bundle.putString("subCatId", crustSubCatId);
-				bundle.putSerializable("selectedProduct",selectedBean);
-				i.putExtras(bundle);
-				startActivityForResult(i, SELECT_CRUST);
-
+                if(isDeal){
+                    Intent i=new Intent(PizzaDetailsActivity.this,PizzaCrustActivity.class);
+                    Bundle bundle=new Bundle();
+                    bundle.putBoolean("isDeal", true);
+                    bundle.putString("prdID",pId);
+                    bundle.putString("catId", crustCatId);
+                    bundle.putString("subCatId", crustSubCatId);
+                    bundle.putSerializable("selectedProduct",selectedBean);
+                    i.putExtras(bundle);
+                    startActivityForResult(i, SELECT_CRUST);
+                } else {
+                    Intent i=new Intent(PizzaDetailsActivity.this,PizzaCrustActivity.class);
+                    Bundle bundle=new Bundle();
+                    bundle.putString("catId", crustCatId);
+                    bundle.putString("subCatId", crustSubCatId);
+                    bundle.putSerializable("selectedProduct",selectedBean);
+                    i.putExtras(bundle);
+                    startActivityForResult(i, SELECT_CRUST);
+                }
 				
 			}
 		});
@@ -175,12 +226,10 @@ public class PizzaDetailsActivity extends Activity{
 		Button buttonAddFav= (Button)findViewById(R.id.buttonAddFav);
 		buttonAddFav.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				
 				AppDao dao=null;
 				try {
 					dao=AppDao.getSingleton(getApplicationContext());
 					dao.openConnection();
-					
 					boolean favAdded=dao.favAlreadyAdded(selectedBean.getProdID(),selectedBean.getDisplayName());
 					if(favAdded)
 					{
@@ -228,13 +277,21 @@ public class PizzaDetailsActivity extends Activity{
 		});
 		
 		//populating default crust
-		 AppDao dao=null;
+        AppDao dao=null;
+		 if(!isDeal){
+
 			try {
 				dao=AppDao.getSingleton(getApplicationContext());
 				dao.openConnection();
-				
-				ArrayList<SubCategoryVo> crustList = dao.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
-				if(crustList != null && crustList.size()>0 )
+
+                ArrayList<SubCategoryVo> crustList=new ArrayList<SubCategoryVo>();
+				 if (isDeal){
+                     AllProductsVo allProductsVo=dao.getProductById(dealOrderVo.getProdID());
+                     crustList = dao.getPizzaCrusts(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
+                 }else {
+				    crustList = dao.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
+                 }
+                     if(crustList != null && crustList.size()>0 )
 				{
 				SubCategoryVo crLocal = crustList.get(0);
 				crustName=crLocal.getSubCatDesc();
@@ -250,6 +307,7 @@ public class PizzaDetailsActivity extends Activity{
 				if(null!=dao)
 					dao.closeConnection();
 			}
+         }
 	////////////////////
 			
 			// populating default toppings
@@ -258,7 +316,7 @@ public class PizzaDetailsActivity extends Activity{
 				dao=AppDao.getSingleton(getApplicationContext());
 				dao.openConnection();
 				toppingsSelected=new HashMap<String, ToppingsHashmapVo>();
-				ArrayList<ToppingsAndSaucesVo> toppingsList = dao.getPizzaToppings(selectedBean.getProdID());
+				ArrayList<ToppingsAndSaucesVo> toppingsList = dao.getPizzaToppings(productId);
 				for (ToppingsAndSaucesVo toppingsAndSaucesVo : toppingsList) {
 					if("True".equalsIgnoreCase(toppingsAndSaucesVo.getIsFreeWithPizza()))
 						toppingsSelected.put(toppingsAndSaucesVo.getToppingID(), getHashBean(toppingsAndSaucesVo,"Single"));
@@ -284,7 +342,7 @@ public class PizzaDetailsActivity extends Activity{
 		    
 		
 		
-		Button buttonAddOrders= (Button)findViewById(R.id.buttonAddOrders);
+
 		buttonAddOrders.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				OrderVo tempOrderBean = getOrderBean();
@@ -292,10 +350,29 @@ public class PizzaDetailsActivity extends Activity{
 				try {
 					dao=AppDao.getSingleton(getApplicationContext());
 					dao.openConnection();
-					
+                    if (isDeal){
+                        dealOrderVo.setQuantity(String.valueOf(currentCount));
+                        dealOrderVo.setProdID(crustCatId);
+                        AppSharedPreference.putBoolean(PizzaDetailsActivity.this, couponGroupID, true);
+                        if(dao.isDealProductAvailable(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID())){
+                          boolean b= dao.deleteDuplicateDealOrderRec(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID());
+                            dao.resetDealOrder(dealOrderVo.getCouponID());
+                        }
+                        dao.insertDealOrder(dealOrderVo);
+                        if(dao.getDealOrderCount(dealOrderVo.getCouponID())==AppSharedPreference.getInteger(PizzaDetailsActivity.this,"numDeals",0)){
+                            AppSharedPreference.putBoolean(PizzaDetailsActivity.this,dealOrderVo.getCouponID(),true);
+                            Toast.makeText(PizzaDetailsActivity.this, "complete your deal by tapping GET A DEAL", Toast.LENGTH_LONG).show();
+                        }else {
+                            Toast.makeText(PizzaDetailsActivity.this, "Select product from deal groups", Toast.LENGTH_LONG).show();
+                        }
+                        finish();
+                    }
+                    else {
 						dao.insertOrder(tempOrderBean);
-						Toast.makeText(PizzaDetailsActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
-						finish();
+                        Toast.makeText(PizzaDetailsActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+
 				} catch (Exception ex)
 				{
 					System.out.println(ex.getMessage());
@@ -473,39 +550,61 @@ public class PizzaDetailsActivity extends Activity{
 	}
 	private void doResumeWork() {
 		// //////////////////////////////////////////////////////////////////////////////
-		AppDao dao = null;
-		try {
-			dao = AppDao.getSingleton(getApplicationContext());
-			dao.openConnection();
+        AppDao dao = null;
+        try {
+            dao = AppDao.getSingleton(getApplicationContext());
+            dao.openConnection();
+            // dao.updateDealOrder();
+            ArrayList<String> orderInfo = dao.getOrderInfo();
+            ArrayList<DealOrderVo>dealOrderVos1= dao.getDealOrdersList();
+            TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
+            double tota=0.00;
+            int dealCount=0;
+            if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
+                dealCount=dealOrderVos1.size();
+                for (int x=0;x<dealOrderVos1.size();x++){
+                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice()))*(Integer.parseInt(dealOrderVos1.get(x).getQuantity()));
+                }
+            }
 
-			ArrayList<String> orderInfo = dao.getOrderInfo();
-			
-			TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-			if (null != orderInfo && orderInfo.size() == 2) {
-				itemsPrice.setText(orderInfo.get(0)+" Items "+"\n$" + orderInfo.get(1));
-				itemsPrice.setVisibility(View.VISIBLE);
-			}
-			else{
-				itemsPrice.setVisibility(View.INVISIBLE);
-				
-			}
-			
-			TextView favCount = (TextView) findViewById(R.id.favCount);
-			String fvs=dao.getFavCount();
-			if (null != fvs && !fvs.equals("0")) {
-				favCount.setText(fvs);
-				favCount.setVisibility(View.VISIBLE);
-			}
-			else{
-				favCount.setVisibility(View.INVISIBLE);
-			}
+            int orderInfoCount= 0;
+            double  orderInfoTotal=0.0;
+            if ((null != orderInfo && orderInfo.size() == 2) ) {
+                orderInfoCount=Integer.parseInt(orderInfo.get(0));
+                orderInfoTotal=Double.parseDouble(orderInfo.get(1));
+            }
+            int numPro=orderInfoCount+dealCount;
+            double subTotal=orderInfoTotal+tota;
+            DecimalFormat twoDForm = new DecimalFormat("#.##");
+            subTotal= Double.valueOf(twoDForm.format(subTotal));
+            if(numPro>0){
+                itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
+                itemsPrice.setVisibility(View.VISIBLE);
+            }
 
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
-		} finally {
-			if (null != dao)
-				dao.closeConnection();
-		}
+            else{
+                itemsPrice.setVisibility(View.INVISIBLE);
+
+            }
+
+            TextView favCount = (TextView) findViewById(R.id.favCount);
+            String fvs=dao.getFavCount();
+            if (null != fvs && !fvs.equals("0")) {
+                favCount.setText(fvs);
+                favCount.setVisibility(View.VISIBLE);
+            }
+            else{
+                favCount.setVisibility(View.INVISIBLE);
+            }
+
+
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (null != dao)
+                dao.closeConnection();
+        }
 		// ///////////////////////////////////////////////////////////////////////
 
 		

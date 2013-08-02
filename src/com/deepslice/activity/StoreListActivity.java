@@ -2,20 +2,6 @@ package com.deepslice.activity;
 
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -30,14 +16,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
-
 import com.deepslice.database.AppDao;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.MyLocation;
@@ -47,6 +27,19 @@ import com.deepslice.vo.LocationDetails;
 import com.deepslice.vo.LocationPoints;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 
 public class StoreListActivity extends Activity {
 	SharedPreferences settings;
@@ -104,7 +97,7 @@ public class StoreListActivity extends Activity {
 //						intent=new Intent(StoreListActivity.this, MenuActivity.class);
 //					else
 //						intent=new Intent(StoreListActivity.this, CustomerDetailsActivity.class);
-	                   Intent intent = new Intent(StoreListActivity.this,PaymentSelectionActivity.class);
+	                   Intent intent = new Intent(StoreListActivity.this,DateTimeActivity.class);
 	                    Bundle bundle = new Bundle();
 	                    bundle.putString("location",eBean.getLocSuburb()+" "+eBean.getLocPostalCode());
 	                    bundle.putString("store",eBean.getLocName());

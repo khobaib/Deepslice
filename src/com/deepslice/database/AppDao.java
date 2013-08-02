@@ -1,24 +1,15 @@
 package com.deepslice.database;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import android.content.Context;
 import android.database.Cursor;
-
+import android.util.Log;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
-import com.deepslice.vo.AllProductsVo;
-import com.deepslice.vo.CouponDetailsVo;
-import com.deepslice.vo.DelLocations;
-import com.deepslice.vo.FavouritesVo;
-import com.deepslice.vo.LocationDetails;
-import com.deepslice.vo.OrderVo;
-import com.deepslice.vo.ProductCategory;
-import com.deepslice.vo.SubCategoryVo;
-import com.deepslice.vo.ToppingPricesVo;
-import com.deepslice.vo.ToppingSizesVo;
-import com.deepslice.vo.ToppingsAndSaucesVo;
+import com.deepslice.vo.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class AppDao {
 
@@ -531,8 +522,111 @@ public class AppDao {
         }
         return list;
     }
+    public void updateDealOrder(){
+        dbHelper.updateDealOrder();
+    }
 
-	public boolean insertOrder(OrderVo f) {
+    public int getDealOrderCount(String coupnID){
+       return dbHelper.getDealOrderCount(coupnID);
+    }
+
+    public void resetDealOrder(String coupnID){
+        dbHelper.resetDealOrder(coupnID);
+    }
+    public boolean insertDealOrder(DealOrderVo f) {
+
+        dbHelper.insertRecordDealOrder(
+               f.getCouponID(),
+                f.getCouponTypeID(),
+                f.getCouponCode(),
+                f.getCouponGroupID(),
+                f.getDiscountedPrice(),
+                f.getProdID(),
+                f.getDisplayName(),
+                f.getQuantity(),
+                f.getUpdate(),
+                f.getImage()
+
+        );
+        return true;
+    }
+
+    public ArrayList<DealOrderVo> getDealOrdersList() {
+
+        Cursor cursor= dbHelper.getDealOrdersList();
+        try{
+            return cursorToDealOrderBean(cursor);
+        }finally{
+            cursor.close();
+        }
+
+    }
+
+    public ArrayList<String> getDealData(String DealGId,String CouponID){
+        Cursor cursor=dbHelper.getDealOrderData(DealGId,CouponID);
+        ArrayList<String> list = new ArrayList<String>();
+        if (cursor.moveToFirst()) {
+            do {
+                list.add(cursor.getString(0));
+                list.add(cursor.getString(1));
+                list.add(cursor.getString(2));
+                list.add(cursor.getString(3));
+                list.add(cursor.getString(4));
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+        return list;
+    }
+
+    public boolean deleteDealOrderRec(int serialKey) {
+        return dbHelper.deleteRecordDealOrder("sr_no="+serialKey);
+    }
+    public boolean deleteUnfinishedDealOrderRec( ) {
+        return dbHelper.deleteUnfinishedRecordDealOrder("isUpdate=0");
+    }
+
+    public boolean deleteDuplicateDealOrderRec(String productId,String couponId){
+        return dbHelper.deleteRecordDealOrder("CouponGroupID="+productId+" AND CouponID="+couponId);
+    }
+
+    public boolean isDealProductAvailable(String CouponGroupID,String couponID){
+        return dbHelper.isDealProductAvailable(CouponGroupID,couponID);
+    }
+
+    public boolean deleteDealOrderRec(String CouponID ) {
+        return dbHelper.deleteUnfinishedRecordDealOrder("CouponID="+CouponID);
+    }
+    public boolean deleteDealOrderRecByGroupID(String CouponGroupID ) {
+        return dbHelper.deleteUnfinishedRecordDealOrder("CouponGroupID="+CouponGroupID);
+    }
+
+    private ArrayList<DealOrderVo> cursorToDealOrderBean(Cursor cursor) {
+        ArrayList<DealOrderVo> list = new ArrayList<DealOrderVo>();
+        if (cursor.moveToFirst()) {
+            do {
+                DealOrderVo  f = new DealOrderVo();
+                f.setSerialId(cursor.getInt(0));
+                f.setCouponID(cursor.getString(1));
+                f.setCouponTypeID(cursor.getString(2));
+                f.setCouponCode(cursor.getString(3));
+                f.setCouponGroupID(cursor.getString(4));
+                f.setDiscountedPrice(cursor.getString(5));
+                f.setProdID(cursor.getString(6));
+                f.setDisplayName(cursor.getString(7));
+                f.setQuantity(cursor.getString(8));
+                f.setUpdate(cursor.getString(9));
+                list.add(f);
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+        return list;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public boolean insertOrder(OrderVo f) {
 
 		dbHelper.insertRecordOrder(
         			f.getProdCatID(),
@@ -557,6 +651,8 @@ public class AppDao {
         			);
         return true;
     }
+
+
 
 	public ArrayList<OrderVo> getOrdersList() {
 
@@ -695,7 +791,89 @@ public class AppDao {
         return list;
     }
 
-	public boolean insertLocationHistory(LocationDetails f,String isDelivery) {
+    //rukshan add
+    public boolean cleanDeal(){
+        dbHelper.cleanDealTable();
+        return true;
+    }
+
+    public boolean insertDeals(CouponsVo deal){
+        Log.d("inserting: ", "Reading all contacts..");
+        dbHelper.insertRecordDeal(
+                deal.getCouponID(),
+                deal.getCouponTypeID(),
+                deal.getCouponCode(),
+                deal.getCouponAbbr(),
+                deal.getCouponDesc(),
+                deal.getDisplayText(),
+                deal.getIsPercentage(),
+                deal.getIsFixed(),
+                deal.getIsDiscountedProduct(),
+                deal.getAmount(),
+                deal.getMaxUsage(),
+                deal.getIsLimitedTimeOffer(),
+                deal.getEffectiveStartDate(),
+                deal.getEffectiveEndDate(),
+                deal.getEffectiveTimeStart(),
+                deal.getEffectiveTimeEnd(),
+                deal.getIsOnDelivery(),
+                deal.getIsOnPickup(),
+                deal.getIsOnSunday(),
+                deal.getIsOnMonday(),
+                deal.getIsOnTuesday(),
+                deal.getIsOnWednesday(),
+                deal.getIsOnThursday(),
+                deal.getIsOnFriday(),
+                deal.getIsOnInternet(),
+                deal.getIsOnlyOnInternet(),
+                deal.getIsTaxable(),
+                deal.getIsPrerequisite(),
+                deal.getIsLocationBased(),
+                deal.getIsGreetingSpecials(),
+                deal.getPic()
+
+        );
+
+        Log.d("Reading: ", "Reading all contacts..");
+        List<CouponsVo> contacts = getDealList();
+
+        for (CouponsVo cn : contacts) {
+            String log = "Id: "+cn.getAmount()+" ,Name: " + cn.getCouponCode() + " ,Phone: " + cn.getDisplayText();
+            // Writing Contacts to log
+            Log.d("Name: ", log);
+        }
+        return true;
+    }
+
+    public ArrayList<CouponsVo> getDealList(){
+        Cursor cursor=dbHelper.getDealList();
+        return cursorToCoupons(cursor);
+    }
+
+    private ArrayList<CouponsVo> cursorToCoupons(Cursor cursor) {
+        if (cursor==null)return null;
+        ArrayList<CouponsVo> voArrayList=new ArrayList<CouponsVo>();
+        if(cursor.moveToFirst()) {
+            do {
+                CouponsVo f = new CouponsVo();
+                int counter=1;
+                f.setCouponID(cursor.getString(counter++));
+                f.setCouponTypeID(cursor.getString(counter++));
+                f.setCouponTypeCode(cursor.getString(counter++));f.setCouponCode(cursor.getString(counter++));f.setCouponDesc(cursor.getString(counter++));f.setCouponAbbr(cursor.getString(counter++)); f.setDisplayText(cursor.getString(counter++));f.setIsPercentage(cursor.getString(counter++));f.setIsFixed(cursor.getString(counter++));
+                f.setIsDiscountedProduct(cursor.getString(counter++));f.setAmount(cursor.getString(counter++));f.setMaxUsage(cursor.getString(counter++));f.setIsLimitedTimeOffer(cursor.getString(counter++));
+                f.setEffectiveStartDate(cursor.getString(counter++));f.setEffectiveEndDate(cursor.getString(counter++)); f.setEffectiveTimeStart(cursor.getString(counter++));f.setEffectiveTimeEnd(cursor.getString(counter++));
+                f.setIsOnDelivery(cursor.getString(counter++));f.setIsOnPickup(cursor.getString(counter++));f.setIsOnSunday(cursor.getString(counter++));f.setIsOnMonday(cursor.getString(counter++));f.setIsOnTuesday(cursor.getString(counter++));
+                f.setIsOnWednesday(cursor.getString(counter++));f.setIsOnThursday(cursor.getString(counter++));f.setIsOnFriday(cursor.getString(counter++));f.setIsOnSaturday(cursor.getString(counter++));f.setIsOnInternet(cursor.getString(counter++));
+                voArrayList.add(f);
+            } while (cursor.moveToNext());
+    }
+    if (cursor != null && !cursor.isClosed()) {
+        cursor.close();
+    }
+        return voArrayList;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public boolean insertLocationHistory(LocationDetails f,String isDelivery) {
         	dbHelper.insertRecordLocHistory(
                     f.getLocationID(),
                     f.getLocName(),

@@ -1,22 +1,5 @@
 package com.deepslice.activity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -30,12 +13,28 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.deepslice.http.HttpProxyConnection;
 import com.deepslice.http.HttpResponseModel;
+import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.Utils;
 import com.deepslice.vo.CustomerDetailsVo;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
 
 public class RegisterActivity extends Activity implements OnClickListener {
 
@@ -93,10 +92,23 @@ public class RegisterActivity extends Activity implements OnClickListener {
 
 
 			 if (valivatePassword()) {
-			 customerDetailsVo.setPassword(passwordEditText.getText().toString().trim());
-			 startActivity(new Intent(new Intent(this,PickupDeliverActivity.class)));			 
-			 finish();
-			 }
+                 if (AppSharedPreference.getBoolean(RegisterActivity.this, "MyOrder")){
+                     AppSharedPreference.putBoolean(RegisterActivity.this, "MyOrder",false);
+                     String orderType=AppSharedPreference.getData(RegisterActivity.this, "orderType", null);
+                     if("Delivery".equalsIgnoreCase(orderType)) {
+                         startActivity(new Intent(new Intent(this,LocationFromHistoryActivity.class)));
+                         finish();
+                     }else {
+                         startActivity(new Intent(new Intent(this,StoreFromHistoryActivity.class)));
+                         finish();
+                     }
+
+                 }  else {
+                     customerDetailsVo.setPassword(passwordEditText.getText().toString().trim());
+                     startActivity(new Intent(new Intent(this,PickupDeliverActivity.class)));
+                     finish();
+                 }
+             }
 			break;
 
 		default:

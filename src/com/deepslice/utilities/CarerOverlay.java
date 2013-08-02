@@ -1,7 +1,5 @@
 package com.deepslice.utilities;
 
-import java.util.ArrayList;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,10 +8,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
-
 import com.deepslice.activity.CustomerDetailsActivity;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
+
+import java.util.ArrayList;
+
 
 public class CarerOverlay extends ItemizedOverlay<OverlayItem> {
 	Context mContext;

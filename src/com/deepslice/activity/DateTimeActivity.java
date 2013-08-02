@@ -1,9 +1,5 @@
 package com.deepslice.activity;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -13,21 +9,17 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.deepslice.database.HelperSharedPreferences;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Utils;
 import com.deepslice.vo.DelLocations;
 import com.deepslice.vo.LocationDetails;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class DateTimeActivity extends Activity implements OnClickListener {
 
@@ -158,14 +150,19 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 								.getHours()))) {
 				    Toast.makeText(DateTimeActivity.this, "Thank you, Your order is taken.",  Toast.LENGTH_SHORT).show();
 					startActivity(new Intent(new Intent(this,
-					        PickupDeliverActivity.class)));
+					        PaymentSelectionActivity.class)));
 
-				} else {
+				}else {
 					Utils.openErrorDialog(DateTimeActivity.this,
 							"Store is not open on selected time.\nPlease select some other time!");
 				}
 
-			} else {
+			}else if((!AppSharedPreference.getData(DateTimeActivity.this,"customerName","").equals("")||!AppSharedPreference.getData(DateTimeActivity.this,"customerEmail","").equals("")
+                    ||!AppSharedPreference.getData(DateTimeActivity.this,"customerPhone","").equals(""))){
+                Toast.makeText(DateTimeActivity.this, "Thank you, Your order is taken.",  Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(new Intent(this,
+                        PaymentSelectionActivity.class)));
+            } else {
 				// if (Integer.parseInt(timeStorage[0]) > openTime.getHours()
 				// && Integer.parseInt(timeStorage[0]) < closeTime
 				// .getHours()) {

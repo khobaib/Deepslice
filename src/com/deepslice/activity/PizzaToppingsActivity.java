@@ -1,8 +1,5 @@
 package com.deepslice.activity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -11,21 +8,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TextView;
-
 import com.deepslice.database.AppDao;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Utils;
 import com.deepslice.vo.AllProductsVo;
+import com.deepslice.vo.DealOrderVo;
 import com.deepslice.vo.ToppingsAndSaucesVo;
 import com.deepslice.vo.ToppingsHashmapVo;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PizzaToppingsActivity extends Activity{
 
@@ -33,7 +28,7 @@ public class PizzaToppingsActivity extends Activity{
 	int currentCount=1;
 
 	AllProductsVo selectedBean;
-	
+    DealOrderVo dealOrderVo;
 	ListView listview;
 	MyListAdapterSides myAdapter;
 
@@ -41,13 +36,20 @@ public class PizzaToppingsActivity extends Activity{
 
 	HashMap<String, ToppingsHashmapVo> toppingsSelected;
 	String namesList="";
-	String sizesList="";
+	String sizesList="",productId="";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.toppings);
 		Bundle b = this.getIntent().getExtras();
-		selectedBean=(AllProductsVo)b.getSerializable("selectedProduct");
+
+        if (b.getBoolean("isDeal",false)){
+         dealOrderVo=(DealOrderVo)b.getSerializable("selectedProduct");
+            productId=dealOrderVo.getProdID();
+        }else {
+		    selectedBean=(AllProductsVo)b.getSerializable("selectedProduct");
+            productId=selectedBean.getProdID();
+        }
 
 		toppingsSelected=AppProperties.selectedToppings;
 		if(toppingsSelected==null)
@@ -59,7 +61,7 @@ public class PizzaToppingsActivity extends Activity{
 				dao=AppDao.getSingleton(getApplicationContext());
 				dao.openConnection();
 				
-				toppingsList=dao.getPizzaToppings(selectedBean.getProdID());
+				toppingsList=dao.getPizzaToppings(productId);
 				
 			} catch (Exception ex)
 			{

@@ -2,8 +2,6 @@ package com.deepslice.activity;
 
 
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -14,18 +12,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
-
 import com.deepslice.database.AppDao;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.vo.LocationDetails;
+
+import java.util.ArrayList;
 
 public class LocationFromHistoryActivity extends Activity {
 	ImageView addPic;
@@ -46,7 +39,7 @@ public class LocationFromHistoryActivity extends Activity {
 		setContentView(R.layout.location_history);
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		listview = (ListView) findViewById(R.id.listView1);
-		
+
 		deliveryLocationList=new ArrayList<LocationDetails>();
 		
 		AppDao dao=null;
@@ -84,8 +77,9 @@ public class LocationFromHistoryActivity extends Activity {
 					
 					//Intent intent = new Intent(LocationFromHistoryActivity.this,DateTimeActivity.class);
 					
-					Intent intent = new Intent(LocationFromHistoryActivity.this,PaymentSelectionActivity.class);
+					Intent intent = new Intent(LocationFromHistoryActivity.this,DateTimeActivity.class);
 					Bundle bundle = new Bundle();
+                    bundle.putString("postCode",eBean.getLocPostalCode());
 					bundle.putString("location",eBean.getLocSuburb()+" "+eBean.getLocPostalCode());
 					bundle.putString("store",eBean.getLocName());
 					bundle.putString("suburbId",eBean.getLocationID());
@@ -99,7 +93,8 @@ public class LocationFromHistoryActivity extends Activity {
 		Button addLoc= (Button)findViewById(R.id.addNewLocation);
 		addLoc.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				startActivity(new Intent(LocationFromHistoryActivity.this, DeliverySuburbActivity.class));
+                Intent intent=new Intent(LocationFromHistoryActivity.this, DeliverySuburbActivity.class);
+                startActivity(intent);
 				finish();
 			}
 		});

@@ -65,14 +65,14 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:src="@drawable/m_pizza" />
- 		<ImageView
+ 		<ImageButton
             android:id="@+id/imageView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageView1"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
-            android:src="@drawable/m_deals" />
+            android:background="@drawable/m_deals"/>
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"

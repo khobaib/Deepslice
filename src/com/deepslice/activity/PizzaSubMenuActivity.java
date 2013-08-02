@@ -1,29 +1,26 @@
 package com.deepslice.activity;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-
 import com.deepslice.database.AppDao;
 import com.deepslice.vo.AllProductsVo;
+import com.deepslice.vo.DealOrderVo;
 import com.deepslice.vo.ProductCategory;
 import com.deepslice.vo.SubCategoryVo;
 
-public class PizzaSubMenuActivity extends Activity{
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+public class  PizzaSubMenuActivity extends Activity{
 	
 	ArrayList<ProductCategory> productCatList;
 	ArrayList<SubCategoryVo> subCatList;
@@ -31,14 +28,13 @@ public class PizzaSubMenuActivity extends Activity{
 
 	ListView listview;
 	MyListAdapterPizza myAdapter;
-	
+    ProgressDialog pd;
 	String catType;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sub_menu_pizza3);
-		
-		Bundle b = this.getIntent().getExtras();
+        Bundle b = this.getIntent().getExtras();
 		
 		catType=b.getString("catType");
 	
@@ -111,6 +107,32 @@ public class PizzaSubMenuActivity extends Activity{
 						
 					}
 				});
+
+                ImageButton imageButtonCreateOwn=(ImageButton)findViewById(R.id.imageButtonCreateUown);
+                imageButtonCreateOwn.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+                ImageButton imageButtonHalf=(ImageButton)findViewById(R.id.imageButtonHalf);
+                imageButtonHalf.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       Intent intent=new Intent(PizzaSubMenuActivity.this,HalfAndHalf.class);
+                        startActivity(intent);
+                    }
+                });
+
+                ImageButton imageButtonCreateYourOwn=(ImageButton)findViewById(R.id.imageButtonCreateUown);
+                imageButtonCreateOwn.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent=new Intent(PizzaSubMenuActivity.this,CreateYourOwn.class);
+                        startActivity(intent);
+                    }
+                });
 			}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,42 +173,66 @@ public class PizzaSubMenuActivity extends Activity{
 	@Override
 	protected void onResume() {
 		// //////////////////////////////////////////////////////////////////////////////
-		AppDao dao = null;
-		try {
-			dao = AppDao.getSingleton(getApplicationContext());
-			dao.openConnection();
+        AppDao dao = null;
+        try {
+            dao = AppDao.getSingleton(getApplicationContext());
+            dao.openConnection();
+            ArrayList<String> orderInfo = dao.getOrderInfo();
+            ArrayList<DealOrderVo>dealOrderVos1= dao.getDealOrdersList();
+            TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
+            double tota=0.00;
+            int dealCount=0;
+            if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
+                dealCount=dealOrderVos1.size();
+                for (int x=0;x<dealOrderVos1.size();x++){
+                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
+                }
+            }
 
-			ArrayList<String> orderInfo = dao.getOrderInfo();
-			
-			TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-			if (null != orderInfo && orderInfo.size() == 2) {
-				itemsPrice.setText(orderInfo.get(0)+" Items "+"\n$" + orderInfo.get(1));
-				itemsPrice.setVisibility(View.VISIBLE);
-			}
-			else{
-				itemsPrice.setVisibility(View.INVISIBLE);
-				
-			}
-			
-			TextView favCount = (TextView) findViewById(R.id.favCount);
-			String fvs=dao.getFavCount();
-			if (null != fvs && !fvs.equals("0")) {
-				favCount.setText(fvs);
-				favCount.setVisibility(View.VISIBLE);
-			}
-			else{
-				favCount.setVisibility(View.INVISIBLE);
-			}
+            int orderInfoCount= 0;
+            double  orderInfoTotal=0.0;
+            if ((null != orderInfo && orderInfo.size() == 2) ) {
+                orderInfoCount=Integer.parseInt(orderInfo.get(0));
+                orderInfoTotal=Double.parseDouble(orderInfo.get(1));
+            }
+            int numPro=orderInfoCount+dealCount;
+            double subTotal=orderInfoTotal+tota;
+            DecimalFormat twoDForm = new DecimalFormat("#.##");
+            subTotal= Double.valueOf(twoDForm.format(subTotal));
+            if(numPro>0){
+                itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
+                itemsPrice.setVisibility(View.VISIBLE);
+            }
+
+            else{
+                itemsPrice.setVisibility(View.INVISIBLE);
+
+            }
+
+            TextView favCount = (TextView) findViewById(R.id.favCount);
+            String fvs=dao.getFavCount();
+            if (null != fvs && !fvs.equals("0")) {
+                favCount.setText(fvs);
+                favCount.setVisibility(View.VISIBLE);
+            }
+            else{
+                favCount.setVisibility(View.INVISIBLE);
+            }
 
 
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
-		} finally {
-			if (null != dao)
-				dao.closeConnection();
-		}
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (null != dao)
+                dao.closeConnection();
+        }
 		// ///////////////////////////////////////////////////////////////////////
 
 		super.onResume();
 	}
-}
+
+
+    //rukshan add
+
+    }

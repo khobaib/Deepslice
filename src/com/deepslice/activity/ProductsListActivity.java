@@ -1,11 +1,27 @@
 package com.deepslice.activity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.text.Html;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.*;
+import android.widget.AdapterView.OnItemClickListener;
+import com.deepslice.cache.ImageLoader;
+import com.deepslice.database.AppDao;
+import com.deepslice.utilities.AppProperties;
+import com.deepslice.vo.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -16,35 +32,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.text.Html;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-
-import com.deepslice.cache.ImageLoader;
-import com.deepslice.database.AppDao;
-import com.deepslice.utilities.AppProperties;
-import com.deepslice.vo.AllProductsVo;
-import com.deepslice.vo.ToppingPricesVo;
-import com.deepslice.vo.ToppingSizesVo;
-import com.deepslice.vo.ToppingsAndSaucesVo;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class ProductsListActivity extends Activity{
 	
@@ -73,9 +66,9 @@ public class ProductsListActivity extends Activity{
 		catId=b.getString("catId");
 		subCatId=b.getString("subCatId"); 
 		catType=b.getString("catType");
-		
-		String titeDisplay=b.getString("titeDisplay");
-		
+        Log.d("...................dgh..............",subCatId);
+        String titeDisplay=b.getString("titeDisplay");
+
 		TextView title = (TextView) findViewById(R.id.headerTextView);
 		
 
@@ -93,11 +86,15 @@ public class ProductsListActivity extends Activity{
 					dao.openConnection();
 				
 					if("Pizza".equals(catType)){
-						allProductsList=dao.getProductsPizza(catId,subCatId);
+						//allProductsList=dao.getProductsPizza(catId,subCatId);
+                        allProductsList=new ArrayList<AllProductsVo>();
+                        GetDataFromApiCall();
 					}
 					else
 					{
-					allProductsList=dao.getProductsSelected(catId,subCatId);
+                       // GetDataFromApiCall();
+					    allProductsList=dao.getProductsSelected(catId,subCatId);
+                        int t=allProductsList.size();
 					}
 					
 				} catch (Exception ex)
@@ -107,10 +104,11 @@ public class ProductsListActivity extends Activity{
 					if(null!=dao)
 						dao.closeConnection();
 				}
-		
-				listview = (ListView) findViewById(R.id.listView1);				
-				myAdapter = new MyListAdapterProd(this,R.layout.line_item_product, allProductsList);
-				listview.setAdapter(myAdapter);
+
+        listview = (ListView) findViewById(R.id.listView1);
+        myAdapter = new MyListAdapterProd(this,R.layout.line_item_product, allProductsList);
+        listview.setAdapter(myAdapter);
+
 				
 				listview.setOnItemClickListener(new OnItemClickListener() {
 					public void onItemClick(AdapterView<?> parent, View v, int position,
@@ -620,42 +618,227 @@ public class ProductsListActivity extends Activity{
 	@Override
 	protected void onResume() {
 		// //////////////////////////////////////////////////////////////////////////////
-		AppDao dao = null;
-		try {
-			dao = AppDao.getSingleton(getApplicationContext());
-			dao.openConnection();
+        AppDao dao = null;
+        try {
+            dao = AppDao.getSingleton(getApplicationContext());
+            dao.openConnection();
+            ArrayList<String> orderInfo = dao.getOrderInfo();
+            ArrayList<DealOrderVo>dealOrderVos1= dao.getDealOrdersList();
+            TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
+            double tota=0.00;
+            int dealCount=0;
+            if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
+                dealCount=dealOrderVos1.size();
+                for (int x=0;x<dealOrderVos1.size();x++){
+                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
+                }
+            }
 
-			ArrayList<String> orderInfo = dao.getOrderInfo();
-			
-			TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-			if (null != orderInfo && orderInfo.size() == 2) {
-				itemsPrice.setText(orderInfo.get(0)+" Items "+"\n$" + orderInfo.get(1));
-				itemsPrice.setVisibility(View.VISIBLE);
-			}
-			else{
-				itemsPrice.setVisibility(View.INVISIBLE);
-				
-			}
-			
-			TextView favCount = (TextView) findViewById(R.id.favCount);
-			String fvs=dao.getFavCount();
-			if (null != fvs && !fvs.equals("0")) {
-				favCount.setText(fvs);
-				favCount.setVisibility(View.VISIBLE);
-			}
-			else{
-				favCount.setVisibility(View.INVISIBLE);
-			}
+            int orderInfoCount= 0;
+            double  orderInfoTotal=0.0;
+            if ((null != orderInfo && orderInfo.size() == 2) ) {
+                orderInfoCount=Integer.parseInt(orderInfo.get(0));
+                orderInfoTotal=Double.parseDouble(orderInfo.get(1));
+            }
+            int numPro=orderInfoCount+dealCount;
+            double subTotal=orderInfoTotal+tota;
+            DecimalFormat twoDForm = new DecimalFormat("#.##");
+            subTotal= Double.valueOf(twoDForm.format(subTotal));
+            if(numPro>0){
+                itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
+                itemsPrice.setVisibility(View.VISIBLE);
+            }
+
+            else{
+                itemsPrice.setVisibility(View.INVISIBLE);
+
+            }
+
+            TextView favCount = (TextView) findViewById(R.id.favCount);
+            String fvs=dao.getFavCount();
+            if (null != fvs && !fvs.equals("0")) {
+                favCount.setText(fvs);
+                favCount.setVisibility(View.VISIBLE);
+            }
+            else{
+                favCount.setVisibility(View.INVISIBLE);
+            }
 
 
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
-		} finally {
-			if (null != dao)
-				dao.closeConnection();
-		}
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (null != dao)
+                dao.closeConnection();
+        }
 		// ///////////////////////////////////////////////////////////////////////
 
 		super.onResume();
 	}
+
+    //ruksham\n add
+    final Handler mHandlerAllData = new Handler();
+    final Runnable mUpdateResultsAllData = new Runnable() {
+        public void run() {
+            updateResults();
+        }
+    };
+
+    protected void GetDataFromApiCall(){
+        pd=ProgressDialog.show(ProductsListActivity.this,"","Please wait...", true, false);
+        try{
+        Thread tread=new Thread() {
+            public void  run(){
+                try{
+                    startGettigData();
+                }catch(Exception e){
+                }
+                mHandlerAllData.post(mUpdateResultsAllData);
+            }
+
+        } ;
+        tread.start();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+
+    String serverResponseAll="";
+    String delLocError="";
+    public void  startGettigData(){
+        StringBuilder builder = new StringBuilder();
+        HttpClient client = new DefaultHttpClient();
+        HttpGet httpGet=null;
+
+  //comment = new api implementation to get distinct pizzas
+        if("Pizza".equals(catType)){
+           httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetDistinctPizzas.aspx");
+        }
+        else
+        {
+            httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetProducts.aspx?ProdCategoryID="+catId+"&ProdSubCategoryID="+subCatId);
+        }
+
+        try {
+            HttpResponse response = client.execute(httpGet);
+            StatusLine statusLine = response.getStatusLine();
+            int statusCode = statusLine.getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+                InputStream content = entity.getContent();
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(content));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+            } else {
+                System.out.println("Failed to download file");
+            }
+
+
+            serverResponseAll = builder.toString();
+            boolean dataExists=false;
+            JSONArray resultsArray =null;
+             if(statusCode==200){
+            //////////////////////////////////////////////////////////
+            String errorMessage="";
+            GsonBuilder gsonb = new GsonBuilder();
+            Gson gson = gsonb.create();
+            JSONArray results = new JSONArray(serverResponseAll);
+            JSONObject respOuter = results.getJSONObject(0);
+            JSONObject resp = respOuter.getJSONObject("Response");
+            String status = resp.getString("Status");
+            Object data= resp.get("Data");
+            dataExists=false;
+            if(data instanceof JSONArray)
+            {
+                resultsArray =(JSONArray)data;
+                dataExists=true;
+            }
+
+            JSONObject errors = resp.getJSONObject("Errors");
+
+            boolean hasError=errors.has("Message");
+            if(hasError)
+            {
+                errorMessage=errors.getString("Message");
+                System.out.println("Error:"+errorMessage);
+            }
+             }else {
+
+             }
+            //deliveryLocationList = new ArrayList<DelLocations>();
+
+            if(dataExists==true)
+            {
+               allProductsList=new ArrayList<AllProductsVo>();
+                for(int i=0; i<resultsArray.length(); i++){
+                    JSONObject jsResult = resultsArray.getJSONObject(i);
+                    if(jsResult!=null){
+                        if (jsResult.getString("SubCatID1").equalsIgnoreCase(subCatId)){
+                            AllProductsVo allProductsVo=new AllProductsVo();
+                            allProductsVo.setCaloriesQty(jsResult.getString("CaloriesQty"));
+                            allProductsVo.setDisplayName(jsResult.getString("DisplayName"));
+                            allProductsVo.setDisplaySequence(jsResult.getString("DisplaySequence"));
+                            allProductsVo.setFullImage(jsResult.getString("FullImage"));
+                            allProductsVo.setPrice(jsResult.getString("Price"));
+                            allProductsVo.setProdAbbr(jsResult.getString("ProdAbbr"));
+                            allProductsVo.setProdCatID(jsResult.getString("ProdCatID"));
+                            allProductsVo.setProdCode(jsResult.getString("ProdCode"));
+                            allProductsVo.setProdDesc(jsResult.getString("ProdDesc"));
+                            allProductsVo.setProdID(jsResult.getString("ProdID"));
+                            allProductsVo.setSubCatID1(jsResult.getString("SubCatID1"));
+                            allProductsVo.setSubCatID2(jsResult.getString("SubCatID2"));
+                            allProductsVo.setIsAddDeliveryAmount(jsResult.getString("IsAddDeliveryAmount"));
+                            allProductsVo.setThumbnail(jsResult.getString("Thumbnail"));
+                            allProductsList.add(allProductsVo);
+                        }
+
+                    }
+                }
+            } else {
+
+                allProductsList=new ArrayList<AllProductsVo>();
+            }
+            //////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
+            //////////////////////////////////////////////////////////
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }catch (Exception e) {
+            delLocError=e.getMessage();
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+    private void updateResults() {
+
+        if(null != pd)
+            pd.dismiss();
+        if(allProductsList.size()>0){
+
+        myAdapter = new MyListAdapterProd(this,R.layout.line_item_product, allProductsList);
+        myAdapter.notifyDataSetChanged();
+        listview.setAdapter(myAdapter);
+        } else {
+            AlertDialog alertDialog = new AlertDialog.Builder(ProductsListActivity.this).create();
+            alertDialog.setTitle("info");
+            alertDialog.setMessage("Try again later");
+            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+
+                    ProductsListActivity.this.finish();
+                    return;
+                } });
+            alertDialog.show();
+        }
+    }
 }

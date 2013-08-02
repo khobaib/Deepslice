@@ -1,20 +1,5 @@
 package com.deepslice.activity;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -26,17 +11,26 @@ import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-
+import android.widget.*;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.vo.UserBean;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class LoginActivity extends Activity {
 	EditText userLogin ;
@@ -71,6 +65,7 @@ public class LoginActivity extends Activity {
         	{
         	AppProperties.userObj=savedUserObj;
         	AppProperties.isLoogedIn=true;
+
 			LoginActivity.this.finish();
         	}
         
@@ -80,6 +75,7 @@ public class LoginActivity extends Activity {
         Button txtSignup = (Button) findViewById(R.id.startOrderingButton);
         txtSignup.setOnClickListener(new OnClickListener() {    
         	public void onClick(View v) {
+                AppSharedPreference.putBoolean(LoginActivity.this,"MyOrder",false);
         		startActivity(new Intent(LoginActivity.this, CustomerDetailsActivity.class));
         	}
         });
@@ -217,8 +213,19 @@ public class LoginActivity extends Activity {
 			AppSharedPreference.putData(LoginActivity.this, "customerName", userObj.getCustomerName());
 			AppSharedPreference.putData(LoginActivity.this, "customerEmail", userObj.getEmailID());
 			AppSharedPreference.putData(LoginActivity.this, "customerPhone", userObj.getPhoneNo());
-			
+            if (AppSharedPreference.getBoolean(LoginActivity.this,"MyOrder")){
+                AppSharedPreference.putBoolean(LoginActivity.this, "MyOrder",false);
+                String orderType=AppSharedPreference.getData(LoginActivity.this, "orderType", null);
+                if("Delivery".equalsIgnoreCase(orderType)) {
+                    startActivity(new Intent(new Intent(this,LocationFromHistoryActivity.class)));
+                    finish();
+                }else {
+                    startActivity(new Intent(new Intent(this,StoreFromHistoryActivity.class)));
+                    finish();
+                }
+            } else {
     		LoginActivity.this.finish();
+            }
 		}
 			
 		} catch (Exception e){
@@ -254,7 +261,7 @@ public class LoginActivity extends Activity {
 
 		try {
 				HttpGet req = new HttpGet(AppProperties.WEB_SERVICE_PATH+"Login.aspx?Mailing_Address="+user+"&Password="+pass);
-				
+
 				HttpResponse response = null;
 				
 				response = httpclient.execute(req);

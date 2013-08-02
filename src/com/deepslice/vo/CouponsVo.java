@@ -1,6 +1,8 @@
 package com.deepslice.vo;
 
-public class CouponsVo {
+import java.io.Serializable;
+
+public class CouponsVo implements Serializable {
 	String CouponID = "";
 	String CouponTypeID = "";
 	String CouponTypeCode = "";
@@ -28,6 +30,61 @@ public class CouponsVo {
 	String IsOnFriday = "";
 	String IsOnSaturday = "";
 	String IsOnInternet = "";
+
+    public String getIsOnlyOnInternet() {
+        return IsOnlyOnInternet;
+    }
+
+    public void setIsOnlyOnInternet(String isOnlyOnInternet) {
+        IsOnlyOnInternet = isOnlyOnInternet;
+    }
+
+    public String getPic() {
+        return Pic;
+    }
+
+    public void setPic(String pic) {
+        Pic = pic;
+    }
+
+    public String getIsGreetingSpecials() {
+        return IsGreetingSpecials;
+    }
+
+    public void setIsGreetingSpecials(String isGreetingSpecials) {
+        IsGreetingSpecials = isGreetingSpecials;
+    }
+
+    public String getIsLocationBased() {
+        return IsLocationBased;
+    }
+
+    public void setIsLocationBased(String isLocationBased) {
+        IsLocationBased = isLocationBased;
+    }
+
+    public String getIsPrerequisite() {
+        return IsPrerequisite;
+    }
+
+    public void setIsPrerequisite(String isPrerequisite) {
+        IsPrerequisite = isPrerequisite;
+    }
+
+    public String getIsTaxable() {
+        return IsTaxable;
+    }
+
+    public void setIsTaxable(String isTaxable) {
+        IsTaxable = isTaxable;
+    }
+
+    String IsOnlyOnInternet = "";
+    String IsTaxable = "";
+    String IsPrerequisite = "";
+    String IsLocationBased = "";
+    String IsGreetingSpecials = "";
+    String Pic = "";
 	public String getCouponID() {
 		return CouponID;
 	}

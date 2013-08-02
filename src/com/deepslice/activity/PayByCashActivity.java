@@ -1,24 +1,5 @@
 package com.deepslice.activity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.util.InetAddressUtils;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -28,10 +9,29 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.deepslice.database.AppDao;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
+import com.deepslice.vo.DealOrderVo;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.util.InetAddressUtils;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class PayByCashActivity extends Activity{
 	
@@ -44,6 +44,7 @@ public class PayByCashActivity extends Activity{
 		
 		totalPrice=(TextView)findViewById(R.id.totalPrice);
 		descriptionText=(TextView)findViewById(R.id.textView1);
+        TextView txtUserName=(TextView)findViewById(R.id.textUserName);
 		
 /////////////////		
 		
@@ -68,7 +69,7 @@ public class PayByCashActivity extends Activity{
 				////////////////////////////
 				 */
 				
-				Intent intent = new Intent(PayByCashActivity.this,DateTimeActivity.class);
+				Intent intent = new Intent(PayByCashActivity.this,PickupDeliverActivity.class);
 				String location=getIntent().getStringExtra("location");
 				String store=getIntent().getStringExtra("store");
 				String suburbId=getIntent().getStringExtra("suburbId");
@@ -80,11 +81,13 @@ public class PayByCashActivity extends Activity{
 				bundle.putString("location",location);
 				bundle.putString("store",store);
 				bundle.putString("suburbId",suburbId);
-				intent.putExtras(bundle);			
-				
-				
-				
-				
+				intent.putExtras(bundle);
+
+                if (!AppProperties.isLoogedIn){
+                    AppSharedPreference.putData(PayByCashActivity.this, "customerName", "");
+                    AppSharedPreference.putData(PayByCashActivity.this, "customerEmail","");
+                    AppSharedPreference.putData(PayByCashActivity.this, "customerPhone", "");
+                }
 				
 				startActivity(intent);
 				finish();
@@ -97,13 +100,26 @@ public class PayByCashActivity extends Activity{
 		try {
 			dao=AppDao.getSingleton(getApplicationContext());
 			dao.openConnection();
-		
-			ArrayList<String> orderInfo = dao.getOrderInfo();
-			
-			if(null!=orderInfo && orderInfo.size()==2)
-			{
-				totalPrice.setText("$"+AppProperties.getRoundTwoDecimalString(orderInfo.get(1)));
-			}
+
+            ArrayList<String> orderInfo = dao.getOrderInfo();
+            ArrayList<DealOrderVo> dealOrderVos=dao.getDealOrdersList();
+            Double orderTotal=0.0;
+            if(null!=orderInfo && orderInfo.size()==2)
+            {
+                orderTotal=AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
+
+            }
+            Double dealTotal=0.0;
+            if(dealOrderVos!=null && dealOrderVos.size()>0){
+
+                for (int x=0;x<dealOrderVos.size();x++){
+                    dealTotal+=(Double.parseDouble(dealOrderVos.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos.get(x).getQuantity())));
+                }
+            }
+            double subT=dealTotal+orderTotal;
+            DecimalFormat twoDForm = new DecimalFormat("#.##");
+            subT= Double.valueOf(twoDForm.format(subT));
+            totalPrice.setText("TOTAL: $"+subT);
 
 		} catch (Exception ex)
 		{
@@ -126,6 +142,11 @@ public class PayByCashActivity extends Activity{
 		theMessageString.append("You may receive a phone call to confirm your order. If you are unavailable, then your order may be canceled.");
 		
 		descriptionText.setText(theMessageString.toString());
+         if(AppSharedPreference.getData(PayByCashActivity.this, "customerName", "").equals("")){
+             txtUserName.setText("Dear "+AppSharedPreference.getData(PayByCashActivity.this, "customerName", ""));
+         }else {
+            txtUserName.setText("Dear "+AppSharedPreference.getData(PayByCashActivity.this, "customerName", ""));
+         }
 	}
 
 	

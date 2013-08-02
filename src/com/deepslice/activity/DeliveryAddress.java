@@ -1,21 +1,5 @@
 package com.deepslice.activity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,19 +12,28 @@ import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.deepslice.database.AppDao;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.vo.LocationDetails;
 import com.deepslice.vo.StreetsBean;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 @SuppressLint("ParserError")
 public class DeliveryAddress extends Activity implements OnClickListener {
@@ -64,7 +57,7 @@ public class DeliveryAddress extends Activity implements OnClickListener {
 		continueButton.setOnClickListener(this);
 		
 		selectedLocation = AppProperties.getLocationObj(DeliveryAddress.this);
-		
+		//selectedLocation.setLocPostalCode(b.getString("postCode"));
 		TextView loc = (TextView) findViewById(R.id.textView1);
 		location=b.getString("location");
 		store=b.getString("store");
@@ -149,7 +142,7 @@ public class DeliveryAddress extends Activity implements OnClickListener {
 			/////////////////////////
 			
 			//Intent intent=new Intent(this, DateTimeActivity.class);
-			Intent intent=new Intent(this,PaymentSelectionActivity.class);
+			Intent intent=new Intent(this,DateTimeActivity.class);
 			String location=getIntent().getStringExtra("location");
 			String store=getIntent().getStringExtra("store");
 			String suburbId=getIntent().getStringExtra("suburbId");			

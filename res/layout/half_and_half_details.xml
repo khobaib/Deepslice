@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                style="@style/backGround" >
+
+    <RelativeLayout
+            android:id="@+id/headerRelativeLayout"
+            style="@style/header" >
+
+        <ImageView
+                android:id="@+id/farwordImageView"
+                style="@style/farwordButton" />
+
+        <TextView
+                android:id="@+id/headerTextView"
+                style="@style/headerText"
+                android:text="Add to Order"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="200dip"
+            android:layout_height="100dip"
+            android:src="@drawable/pizza_det_icon"
+            android:layout_below="@+id/headerRelativeLayout"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"/>
+
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageViewLogoHalf" android:background="@drawable/deposlicepizza"
+            android:layout_marginTop="5dp" android:layout_marginLeft="5dp"/>
+    <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/navBar"
+            android:layout_below="@+id/imageView1"
+            android:layout_marginTop="10dp"
+            >
+
+        <LinearLayout
+                android:id="@+id/outerLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="5dip" >
+
+            <Spinner
+                    android:id="@+id/spinner1"
+                    android:layout_width="0dip"
+                    android:layout_height="0dip" />
+
+
+
+
+
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/pizza_det_line"
+                    android:orientation="vertical"
+                    android:padding="10dip" >
+
+                <TextView
+                        android:id="@+id/pDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="20dip"
+                        android:layout_marginTop="5dip"
+                        android:gravity="center_vertical"
+                        android:textColor="#ffffff"
+                        android:text="Free ranged seasoned chicken, fresh tomato, red onion, mushroom  mozzarella "/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="10dip"
+                    android:background="@drawable/kj_line"
+                    android:orientation="vertical"
+                    android:padding="10dip" >
+
+                <TextView
+                        android:id="@+id/pKJ"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="20dip"
+                        android:layout_marginTop="5dip"
+                        android:gravity="center_vertical"
+                        android:text="6712kj/6712kj per slice"
+                        android:textColor="#ffff00" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="10dip"
+                    android:background="@drawable/pizza_det_line"
+                    android:orientation="vertical"
+                    android:padding="10dip" >
+
+                <TextView
+                        android:id="@+id/textView1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:text="Quantity"
+                        android:textColor="#ffffff" />
+
+                <Button
+                        android:id="@+id/buttonPlus"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="30dip"
+                        android:layout_height="30dip"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:text="+" />
+                <TextView
+                        android:id="@+id/qVal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/buttonPlus"
+                        android:layout_margin="5dip"
+                        android:text="1"
+                        android:textColor="#ffffff" /><Button
+                    android:id="@+id/buttonMinus"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="30dip"
+                    android:layout_height="30dip"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/qVal"
+                    android:text="-" />
+
+            </RelativeLayout>
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="10dip"
+                    android:background="@drawable/line_bg_flat"
+                    android:orientation="vertical"
+                    android:padding="10dip" >
+
+                <ImageView
+                        android:id="@+id/imageViewLst"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/list_arrow"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"/>
+
+
+                <LinearLayout
+                        android:id="@+id/ltCrusts"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true">
+                    <TextView
+                            android:id="@+id/textView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="20dip"
+                            android:layout_marginTop="0dip"
+                            android:gravity="center_vertical"
+                            android:text="Crust"
+                            android:textColor="#ffffff"
+                            android:textSize="16dip"
+                            android:textStyle="bold" />
+                    <TextView
+                            android:id="@+id/textView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="20dip"
+                            android:layout_marginTop="0dip"
+                            android:gravity="center_vertical"
+                            android:text="Our new Classic Crust is even crispier on the outside and still soft, light and fulfy inside."
+                            android:textColor="#ffffff"
+                            android:textSize="12dip" />
+
+                    <TextView
+                            android:id="@+id/selectedCrust"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="20dip"
+                            android:layout_marginTop="0dip"
+                            android:gravity="center_vertical"
+                            android:text="Selected Crust"
+                            android:textColor="#ffff00"
+                            android:textSize="14dip"
+                            android:textStyle="bold" />
+                </LinearLayout>
+            </RelativeLayout>
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="10dip"
+                    android:background="@drawable/line_bg_flat"
+                    android:orientation="vertical"
+                    android:padding="10dip" >
+
+                <ImageView
+                        android:id="@+id/imageViewLst2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/list_arrow"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"/>
+
+                <LinearLayout
+                        android:id="@+id/ltSauces"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:orientation="vertical">
+
+                    <TextView
+                            android:id="@+id/textView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="20dip"
+                            android:layout_marginTop="0dip"
+                            android:gravity="center_vertical"
+                            android:text="Sauces"
+                            android:textColor="#ffffff"
+                            android:textSize="16dip"
+                            android:textStyle="bold" />
+
+
+                    <TextView
+                            android:id="@+id/textView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="20dip"
+                            android:layout_marginTop="0dip"
+                            android:gravity="center_vertical"
+                            android:text="Tomatos sauce, BBQ sauce, Chilli Sauce"
+                            android:textColor="#ffffff"
+                            android:textSize="12dip" />
+
+                    <TextView
+                            android:id="@+id/selectedSauces"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="20dip"
+                            android:layout_marginTop="0dip"
+                            android:gravity="center_vertical"
+                            android:textColor="#ffff00"
+                            android:textSize="14dip"
+                            android:textStyle="bold" />
+                </LinearLayout>
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="10dip"
+                    android:background="@drawable/line_bg_flat"
+                    android:orientation="vertical"
+                    android:padding="10dip" >
+
+                <ImageView
+                        android:id="@+id/imageViewLst"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/list_arrow"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"/>
+
+                <LinearLayout
+                        android:id="@+id/ltToppings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:orientation="vertical">
+                    <TextView
+                            android:id="@+id/textView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="20dip"
+                            android:layout_marginTop="0dip"
+                            android:gravity="center_vertical"
+                            android:text="Toppings"
+                            android:textColor="#ffffff"
+                            android:textSize="16dip"
+                            android:textStyle="bold" />
+
+
+                    <TextView
+                            android:id="@+id/textView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="20dip"
+                            android:layout_marginTop="0dip"
+                            android:gravity="center_vertical"
+                            android:text="Anchovies, Rasher Bacon, Basil etc"
+                            android:textColor="#ffffff"
+                            android:textSize="12dip" />
+
+                    <TextView
+                            android:id="@+id/selectedToppings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="20dip"
+                            android:layout_marginTop="0dip"
+                            android:gravity="center_vertical"
+                            android:textColor="#ffff00"
+                            android:textSize="14dip"
+                            android:textStyle="bold" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <Button
+                    android:id="@+id/buttonAddFav"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
+                    android:layout_marginTop="5dip"
+                    android:background="@drawable/yellow_butt_big"
+                    android:text="Save to Favourites"
+                    android:textColor="#000000"
+                    android:textSize="22dip" />
+
+
+
+
+            <Button
+                    android:id="@+id/buttonAddOrders"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
+                    android:layout_marginTop="5dip"
+                    android:background="@drawable/box_red"
+                    android:text="Add to Order"
+                    android:textColor="#ffffff"
+                    android:textSize="22dip" />
+
+        </LinearLayout>
+    </ScrollView>
+    <TableLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/navBar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="5dip"
+            android:gravity="center" >
+
+        <TableRow
+                android:background="@drawable/m_nav_bg"
+                android:weightSum="3" >
+
+            <LinearLayout
+                    android:id="@+id/search_icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal" >
+
+                <Button
+                        android:id="@+id/mainMenu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/m_nav1" />
+            </LinearLayout>
+
+
+            <RelativeLayout
+                    android:id="@+id/setting_icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal" >
+
+                <Button
+                        android:layout_centerHorizontal="true"
+
+                        android:id="@+id/callfriends"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/m_nav2" />
+
+                <TextView
+                        android:id="@+id/itemPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/total_bg2"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:paddingLeft="4dip"
+                        android:paddingRight="4dip"
+                        android:text="$100.23"
+                        android:textColor="#ffffff"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                <LinearLayout
+                        android:id="@+id/cartDummy"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dip"
+                        android:orientation="vertical" >
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:id="@+id/cal_icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal" >
+
+                <Button
+                        android:layout_centerHorizontal="true"
+
+                        android:id="@+id/favs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/m_nav3" />
+
+
+                <TextView
+                        android:id="@+id/favCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/total_bg2"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:paddingLeft="4dip"
+                        android:paddingRight="4dip"
+                        android:text=""
+                        android:textColor="#ffffff"
+                        android:textSize="14dip"
+                        android:textStyle="bold" />
+
+
+            </RelativeLayout>
+        </TableRow>
+    </TableLayout>
+
+</RelativeLayout>

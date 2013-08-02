@@ -2,22 +2,6 @@ package com.deepslice.activity;
 
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -29,19 +13,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
-
 import com.deepslice.database.AppDao;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Utils;
@@ -49,6 +28,21 @@ import com.deepslice.vo.DelLocations;
 import com.deepslice.vo.LocationDetails;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class DeliverySuburbActivity extends Activity {
 	SharedPreferences settings;
@@ -58,6 +52,7 @@ public class DeliverySuburbActivity extends Activity {
 //	private static ArrayList<DelLocations> storeLocations;
 	static String cityName="";
 	static String stName="";
+    String postCode="",suburbName="";
 	EditText input_text ;
 	ProgressDialog pd;
 	ImageView clearTextIcon;
@@ -82,6 +77,8 @@ public class DeliverySuburbActivity extends Activity {
 					long id) {
 				eBean = (DelLocations) v.getTag();
 				if (eBean != null) {
+                    postCode=eBean.getPostCode();
+                    suburbName=eBean.getSuburbName();
 					getLocationDetails(eBean.getLocationID()) ;
 //					AppProperties.saveLocationObj(DeliverySuburbActivity.this, eBean);
 //					Intent intent = new Intent(DeliverySuburbActivity.this,DeliveryAddress.class);
@@ -287,46 +284,51 @@ public class DeliverySuburbActivity extends Activity {
 		
 		//////////////////////////////////////////////////////////
 		String errorMessage="";
-		GsonBuilder gsonb = new GsonBuilder();
-	      Gson gson = gsonb.create();
-	      JSONArray results = new JSONArray(serverResponse);
-	      JSONObject respOuter = results.getJSONObject(0);
-	      JSONObject resp = respOuter.getJSONObject("Response");
-	      String status = resp.getString("Status");
-	      JSONArray resultsArray =null;
-	      Object data= resp.get("Data");
-	      boolean dataExists=false;
-	      if(data instanceof JSONArray)
-	    	  {
-	    	  resultsArray =(JSONArray)data;
-	    	  dataExists=true;
-	    	  }
-	      
-	      JSONObject errors = resp.getJSONObject("Errors");
-	      
-	      boolean hasError=errors.has("Message");
-	      if(hasError)
-	    	  {
-	    		  errorMessage=errors.getString("Message");
-	    		  System.out.println("Error:"+errorMessage);
-	    	  }
-	      
-	      deliveryLocationList = new ArrayList<DelLocations>();
+            if (statusCode==200){
+                GsonBuilder gsonb = new GsonBuilder();
+                Gson gson = gsonb.create();
+                JSONArray results = new JSONArray(serverResponse);
+                JSONObject respOuter = results.getJSONObject(0);
+                JSONObject resp = respOuter.getJSONObject("Response");
+                String status = resp.getString("Status");
+                JSONArray resultsArray =null;
+                Object data= resp.get("Data");
+                boolean dataExists=false;
+                if(data instanceof JSONArray)
+                {
+                    resultsArray =(JSONArray)data;
+                    dataExists=true;
+                }
 
-	      if(dataExists==true)
-	      {
-		      DelLocations aBean;
-		      for(int i=0; i<resultsArray.length(); i++){
-		    	  JSONObject jsResult = resultsArray.getJSONObject(i);
-		          if(jsResult!=null){
-		                String jsonString = jsResult.toString();
-		                aBean=new DelLocations();
-		                aBean=gson.fromJson(jsonString, DelLocations.class);
-		//                System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
-		                deliveryLocationList.add(aBean);
-		          }
-		     }
-	      }
+                JSONObject errors = resp.getJSONObject("Errors");
+
+                boolean hasError=errors.has("Message");
+                if(hasError)
+                {
+                    errorMessage=errors.getString("Message");
+                    System.out.println("Error:"+errorMessage);
+                }
+
+                deliveryLocationList = new ArrayList<DelLocations>();
+
+                if(dataExists==true)
+                {
+                    DelLocations aBean;
+                    for(int i=0; i<resultsArray.length(); i++){
+                        JSONObject jsResult = resultsArray.getJSONObject(i);
+                        if(jsResult!=null){
+                            String jsonString = jsResult.toString();
+                            aBean=new DelLocations();
+                            aBean=gson.fromJson(jsonString, DelLocations.class);
+                            //                System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
+                            deliveryLocationList.add(aBean);
+                        }
+                    }
+                }
+            }else {
+                deliveryLocationList = new ArrayList<DelLocations>();
+            }
+
 	      //////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
 		//////////////////////////////////////////////////////////
 		} catch (ClientProtocolException e) {
@@ -343,13 +345,21 @@ public class DeliverySuburbActivity extends Activity {
 		pd.dismiss();
 		
 		try{
-		
-	      
-			eventsAdapter = new StateListAdapter(this,R.layout.line_item_del, deliveryLocationList);
-			eventsAdapter.notifyDataSetChanged();
-			listview.setAdapter(eventsAdapter);			
-			
-			
+		    if(deliveryLocationList.size()>0){
+                eventsAdapter = new StateListAdapter(this,R.layout.line_item_del, deliveryLocationList);
+                eventsAdapter.notifyDataSetChanged();
+                listview.setAdapter(eventsAdapter);
+            }else {
+                AlertDialog alertDialog = new AlertDialog.Builder(DeliverySuburbActivity.this).create();
+                alertDialog.setTitle("info");
+                alertDialog.setMessage("Connection Error");
+                alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        DeliverySuburbActivity.this.finish();
+                        return;
+                    } });
+                alertDialog.show();
+            }
 		} catch (Exception e){
 			e.getMessage();
 			AlertDialog alertDialog = new AlertDialog.Builder(DeliverySuburbActivity.this).create();
@@ -412,7 +422,8 @@ public class DeliverySuburbActivity extends Activity {
 	};
 
 	protected void getLocationDetails(final String locationId) {
-		pd = ProgressDialog.show(DeliverySuburbActivity.this, "", "Please wait...", true, false);
+        Log.d("locationId",locationId);
+        pd = ProgressDialog.show(DeliverySuburbActivity.this, "", "Please wait...", true, false);
 		Thread t = new Thread() {
 			public void run() {
 
@@ -446,44 +457,48 @@ public class DeliverySuburbActivity extends Activity {
 				httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+ "/GetLocationDetail.aspx?LocationID="+ locationId);
 
 				response = client.execute(httpGet);
+                statusLine=response.getStatusLine();
+                statusCode=statusLine.getStatusCode();
 				HttpEntity entity = response.getEntity();
 				InputStream content = entity.getContent();
 
 				serverResponse = Utils.convertStreamToString(content);
 
 				String errorMessage = "";
-				GsonBuilder gsonb = new GsonBuilder();
-				Gson gson = gsonb.create();
-				JSONArray results = new JSONArray(serverResponse);
-				JSONObject respOuter = results.getJSONObject(0);
-				JSONObject resp = respOuter.getJSONObject("Response");
+                if (statusCode==200) {
+                    GsonBuilder gsonb = new GsonBuilder();
+                    Gson gson = gsonb.create();
+                    JSONArray results = new JSONArray(serverResponse);
+                    JSONObject respOuter = results.getJSONObject(0);
+                    JSONObject resp = respOuter.getJSONObject("Response");
+                    JSONObject errors = resp.getJSONObject("Errors");
+                    boolean hasError = errors.has("Message");
+                    if (hasError==false) {
+                        JSONArray resultsArray = null;
+                        Object data = resp.get("Data");
+                        boolean dataExists = false;
+                        if (data instanceof JSONArray) {
+                            resultsArray = (JSONArray) data;
+                            dataExists = true;
+                        }
 
-				JSONObject errors = resp.getJSONObject("Errors");
-				boolean hasError = errors.has("Message");
+                        //				LocationDetails locs = new LocationDetails();
 
-				
-				if (hasError==false) {
+                        if (dataExists == true) {
 
-					JSONArray resultsArray = null;
-					Object data = resp.get("Data");
-					boolean dataExists = false;
-					if (data instanceof JSONArray) {
-						resultsArray = (JSONArray) data;
-						dataExists = true;
-					}
-	
-	//				LocationDetails locs = new LocationDetails();
-	
-					if (dataExists == true) {
-						
-						JSONObject jsResult = resultsArray.getJSONObject(0);
-						if (jsResult != null) {
-							String jsonString = jsResult.toString();
-							selectedLocation = gson.fromJson(jsonString,LocationDetails.class);
-						}
-					}
+                            JSONObject jsResult = resultsArray.getJSONObject(0);
+                            if (jsResult != null) {
+                                String jsonString = jsResult.toString();
+                                selectedLocation = gson.fromJson(jsonString,LocationDetails.class);
+                            }
+                        }
 
-				}
+                    }
+                }else {
+                    //selectedLocation=new LocationDetails();
+                }
+
+
 				// ////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
 				// ////////////////////////////////////////////////////////
 			} catch (ClientProtocolException e) {
@@ -500,10 +515,31 @@ public class DeliverySuburbActivity extends Activity {
 
 	private void updateResultsInUiLoc() {
 		pd.dismiss();
+        if (selectedLocation!=null){
+            selectedLocation.setLocPostalCode(postCode);
+            selectedLocation.setLocSuburb(suburbName);
+            AppProperties.saveLocationObj(DeliverySuburbActivity.this, selectedLocation);
+            Log.d(".......selected logation............",selectedLocation.getLocPostalCode());
 
-		
-		AppProperties.saveLocationObj(DeliverySuburbActivity.this, selectedLocation);
-		
+            Intent intent = new Intent(DeliverySuburbActivity.this,DeliveryAddress.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("location",eBean.getSuburbName()+" "+eBean.getPostCode());
+            bundle.putString("store",eBean.getLocName());
+            bundle.putString("suburbId",eBean.getSuburbID());
+            intent.putExtras(bundle);
+            startActivityForResult(intent, 56);
+        }else {
+            AlertDialog alertDialog = new AlertDialog.Builder(DeliverySuburbActivity.this).create();
+            alertDialog.setTitle("info");
+            alertDialog.setMessage("Connection Error");
+            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    DeliverySuburbActivity.this.finish();
+                    return;
+                } });
+            alertDialog.show();
+        }
+
 //		AppDao dao=null;
 //		try {
 //			dao=AppDao.getSingleton(getApplicationContext());
@@ -520,13 +556,7 @@ public class DeliverySuburbActivity extends Activity {
 //				dao.closeConnection();
 //		}
 		
-		Intent intent = new Intent(DeliverySuburbActivity.this,DeliveryAddress.class);
-		Bundle bundle = new Bundle();
-		bundle.putString("location",eBean.getSuburbName()+" "+eBean.getPostCode());
-		bundle.putString("store",eBean.getLocName());
-		bundle.putString("suburbId",eBean.getSuburbID());
-		intent.putExtras(bundle);
-		startActivityForResult(intent, 56);
+
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////
