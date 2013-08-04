@@ -1,5 +1,21 @@
 package com.deepslice.activity;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,28 +28,20 @@ import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.deepslice.database.AppDao;
+import com.deepslice.model.LocationDetails;
+import com.deepslice.model.StreetsBean;
 import com.deepslice.utilities.AppProperties;
-import com.deepslice.vo.LocationDetails;
-import com.deepslice.vo.StreetsBean;
+import com.deepslice.utilities.Constants;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 @SuppressLint("ParserError")
 public class DeliveryAddress extends Activity implements OnClickListener {
@@ -195,7 +203,7 @@ public class DeliveryAddress extends Activity implements OnClickListener {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 		
-		HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetStreets.aspx?SuburbID="+subUrbId);
+		HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetStreets.aspx?SuburbID="+subUrbId);
 		try {
 			HttpResponse response = client.execute(httpGet);
 			StatusLine statusLine = response.getStatusLine();

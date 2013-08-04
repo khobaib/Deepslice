@@ -12,12 +12,12 @@ import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import com.deepslice.database.AppDao;
+import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.DealOrderVo;
+import com.deepslice.model.ToppingsAndSaucesVo;
+import com.deepslice.model.ToppingsHashmapVo;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Utils;
-import com.deepslice.vo.AllProductsVo;
-import com.deepslice.vo.DealOrderVo;
-import com.deepslice.vo.ToppingsAndSaucesVo;
-import com.deepslice.vo.ToppingsHashmapVo;
 
 import java.util.ArrayList;
 import java.util.HashMap;

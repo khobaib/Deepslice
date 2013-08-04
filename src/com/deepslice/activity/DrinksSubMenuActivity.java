@@ -11,10 +11,10 @@ import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import com.deepslice.database.AppDao;
-import com.deepslice.vo.AllProductsVo;
-import com.deepslice.vo.DealOrderVo;
-import com.deepslice.vo.ProductCategory;
-import com.deepslice.vo.SubCategoryVo;
+import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.DealOrderVo;
+import com.deepslice.model.ProductCategory;
+import com.deepslice.model.SubCategoryVo;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

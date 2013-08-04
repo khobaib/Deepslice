@@ -38,12 +38,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.deepslice.database.AppDao;
+import com.deepslice.model.CouponDetailsVo;
+import com.deepslice.model.CouponsVo;
+import com.deepslice.model.LocationDetails;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
-import com.deepslice.utilities.Utils;
-import com.deepslice.vo.CouponDetailsVo;
-import com.deepslice.vo.CouponsVo;
-import com.deepslice.vo.LocationDetails;
+import com.deepslice.utilities.Constants;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -196,7 +196,7 @@ public class CouponsActivity extends Activity {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 		
-		HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetCoupons.aspx?LocationID="+locationId+"&CouponCode="+input_text.getText().toString()+"&Filter=Coupons");
+		HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetCoupons.aspx?LocationID="+locationId+"&CouponCode="+input_text.getText().toString()+"&Filter=Coupons");
 		try {
 			HttpResponse response = client.execute(httpGet);
 			StatusLine statusLine = response.getStatusLine();
@@ -323,7 +323,7 @@ public class CouponsActivity extends Activity {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 		
-		HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetCouponDetail.aspx?CouponID="+couponId);
+		HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetCouponDetail.aspx?CouponID="+couponId);
 		try {
 			HttpResponse response = client.execute(httpGet);
 			StatusLine statusLine = response.getStatusLine();

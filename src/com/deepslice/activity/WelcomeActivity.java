@@ -1,15 +1,11 @@
 	package com.deepslice.activity;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import com.deepslice.database.AppDao;
-import com.deepslice.utilities.AppProperties;
-import com.deepslice.vo.DelLocations;
-import com.deepslice.vo.LocationPoints;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -20,11 +16,18 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+
+import com.deepslice.database.AppDao;
+import com.deepslice.model.DelLocations;
+import com.deepslice.model.LocationPoints;
+import com.deepslice.utilities.AppProperties;
+import com.deepslice.utilities.Constants;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class WelcomeActivity extends Activity {
 
@@ -94,7 +97,7 @@ public class WelcomeActivity extends Activity {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 		
-		HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/DeliveryLocation.aspx?SubQueryName=");
+		HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/DeliveryLocation.aspx?SubQueryName=");
 		try {
 			HttpResponse response = client.execute(httpGet);
 			StatusLine statusLine = response.getStatusLine();
@@ -189,7 +192,7 @@ public class WelcomeActivity extends Activity {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 		
-		HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetLocationsPoints.aspx");
+		HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetLocationsPoints.aspx");
 		try {
 			HttpResponse response = client.execute(httpGet);
 			StatusLine statusLine = response.getStatusLine();

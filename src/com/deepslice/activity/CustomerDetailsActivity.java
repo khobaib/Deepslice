@@ -8,9 +8,9 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.*;
 import com.deepslice.database.HelperSharedPreferences;
+import com.deepslice.model.CustomerDetailsVo;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Constants;
-import com.deepslice.vo.CustomerDetailsVo;
 
 public class CustomerDetailsActivity extends Activity implements
 		OnClickListener {

@@ -2,6 +2,20 @@ package com.deepslice.activity;
 
 
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -16,30 +30,24 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import com.deepslice.database.AppDao;
+import com.deepslice.model.LocationDetails;
+import com.deepslice.model.LocationPoints;
 import com.deepslice.utilities.AppProperties;
+import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.MyLocation;
 import com.deepslice.utilities.MyLocation.LocationResult;
 import com.deepslice.utilities.Utils;
-import com.deepslice.vo.LocationDetails;
-import com.deepslice.vo.LocationPoints;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 
 public class StoreListActivity extends Activity {
 	SharedPreferences settings;
@@ -254,7 +262,7 @@ public class StoreListActivity extends Activity {
 		for (LocationPoints locationPoints : selectedList) {
 			
 			try {
-				httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetLocationDetail.aspx?LocationID="+locationPoints.getLocationID());
+				httpGet = new HttpGet(Constants.ROOT_URL+"/GetLocationDetail.aspx?LocationID="+locationPoints.getLocationID());
 			//	httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetLocationDetail.aspx?LocationID="+"02");
 			//	httpGet =new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetLocationPoints.aspx");
 				

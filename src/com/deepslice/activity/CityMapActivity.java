@@ -14,11 +14,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.deepslice.model.LocationDetails;
+import com.deepslice.model.StoreLocationMod;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.CarerOverlay;
 import com.deepslice.utilities.MyLocation;
-import com.deepslice.vo.LocationDetails;
-import com.deepslice.vo.StoreLocationMod;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;

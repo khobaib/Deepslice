@@ -1,5 +1,7 @@
 package com.deepslice.activity;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -7,15 +9,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import com.deepslice.database.AppDao;
-import com.deepslice.vo.AllProductsVo;
-import com.deepslice.vo.GlobalObject;
-import com.deepslice.vo.ProdAndSubCategory;
-import com.deepslice.vo.SubCategoryVo;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.deepslice.database.AppDao;
+import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.ProdAndSubCategory;
+import com.deepslice.model.SubCategoryVo;
+import com.deepslice.utilities.DeepsliceApplication;
 
 public class PizzaCrustActivity extends Activity{
 
@@ -32,13 +37,14 @@ public class PizzaCrustActivity extends Activity{
     ArrayList<ProdAndSubCategory> prodAndSubCategories;
 	String crustCatId="", crustSubCatId="";
     String currentProductId="";
-    GlobalObject globalObject;
+    DeepsliceApplication appInstance;
     boolean isDeal=false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.crusts);
-        globalObject=(GlobalObject)getApplication();
+		
+        appInstance=(DeepsliceApplication)getApplication();
         listview = (ListView) findViewById(R.id.listView1);
         Bundle b = this.getIntent().getExtras();
         if(b.getBoolean("isDeal",false)){
@@ -47,7 +53,7 @@ public class PizzaCrustActivity extends Activity{
             crustCatId=b.getString("catId");
             crustSubCatId=b.getString("subCatId");
             currentProductId=b.getString("prdID");
-            myListAdapterDealSides = new MyListAdapterDealSides(this,R.layout.line_item_crust, globalObject.getCouponData().getProdAndSubCategories());
+            myListAdapterDealSides = new MyListAdapterDealSides(this,R.layout.line_item_crust, appInstance.getCouponData().getProdAndSubCategories());
             listview.setAdapter(myListAdapterDealSides);
         }else {
 		selectedBean=(AllProductsVo)b.getSerializable("selectedProduct");

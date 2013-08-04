@@ -1,5 +1,7 @@
 package com.deepslice.activity;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,15 +11,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
+import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.FavouritesVo;
 import com.deepslice.utilities.AppProperties;
-import com.deepslice.vo.AllProductsVo;
-import com.deepslice.vo.FavouritesVo;
-
-import java.util.ArrayList;
+import com.deepslice.utilities.Constants;
 
 public class FavsListActivity extends Activity{
 	
@@ -153,14 +161,14 @@ public class FavsListActivity extends Activity{
 
 				
 				ImageView icon = (ImageView) convertView.findViewById(R.id.imageView1);
-				String imgPath=AppProperties.IMAGES_LOCATION;
+				String imgPath=Constants.IMAGES_LOCATION;
 				if(AppProperties.isNull(event.getThumbnail())){
 					imgPath=imgPath+"noimage.png";
 				}
 				else{
 					imgPath=imgPath+event.getThumbnail();
 				}
-				imageLoader.DisplayImage(imgPath,FavsListActivity.this, icon);
+				imageLoader.DisplayImage(imgPath, icon);
 				
 				convertView.setTag(event);
 			}

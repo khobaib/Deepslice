@@ -10,11 +10,11 @@ import android.widget.*;
 import com.deepslice.activity.R.id;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.HelperSharedPreferences;
+import com.deepslice.model.DealOrderVo;
+import com.deepslice.model.LocationDetails;
+import com.deepslice.model.OrderVo;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
-import com.deepslice.vo.DealOrderVo;
-import com.deepslice.vo.LocationDetails;
-import com.deepslice.vo.OrderVo;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

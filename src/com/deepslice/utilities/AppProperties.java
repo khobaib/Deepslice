@@ -12,11 +12,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.deepslice.database.AppDao;
-import com.deepslice.vo.DeliveryAddressVo;
-import com.deepslice.vo.LocationDetails;
-import com.deepslice.vo.LocationPoints;
-import com.deepslice.vo.ToppingsHashmapVo;
-import com.deepslice.vo.UserBean;
+import com.deepslice.model.DeliveryAddressVo;
+import com.deepslice.model.LocationDetails;
+import com.deepslice.model.LocationPoints;
+import com.deepslice.model.ToppingsHashmapVo;
+import com.deepslice.model.UserBean;
 
 public class AppProperties {
 
@@ -27,8 +27,7 @@ public class AppProperties {
 	public static final String COUPON_TYPE_FIXED="F";
 	public static final String COUPON_TYPE_PRODUCTS="P";
 	
-	public static String WEB_SERVICE_PATH="http://apps.deepslice.com.au/";
-	public static String IMAGES_LOCATION="http://apps.deepslice.com.au/images/products/";
+
 	public static HashMap<String, ToppingsHashmapVo> selectedToppings;
 	public static boolean isLoogedIn	= false;
 	public static final String PREFS_NAME = "DeepSlice";

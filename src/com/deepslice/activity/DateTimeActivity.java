@@ -11,11 +11,11 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.*;
 import com.deepslice.database.HelperSharedPreferences;
+import com.deepslice.model.DelLocations;
+import com.deepslice.model.LocationDetails;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Utils;
-import com.deepslice.vo.DelLocations;
-import com.deepslice.vo.LocationDetails;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

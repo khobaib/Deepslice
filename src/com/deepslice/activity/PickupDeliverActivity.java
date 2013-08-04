@@ -9,9 +9,9 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.deepslice.database.HelperSharedPreferences;
+import com.deepslice.model.UserBean;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
-import com.deepslice.vo.UserBean;
 
 public class PickupDeliverActivity extends Activity implements OnClickListener {
 

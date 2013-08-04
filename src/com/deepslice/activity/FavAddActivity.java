@@ -8,12 +8,12 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.*;
 import com.deepslice.database.AppDao;
+import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.DealOrderVo;
+import com.deepslice.model.FavouritesVo;
+import com.deepslice.model.OrderVo;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
-import com.deepslice.vo.AllProductsVo;
-import com.deepslice.vo.DealOrderVo;
-import com.deepslice.vo.FavouritesVo;
-import com.deepslice.vo.OrderVo;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

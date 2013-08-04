@@ -1,5 +1,22 @@
 package com.deepslice.activity;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -12,30 +29,32 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
+import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.CouponData;
+import com.deepslice.model.CouponsVo;
+import com.deepslice.model.DealOrderVo;
+import com.deepslice.model.ProdAndSubCategory;
+import com.deepslice.model.ToppingPricesVo;
+import com.deepslice.model.ToppingSizesVo;
+import com.deepslice.model.ToppingsAndSaucesVo;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
-import com.deepslice.vo.*;
+import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.DeepsliceApplication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -63,7 +82,7 @@ public class DealGroup extends Activity {
     boolean syncedPrices =false;
     boolean syncedToppings =false;
     DealOrderVo dealOrderVo;
-    GlobalObject globalObject;
+    DeepsliceApplication globalObject;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.deal_group_data);
@@ -84,7 +103,7 @@ public class DealGroup extends Activity {
         subTitleBg=(ImageView)findViewById(R.id.imageViewListHead);
         relativeLayoutTit=(RelativeLayout)findViewById(R.id.titleLay);
         //textViewTitle.setText(bundle.getString("title"));
-        globalObject=(GlobalObject)getApplication();
+        globalObject=(DeepsliceApplication)getApplication();
         getCouponDataForID(couponID);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -228,8 +247,8 @@ public class DealGroup extends Activity {
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
    //comment = new api implementation to get deals for coupon id
-        HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetCouponDetail.aspx?CouponID="+couponID);
-        Log.d("req......",AppProperties.WEB_SERVICE_PATH+"/GetCouponDetail.aspx?CouponID="+couponID);
+        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetCouponDetail.aspx?CouponID="+couponID);
+        Log.d("req......",Constants.ROOT_URL+"/GetCouponDetail.aspx?CouponID="+couponID);
         try {
             HttpResponse response = client.execute(httpGet);
             StatusLine statusLine = response.getStatusLine();
@@ -392,14 +411,14 @@ public class DealGroup extends Activity {
 
 
 				ImageView icon = (ImageView) convertView.findViewById(R.id.imageView1);
-				String imgPath=AppProperties.IMAGES_LOCATION;
+				String imgPath=Constants.IMAGES_LOCATION;
 				if(AppProperties.isNull(event.getThumbnail())){
 					imgPath=imgPath+"noimage.png";
 				}
 				else{
 					imgPath=imgPath+event.getThumbnail();
 				}
-				imageLoader.DisplayImage(imgPath,DealGroup.this, icon);
+				imageLoader.DisplayImage(imgPath, icon);
 
                 convertView.setTag(event);
             }
@@ -568,7 +587,7 @@ public class DealGroup extends Activity {
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
 
-        HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetProductCategory.aspx?ProdCategoryID="+productCatId);
+        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetProductCategory.aspx?ProdCategoryID="+productCatId);
         try {
             HttpResponse response = client.execute(httpGet);
             StatusLine statusLine = response.getStatusLine();
@@ -953,7 +972,7 @@ public class DealGroup extends Activity {
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
         Log.d("--------",prodId);
-        HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetPizzaToppingsAndSauces.aspx?prodID="+prodId);
+        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetPizzaToppingsAndSauces.aspx?prodID="+prodId);
         try {
             HttpResponse response = client.execute(httpGet);
             StatusLine statusLine = response.getStatusLine();
@@ -1052,7 +1071,7 @@ public class DealGroup extends Activity {
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
 
-        HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH + "/GetToppingSizes.aspx");
+        HttpGet httpGet = new HttpGet(Constants.ROOT_URL + "/GetToppingSizes.aspx");
         try {
             HttpResponse response = client.execute(httpGet);
             StatusLine statusLine = response.getStatusLine();
@@ -1149,7 +1168,7 @@ public class DealGroup extends Activity {
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
 
-        HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH + "/GetToppingPrices.aspx");
+        HttpGet httpGet = new HttpGet(Constants.ROOT_URL + "/GetToppingPrices.aspx");
         try {
             HttpResponse response = client.execute(httpGet);
             StatusLine statusLine = response.getStatusLine();

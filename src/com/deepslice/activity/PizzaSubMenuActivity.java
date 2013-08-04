@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import com.deepslice.database.AppDao;
-import com.deepslice.vo.AllProductsVo;
-import com.deepslice.vo.DealOrderVo;
-import com.deepslice.vo.ProductCategory;
-import com.deepslice.vo.SubCategoryVo;
+import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.DealOrderVo;
+import com.deepslice.model.ProductCategory;
+import com.deepslice.model.SubCategoryVo;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -108,13 +108,13 @@ public class  PizzaSubMenuActivity extends Activity{
 					}
 				});
 
-                ImageButton imageButtonCreateOwn=(ImageButton)findViewById(R.id.imageButtonCreateUown);
-                imageButtonCreateOwn.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
+//                ImageButton imageButtonCreateOwn=(ImageButton)findViewById(R.id.imageButtonCreateUown);
+//                imageButtonCreateOwn.setOnClickListener(new OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                    }
+//                });
 
                 ImageButton imageButtonHalf=(ImageButton)findViewById(R.id.imageButtonHalf);
                 imageButtonHalf.setOnClickListener(new OnClickListener() {
@@ -126,10 +126,10 @@ public class  PizzaSubMenuActivity extends Activity{
                 });
 
                 ImageButton imageButtonCreateYourOwn=(ImageButton)findViewById(R.id.imageButtonCreateUown);
-                imageButtonCreateOwn.setOnClickListener(new OnClickListener() {
+                imageButtonCreateYourOwn.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent=new Intent(PizzaSubMenuActivity.this,CreateYourOwn.class);
+                        Intent intent=new Intent(PizzaSubMenuActivity.this,CreateYourOwnCrustActivity.class);
                         startActivity(intent);
                     }
                 });

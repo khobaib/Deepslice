@@ -1,22 +1,9 @@
 package com.deepslice.activity;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.Display;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.WindowManager;
-import android.widget.*;
-import com.deepslice.utilities.AppProperties;
-import com.deepslice.utilities.AppSharedPreference;
-import com.deepslice.vo.UserBean;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -28,9 +15,29 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.Display;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.deepslice.model.UserBean;
+import com.deepslice.utilities.AppProperties;
+import com.deepslice.utilities.AppSharedPreference;
+import com.deepslice.utilities.Constants;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class LoginActivity extends Activity {
 	EditText userLogin ;
@@ -260,7 +267,7 @@ public class LoginActivity extends Activity {
 		HttpClient httpclient = new DefaultHttpClient(httpParams);
 
 		try {
-				HttpGet req = new HttpGet(AppProperties.WEB_SERVICE_PATH+"Login.aspx?Mailing_Address="+user+"&Password="+pass);
+				HttpGet req = new HttpGet(Constants.ROOT_URL+"Login.aspx?Mailing_Address="+user+"&Password="+pass);
 
 				HttpResponse response = null;
 				

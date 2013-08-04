@@ -15,8 +15,8 @@ import android.view.WindowManager;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import com.deepslice.database.AppDao;
+import com.deepslice.model.LocationDetails;
 import com.deepslice.utilities.AppProperties;
-import com.deepslice.vo.LocationDetails;
 
 import java.util.ArrayList;
 

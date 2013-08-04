@@ -30,7 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.deepslice.utilities.AppProperties;
+import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -193,7 +193,7 @@ public class ForgotPassActivity extends Activity {
 		HttpClient httpclient = new DefaultHttpClient(httpParams);
 
 		try {
-				HttpGet httpReq = new HttpGet(AppProperties.WEB_SERVICE_PATH+"SendUserPassword.aspx?email="+user);
+				HttpGet httpReq = new HttpGet(Constants.ROOT_URL+"SendUserPassword.aspx?email="+user);
 				
 
 				HttpResponse response = null;

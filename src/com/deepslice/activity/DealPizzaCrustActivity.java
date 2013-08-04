@@ -1,5 +1,8 @@
 package com.deepslice.activity;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,18 +11,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
+import com.deepslice.model.CouponData;
+import com.deepslice.model.DealOrderVo;
+import com.deepslice.model.ProdAndSubCategory;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
-import com.deepslice.vo.CouponData;
-import com.deepslice.vo.DealOrderVo;
-import com.deepslice.vo.GlobalObject;
-import com.deepslice.vo.ProdAndSubCategory;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
+import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.DeepsliceApplication;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,14 +41,14 @@ public class DealPizzaCrustActivity extends Activity {
     ListView listView;
     MyListAdapter myAdapter;
     DealOrderVo dealOrderVo;
-    GlobalObject globalObject;
+    DeepsliceApplication globalObject;
     TextView textViewTitle,textViewSub;
     String currentProductId="";
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.deal_pizza_crust);
         currentProductId=getIntent().getStringExtra("prdID");
-        globalObject=(GlobalObject)getApplication();
+        globalObject=(DeepsliceApplication)getApplication();
         final CouponData couponData= globalObject.getCouponData();
         dealOrderVo=globalObject.getDealOrderVo();
         listView=(ListView)findViewById(R.id.listView1);
@@ -112,14 +120,14 @@ public class DealPizzaCrustActivity extends Activity {
 
 
                 ImageView icon = (ImageView) convertView.findViewById(R.id.imageView1);
-                String imgPath= AppProperties.IMAGES_LOCATION;
+                String imgPath= Constants.IMAGES_LOCATION;
                 if(AppProperties.isNull(event.getThumbnail())){
                     imgPath=imgPath+"noimage.png";
                 }
                 else{
                     imgPath=imgPath+event.getThumbnail();
                 }
-                imageLoader.DisplayImage(imgPath,DealPizzaCrustActivity.this, icon);
+                imageLoader.DisplayImage(imgPath, icon);
 
                 convertView.setTag(event);
             }

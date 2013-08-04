@@ -1,5 +1,22 @@
 package com.deepslice.activity;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -13,31 +30,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
+import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.CouponGroupsVo;
+import com.deepslice.model.CouponsVo;
+import com.deepslice.model.DealOrderVo;
+import com.deepslice.model.OrderVo;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
-import com.deepslice.vo.*;
+import com.deepslice.utilities.Constants;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 public class DealsListActivity extends Activity{
 	
@@ -346,27 +361,27 @@ public class DealsListActivity extends Activity{
 				TextView title = (TextView) convertView.findViewById(R.id.textView1);
 				ImageView imageView=(ImageView)convertView.findViewById(R.id.imageViewDealDone);
                 ImageView icon = (ImageView) convertView.findViewById(R.id.imageView1);
-                String imgPath=AppProperties.IMAGES_LOCATION;
-                imageLoader.DisplayImage(imgPath+"noimage.png",DealsListActivity.this, icon);
+                String imgPath=Constants.IMAGES_LOCATION;
+                imageLoader.DisplayImage(imgPath+"noimage.png", icon);
                 if(arrayListProductName.size()>0){
                     for (int i=0;i<arrayListProductName.size();i++){
 
                         if(event.getCouponGroupID().equalsIgnoreCase(arrayListProductName.get(i).get(2))){
                             title.setText(arrayListProductName.get(i).get(0));
-                            imgPath=AppProperties.IMAGES_LOCATION;
+                            imgPath=Constants.IMAGES_LOCATION;
                             if(AppProperties.isNull(arrayListProductName.get(i).get(1))){
                                 imgPath=imgPath+"noimage.png";
                             }
                             else{
                                 imgPath=imgPath+arrayListProductName.get(i).get(1);
                             }
-                            imageLoader.DisplayImage(imgPath,DealsListActivity.this, icon);
+                            imageLoader.DisplayImage(imgPath, icon);
                             imageView.setVisibility(View.VISIBLE);
                             break;
                         }else {
-                            imgPath=AppProperties.IMAGES_LOCATION;
+                            imgPath=Constants.IMAGES_LOCATION;
                             icon = (ImageView) convertView.findViewById(R.id.imageView1);
-                            imageLoader.DisplayImage(imgPath+"noimage.png",DealsListActivity.this, icon);
+                            imageLoader.DisplayImage(imgPath+"noimage.png", icon);
                             title.setText("select product #"+(position+1));
                             imageView.setVisibility(View.INVISIBLE);
                         }
@@ -519,8 +534,8 @@ public void fetchCouponDetails(final String couponId) {
 	StringBuilder builder = new StringBuilder();
 	HttpClient client = new DefaultHttpClient();
 //comment = new api implementation to get coupon groups for coupon id
-	HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetCouponGroups.aspx?CouponID="+couponId);
-    Log.d("req..deal....",AppProperties.WEB_SERVICE_PATH+"/GetCouponGroups.aspx?CouponID="+couponId);
+	HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetCouponGroups.aspx?CouponID="+couponId);
+    Log.d("req..deal....", Constants.ROOT_URL+"/GetCouponGroups.aspx?CouponID="+couponId);
 	try {
 		HttpResponse response = client.execute(httpGet);
 		StatusLine statusLine = response.getStatusLine();
@@ -747,7 +762,7 @@ final Handler mHandler = new Handler();
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
 
-        HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetCouponDetail.aspx?CouponID"+productCatId);
+        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetCouponDetail.aspx?CouponID"+productCatId);
         try {
             HttpResponse response = client.execute(httpGet);
             StatusLine statusLine = response.getStatusLine();

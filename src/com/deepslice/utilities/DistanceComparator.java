@@ -2,7 +2,7 @@ package com.deepslice.utilities;
 
 import java.util.Comparator;
 
-import com.deepslice.vo.LocationPoints;
+import com.deepslice.model.LocationPoints;
 
 public class DistanceComparator implements Comparator<LocationPoints> {
 	public int compare(LocationPoints o1, LocationPoints o2) {

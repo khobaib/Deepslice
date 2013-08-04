@@ -15,8 +15,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.deepslice.database.AppDao;
-import com.deepslice.vo.AllProductsVo;
-import com.deepslice.vo.ToppingsAndSaucesVo;
+import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.ToppingsAndSaucesVo;
 
 public class PizzaCrustsActivity extends Activity{
 

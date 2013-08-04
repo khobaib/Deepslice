@@ -12,6 +12,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.EditText;
@@ -128,6 +130,22 @@ public class Utils
         }else{
             return false;
         }
+    }
+    
+    
+    public static boolean hasInternet(Context context) {
+        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null){
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null){
+                for (int i = 0; i < info.length; i++){
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
     
     

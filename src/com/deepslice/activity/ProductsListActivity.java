@@ -1,5 +1,22 @@
 package com.deepslice.activity;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -14,610 +31,606 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
+import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.DealOrderVo;
+import com.deepslice.model.ToppingPricesVo;
+import com.deepslice.model.ToppingSizesVo;
+import com.deepslice.model.ToppingsAndSaucesVo;
 import com.deepslice.utilities.AppProperties;
-import com.deepslice.vo.*;
+import com.deepslice.utilities.Constants;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 public class ProductsListActivity extends Activity{
-	
-	ArrayList<AllProductsVo> allProductsList;
 
-	ListView listview;
-	MyListAdapterProd myAdapter;
-	
-	String catType;
-	String catId;
-	String subCatId;
+    ArrayList<AllProductsVo> allProductsList;
 
-	ProgressDialog pd;
-	boolean syncedPrices =false;
-	boolean syncedToppings =false;
-	
-	public ImageLoader imageLoader;
-	AllProductsVo selectedBean;	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.sub_menu_products);
-		imageLoader=new ImageLoader(this);	
-		Bundle b = this.getIntent().getExtras();
-		
-		catId=b.getString("catId");
-		subCatId=b.getString("subCatId"); 
-		catType=b.getString("catType");
+    ListView listview;
+    MyListAdapterProd myAdapter;
+
+    String catType;
+    String catId;
+    String subCatId;
+
+    ProgressDialog pd;
+    boolean syncedPrices =false;
+    boolean syncedToppings =false;
+
+    public ImageLoader imageLoader;
+    AllProductsVo selectedBean;	
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.sub_menu_products);
+        imageLoader=new ImageLoader(this);	
+        Bundle b = this.getIntent().getExtras();
+
+        catId=b.getString("catId");
+        subCatId=b.getString("subCatId"); 
+        catType=b.getString("catType");
         Log.d("...................dgh..............",subCatId);
         String titeDisplay=b.getString("titeDisplay");
 
-		TextView title = (TextView) findViewById(R.id.headerTextView);
-		
+        TextView title = (TextView) findViewById(R.id.headerTextView);
 
-		if(AppProperties.isNull(titeDisplay))
-		{
-			title.setText(catType);	
-		}
-		else{
-			title.setText(titeDisplay);
-		}
-		
-	      AppDao dao=null;
-				try {
-					dao=AppDao.getSingleton(getApplicationContext());
-					dao.openConnection();
-				
-					if("Pizza".equals(catType)){
-						//allProductsList=dao.getProductsPizza(catId,subCatId);
-                        allProductsList=new ArrayList<AllProductsVo>();
-                        GetDataFromApiCall();
-					}
-					else
-					{
-                       // GetDataFromApiCall();
-					    allProductsList=dao.getProductsSelected(catId,subCatId);
-                        int t=allProductsList.size();
-					}
-					
-				} catch (Exception ex)
-				{
-					System.out.println(ex.getMessage());
-				}finally{
-					if(null!=dao)
-						dao.closeConnection();
-				}
+
+        if(AppProperties.isNull(titeDisplay))
+        {
+            title.setText(catType);	
+        }
+        else{
+            title.setText(titeDisplay);
+        }
+
+        AppDao dao=null;
+        try {
+            dao=AppDao.getSingleton(getApplicationContext());
+            dao.openConnection();
+
+            if("Pizza".equals(catType)){
+                //allProductsList=dao.getProductsPizza(catId,subCatId);
+                allProductsList=new ArrayList<AllProductsVo>();
+                GetDataFromApiCall();
+            }
+            else
+            {
+                // GetDataFromApiCall();
+                allProductsList=dao.getProductsSelected(catId,subCatId);
+                int t=allProductsList.size();
+            }
+
+        } catch (Exception ex)
+        {
+            System.out.println(ex.getMessage());
+        }finally{
+            if(null!=dao)
+                dao.closeConnection();
+        }
 
         listview = (ListView) findViewById(R.id.listView1);
         myAdapter = new MyListAdapterProd(this,R.layout.line_item_product, allProductsList);
         listview.setAdapter(myAdapter);
 
-				
-				listview.setOnItemClickListener(new OnItemClickListener() {
-					public void onItemClick(AdapterView<?> parent, View v, int position,
-							long id) {
-						AllProductsVo eBean = (AllProductsVo) v.getTag();
-						if (eBean != null) {
-							selectedBean = eBean;
-							
-							if("Pizza".equals(catType)){
-								updateTopingSaucesData(eBean.getProdID());
-//								Utils.openErrorDialog(ProductsListActivity.this, eBean.getProdID());
-							}
-							else{
-							
-								Intent i=new Intent(ProductsListActivity.this, FavAddActivity.class);
-								Bundle bundle=new Bundle();
-								bundle.putString("itemName",eBean.getDisplayName());
-								bundle.putSerializable("prodBean",eBean);
-								bundle.putString("catType",catType);
-								i.putExtras(bundle);
-								startActivityForResult(i, 112233);
-							}
-						}
-					}
-				});
-				
-				Button openFavs=(Button)findViewById(R.id.favs);
-				openFavs.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						
-						Intent intent=new Intent(ProductsListActivity.this,FavsListActivity.class);
-						startActivity(intent);
-						
-					}
-				});
-				
-				Button mainMenu=(Button)findViewById(R.id.mainMenu);
-				mainMenu.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						
-						Intent intent=new Intent(ProductsListActivity.this,MenuActivity.class);
-						startActivity(intent);
-						
-					}
-				});
-				LinearLayout myOrder=(LinearLayout)findViewById(R.id.cartDummy);
-				myOrder.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						
-						Intent intent=new Intent(ProductsListActivity.this,MyOrderActivity.class);
-						startActivity(intent);
-						
-					}
-				});	
-		}
 
-	// ////////////////////////////////////////////////////////////////////////////////////////////
-	// ////////////////////////////////////////////////////////////////////////////////////////////
-	// ////////////////////////////////////////////////////////////////////////////////////////////
-	// ////////////////////////////////////////////////////////////////////////////////////////////
+        listview.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position,
+                    long id) {
+                AllProductsVo eBean = (AllProductsVo) v.getTag();
+                if (eBean != null) {
+                    selectedBean = eBean;
 
-	private class MyListAdapterProd extends ArrayAdapter<AllProductsVo> {
+                    if("Pizza".equals(catType)){
+                        updateTopingSaucesData(eBean.getProdID());
+                        //								Utils.openErrorDialog(ProductsListActivity.this, eBean.getProdID());
+                    }
+                    else{
 
-		private ArrayList<AllProductsVo> items;
+                        Intent i=new Intent(ProductsListActivity.this, FavAddActivity.class);
+                        Bundle bundle=new Bundle();
+                        bundle.putString("itemName",eBean.getDisplayName());
+                        bundle.putSerializable("prodBean",eBean);
+                        bundle.putString("catType",catType);
+                        i.putExtras(bundle);
+                        startActivityForResult(i, 112233);
+                    }
+                }
+            }
+        });
 
-		public MyListAdapterProd(Context context, int viewResourceId,
-				ArrayList<AllProductsVo> items) {
-			super(context, viewResourceId, items);
-			this.items = items;
+        Button openFavs=(Button)findViewById(R.id.favs);
+        openFavs.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-		}
+                Intent intent=new Intent(ProductsListActivity.this,FavsListActivity.class);
+                startActivity(intent);
 
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			if (convertView == null) {
-				LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				convertView = mInflater.inflate(R.layout.line_item_product, null);
-			}
-			AllProductsVo event = items.get(position);
-			if (event != null) {
+            }
+        });
 
-				TextView title = (TextView) convertView.findViewById(R.id.textView1);
-				TextView price = (TextView) convertView.findViewById(R.id.textView2);
-				TextView calories = (TextView) convertView.findViewById(R.id.textView3);
+        Button mainMenu=(Button)findViewById(R.id.mainMenu);
+        mainMenu.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-				title.setText(Html.fromHtml(event.getDisplayName()));
-				price.setText("$"+event.getPrice());
-				calories.setText(event.getCaloriesQty()+"kj");
+                Intent intent=new Intent(ProductsListActivity.this,MenuActivity.class);
+                startActivity(intent);
 
-				
-				ImageView icon = (ImageView) convertView.findViewById(R.id.imageView1);
-				String imgPath=AppProperties.IMAGES_LOCATION;
-				if(AppProperties.isNull(event.getThumbnail())){
-					imgPath=imgPath+"noimage.png";
-				}
-				else{
-					imgPath=imgPath+event.getThumbnail();
-				}
-				imageLoader.DisplayImage(imgPath,ProductsListActivity.this, icon);
-				
-				convertView.setTag(event);
-			}
-			return convertView;
-		}
+            }
+        });
+        LinearLayout myOrder=(LinearLayout)findViewById(R.id.cartDummy);
+        myOrder.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-	}
-	////////////////////////// END LIST ADAPTER
-	//===========================================================================================
-	//===========================================================================================
-	//===========================================================================================
-	
+                Intent intent=new Intent(ProductsListActivity.this,MyOrderActivity.class);
+                startActivity(intent);
 
-	final Handler mHandler = new Handler();
-	final Runnable mUpdateResults = new Runnable() {        
-		public void run() {            
-			updateResultsInUi();        
-		}    
-	};
-	String serverResponse;
-	protected void updateTopingSaucesData(final String prodId) {
-		
-		
-		AppDao dao=null;
-		try {
-			dao=AppDao.getSingleton(getApplicationContext());
-			dao.openConnection();
-			
-			syncedPrices=dao.recordExistsToppingPrices();
-			syncedToppings=dao.recordExistsToppings(prodId);
-	
-//			dao.insertOrUpdateList(questionList);
-			
-		} catch (Exception ex)
-		{
-			System.out.println(ex.getMessage());
-		}finally{
-			if(null!=dao)
-				dao.closeConnection();
-		}
+            }
+        });	
+    }
 
-	if(syncedPrices && syncedToppings)
-	{
-	updateResultsInUi();
-	}
-	else
-	{
-		pd = ProgressDialog.show(ProductsListActivity.this, "", "Please wait...", true, false);
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////
 
-		Thread t = new Thread() {            
-			public void run() {                
-			
-				try {
-					
-					if(syncedToppings==false)
-						populateToppingsAndSauces(prodId);
-					
-					if(syncedPrices==false)
-					{
-						populateToppingSizes();
-						populateToppingPrices();
-					}
-					
-				} catch (Exception ex)
-				{
-					System.out.println(ex.getMessage());
-				}
-				mHandler.post(mUpdateResults);            
-			}
+    private class MyListAdapterProd extends ArrayAdapter<AllProductsVo> {
 
-			
-		};        
-		t.start();
-	}
-		
-	}
+        private ArrayList<AllProductsVo> items;
 
-	private String getProdCatId(String abbr) {
-		String pCatId="0";
-		AppDao dao=null;
-		try {
-			dao=AppDao.getSingleton(getApplicationContext());
-			dao.openConnection();
-			
-			pCatId=dao.getCatIdByCatCode(abbr);
-	
-		} catch (Exception ex)
-		{
-			System.out.println(ex.getMessage());
-		}finally{
-			if(null!=dao)
-				dao.closeConnection();
-		}
+        public MyListAdapterProd(Context context, int viewResourceId,
+                ArrayList<AllProductsVo> items) {
+            super(context, viewResourceId, items);
+            this.items = items;
 
-		return pCatId;
-	}
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public void populateToppingsAndSauces(String prodId) {
+        }
 
-		StringBuilder builder = new StringBuilder();
-		HttpClient client = new DefaultHttpClient();
-		
-		HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetPizzaToppingsAndSauces.aspx?prodID="+prodId);
-		try {
-			HttpResponse response = client.execute(httpGet);
-			StatusLine statusLine = response.getStatusLine();
-			int statusCode = statusLine.getStatusCode();
-			if (statusCode == 200) {
-				HttpEntity entity = response.getEntity();
-				InputStream content = entity.getContent();
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(content));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					builder.append(line);
-				}
-			} else {
-				System.out.println("Failed to download file");
-			}
-		
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = mInflater.inflate(R.layout.line_item_product, null);
+            }
+            AllProductsVo event = items.get(position);
+            if (event != null) {
 
-		serverResponse = builder.toString();
-		
-		//////////////////////////////////////////////////////////
-		String errorMessage="";
-		GsonBuilder gsonb = new GsonBuilder();
-	      Gson gson = gsonb.create();
-	      JSONArray results = new JSONArray(serverResponse);
-	      JSONObject respOuter = results.getJSONObject(0);
-	      JSONObject resp = respOuter.getJSONObject("Response");
-	      String status = resp.getString("Status");
-	      JSONArray resultsArray =null;
-	      Object data= resp.get("Data");
-	      boolean dataExists=false;
-	      if(data instanceof JSONArray)
-	    	  {
-	    	  resultsArray =(JSONArray)data;
-	    	  dataExists=true;
-	    	  }
-	      
-	      JSONObject errors = resp.getJSONObject("Errors");
-	      
-	      boolean hasError=errors.has("Message");
-	      if(hasError)
-	    	  {
-	    		  errorMessage=errors.getString("Message");
-	    		  System.out.println("Error:"+errorMessage);
-	    	  }
-	      
-	      ArrayList<ToppingsAndSaucesVo> pCatList = new ArrayList<ToppingsAndSaucesVo>();
+                TextView title = (TextView) convertView.findViewById(R.id.textView1);
+                TextView price = (TextView) convertView.findViewById(R.id.textView2);
+                TextView calories = (TextView) convertView.findViewById(R.id.textView3);
 
-	      if(dataExists==true)
-	      {
-	    	  ToppingsAndSaucesVo aBean;
-		      for(int i=0; i<resultsArray.length(); i++){
-		    	  JSONObject jsResult = resultsArray.getJSONObject(i);
-		          if(jsResult!=null){
-		                String jsonString = jsResult.toString();
-		                aBean=new ToppingsAndSaucesVo();
-		                aBean=gson.fromJson(jsonString, ToppingsAndSaucesVo.class);
-		//                System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
-		                pCatList.add(aBean);
-		                
-		          }
-		     }
-	      }
-	      
-	      AppDao dao=null;
-			try {
-				dao=AppDao.getSingleton(getApplicationContext());
-				dao.openConnection();
-				
-				dao.insertToppingSauces(pCatList);
-				
-			} catch (Exception ex)
-			{
-				System.out.println(ex.getMessage());
-			}finally{
-				if(null!=dao)
-					dao.closeConnection();
-			}
-	      
-	      System.out.println("Got Toppings And Sauces: "+pCatList.size());
-	      //////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
-		//////////////////////////////////////////////////////////
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}catch (Exception e) {
-			
-		e.printStackTrace();
-	}
-	}
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                title.setText(Html.fromHtml(event.getDisplayName()));
+                price.setText("$"+event.getPrice());
+                calories.setText(event.getCaloriesQty()+"kj");
 
-	public void populateToppingSizes() {
 
-		StringBuilder builder = new StringBuilder();
-		HttpClient client = new DefaultHttpClient();
+                ImageView icon = (ImageView) convertView.findViewById(R.id.imageView1);
+                String imgPath=Constants.IMAGES_LOCATION;
+                if(AppProperties.isNull(event.getThumbnail())){
+                    imgPath=imgPath+"noimage.png";
+                }
+                else{
+                    imgPath=imgPath+event.getThumbnail();
+                }
+                imageLoader.DisplayImage(imgPath, icon);
 
-		HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH + "/GetToppingSizes.aspx");
-		try {
-			HttpResponse response = client.execute(httpGet);
-			StatusLine statusLine = response.getStatusLine();
-			int statusCode = statusLine.getStatusCode();
-			if (statusCode == 200) {
-				HttpEntity entity = response.getEntity();
-				InputStream content = entity.getContent();
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(content));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					builder.append(line);
-				}
-			} else {
-				System.out.println("Failed to download file");
-			}
+                convertView.setTag(event);
+            }
+            return convertView;
+        }
 
-			serverResponse = builder.toString();
+    }
+    ////////////////////////// END LIST ADAPTER
+    //===========================================================================================
+    //===========================================================================================
+    //===========================================================================================
 
-			// ////////////////////////////////////////////////////////
-			String errorMessage = "";
-			GsonBuilder gsonb = new GsonBuilder();
-			Gson gson = gsonb.create();
-			JSONArray results = new JSONArray(serverResponse);
-			JSONObject respOuter = results.getJSONObject(0);
-			JSONObject resp = respOuter.getJSONObject("Response");
-			String status = resp.getString("Status");
-			JSONArray resultsArray = null;
-			Object data = resp.get("Data");
-			boolean dataExists = false;
-			if (data instanceof JSONArray) {
-				resultsArray = (JSONArray) data;
-				dataExists = true;
-			}
 
-			JSONObject errors = resp.getJSONObject("Errors");
+    final Handler mHandler = new Handler();
+    final Runnable mUpdateResults = new Runnable() {        
+        public void run() {            
+            updateResultsInUi();        
+        }    
+    };
+    String serverResponse;
+    protected void updateTopingSaucesData(final String prodId) {
 
-			boolean hasError = errors.has("Message");
-			if (hasError) {
-				errorMessage = errors.getString("Message");
-				System.out.println("Error:" + errorMessage);
-			}
 
-			ArrayList<ToppingSizesVo> pCatList = new ArrayList<ToppingSizesVo>();
+        AppDao dao=null;
+        try {
+            dao=AppDao.getSingleton(getApplicationContext());
+            dao.openConnection();
 
-			if (dataExists == true) {
-				ToppingSizesVo aBean;
-				for (int i = 0; i < resultsArray.length(); i++) {
-					JSONObject jsResult = resultsArray.getJSONObject(i);
-					if (jsResult != null) {
-						String jsonString = jsResult.toString();
-						aBean = new ToppingSizesVo();
-						aBean = gson
-								.fromJson(jsonString, ToppingSizesVo.class);
-						// System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
-						pCatList.add(aBean);
-					}
-				}
-			}
+            syncedPrices=dao.recordExistsToppingPrices();
+            syncedToppings=dao.recordExistsToppings(prodId);
 
-//			AppProperties.subCatList = pCatList;
-		      AppDao dao=null;
-				try {
-					dao=AppDao.getSingleton(getApplicationContext());
-					dao.openConnection();
-					
-					dao.insertToppingSizes(pCatList);
-					
-				} catch (Exception ex)
-				{
-					System.out.println(ex.getMessage());
-				}finally{
-					if(null!=dao)
-						dao.closeConnection();
-				}
+            //			dao.insertOrUpdateList(questionList);
 
-			System.out.println("Got Topping Sizes : " + pCatList.size());
-			// ////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
-			// ////////////////////////////////////////////////////////
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
+        } catch (Exception ex)
+        {
+            System.out.println(ex.getMessage());
+        }finally{
+            if(null!=dao)
+                dao.closeConnection();
+        }
 
-			e.printStackTrace();
-		}
-	}
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        if(syncedPrices && syncedToppings)
+        {
+            updateResultsInUi();
+        }
+        else
+        {
+            pd = ProgressDialog.show(ProductsListActivity.this, "", "Please wait...", true, false);
 
-	public void populateToppingPrices() {
+            Thread t = new Thread() {            
+                public void run() {                
 
-		StringBuilder builder = new StringBuilder();
-		HttpClient client = new DefaultHttpClient();
+                    try {
 
-		HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH + "/GetToppingPrices.aspx");
-		try {
-			HttpResponse response = client.execute(httpGet);
-			StatusLine statusLine = response.getStatusLine();
-			int statusCode = statusLine.getStatusCode();
-			if (statusCode == 200) {
-				HttpEntity entity = response.getEntity();
-				InputStream content = entity.getContent();
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(content));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					builder.append(line);
-				}
-			} else {
-				System.out.println("Failed to download file");
-			}
+                        if(syncedToppings==false)
+                            populateToppingsAndSauces(prodId);
 
-			serverResponse = builder.toString();
+                        if(syncedPrices==false)
+                        {
+                            populateToppingSizes();
+                            populateToppingPrices();
+                        }
 
-			// ////////////////////////////////////////////////////////
-			String errorMessage = "";
-			GsonBuilder gsonb = new GsonBuilder();
-			Gson gson = gsonb.create();
-			JSONArray results = new JSONArray(serverResponse);
-			JSONObject respOuter = results.getJSONObject(0);
-			JSONObject resp = respOuter.getJSONObject("Response");
-			String status = resp.getString("Status");
-			JSONArray resultsArray = null;
-			Object data = resp.get("Data");
-			boolean dataExists = false;
-			if (data instanceof JSONArray) {
-				resultsArray = (JSONArray) data;
-				dataExists = true;
-			}
+                    } catch (Exception ex)
+                    {
+                        System.out.println(ex.getMessage());
+                    }
+                    mHandler.post(mUpdateResults);            
+                }
 
-			JSONObject errors = resp.getJSONObject("Errors");
 
-			boolean hasError = errors.has("Message");
-			if (hasError) {
-				errorMessage = errors.getString("Message");
-				System.out.println("Error:" + errorMessage);
-			}
+            };        
+            t.start();
+        }
 
-			ArrayList<ToppingPricesVo> pCatList = new ArrayList<ToppingPricesVo>();
+    }
 
-			if (dataExists == true) {
-				ToppingPricesVo aBean;
-				for (int i = 0; i < resultsArray.length(); i++) {
-					JSONObject jsResult = resultsArray.getJSONObject(i);
-					if (jsResult != null) {
-						String jsonString = jsResult.toString();
-						aBean = new ToppingPricesVo();
-						aBean = gson
-								.fromJson(jsonString, ToppingPricesVo.class);
-						// System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
-						pCatList.add(aBean);
-					}
-				}
-			}
+    private String getProdCatId(String abbr) {
+        String pCatId="0";
+        AppDao dao=null;
+        try {
+            dao=AppDao.getSingleton(getApplicationContext());
+            dao.openConnection();
 
-//			AppProperties.allProductsList = pCatList;
-		      AppDao dao=null;
-				try {
-					dao=AppDao.getSingleton(getApplicationContext());
-					dao.openConnection();
-					
-					dao.insertToppingPrices(pCatList);
-					
-				} catch (Exception ex)
-				{
-					System.out.println(ex.getMessage());
-				}finally{
-					if(null!=dao)
-						dao.closeConnection();
-				}
+            pCatId=dao.getCatIdByCatCode(abbr);
 
-			System.out.println("Got product catetgories: " + pCatList.size());
-			// ////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
-			// ////////////////////////////////////////////////////////
-		} catch (ClientProtocolException e) {
-			
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
+        } catch (Exception ex)
+        {
+            System.out.println(ex.getMessage());
+        }finally{
+            if(null!=dao)
+                dao.closeConnection();
+        }
 
-			e.printStackTrace();
-		}
-	}
-	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-	
-	private void updateResultsInUi() { 
+        return pCatId;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		if(null != pd)
-			pd.dismiss();
+    public void populateToppingsAndSauces(String prodId) {
 
-		Intent i=new Intent(ProductsListActivity.this, PizzaDetailsActivity.class);
-		Bundle bundle=new Bundle();
-		bundle.putSerializable("selectedProduct",selectedBean);
-		i.putExtras(bundle);
-		startActivityForResult(i, 112233);
-	}	
-	@Override
-	protected void onResume() {
-		// //////////////////////////////////////////////////////////////////////////////
+        StringBuilder builder = new StringBuilder();
+        HttpClient client = new DefaultHttpClient();
+
+        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetPizzaToppingsAndSauces.aspx?prodID="+prodId);
+        try {
+            HttpResponse response = client.execute(httpGet);
+            StatusLine statusLine = response.getStatusLine();
+            int statusCode = statusLine.getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+                InputStream content = entity.getContent();
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(content));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+            } else {
+                System.out.println("Failed to download file");
+            }
+
+
+            serverResponse = builder.toString();
+
+            //////////////////////////////////////////////////////////
+            String errorMessage="";
+            GsonBuilder gsonb = new GsonBuilder();
+            Gson gson = gsonb.create();
+            JSONArray results = new JSONArray(serverResponse);
+            JSONObject respOuter = results.getJSONObject(0);
+            JSONObject resp = respOuter.getJSONObject("Response");
+            String status = resp.getString("Status");
+            JSONArray resultsArray =null;
+            Object data= resp.get("Data");
+            boolean dataExists=false;
+            if(data instanceof JSONArray)
+            {
+                resultsArray =(JSONArray)data;
+                dataExists=true;
+            }
+
+            JSONObject errors = resp.getJSONObject("Errors");
+
+            boolean hasError=errors.has("Message");
+            if(hasError)
+            {
+                errorMessage=errors.getString("Message");
+                System.out.println("Error:"+errorMessage);
+            }
+
+            ArrayList<ToppingsAndSaucesVo> pCatList = new ArrayList<ToppingsAndSaucesVo>();
+
+            if(dataExists==true)
+            {
+                ToppingsAndSaucesVo aBean;
+                for(int i=0; i<resultsArray.length(); i++){
+                    JSONObject jsResult = resultsArray.getJSONObject(i);
+                    if(jsResult!=null){
+                        String jsonString = jsResult.toString();
+                        aBean=new ToppingsAndSaucesVo();
+                        aBean=gson.fromJson(jsonString, ToppingsAndSaucesVo.class);
+                        //                System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
+                        pCatList.add(aBean);
+
+                    }
+                }
+            }
+
+            AppDao dao=null;
+            try {
+                dao=AppDao.getSingleton(getApplicationContext());
+                dao.openConnection();
+
+                dao.insertToppingSauces(pCatList);
+
+            } catch (Exception ex)
+            {
+                System.out.println(ex.getMessage());
+            }finally{
+                if(null!=dao)
+                    dao.closeConnection();
+            }
+
+            System.out.println("Got Toppings And Sauces: "+pCatList.size());
+            //////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
+            //////////////////////////////////////////////////////////
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void populateToppingSizes() {
+
+        StringBuilder builder = new StringBuilder();
+        HttpClient client = new DefaultHttpClient();
+
+        HttpGet httpGet = new HttpGet(Constants.ROOT_URL + "/GetToppingSizes.aspx");
+        try {
+            HttpResponse response = client.execute(httpGet);
+            StatusLine statusLine = response.getStatusLine();
+            int statusCode = statusLine.getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+                InputStream content = entity.getContent();
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(content));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+            } else {
+                System.out.println("Failed to download file");
+            }
+
+            serverResponse = builder.toString();
+
+            // ////////////////////////////////////////////////////////
+            String errorMessage = "";
+            GsonBuilder gsonb = new GsonBuilder();
+            Gson gson = gsonb.create();
+            JSONArray results = new JSONArray(serverResponse);
+            JSONObject respOuter = results.getJSONObject(0);
+            JSONObject resp = respOuter.getJSONObject("Response");
+            String status = resp.getString("Status");
+            JSONArray resultsArray = null;
+            Object data = resp.get("Data");
+            boolean dataExists = false;
+            if (data instanceof JSONArray) {
+                resultsArray = (JSONArray) data;
+                dataExists = true;
+            }
+
+            JSONObject errors = resp.getJSONObject("Errors");
+
+            boolean hasError = errors.has("Message");
+            if (hasError) {
+                errorMessage = errors.getString("Message");
+                System.out.println("Error:" + errorMessage);
+            }
+
+            ArrayList<ToppingSizesVo> pCatList = new ArrayList<ToppingSizesVo>();
+
+            if (dataExists == true) {
+                ToppingSizesVo aBean;
+                for (int i = 0; i < resultsArray.length(); i++) {
+                    JSONObject jsResult = resultsArray.getJSONObject(i);
+                    if (jsResult != null) {
+                        String jsonString = jsResult.toString();
+                        aBean = new ToppingSizesVo();
+                        aBean = gson
+                                .fromJson(jsonString, ToppingSizesVo.class);
+                        // System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
+                        pCatList.add(aBean);
+                    }
+                }
+            }
+
+            //			AppProperties.subCatList = pCatList;
+            AppDao dao=null;
+            try {
+                dao=AppDao.getSingleton(getApplicationContext());
+                dao.openConnection();
+
+                dao.insertToppingSizes(pCatList);
+
+            } catch (Exception ex)
+            {
+                System.out.println(ex.getMessage());
+            }finally{
+                if(null!=dao)
+                    dao.closeConnection();
+            }
+
+            System.out.println("Got Topping Sizes : " + pCatList.size());
+            // ////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
+            // ////////////////////////////////////////////////////////
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void populateToppingPrices() {
+
+        StringBuilder builder = new StringBuilder();
+        HttpClient client = new DefaultHttpClient();
+
+        HttpGet httpGet = new HttpGet(Constants.ROOT_URL + "/GetToppingPrices.aspx");
+        try {
+            HttpResponse response = client.execute(httpGet);
+            StatusLine statusLine = response.getStatusLine();
+            int statusCode = statusLine.getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+                InputStream content = entity.getContent();
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(content));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+            } else {
+                System.out.println("Failed to download file");
+            }
+
+            serverResponse = builder.toString();
+
+            // ////////////////////////////////////////////////////////
+            String errorMessage = "";
+            GsonBuilder gsonb = new GsonBuilder();
+            Gson gson = gsonb.create();
+            JSONArray results = new JSONArray(serverResponse);
+            JSONObject respOuter = results.getJSONObject(0);
+            JSONObject resp = respOuter.getJSONObject("Response");
+            String status = resp.getString("Status");
+            JSONArray resultsArray = null;
+            Object data = resp.get("Data");
+            boolean dataExists = false;
+            if (data instanceof JSONArray) {
+                resultsArray = (JSONArray) data;
+                dataExists = true;
+            }
+
+            JSONObject errors = resp.getJSONObject("Errors");
+
+            boolean hasError = errors.has("Message");
+            if (hasError) {
+                errorMessage = errors.getString("Message");
+                System.out.println("Error:" + errorMessage);
+            }
+
+            ArrayList<ToppingPricesVo> pCatList = new ArrayList<ToppingPricesVo>();
+
+            if (dataExists == true) {
+                ToppingPricesVo aBean;
+                for (int i = 0; i < resultsArray.length(); i++) {
+                    JSONObject jsResult = resultsArray.getJSONObject(i);
+                    if (jsResult != null) {
+                        String jsonString = jsResult.toString();
+                        aBean = new ToppingPricesVo();
+                        aBean = gson
+                                .fromJson(jsonString, ToppingPricesVo.class);
+                        // System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
+                        pCatList.add(aBean);
+                    }
+                }
+            }
+
+            //			AppProperties.allProductsList = pCatList;
+            AppDao dao=null;
+            try {
+                dao=AppDao.getSingleton(getApplicationContext());
+                dao.openConnection();
+
+                dao.insertToppingPrices(pCatList);
+
+            } catch (Exception ex)
+            {
+                System.out.println(ex.getMessage());
+            }finally{
+                if(null!=dao)
+                    dao.closeConnection();
+            }
+
+            System.out.println("Got product catetgories: " + pCatList.size());
+            // ////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
+            // ////////////////////////////////////////////////////////
+        } catch (ClientProtocolException e) {
+
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+    // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+
+    private void updateResultsInUi() { 
+
+        if(null != pd)
+            pd.dismiss();
+
+        Intent i=new Intent(ProductsListActivity.this, PizzaDetailsActivity.class);
+        Bundle bundle=new Bundle();
+        bundle.putSerializable("selectedProduct",selectedBean);
+        i.putExtras(bundle);
+        startActivityForResult(i, 112233);
+    }	
+    @Override
+    protected void onResume() {
+        // //////////////////////////////////////////////////////////////////////////////
         AppDao dao = null;
         try {
             dao = AppDao.getSingleton(getApplicationContext());
@@ -672,10 +685,10 @@ public class ProductsListActivity extends Activity{
             if (null != dao)
                 dao.closeConnection();
         }
-		// ///////////////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////////////////
 
-		super.onResume();
-	}
+        super.onResume();
+    }
 
     //ruksham\n add
     final Handler mHandlerAllData = new Handler();
@@ -688,17 +701,17 @@ public class ProductsListActivity extends Activity{
     protected void GetDataFromApiCall(){
         pd=ProgressDialog.show(ProductsListActivity.this,"","Please wait...", true, false);
         try{
-        Thread tread=new Thread() {
-            public void  run(){
-                try{
-                    startGettigData();
-                }catch(Exception e){
+            Thread tread=new Thread() {
+                public void  run(){
+                    try{
+                        startGettigData();
+                    }catch(Exception e){
+                    }
+                    mHandlerAllData.post(mUpdateResultsAllData);
                 }
-                mHandlerAllData.post(mUpdateResultsAllData);
-            }
 
-        } ;
-        tread.start();
+            } ;
+            tread.start();
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -713,13 +726,13 @@ public class ProductsListActivity extends Activity{
         HttpClient client = new DefaultHttpClient();
         HttpGet httpGet=null;
 
-  //comment = new api implementation to get distinct pizzas
+        //comment = new api implementation to get distinct pizzas
         if("Pizza".equals(catType)){
-           httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetDistinctPizzas.aspx");
+            httpGet = new HttpGet(Constants.ROOT_URL+"/GetDistinctPizzas.aspx");
         }
         else
         {
-            httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetProducts.aspx?ProdCategoryID="+catId+"&ProdSubCategoryID="+subCatId);
+            httpGet = new HttpGet(Constants.ROOT_URL+"/GetProducts.aspx?ProdCategoryID="+catId+"&ProdSubCategoryID="+subCatId);
         }
 
         try {
@@ -743,39 +756,39 @@ public class ProductsListActivity extends Activity{
             serverResponseAll = builder.toString();
             boolean dataExists=false;
             JSONArray resultsArray =null;
-             if(statusCode==200){
-            //////////////////////////////////////////////////////////
-            String errorMessage="";
-            GsonBuilder gsonb = new GsonBuilder();
-            Gson gson = gsonb.create();
-            JSONArray results = new JSONArray(serverResponseAll);
-            JSONObject respOuter = results.getJSONObject(0);
-            JSONObject resp = respOuter.getJSONObject("Response");
-            String status = resp.getString("Status");
-            Object data= resp.get("Data");
-            dataExists=false;
-            if(data instanceof JSONArray)
-            {
-                resultsArray =(JSONArray)data;
-                dataExists=true;
+            if(statusCode==200){
+                //////////////////////////////////////////////////////////
+                String errorMessage="";
+                GsonBuilder gsonb = new GsonBuilder();
+                Gson gson = gsonb.create();
+                JSONArray results = new JSONArray(serverResponseAll);
+                JSONObject respOuter = results.getJSONObject(0);
+                JSONObject resp = respOuter.getJSONObject("Response");
+                String status = resp.getString("Status");
+                Object data= resp.get("Data");
+                dataExists=false;
+                if(data instanceof JSONArray)
+                {
+                    resultsArray =(JSONArray)data;
+                    dataExists=true;
+                }
+
+                JSONObject errors = resp.getJSONObject("Errors");
+
+                boolean hasError=errors.has("Message");
+                if(hasError)
+                {
+                    errorMessage=errors.getString("Message");
+                    System.out.println("Error:"+errorMessage);
+                }
+            }else {
+
             }
-
-            JSONObject errors = resp.getJSONObject("Errors");
-
-            boolean hasError=errors.has("Message");
-            if(hasError)
-            {
-                errorMessage=errors.getString("Message");
-                System.out.println("Error:"+errorMessage);
-            }
-             }else {
-
-             }
             //deliveryLocationList = new ArrayList<DelLocations>();
 
             if(dataExists==true)
             {
-               allProductsList=new ArrayList<AllProductsVo>();
+                allProductsList=new ArrayList<AllProductsVo>();
                 for(int i=0; i<resultsArray.length(); i++){
                     JSONObject jsResult = resultsArray.getJSONObject(i);
                     if(jsResult!=null){
@@ -825,9 +838,9 @@ public class ProductsListActivity extends Activity{
             pd.dismiss();
         if(allProductsList.size()>0){
 
-        myAdapter = new MyListAdapterProd(this,R.layout.line_item_product, allProductsList);
-        myAdapter.notifyDataSetChanged();
-        listview.setAdapter(myAdapter);
+            myAdapter = new MyListAdapterProd(this,R.layout.line_item_product, allProductsList);
+            myAdapter.notifyDataSetChanged();
+            listview.setAdapter(myAdapter);
         } else {
             AlertDialog alertDialog = new AlertDialog.Builder(ProductsListActivity.this).create();
             alertDialog.setTitle("info");

@@ -1,5 +1,24 @@
 package com.deepslice.activity;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -12,31 +31,23 @@ import android.os.RecoverySystem.ProgressListener;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import com.deepslice.database.AppDao;
+import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.DealOrderVo;
+import com.deepslice.model.ProductCategory;
+import com.deepslice.model.SubCategoryVo;
 import com.deepslice.utilities.AppProperties;
+import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.ResumableTask;
 import com.deepslice.utilities.ResumableTaskStarter;
-import com.deepslice.vo.AllProductsVo;
-import com.deepslice.vo.DealOrderVo;
-import com.deepslice.vo.ProductCategory;
-import com.deepslice.vo.SubCategoryVo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.*;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 public class MenuActivity extends Activity {
 
@@ -231,7 +242,7 @@ public class MenuActivity extends Activity {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 		
-		HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetProductCategory.aspx?ProdCategoryID=0");
+		HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetProductCategory.aspx?ProdCategoryID=0");
 		try {
 			HttpResponse response = client.execute(httpGet);
 			StatusLine statusLine = response.getStatusLine();
@@ -331,7 +342,7 @@ public class MenuActivity extends Activity {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 
-		HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH
+		HttpGet httpGet = new HttpGet(Constants.ROOT_URL
 				+ "/GetProductSubCategory.aspx?ProdCategoryID=0&ProdSubCategoryID=0");
 		try {
 			HttpResponse response = client.execute(httpGet);
@@ -429,8 +440,7 @@ public class MenuActivity extends Activity {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 
-		HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH
-				+ "/GetAllProducts.aspx");
+		HttpGet httpGet = new HttpGet(Constants.ROOT_URL + "/GetAllProducts.aspx");
 		try {
 			HttpResponse response = client.execute(httpGet);
 			StatusLine statusLine = response.getStatusLine();
@@ -673,8 +683,7 @@ public class MenuActivity extends Activity {
 				httpclient = new DefaultHttpClient();
 
 				try {
-					HttpGet httpgets = new HttpGet(AppProperties.WEB_SERVICE_PATH
-							+ "/GetAllProducts.aspx");
+					HttpGet httpgets = new HttpGet(Constants.ROOT_URL + "/GetAllProducts.aspx");
 
 					System.out.println("executing request " + httpgets.getRequestLine());
 

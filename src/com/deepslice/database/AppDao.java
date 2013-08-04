@@ -3,9 +3,10 @@ package com.deepslice.database;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
+
+import com.deepslice.model.*;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
-import com.deepslice.vo.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;

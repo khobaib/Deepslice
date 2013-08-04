@@ -17,9 +17,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.deepslice.activity.R;
+import com.deepslice.utilities.Constants;
 
 
 
@@ -27,31 +29,38 @@ public class ImageLoader {
     
     MemoryCache memoryCache=new MemoryCache();
     FileCache fileCache;
+    Context mContext;
     private Map<ImageView, String> imageViews=Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
     
     public ImageLoader(Context context){
         //Make the background thead low priority. This way it will not affect the UI performance
         photoLoaderThread.setPriority(Thread.NORM_PRIORITY-1);
+        mContext = context;
         
         fileCache=new FileCache(context);
     }
     
     final int stub_id=R.drawable.stub;
-    public void DisplayImage(String url, Activity activity, ImageView imageView)
-    {
+    public void DisplayImage(String url, ImageView imageView) {
+        if(url == null || url.equals("")){
+            Log.d("in ImageLoader", "image url blank");
+            url = Constants.IMAGES_LOCATION + Constants.DEFAULT_IMAGE_URL;
+        }
+        else if(!url.startsWith("http://")){
+            url = Constants.IMAGES_LOCATION + url;
+        }
         imageViews.put(imageView, url);
         Bitmap bitmap=memoryCache.get(url);
         if(bitmap!=null)
             imageView.setImageBitmap(bitmap);
         else
         {
-            queuePhoto(url, activity, imageView);
+            queuePhoto(url, imageView);
             imageView.setImageResource(stub_id);
         }    
     }
         
-    private void queuePhoto(String url, Activity activity, ImageView imageView)
-    {
+    private void queuePhoto(String url, ImageView imageView){
         //This ImageView may be used for other images before. So there may be some old tasks in the queue. We need to discard them. 
         photosQueue.Clean(imageView);
         PhotoToLoad p=new PhotoToLoad(url, imageView);

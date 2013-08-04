@@ -2,6 +2,23 @@ package com.deepslice.activity;
 
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -16,34 +33,26 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
+import com.deepslice.model.CouponDetailsVo;
+import com.deepslice.model.CouponsVo;
+import com.deepslice.model.DealOrderVo;
+import com.deepslice.model.LocationDetails;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
-import com.deepslice.vo.CouponDetailsVo;
-import com.deepslice.vo.CouponsVo;
-import com.deepslice.vo.DealOrderVo;
-import com.deepslice.vo.LocationDetails;
+import com.deepslice.utilities.Constants;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 public class DealsActivity extends Activity {
 	SharedPreferences settings;
@@ -195,7 +204,7 @@ public class DealsActivity extends Activity {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 //comment = new api implementation to get deal coupons
-		HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetCoupons.aspx?CouponCode=0&Filter=Deals");
+		HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetCoupons.aspx?CouponCode=0&Filter=Deals");
 		try {
 			HttpResponse response = client.execute(httpGet);
 			StatusLine statusLine = response.getStatusLine();
@@ -349,7 +358,7 @@ public class DealsActivity extends Activity {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 		
-		HttpGet httpGet = new HttpGet(AppProperties.WEB_SERVICE_PATH+"/GetCouponDetail.aspx?CouponID="+couponId);
+		HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetCouponDetail.aspx?CouponID="+couponId);
 		try {
 			HttpResponse response = client.execute(httpGet);
 			StatusLine statusLine = response.getStatusLine();
@@ -491,14 +500,14 @@ public class DealsActivity extends Activity {
 				TextView title = (TextView) convertView.findViewById(R.id.textView1);
 				title.setText(event.getCouponDesc());
                 ImageView icon = (ImageView) convertView.findViewById(R.id.imageView1);
-                String imgPath=AppProperties.IMAGES_LOCATION;
+                String imgPath=Constants.IMAGES_LOCATION;
                 if(AppProperties.isNull(event.getPic())){
                     imgPath=imgPath+"noimage.png";
                 }
                 else{
                     imgPath=imgPath+event.getPic();
                 }
-                imageLoader.DisplayImage(imgPath,DealsActivity.this, icon);
+                imageLoader.DisplayImage(imgPath, icon);
                 System.out.println(",,,,,,,,,,,,,,,,,,"+imgPath);
 				convertView.setTag(event);
 			}
