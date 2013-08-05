@@ -7,6 +7,7 @@ import android.app.Application;
 import com.deepslice.model.CouponData;
 import com.deepslice.model.CreateOwnPizzaData;
 import com.deepslice.model.DealOrderVo;
+import com.deepslice.model.OrderVo;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,6 +19,10 @@ import com.deepslice.model.DealOrderVo;
 public class DeepsliceApplication extends Application {
     private CouponData couponData;
     private DealOrderVo dealOrderVo;
+    private OrderVo halfOder;
+    private List<CreateOwnPizzaData> createPizzaDataList;
+
+
     public List<CreateOwnPizzaData> getCreatePizzaDataList() {
         return createPizzaDataList;
     }
@@ -26,7 +31,13 @@ public class DeepsliceApplication extends Application {
         this.createPizzaDataList = createPizzaDataList;
     }
 
-    private List<CreateOwnPizzaData> createPizzaDataList;
+    public OrderVo getHalfOder() {
+        return halfOder;
+    }
+
+    public void setHalfOder(OrderVo halfOder) {
+        this.halfOder = halfOder;
+    }
 
     public DealOrderVo getDealOrderVo() {
         return dealOrderVo;

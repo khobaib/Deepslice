@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="black">#ff000000</color>
+    <color name="black_light">#ff5b5d5f</color>
+    <color name="black_transparent_back">#90000000</color>
+    <color name="white">#ffffffff</color>
+    <color name="gray70">#ffb3b3b3</color>
+    <color name="gray70_transparent_back">#90b3b3b3</color>
+    <color name="gray">#fff3f3f3</color>
+    <color name="red">#ffff0000</color>
+    <color name="half_invisible">#ff7a0504</color>
+
+</resources>

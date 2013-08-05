@@ -29,6 +29,7 @@ public class AppProperties {
 	
 
 	public static HashMap<String, ToppingsHashmapVo> selectedToppings;
+	public static boolean isFirstPizzaChosen;
 	public static boolean isLoogedIn	= false;
 	public static final String PREFS_NAME = "DeepSlice";
 	private static AppProperties mInstance = null;

@@ -39,10 +39,14 @@ import com.deepslice.utilities.DeepsliceApplication;
 
 public class PizzaDetailsActivity extends Activity{
 
+    private static final int REQUEST_CODE_IS_PIZZA_HALF = 1001;
+
+    Boolean isHalf = false;
+
     TextView favCountTxt;
     int currentCount=1;
     AllProductsVo selectedBean;
-    
+
     ImageLoader imageLoader;
 
     Spinner spinnerCat;
@@ -55,15 +59,30 @@ public class PizzaDetailsActivity extends Activity{
     TextView selectedToppings,selectedSauces,selectedCrusts;
     DealOrderVo dealOrderVo;
     HashMap<String, ToppingsHashmapVo> toppingsSelected;
-    DeepsliceApplication globalObject;
+    DeepsliceApplication appInstance;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pizza_details);
-        
+
         imageLoader = new ImageLoader(PizzaDetailsActivity.this);
+        appInstance=(DeepsliceApplication)getApplication();
+
         Bundle b = this.getIntent().getExtras();
-        globalObject=(DeepsliceApplication)getApplication();
+        isHalf = b.getBoolean("isHalf", false);
+        
+        ImageView ivHideLeftHalf = (ImageView) findViewById(R.id.iv_hide_left_half);
+        ImageView ivHideRightHalf = (ImageView) findViewById(R.id.iv_hide_right_half);
+        
+        if(isHalf){
+            if(AppProperties.isFirstPizzaChosen){
+                ivHideLeftHalf.setVisibility(View.VISIBLE);
+            }
+            else{
+                ivHideRightHalf.setVisibility(View.VISIBLE);
+            }
+        }
+
         Button buttonAddOrders= (Button)findViewById(R.id.buttonAddOrders);
         TextView pDesc=(TextView)findViewById(R.id.pDesc);
         ImageView pImage = (ImageView) findViewById(R.id.imageView1);
@@ -82,13 +101,13 @@ public class PizzaDetailsActivity extends Activity{
         if (isDeal){
             RelativeLayout rlCount = (RelativeLayout) findViewById(R.id.rl_count);
             rlCount.setVisibility(View.GONE);
-            dealOrderVo=globalObject.getDealOrderVo();
+            dealOrderVo=appInstance.getDealOrderVo();
             couponGroupID=b.getString("couponGroupID");
             productId=dealOrderVo.getProdID();
             buttonAddOrders.setText("Add to Deal");
             headerTextView.setText("Add to Deal");
             String defCrusts="";
-            for(ProdAndSubCategory subCategory:globalObject.getCouponData().getProdAndSubCategories()){
+            for(ProdAndSubCategory subCategory:appInstance.getCouponData().getProdAndSubCategories()){
                 if(b.getString("prdID").equalsIgnoreCase(subCategory.getProdID())){
                     defCrusts=subCategory.getSubCat2Code();
                     break;
@@ -102,11 +121,11 @@ public class PizzaDetailsActivity extends Activity{
         }
 
         ImageView imageViewLogoH=(ImageView)findViewById(R.id.imageViewLogoHalf);
-        if (b.getBoolean("isHalf",false)){
-            imageViewLogoH.setVisibility(View.VISIBLE);
-        }else {
-            imageViewLogoH.setVisibility(View.INVISIBLE);
-        }
+        //        if (b.getBoolean("isHalf",false)){
+        //            imageViewLogoH.setVisibility(View.VISIBLE);
+        //        }else {
+        //            imageViewLogoH.setVisibility(View.INVISIBLE);
+        //        }
 
 
 
@@ -154,7 +173,7 @@ public class PizzaDetailsActivity extends Activity{
                 Bundle bundle=new Bundle();
                 AppProperties.selectedToppings=toppingsSelected;
                 if (isDeal){
-                    bundle.putSerializable("selectedProduct",globalObject.getDealOrderVo());
+                    bundle.putSerializable("selectedProduct",appInstance.getDealOrderVo());
                     bundle.putBoolean("isDeal",isDeal);
                 }  else {
                     bundle.putSerializable("selectedProduct",selectedBean);
@@ -392,9 +411,28 @@ public class PizzaDetailsActivity extends Activity{
                         finish();
                     }
                     else {
-                        dao.insertOrder(tempOrderBean);
-                        Toast.makeText(PizzaDetailsActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
-                        finish();
+                        if(isHalf){
+                            if(AppProperties.isFirstPizzaChosen){
+                                Log.d("HALF PIZZA", "adding orders to cart");
+                                OrderVo firstHalfOrder = appInstance.getHalfOder();
+                                dao.insertOrder(firstHalfOrder);
+                                dao.insertOrder(tempOrderBean);
+                                AppProperties.isFirstPizzaChosen = false;
+                                finish();
+                            }
+                            else{
+                                Log.d("HALF PIZZA", "returning from PizzaDetailsActivity after set half-pizza");
+                                appInstance.setHalfOder(tempOrderBean);
+                                AppProperties.isFirstPizzaChosen = true;
+                                finish();
+                            }
+                        }
+                        else{
+                            dao.insertOrder(tempOrderBean);
+                            Toast.makeText(PizzaDetailsActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+
                     }
 
                 } catch (Exception ex)
@@ -467,8 +505,7 @@ public class PizzaDetailsActivity extends Activity{
             e.printStackTrace();
         }
     }	 
-    protected void onActivityResult(int requestCode, int resultCode,
-            Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != RESULT_OK) {
             return;
         }
@@ -514,6 +551,9 @@ public class PizzaDetailsActivity extends Activity{
 
         double finalPrice=generateTotalPrice();
 
+        if(isHalf)
+            finalPrice = finalPrice/2;
+        
         finalPrice=AppProperties.roundTwoDecimals(finalPrice);
 
         f.setPrice(String.valueOf(finalPrice));

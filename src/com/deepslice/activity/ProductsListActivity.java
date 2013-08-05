@@ -54,10 +54,14 @@ import com.google.gson.GsonBuilder;
 
 public class ProductsListActivity extends Activity{
 
+    private static final int REQUEST_CODE_IS_PIZZA_HALF = 1001;
+
     ArrayList<AllProductsVo> allProductsList;
 
     ListView listview;
     MyListAdapterProd myAdapter;
+
+    Boolean isHalf = false;
 
     String catType;
     String catId;
@@ -79,6 +83,7 @@ public class ProductsListActivity extends Activity{
         catId=b.getString("catId");
         subCatId=b.getString("subCatId"); 
         catType=b.getString("catType");
+        isHalf = b.getBoolean("isHalf", false);
         Log.d("...................dgh..............",subCatId);
         String titeDisplay=b.getString("titeDisplay");
 
@@ -624,10 +629,49 @@ public class ProductsListActivity extends Activity{
 
         Intent i=new Intent(ProductsListActivity.this, PizzaDetailsActivity.class);
         Bundle bundle=new Bundle();
+        bundle.putBoolean("isHalf", isHalf);
         bundle.putSerializable("selectedProduct",selectedBean);
         i.putExtras(bundle);
-        startActivityForResult(i, 112233);
+
+        if(isHalf){
+            startActivity(i);
+            Log.d("HALF PIZZA", "returning from ProductListActivity after set half-pizza");
+            finish();
+            //            startActivityForResult(i, REQUEST_CODE_IS_PIZZA_HALF);
+        }
+
+        else
+            startActivityForResult(i, 112233);
     }	
+
+
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+
+        switch(requestCode){
+            case REQUEST_CODE_IS_PIZZA_HALF:
+                // parse data
+                Log.d("HALF PIZZA", "returning from ProductListActivity after set half-pizza");
+                Intent resultData = new Intent();
+                setResult(Activity.RESULT_OK, resultData);
+                finish();
+                break;
+            default:
+                break;
+        }
+    }
+
+
+
+
     @Override
     protected void onResume() {
         // //////////////////////////////////////////////////////////////////////////////
@@ -842,16 +886,16 @@ public class ProductsListActivity extends Activity{
             myAdapter.notifyDataSetChanged();
             listview.setAdapter(myAdapter);
         } else {
-            AlertDialog alertDialog = new AlertDialog.Builder(ProductsListActivity.this).create();
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(ProductsListActivity.this);
             alertDialog.setTitle("info");
             alertDialog.setMessage("Try again later");
-            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
 
                     ProductsListActivity.this.finish();
                     return;
                 } });
-            alertDialog.show();
+            alertDialog.create().show();
         }
     }
 }

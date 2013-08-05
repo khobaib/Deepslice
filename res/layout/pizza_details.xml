@@ -31,6 +31,24 @@
         android:src="@drawable/pizza_det_icon" />
 
     <ImageView
+        android:id="@+id/iv_hide_left_half"
+        android:layout_width="100dip"
+        android:layout_height="100dip"
+        android:layout_alignLeft="@+id/imageView1"
+        android:layout_alignTop="@+id/imageView1"
+        android:background="@color/half_invisible"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_hide_right_half"
+        android:layout_width="100dip"
+        android:layout_height="100dip"
+        android:layout_alignRight="@+id/imageView1"
+        android:layout_alignTop="@+id/imageView1"
+        android:background="@color/half_invisible"
+        android:visibility="gone" />
+
+    <ImageView
         android:id="@+id/imageViewLogoHalf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

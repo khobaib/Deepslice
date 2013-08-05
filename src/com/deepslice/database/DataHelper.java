@@ -94,23 +94,23 @@ public class DataHelper {
 	 * Create field array of required tables
 	 * 
 	 */
-	static String[][] table_cats_columns = new String[][] { { "sr_no", "ProdCatID","ProdCatCode", "ProdCatAbbr","ProdCatDesc","AllowPartialSelection","PartialSelectionText","PartialSelectionSurcharge","AllowSubCat1","SubCat1Text","AllowSubCat2","SubCat2Text","ProductBarText","AllowOptions","OptionBarText","OptionCounting", "Thumbnail", "FullImage"}, };
-	static String[][] table_subcats_columns = new String[][] { { "sr_no", "ProdCatID","SubCatID", "SubCatOf", "SubCatCode", "SubCatAbbr", "SubCatDesc", "DisplaySequence", "Thumbnail", "FullImage"}, };
-	static String[][] table_products_columns = new String[][] { { "sr_no", "ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage"}, };
+	static String[] table_cats_columns = new String[] { "sr_no", "ProdCatID","ProdCatCode", "ProdCatAbbr","ProdCatDesc","AllowPartialSelection","PartialSelectionText","PartialSelectionSurcharge","AllowSubCat1","SubCat1Text","AllowSubCat2","SubCat2Text","ProductBarText","AllowOptions","OptionBarText","OptionCounting", "Thumbnail", "FullImage"};
+	static String[] table_subcats_columns = new String[] { "sr_no", "ProdCatID","SubCatID", "SubCatOf", "SubCatCode", "SubCatAbbr", "SubCatDesc", "DisplaySequence", "Thumbnail", "FullImage"};
+	static String[] table_products_columns = new String[] { "sr_no", "ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage"};
 
-	static String[][] table_topping_sizes = new String[][] { { "sr_no", "ToppingSizeID","ToppingSizeCode", "ToppingSizeDesc","ToppingAbbr","ToppingAmount","DisplaySequence"}, };
-	static String[][] table_topping_prices = new String[][] { { "sr_no", "ToppingID","ToppingCode", "ToppingAbbr", "ToppingDesc", "IsSauce", "CaloriesQty", "ToppingSizeID", "ToppingSizeCode", "ToppingSizeDesc", "ToppingPrice"}, };
-	static String[][] table_sauses_and_toppings = new String[][] { { "sr_no", "ToppingID","ToppingCode", "ToppingAbbr", "ToppingDesc", "IsSauce", "CaloriesQty", "ProdID", "OwnPrice", "DisplaySequence", "IsFreeWithPizza"}, };
+	static String[] table_topping_sizes = new String[] { "sr_no", "ToppingSizeID","ToppingSizeCode", "ToppingSizeDesc","ToppingAbbr","ToppingAmount","DisplaySequence"};
+	static String[] table_topping_prices = new String[] { "sr_no", "ToppingID","ToppingCode", "ToppingAbbr", "ToppingDesc", "IsSauce", "CaloriesQty", "ToppingSizeID", "ToppingSizeCode", "ToppingSizeDesc", "ToppingPrice"};
+	static String[] table_sauses_and_toppings = new String[] { "sr_no", "ToppingID","ToppingCode", "ToppingAbbr", "ToppingDesc", "IsSauce", "CaloriesQty", "ProdID", "OwnPrice", "DisplaySequence", "IsFreeWithPizza"};
 
-	static String[][] table_favs_columns = new String[][] { { "sr_no","ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage", "customName","ProdCatName"}, };
+	static String[] table_favs_columns = new String[] { "sr_no","ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage", "customName","ProdCatName"};
 	
-	static String[][] table_order_columns = new String[][] { { "sr_no","ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage", "Quantity", "Crust", "Sauce", "Toppings","ProdCatName"}, };
-	static String[][] table_delivery_locations_columns = new String[][] { { "sr_no","SuburbName","SuburbAbbr","PostCode", "LocName", "LocPostalCode", "LocStreet", "LocAddress", "LocLongitude", "LocLatitude", "OpeningTime", "ClosingTime", "LocationID", "SuburbID"}, };
+	static String[] table_order_columns = new String[] { "sr_no","ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage", "Quantity", "Crust", "Sauce", "Toppings","ProdCatName"};
+	static String[] table_delivery_locations_columns = new String[] { "sr_no","SuburbName","SuburbAbbr","PostCode", "LocName", "LocPostalCode", "LocStreet", "LocAddress", "LocLongitude", "LocLatitude", "OpeningTime", "ClosingTime", "LocationID", "SuburbID"};
 	
-	static String[][] table_locations_history_columns = new String[][] { { "sr_no","LocationID","LocName","LocSuburb", "LocPostalCode", "LocStreet", "LocAddress", "LocPhones", "LocLongitude", "LocLatitude", "OpeningTime", "ClosingTime", "isDelivery","unit","streetNum","streetName","crossStreetName","deliveryInstructions",}, };
+	static String[] table_locations_history_columns = new String[] { "sr_no","LocationID","LocName","LocSuburb", "LocPostalCode", "LocStreet", "LocAddress", "LocPhones", "LocLongitude", "LocLatitude", "OpeningTime", "ClosingTime", "isDelivery","unit","streetNum","streetName","crossStreetName","deliveryInstructions"};
 
-    static String[][] table_deal_columns = new String[][] { { "sr_no", "CouponID","CouponTypeID", "CouponTypeCode","CouponCode","CouponAbbr","CouponDesc","DisplayText","IsPercentage","IsFixed","IsDiscountedProduct","Amount","MaxUsage","IsLimitedTimeOffer","EffectiveStartDate","EffectiveEndDate", "EffectiveTimeStart", "EffectiveTimeEnd","IsOnDelivery","IsOnPickup","IsOnSunday","IsOnMonday","IsOnTuesday","IsOnWednesday","IsOnThursday","IsOnFriday","IsOnSaturday","IsOnInternet","IsOnlyOnInternet","IsTaxable","IsPrerequisite","IsLocationBased","IsGreetingSpecials","Pic"}, };
-    static String[][] table_deal_order_columns = new String[][] { { "sr_no","CouponID","CouponTypeID","CouponCode", "CouponGroupID", "DiscountedPrice", "ProdID", "DisplayName","Quantity","isUpdate","Image"}, };
+    static String[] table_deal_columns = new String[] { "sr_no", "CouponID","CouponTypeID", "CouponTypeCode","CouponCode","CouponAbbr","CouponDesc","DisplayText","IsPercentage","IsFixed","IsDiscountedProduct","Amount","MaxUsage","IsLimitedTimeOffer","EffectiveStartDate","EffectiveEndDate", "EffectiveTimeStart", "EffectiveTimeEnd","IsOnDelivery","IsOnPickup","IsOnSunday","IsOnMonday","IsOnTuesday","IsOnWednesday","IsOnThursday","IsOnFriday","IsOnSaturday","IsOnInternet","IsOnlyOnInternet","IsTaxable","IsPrerequisite","IsLocationBased","IsGreetingSpecials","Pic"};
+    static String[] table_deal_order_columns = new String[] { "sr_no","CouponID","CouponTypeID","CouponCode", "CouponGroupID", "DiscountedPrice", "ProdID", "DisplayName","Quantity","isUpdate","Image"};
 
     /**
 	 * Query for creating stories table
@@ -161,25 +161,25 @@ public class DataHelper {
 	/**
 	 * clean up the database
 	 */
-	public void clean() {
-		sqLiteDb.delete(TABLE_NAME_SUB_CAT, null, null);
-		sqLiteDb.delete(TABLE_NAME_PRODUCTS, null, null);
-		sqLiteDb.delete(TABLE_NAME_CATS, null, null);
-		
-		sqLiteDb.delete(TABLE_NAME_TOPPING_SIZES, null, null);
-		sqLiteDb.delete(TABLE_NAME_TOPPING_PRICES, null, null);
-		sqLiteDb.delete(TABLE_NAME_SAUSES_AND_TOPPINGS, null, null);
-		
-		sqLiteDb.delete(TABLE_NAME_FAVS, null, null);
-		sqLiteDb.delete(TABLE_NAME_ORDERS, null, null);
-		sqLiteDb.delete(TABLE_NAME_DELIVERY_LOCATIONS, null, null);
-		
-		sqLiteDb.delete(TABLE_NAME_LOCATIONS_HISTORY, null, null);
-
-        sqLiteDb.delete(TABLE_NAME_DEAL,null,null);
-
-        sqLiteDb.delete("deal_orders",null,null);
-	}
+//	public void clean() {
+//		sqLiteDb.delete(TABLE_NAME_SUB_CAT, null, null);
+//		sqLiteDb.delete(TABLE_NAME_PRODUCTS, null, null);
+//		sqLiteDb.delete(TABLE_NAME_CATS, null, null);
+//		
+//		sqLiteDb.delete(TABLE_NAME_TOPPING_SIZES, null, null);
+//		sqLiteDb.delete(TABLE_NAME_TOPPING_PRICES, null, null);
+//		sqLiteDb.delete(TABLE_NAME_SAUSES_AND_TOPPINGS, null, null);
+//		
+//		sqLiteDb.delete(TABLE_NAME_FAVS, null, null);
+//		sqLiteDb.delete(TABLE_NAME_ORDERS, null, null);
+//		sqLiteDb.delete(TABLE_NAME_DELIVERY_LOCATIONS, null, null);
+//		
+//		sqLiteDb.delete(TABLE_NAME_LOCATIONS_HISTORY, null, null);
+//
+//        sqLiteDb.delete(TABLE_NAME_DEAL,null,null);
+//
+//        sqLiteDb.delete("deal_orders",null,null);
+//	}
 
 	/**
 	 * clean up the table by tableNumber
@@ -223,36 +223,36 @@ public class DataHelper {
 	/**
 	 * Insert new row into table
 	 */
-	public synchronized long insertDataCategories(int columnNo,	String[] values) {
-		ContentValues vals = new ContentValues();
-		for (int i = 0; i < values.length; i++) {
-			vals.put(table_cats_columns[columnNo][i + 1], values[i]);
-		}
-		return sqLiteDb.insert(TABLE_NAME_CATS, null, vals);
-	}
-	public synchronized long insertDataSubCat(int columnNo,	String[] values) {
-		ContentValues vals = new ContentValues();
-		for (int i = 0; i < values.length; i++) {
-			vals.put(table_subcats_columns[columnNo][i + 1], values[i]);
-		}
-		return sqLiteDb.insert(TABLE_NAME_SUB_CAT, null, vals);
-	}
+//	public synchronized long insertDataCategories(int columnNo,	String[] values) {
+//		ContentValues vals = new ContentValues();
+//		for (int i = 0; i < values.length; i++) {
+//			vals.put(table_cats_columns[columnNo][i + 1], values[i]);
+//		}
+//		return sqLiteDb.insert(TABLE_NAME_CATS, null, vals);
+//	}
+//	public synchronized long insertDataSubCat(int columnNo,	String[] values) {
+//		ContentValues vals = new ContentValues();
+//		for (int i = 0; i < values.length; i++) {
+//			vals.put(table_subcats_columns[columnNo][i + 1], values[i]);
+//		}
+//		return sqLiteDb.insert(TABLE_NAME_SUB_CAT, null, vals);
+//	}
 	
 	/////////////////////////
-	public synchronized long insertDataProducts(int columnNo,	String[] values) {
-		ContentValues vals = new ContentValues();
-		for (int i = 0; i < values.length; i++) {
-			vals.put(table_products_columns[columnNo][i + 1], values[i]);
-		}
-		return sqLiteDb.insert(TABLE_NAME_PRODUCTS, null, vals);
-	}
+//	public synchronized long insertDataProducts(int columnNo,	String[] values) {
+//		ContentValues vals = new ContentValues();
+//		for (int i = 0; i < values.length; i++) {
+//			vals.put(table_products_columns[columnNo][i + 1], values[i]);
+//		}
+//		return sqLiteDb.insert(TABLE_NAME_PRODUCTS, null, vals);
+//	}
 	
 //////////////////////////////////////////////////////////////////////////////////////////	
 	public synchronized long insertRecordCats(String... values) {
 
 		ContentValues vals = new ContentValues();
 		for (int i = 0; i < values.length; i++) {
-			vals.put(table_cats_columns[0][i + 1], values[i]);
+			vals.put(table_cats_columns[i + 1], values[i]);
 		}
 
 		return sqLiteDb.insert(TABLE_NAME_CATS, null, vals);
@@ -262,7 +262,7 @@ public class DataHelper {
 
 		ContentValues vals = new ContentValues();
 		for (int i = 0; i < values.length; i++) {
-			vals.put(table_subcats_columns[0][i + 1], values[i]);
+			vals.put(table_subcats_columns[i + 1], values[i]);
 		}
 
 		return sqLiteDb.insert(TABLE_NAME_SUB_CAT, null, vals);
@@ -272,7 +272,7 @@ public class DataHelper {
 
 		ContentValues vals = new ContentValues();
 		for (int i = 0; i < values.length; i++) {
-			vals.put(table_products_columns[0][i + 1], values[i]);
+			vals.put(table_products_columns[i + 1], values[i]);
 		}
 
 		return sqLiteDb.insert(TABLE_NAME_PRODUCTS, null, vals);
@@ -282,7 +282,7 @@ public class DataHelper {
 
 		ContentValues vals = new ContentValues();
 		for (int i = 0; i < values.length; i++) {
-			vals.put(table_favs_columns[0][i + 1], values[i]);
+			vals.put(table_favs_columns[i + 1], values[i]);
 		}
 
 		return sqLiteDb.insert(TABLE_NAME_FAVS, null, vals);
@@ -291,7 +291,7 @@ public class DataHelper {
 
 		ContentValues vals = new ContentValues();
 		for (int i = 0; i < values.length; i++) {
-			vals.put(table_order_columns[0][i + 1], values[i]);
+			vals.put(table_order_columns[i + 1], values[i]);
 		}
 
 		return sqLiteDb.insert(TABLE_NAME_ORDERS, null, vals);
@@ -300,9 +300,9 @@ public class DataHelper {
     public synchronized long insertRecordDealOrder(String... values) {
 
         ContentValues vals = new ContentValues();
-        int x=table_deal_order_columns.length;
+//        int x=table_deal_order_columns.length;
         for (int i = 0; i < values.length; i++) {
-            vals.put(table_deal_order_columns[0][i + 1], values[i]);
+            vals.put(table_deal_order_columns[i + 1], values[i]);
         }
 
         return sqLiteDb.insert("deal_orders", null, vals);
@@ -312,7 +312,7 @@ public class DataHelper {
 
 		ContentValues vals = new ContentValues();
 		for (int i = 0; i < values.length; i++) {
-			vals.put(table_locations_history_columns[0][i + 1], values[i]);
+			vals.put(table_locations_history_columns[i + 1], values[i]);
 		}
 
 		return sqLiteDb.insert(TABLE_NAME_LOCATIONS_HISTORY, null, vals);
@@ -323,7 +323,7 @@ public class DataHelper {
 
         ContentValues vals = new ContentValues();
         for (int i = 0; i < values.length; i++) {
-            vals.put(table_deal_columns[0][i + 1], values[i]);
+            vals.put(table_deal_columns[i + 1], values[i]);
         }
         sqLiteDb.insert(TABLE_NAME_DEAL, null, vals);
 
@@ -370,13 +370,13 @@ public class DataHelper {
 	/**
 	 * Fetch all records of table
 	 */
-	public synchronized Cursor fetchAllRecord() {
-		try {
-			return sqLiteDb.query(TABLE_NAME_CATS, table_cats_columns[0], null,null, null, null, "id asc");
-		} catch (Exception e) {
-			return null;
-		}
-	}
+//	public synchronized Cursor fetchAllRecord() {
+//		try {
+//			return sqLiteDb.query(TABLE_NAME_CATS, table_cats_columns, null,null, null, null, "id asc");
+//		} catch (Exception e) {
+//			return null;
+//		}
+//	}
 
 	/**
 	 * Open the connection using helper class
@@ -552,10 +552,10 @@ public synchronized String getCatCodeByCatId(String catId) {
 	}	
 //////////////////////////////////////////////////////////////////////////////////////////
 	public synchronized long insertToppingSizes(String... values) {
-
+	    Log.d("<<<>>>", "in dbhelper, inserting topping sizes");
 		ContentValues vals = new ContentValues();
 		for (int i = 0; i < values.length; i++) {
-			vals.put(table_topping_sizes[0][i + 1], values[i]);
+			vals.put(table_topping_sizes[i + 1], values[i]);
 		}
 
 		return sqLiteDb.insert(TABLE_NAME_TOPPING_SIZES, null, vals);
@@ -565,7 +565,7 @@ public synchronized String getCatCodeByCatId(String catId) {
 
 		ContentValues vals = new ContentValues();
 		for (int i = 0; i < values.length; i++) {
-			vals.put(table_topping_prices[0][i + 1], values[i]);
+			vals.put(table_topping_prices[i + 1], values[i]);
 		}
 
 		return sqLiteDb.insert(TABLE_NAME_TOPPING_PRICES, null, vals);
@@ -575,7 +575,7 @@ public synchronized String getCatCodeByCatId(String catId) {
 
 		ContentValues vals = new ContentValues();
 		for (int i = 0; i < values.length; i++) {
-			vals.put(table_sauses_and_toppings[0][i + 1], values[i]);
+			vals.put(table_sauses_and_toppings[i + 1], values[i]);
 		}
 
 		return sqLiteDb.insert(TABLE_NAME_SAUSES_AND_TOPPINGS, null, vals);
@@ -822,7 +822,7 @@ public synchronized long insertRecordDeliveryLocations(String... values) {
 
 	ContentValues vals = new ContentValues();
 	for (int i = 0; i < values.length; i++) {
-		vals.put(table_delivery_locations_columns[0][i + 1], values[i]);
+		vals.put(table_delivery_locations_columns[i + 1], values[i]);
 	}
 
 	return sqLiteDb.insert(TABLE_NAME_DELIVERY_LOCATIONS, null, vals);
@@ -854,7 +854,7 @@ public synchronized boolean isEmptyDeliveryLocatoins() {
 
 public synchronized Cursor fetchAllRecordsDeliveryLocations() {
 	try {
-		return sqLiteDb.query(TABLE_NAME_DELIVERY_LOCATIONS, table_delivery_locations_columns[0], null,null, null, null, null);
+		return sqLiteDb.query(TABLE_NAME_DELIVERY_LOCATIONS, table_delivery_locations_columns, null,null, null, null, null);
 	} catch (Exception e) {
 		return null;
 	}
