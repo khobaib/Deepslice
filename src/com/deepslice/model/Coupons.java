@@ -2,7 +2,7 @@ package com.deepslice.model;
 
 import java.io.Serializable;
 
-public class CouponsVo implements Serializable {
+public class Coupons implements Serializable {
 	String CouponID = "";
 	String CouponTypeID = "";
 	String CouponTypeCode = "";

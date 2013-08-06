@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.deepslice.database.AppDao;
+import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.utilities.AppProperties;
 
 public class PaymentSelectionActivity extends Activity{
@@ -56,25 +57,35 @@ public class PaymentSelectionActivity extends Activity{
 			}
 		});
 		///////////////////////////////
-		AppDao dao=null;
-		try {
-			dao=AppDao.getSingleton(getApplicationContext());
-			dao.openConnection();
-		
-			ArrayList<String> orderInfo = dao.getOrderInfo();
-			
-			if(null!=orderInfo && orderInfo.size()==2)
-			{
-				totalPrice.setText("$"+AppProperties.getRoundTwoDecimalString(orderInfo.get(1)));
-			}
-
-		} catch (Exception ex)
-		{
-			System.out.println(ex.getMessage());
-		}finally{
-			if(null!=dao)
-				dao.closeConnection();
-		}
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(PaymentSelectionActivity.this);
+        dbInstance.open();
+        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
+        
+        if(null!=orderInfo && orderInfo.size()==2)
+        {
+            totalPrice.setText("$"+AppProperties.getRoundTwoDecimalString(orderInfo.get(1)));
+        }
+        dbInstance.close();
+        
+//		AppDao dao=null;
+//		try {
+//			dao=AppDao.getSingleton(getApplicationContext());
+//			dao.openConnection();
+//		
+//			ArrayList<String> orderInfo = dao.getOrderInfo();
+//			
+//			if(null!=orderInfo && orderInfo.size()==2)
+//			{
+//				totalPrice.setText("$"+AppProperties.getRoundTwoDecimalString(orderInfo.get(1)));
+//			}
+//
+//		} catch (Exception ex)
+//		{
+//			System.out.println(ex.getMessage());
+//		}finally{
+//			if(null!=dao)
+//				dao.closeConnection();
+//		}
 		
 		////////////////////////////////////////////////////////////////
 

@@ -41,14 +41,15 @@ import android.widget.Toast;
 
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
+import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.AllProductsVo;
 import com.deepslice.model.CouponData;
-import com.deepslice.model.CouponsVo;
-import com.deepslice.model.DealOrderVo;
+import com.deepslice.model.Coupons;
+import com.deepslice.model.DealOrder;
 import com.deepslice.model.ProdAndSubCategory;
-import com.deepslice.model.ToppingPricesVo;
-import com.deepslice.model.ToppingSizesVo;
-import com.deepslice.model.ToppingsAndSaucesVo;
+import com.deepslice.model.ToppingPrices;
+import com.deepslice.model.ToppingSizes;
+import com.deepslice.model.ToppingsAndSauces;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Constants;
@@ -68,20 +69,20 @@ public class DealGroup extends Activity {
     ProgressDialog pd;
     ArrayList<CouponData> couponData;
     ArrayList<AllProductsVo> pList;
-    ArrayList<DealOrderVo> dealOrderVos;
+    ArrayList<DealOrder> dealOrderVos;
     int currentPosition,Qty=0;
     public ImageLoader imageLoader;
     ListView listView;
     MyListAdapter myAdapter;
     AllProductsVo selectedBean;
-    CouponsVo couponsVo;
+    Coupons couponsVo;
     ArrayList<String> couponsId;
     TextView textViewTitle,textViewSub;
     ImageView subTitleBg;
     RelativeLayout relativeLayoutTit;
     boolean syncedPrices =false;
     boolean syncedToppings =false;
-    DealOrderVo dealOrderVo;
+    DealOrder dealOrderVo;
     DeepsliceApplication globalObject;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,12 +91,12 @@ public class DealGroup extends Activity {
 
         couponGroupID=bundle.getString("couponGroupID");
         couponID=bundle.getString("couponId");
-        couponsVo=(CouponsVo)bundle.getSerializable("couponsVo");
+        couponsVo=(Coupons)bundle.getSerializable("couponsVo");
         couponsId=bundle.getStringArrayList("couponsID");
         Qty=Integer.parseInt(bundle.getString("Qty"));
         couponData = new ArrayList<CouponData>();
          pList = new ArrayList<AllProductsVo>();
-        dealOrderVos=new ArrayList<DealOrderVo>();
+        dealOrderVos=new ArrayList<DealOrder>();
         imageLoader=new ImageLoader(this);
         listView=(ListView)findViewById(R.id.listView1);
         textViewTitle=(TextView)findViewById(R.id.headerTextView);
@@ -430,61 +431,108 @@ public class DealGroup extends Activity {
     @Override
     protected void onResume() {
         // //////////////////////////////////////////////////////////////////////////////
-        AppDao dao = null;
-        try {
-            dao = AppDao.getSingleton(getApplicationContext());
-            dao.openConnection();
-           // dao.updateDealOrder();
-            ArrayList<String> orderInfo = dao.getOrderInfo();
-            ArrayList<DealOrderVo>dealOrderVos1= dao.getDealOrdersList();
-            TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-            double tota=0.00;
-            int dealCount=0;
-            if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
-                dealCount=dealOrderVos1.size();
-                for (int x=0;x<dealOrderVos1.size();x++){
-                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice()))*(Integer.parseInt(dealOrderVos1.get(x).getQuantity()));
-                }
+        
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
+        dbInstance.open();
+        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
+        ArrayList<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList();
+        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
+        double tota=0.00;
+        int dealCount=0;
+        if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
+            dealCount=dealOrderVos1.size();
+            for (int x=0;x<dealOrderVos1.size();x++){
+                tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice()))*(Integer.parseInt(dealOrderVos1.get(x).getQuantity()));
             }
-
-            int orderInfoCount= 0;
-            double  orderInfoTotal=0.0;
-            if ((null != orderInfo && orderInfo.size() == 2) ) {
-                orderInfoCount=Integer.parseInt(orderInfo.get(0));
-                orderInfoTotal=Double.parseDouble(orderInfo.get(1));
-            }
-            int numPro=orderInfoCount+dealCount;
-            double subTotal=orderInfoTotal+tota;
-            DecimalFormat twoDForm = new DecimalFormat("#.##");
-            subTotal= Double.valueOf(twoDForm.format(subTotal));
-            if(numPro>0){
-                itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
-                itemsPrice.setVisibility(View.VISIBLE);
-            }
-
-            else{
-                itemsPrice.setVisibility(View.INVISIBLE);
-
-            }
-
-            TextView favCount = (TextView) findViewById(R.id.favCount);
-            String fvs=dao.getFavCount();
-            if (null != fvs && !fvs.equals("0")) {
-                favCount.setText(fvs);
-                favCount.setVisibility(View.VISIBLE);
-            }
-            else{
-                favCount.setVisibility(View.INVISIBLE);
-            }
-
-
-
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        } finally {
-            if (null != dao)
-                dao.closeConnection();
         }
+
+        int orderInfoCount= 0;
+        double  orderInfoTotal=0.0;
+        if ((null != orderInfo && orderInfo.size() == 2) ) {
+            orderInfoCount=Integer.parseInt(orderInfo.get(0));
+            orderInfoTotal=Double.parseDouble(orderInfo.get(1));
+        }
+        int numPro=orderInfoCount+dealCount;
+        double subTotal=orderInfoTotal+tota;
+        DecimalFormat twoDForm = new DecimalFormat("#.##");
+        subTotal= Double.valueOf(twoDForm.format(subTotal));
+        if(numPro>0){
+            itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
+            itemsPrice.setVisibility(View.VISIBLE);
+        }
+
+        else{
+            itemsPrice.setVisibility(View.INVISIBLE);
+
+        }
+
+        TextView favCount = (TextView) findViewById(R.id.favCount);
+        String fvs=dbInstance.getFavCount();
+        if (null != fvs && !fvs.equals("0")) {
+            favCount.setText(fvs);
+            favCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            favCount.setVisibility(View.INVISIBLE);
+        }
+        dbInstance.close();
+        
+        
+//        AppDao dao = null;
+//        try {
+//            dao = AppDao.getSingleton(getApplicationContext());
+//            dao.openConnection();
+//           // dao.updateDealOrder();
+//            ArrayList<String> orderInfo = dao.getOrderInfo();
+//            ArrayList<DealOrder>dealOrderVos1= dao.getDealOrdersList();
+//            TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
+//            double tota=0.00;
+//            int dealCount=0;
+//            if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
+//                dealCount=dealOrderVos1.size();
+//                for (int x=0;x<dealOrderVos1.size();x++){
+//                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice()))*(Integer.parseInt(dealOrderVos1.get(x).getQuantity()));
+//                }
+//            }
+//
+//            int orderInfoCount= 0;
+//            double  orderInfoTotal=0.0;
+//            if ((null != orderInfo && orderInfo.size() == 2) ) {
+//                orderInfoCount=Integer.parseInt(orderInfo.get(0));
+//                orderInfoTotal=Double.parseDouble(orderInfo.get(1));
+//            }
+//            int numPro=orderInfoCount+dealCount;
+//            double subTotal=orderInfoTotal+tota;
+//            DecimalFormat twoDForm = new DecimalFormat("#.##");
+//            subTotal= Double.valueOf(twoDForm.format(subTotal));
+//            if(numPro>0){
+//                itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
+//                itemsPrice.setVisibility(View.VISIBLE);
+//            }
+//
+//            else{
+//                itemsPrice.setVisibility(View.INVISIBLE);
+//
+//            }
+//
+//            TextView favCount = (TextView) findViewById(R.id.favCount);
+//            String fvs=dao.getFavCount();
+//            if (null != fvs && !fvs.equals("0")) {
+//                favCount.setText(fvs);
+//                favCount.setVisibility(View.VISIBLE);
+//            }
+//            else{
+//                favCount.setVisibility(View.INVISIBLE);
+//            }
+//
+//
+//
+//        } catch (Exception ex) {
+//            System.out.println(ex.getMessage());
+//        } finally {
+//            if (null != dao)
+//                dao.closeConnection();
+//        }
         // ///////////////////////////////////////////////////////////////////////
 
         super.onResume();
@@ -527,7 +575,7 @@ public class DealGroup extends Activity {
 
             if(dataExists==true)
             {
-                CouponsVo aBean;
+                Coupons aBean;
                 for(int i=0; i<resultsArray.length(); i++){
                     JSONObject jsResult = resultsArray.getJSONObject(i);
                     if(jsResult!=null){
@@ -639,7 +687,7 @@ public class DealGroup extends Activity {
 //            }
 //        }
 //
-        dealOrderVo=new DealOrderVo();
+        dealOrderVo=new DealOrder();
         dealOrderVo.setCouponID(couponsVo.getCouponID());
         dealOrderVo.setCouponTypeID(couponsVo.getCouponTypeID());
         dealOrderVo.setCouponCode(couponsVo.getCouponCode());
@@ -694,23 +742,27 @@ public class DealGroup extends Activity {
     protected void updateTopingSaucesData(final String prodId) {
 
 
-        AppDao dao=null;
-        try {
-            dao=AppDao.getSingleton(getApplicationContext());
-            dao.openConnection();
-
-            syncedPrices=dao.recordExistsToppingPrices();
-            syncedToppings=dao.recordExistsToppings(prodId);
-
-//			dao.insertOrUpdateList(questionList);
-
-        } catch (Exception ex)
-        {
-            System.out.println(ex.getMessage());
-        }finally{
-            if(null!=dao)
-                dao.closeConnection();
-        }
+//        AppDao dao=null;
+//        try {
+//            dao=AppDao.getSingleton(getApplicationContext());
+//            dao.openConnection();
+//
+//            syncedPrices=dao.recordExistsToppingPrices();
+//            syncedToppings=dao.recordExistsToppings(prodId);
+//
+//        } catch (Exception ex)
+//        {
+//            System.out.println(ex.getMessage());
+//        }finally{
+//            if(null!=dao)
+//                dao.closeConnection();
+//        }
+        
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
+        dbInstance.open();
+        syncedPrices = dbInstance.recordExistsToppingPrices();
+        syncedToppings=dbInstance.recordExistsToppings(prodId);
+        dbInstance.close();
 
         if(syncedPrices && syncedToppings)
         {
@@ -877,36 +929,55 @@ public class DealGroup extends Activity {
     
     
 
-    public void addDeals(DealOrderVo dealOrderVo){
-        AppDao dao=null;
-        try {
-            dao=AppDao.getSingleton(getApplicationContext());
-            dao.openConnection();
-
-                AppSharedPreference.putBoolean(DealGroup.this, couponGroupID, true);
-                if(dao.isDealProductAvailable(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID())){
-                    boolean b= dao.deleteDuplicateDealOrderRec(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID());
-                    dao.resetDealOrder(dealOrderVo.getCouponID());
-                }
-                dao.insertDealOrder(dealOrderVo);
-                if(dao.getDealOrderCount(dealOrderVo.getCouponID())==AppSharedPreference.getInteger(DealGroup.this,"numDeals",0)){
-                    AppSharedPreference.putBoolean(DealGroup.this,dealOrderVo.getCouponID(),true);
-                    Toast.makeText(DealGroup.this, "complete your deal by tapping GET A DEAL", Toast.LENGTH_LONG).show();
-                }else {
-                    Toast.makeText(DealGroup.this, "Select product from deal groups", Toast.LENGTH_LONG).show();
-                }
-                finish();
-
-        } catch (Exception ex)
-        {
-            System.out.println(ex.getMessage());
-        }finally{
-            if(null!=dao)
-                dao.closeConnection();
+    public void addDeals(DealOrder dealOrderVo){
+        
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
+        dbInstance.open();
+        AppSharedPreference.putBoolean(DealGroup.this, couponGroupID, true);
+        if(dbInstance.isDealProductAvailable(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID())){
+            boolean b= dbInstance.deleteDuplicateDealOrderRec(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID());
+            dbInstance.resetDealOrder(dealOrderVo.getCouponID());
         }
+        dbInstance.insertDealOrder(dealOrderVo);
+        if(dbInstance.getDealOrderCount(dealOrderVo.getCouponID())==AppSharedPreference.getInteger(DealGroup.this,"numDeals",0)){
+            AppSharedPreference.putBoolean(DealGroup.this,dealOrderVo.getCouponID(),true);
+            Toast.makeText(DealGroup.this, "complete your deal by tapping GET A DEAL", Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(DealGroup.this, "Select product from deal groups", Toast.LENGTH_LONG).show();
+        }
+        dbInstance.close();
+        finish();
+        
+        
+//        AppDao dao=null;
+//        try {
+//            dao=AppDao.getSingleton(getApplicationContext());
+//            dao.openConnection();
+//
+//                AppSharedPreference.putBoolean(DealGroup.this, couponGroupID, true);
+//                if(dao.isDealProductAvailable(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID())){
+//                    boolean b= dao.deleteDuplicateDealOrderRec(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID());
+//                    dao.resetDealOrder(dealOrderVo.getCouponID());
+//                }
+//                dao.insertDealOrder(dealOrderVo);
+//                if(dao.getDealOrderCount(dealOrderVo.getCouponID())==AppSharedPreference.getInteger(DealGroup.this,"numDeals",0)){
+//                    AppSharedPreference.putBoolean(DealGroup.this,dealOrderVo.getCouponID(),true);
+//                    Toast.makeText(DealGroup.this, "complete your deal by tapping GET A DEAL", Toast.LENGTH_LONG).show();
+//                }else {
+//                    Toast.makeText(DealGroup.this, "Select product from deal groups", Toast.LENGTH_LONG).show();
+//                }
+//                finish();
+//
+//        } catch (Exception ex)
+//        {
+//            System.out.println(ex.getMessage());
+//        }finally{
+//            if(null!=dao)
+//                dao.closeConnection();
+//        }
     }
 
-    public void setDeals(DealOrderVo dealOrderVo){
+    public void setDeals(DealOrder dealOrderVo){
         AppSharedPreference.putBoolean(DealGroup.this, couponGroupID, true);
         int numDeals=AppSharedPreference.getInteger(DealGroup.this,"",0);
         int count=0;
@@ -916,54 +987,89 @@ public class DealGroup extends Activity {
             }
         }
         if (count==couponsId.size()){
-            AppDao dao=null;
-            try {
-                dao=AppDao.getSingleton(getApplicationContext());
-                dao.openConnection();
-                dao.insertDealOrder(dealOrderVo);
-                Toast.makeText(DealGroup.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
-                dao.updateDealOrder();
-                ArrayList<DealOrderVo>dealOrderVos1= dao.getDealOrdersList();
-                int i=dealOrderVos1.size();
-                double tota=0.00;
-                for (int x=0;x<dealOrderVos1.size();x++){
-                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-                }
-                TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-                if (null != dealOrderVos1 && dealOrderVos1.size() > 0) {
-                    itemsPrice.setText(i+" Items "+"\n$" + tota);
-                    itemsPrice.setVisibility(View.VISIBLE);
-                }
-                else{
-                    itemsPrice.setVisibility(View.INVISIBLE);
-
-                }
-                AppSharedPreference.clearDealCoupon(DealGroup.this,couponsId);
-                finish();
-
-            } catch (Exception ex)
-            {
-                System.out.println(ex.getMessage());
-            }finally{
-                if(null!=dao)
-                    dao.closeConnection();
+            DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
+            dbInstance.open();
+            dbInstance.insertDealOrder(dealOrderVo);
+            Toast.makeText(DealGroup.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
+            dbInstance.updateDealOrder();
+            ArrayList<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList();
+            int i=dealOrderVos1.size();
+            double tota=0.00;
+            for (int x=0;x<dealOrderVos1.size();x++){
+                tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
             }
+            TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
+            if (null != dealOrderVos1 && dealOrderVos1.size() > 0) {
+                itemsPrice.setText(i+" Items "+"\n$" + tota);
+                itemsPrice.setVisibility(View.VISIBLE);
+            }
+            else{
+                itemsPrice.setVisibility(View.INVISIBLE);
+
+            }
+            AppSharedPreference.clearDealCoupon(DealGroup.this,couponsId);
+            dbInstance.close();
+            finish();
+
+            
+            
+//            AppDao dao=null;
+//            try {
+//                dao=AppDao.getSingleton(getApplicationContext());
+//                dao.openConnection();
+//                dao.insertDealOrder(dealOrderVo);
+//                Toast.makeText(DealGroup.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
+//                dao.updateDealOrder();
+//                ArrayList<DealOrder>dealOrderVos1= dao.getDealOrdersList();
+//                int i=dealOrderVos1.size();
+//                double tota=0.00;
+//                for (int x=0;x<dealOrderVos1.size();x++){
+//                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
+//                }
+//                TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
+//                if (null != dealOrderVos1 && dealOrderVos1.size() > 0) {
+//                    itemsPrice.setText(i+" Items "+"\n$" + tota);
+//                    itemsPrice.setVisibility(View.VISIBLE);
+//                }
+//                else{
+//                    itemsPrice.setVisibility(View.INVISIBLE);
+//
+//                }
+//                AppSharedPreference.clearDealCoupon(DealGroup.this,couponsId);
+//                finish();
+//
+//            } catch (Exception ex)
+//            {
+//                System.out.println(ex.getMessage());
+//            }finally{
+//                if(null!=dao)
+//                    dao.closeConnection();
+//            }
         }else {
-            AppDao dao=null;
-            try {
-                dao=AppDao.getSingleton(getApplicationContext());
-                dao.openConnection();
-                dao.insertDealOrder(dealOrderVo);
-                Toast.makeText(DealGroup.this, "Select product from deal groups", Toast.LENGTH_LONG).show();
-                finish();
+            DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
+            dbInstance.open();
+            dbInstance.insertDealOrder(dealOrderVo);
+            Toast.makeText(DealGroup.this, "Select product from deal groups", Toast.LENGTH_LONG).show();
+            dbInstance.close();
+            finish();
 
-            } catch (Exception ex)
-            {
-                System.out.println(ex.getMessage());
-            }finally{
-                if(null!=dao)
-                    dao.closeConnection();
-            }
+            
+            
+//            AppDao dao=null;
+//            try {
+//                dao=AppDao.getSingleton(getApplicationContext());
+//                dao.openConnection();
+//                dao.insertDealOrder(dealOrderVo);
+//                Toast.makeText(DealGroup.this, "Select product from deal groups", Toast.LENGTH_LONG).show();
+//                finish();
+//
+//            } catch (Exception ex)
+//            {
+//                System.out.println(ex.getMessage());
+//            }finally{
+//                if(null!=dao)
+//                    dao.closeConnection();
+//            }
         }
     }
 
@@ -1019,17 +1125,17 @@ public class DealGroup extends Activity {
                 System.out.println("Error:"+errorMessage);
             }
 
-            ArrayList<ToppingsAndSaucesVo> pCatList = new ArrayList<ToppingsAndSaucesVo>();
+            ArrayList<ToppingsAndSauces> pCatList = new ArrayList<ToppingsAndSauces>();
 
             if(dataExists==true)
             {
-                ToppingsAndSaucesVo aBean;
+                ToppingsAndSauces aBean;
                 for(int i=0; i<resultsArray.length(); i++){
                     JSONObject jsResult = resultsArray.getJSONObject(i);
                     if(jsResult!=null){
                         String jsonString = jsResult.toString();
-                        aBean=new ToppingsAndSaucesVo();
-                        aBean=gson.fromJson(jsonString, ToppingsAndSaucesVo.class);
+                        aBean=new ToppingsAndSauces();
+                        aBean=gson.fromJson(jsonString, ToppingsAndSauces.class);
                         //                System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
                         pCatList.add(aBean);
 
@@ -1037,20 +1143,25 @@ public class DealGroup extends Activity {
                 }
             }
 
-            AppDao dao=null;
-            try {
-                dao=AppDao.getSingleton(getApplicationContext());
-                dao.openConnection();
-
-                dao.insertToppingSauces(pCatList);
-
-            } catch (Exception ex)
-            {
-                System.out.println(ex.getMessage());
-            }finally{
-                if(null!=dao)
-                    dao.closeConnection();
-            }
+//            AppDao dao=null;
+//            try {
+//                dao=AppDao.getSingleton(getApplicationContext());
+//                dao.openConnection();
+//
+//                dao.insertToppingSauces(pCatList);
+//
+//            } catch (Exception ex)
+//            {
+//                System.out.println(ex.getMessage());
+//            }finally{
+//                if(null!=dao)
+//                    dao.closeConnection();
+//            }
+            
+            DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
+            dbInstance.open();
+            dbInstance.insertToppingSauces(pCatList);
+            dbInstance.close();
 
             System.out.println("Got Toppings And Sauces: "+pCatList.size());
             //////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
@@ -1115,17 +1226,17 @@ public class DealGroup extends Activity {
                 System.out.println("Error:" + errorMessage);
             }
 
-            ArrayList<ToppingSizesVo> pCatList = new ArrayList<ToppingSizesVo>();
+            ArrayList<ToppingSizes> pCatList = new ArrayList<ToppingSizes>();
 
             if (dataExists == true) {
-                ToppingSizesVo aBean;
+                ToppingSizes aBean;
                 for (int i = 0; i < resultsArray.length(); i++) {
                     JSONObject jsResult = resultsArray.getJSONObject(i);
                     if (jsResult != null) {
                         String jsonString = jsResult.toString();
-                        aBean = new ToppingSizesVo();
+                        aBean = new ToppingSizes();
                         aBean = gson
-                                .fromJson(jsonString, ToppingSizesVo.class);
+                                .fromJson(jsonString, ToppingSizes.class);
                         // System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
                         pCatList.add(aBean);
                     }
@@ -1133,20 +1244,27 @@ public class DealGroup extends Activity {
             }
 
 //			AppProperties.subCatList = pCatList;
-            AppDao dao=null;
-            try {
-                dao=AppDao.getSingleton(getApplicationContext());
-                dao.openConnection();
-
-                dao.insertToppingSizes(pCatList);
-
-            } catch (Exception ex)
-            {
-                System.out.println(ex.getMessage());
-            }finally{
-                if(null!=dao)
-                    dao.closeConnection();
-            }
+            
+            
+            
+//            AppDao dao=null;
+//            try {
+//                dao=AppDao.getSingleton(getApplicationContext());
+//                dao.openConnection();
+//
+//                dao.insertToppingSizes(pCatList);
+//
+//            } catch (Exception ex)
+//            {
+//                System.out.println(ex.getMessage());
+//            }finally{
+//                if(null!=dao)
+//                    dao.closeConnection();
+//            }
+            DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
+            dbInstance.open();
+            dbInstance.insertToppingSizes(pCatList);
+            dbInstance.close();
 
             System.out.println("Got Topping Sizes : " + pCatList.size());
             // ////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
@@ -1212,17 +1330,17 @@ public class DealGroup extends Activity {
                 System.out.println("Error:" + errorMessage);
             }
 
-            ArrayList<ToppingPricesVo> pCatList = new ArrayList<ToppingPricesVo>();
+            ArrayList<ToppingPrices> pCatList = new ArrayList<ToppingPrices>();
 
             if (dataExists == true) {
-                ToppingPricesVo aBean;
+                ToppingPrices aBean;
                 for (int i = 0; i < resultsArray.length(); i++) {
                     JSONObject jsResult = resultsArray.getJSONObject(i);
                     if (jsResult != null) {
                         String jsonString = jsResult.toString();
-                        aBean = new ToppingPricesVo();
+                        aBean = new ToppingPrices();
                         aBean = gson
-                                .fromJson(jsonString, ToppingPricesVo.class);
+                                .fromJson(jsonString, ToppingPrices.class);
                         // System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
                         pCatList.add(aBean);
                     }
@@ -1230,20 +1348,27 @@ public class DealGroup extends Activity {
             }
 
 //			AppProperties.allProductsList = pCatList;
-            AppDao dao=null;
-            try {
-                dao=AppDao.getSingleton(getApplicationContext());
-                dao.openConnection();
-
-                dao.insertToppingPrices(pCatList);
-
-            } catch (Exception ex)
-            {
-                System.out.println(ex.getMessage());
-            }finally{
-                if(null!=dao)
-                    dao.closeConnection();
-            }
+            
+            DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
+            dbInstance.open();
+            syncedPrices = dbInstance.insertToppingPrices(pCatList);
+            dbInstance.close();
+            
+            
+//            AppDao dao=null;
+//            try {
+//                dao=AppDao.getSingleton(getApplicationContext());
+//                dao.openConnection();
+//
+//                dao.insertToppingPrices(pCatList);
+//
+//            } catch (Exception ex)
+//            {
+//                System.out.println(ex.getMessage());
+//            }finally{
+//                if(null!=dao)
+//                    dao.closeConnection();
+//            }
 
             System.out.println("Got product catetgories: " + pCatList.size());
             // ////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP

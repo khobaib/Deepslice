@@ -7,7 +7,7 @@ package com.deepslice.model;
  * Time: 12:09 AM
  * To change this template use File | Settings | File Templates.
  */
-public class CouponGroupsVo {
+public class CouponGroups {
     public String getCouponID() {
         return CouponID;
     }

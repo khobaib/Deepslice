@@ -13,8 +13,9 @@ import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import com.deepslice.database.AppDao;
+import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.AllProductsVo;
-import com.deepslice.model.DealOrderVo;
+import com.deepslice.model.DealOrder;
 import com.deepslice.model.ProductCategory;
 import com.deepslice.model.SubCategoryVo;
 
@@ -209,60 +210,106 @@ public class  PizzaSubMenuActivity extends Activity{
     @Override
     protected void onResume() {
         // //////////////////////////////////////////////////////////////////////////////
-        AppDao dao = null;
-        try {
-            dao = AppDao.getSingleton(getApplicationContext());
-            dao.openConnection();
-            ArrayList<String> orderInfo = dao.getOrderInfo();
-            ArrayList<DealOrderVo>dealOrderVos1= dao.getDealOrdersList();
-            TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-            double tota=0.00;
-            int dealCount=0;
-            if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
-                dealCount=dealOrderVos1.size();
-                for (int x=0;x<dealOrderVos1.size();x++){
-                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-                }
+        
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaSubMenuActivity.this);
+        dbInstance.open();
+        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
+        ArrayList<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList();
+        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
+        double tota=0.00;
+        int dealCount=0;
+        if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
+            dealCount=dealOrderVos1.size();
+            for (int x=0;x<dealOrderVos1.size();x++){
+                tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
             }
-
-            int orderInfoCount= 0;
-            double  orderInfoTotal=0.0;
-            if ((null != orderInfo && orderInfo.size() == 2) ) {
-                orderInfoCount=Integer.parseInt(orderInfo.get(0));
-                orderInfoTotal=Double.parseDouble(orderInfo.get(1));
-            }
-            int numPro=orderInfoCount+dealCount;
-            double subTotal=orderInfoTotal+tota;
-            DecimalFormat twoDForm = new DecimalFormat("#.##");
-            subTotal= Double.valueOf(twoDForm.format(subTotal));
-            if(numPro>0){
-                itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
-                itemsPrice.setVisibility(View.VISIBLE);
-            }
-
-            else{
-                itemsPrice.setVisibility(View.INVISIBLE);
-
-            }
-
-            TextView favCount = (TextView) findViewById(R.id.favCount);
-            String fvs=dao.getFavCount();
-            if (null != fvs && !fvs.equals("0")) {
-                favCount.setText(fvs);
-                favCount.setVisibility(View.VISIBLE);
-            }
-            else{
-                favCount.setVisibility(View.INVISIBLE);
-            }
-
-
-
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        } finally {
-            if (null != dao)
-                dao.closeConnection();
         }
+
+        int orderInfoCount= 0;
+        double  orderInfoTotal=0.0;
+        if ((null != orderInfo && orderInfo.size() == 2) ) {
+            orderInfoCount=Integer.parseInt(orderInfo.get(0));
+            orderInfoTotal=Double.parseDouble(orderInfo.get(1));
+        }
+        int numPro=orderInfoCount+dealCount;
+        double subTotal=orderInfoTotal+tota;
+        DecimalFormat twoDForm = new DecimalFormat("#.##");
+        subTotal= Double.valueOf(twoDForm.format(subTotal));
+        if(numPro>0){
+            itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
+            itemsPrice.setVisibility(View.VISIBLE);
+        }
+
+        else{
+            itemsPrice.setVisibility(View.INVISIBLE);
+
+        }
+
+        TextView favCount = (TextView) findViewById(R.id.favCount);
+        String fvs=dbInstance.getFavCount();
+        if (null != fvs && !fvs.equals("0")) {
+            favCount.setText(fvs);
+            favCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            favCount.setVisibility(View.INVISIBLE);
+        }
+        dbInstance.close();
+        
+//        AppDao dao = null;
+//        try {
+//            dao = AppDao.getSingleton(getApplicationContext());
+//            dao.openConnection();
+//            ArrayList<String> orderInfo = dao.getOrderInfo();
+//            ArrayList<DealOrder>dealOrderVos1= dao.getDealOrdersList();
+//            TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
+//            double tota=0.00;
+//            int dealCount=0;
+//            if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
+//                dealCount=dealOrderVos1.size();
+//                for (int x=0;x<dealOrderVos1.size();x++){
+//                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
+//                }
+//            }
+//
+//            int orderInfoCount= 0;
+//            double  orderInfoTotal=0.0;
+//            if ((null != orderInfo && orderInfo.size() == 2) ) {
+//                orderInfoCount=Integer.parseInt(orderInfo.get(0));
+//                orderInfoTotal=Double.parseDouble(orderInfo.get(1));
+//            }
+//            int numPro=orderInfoCount+dealCount;
+//            double subTotal=orderInfoTotal+tota;
+//            DecimalFormat twoDForm = new DecimalFormat("#.##");
+//            subTotal= Double.valueOf(twoDForm.format(subTotal));
+//            if(numPro>0){
+//                itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
+//                itemsPrice.setVisibility(View.VISIBLE);
+//            }
+//
+//            else{
+//                itemsPrice.setVisibility(View.INVISIBLE);
+//
+//            }
+//
+//            TextView favCount = (TextView) findViewById(R.id.favCount);
+//            String fvs=dao.getFavCount();
+//            if (null != fvs && !fvs.equals("0")) {
+//                favCount.setText(fvs);
+//                favCount.setVisibility(View.VISIBLE);
+//            }
+//            else{
+//                favCount.setVisibility(View.INVISIBLE);
+//            }
+//
+//
+//
+//        } catch (Exception ex) {
+//            System.out.println(ex.getMessage());
+//        } finally {
+//            if (null != dao)
+//                dao.closeConnection();
+//        }
         // ///////////////////////////////////////////////////////////////////////
 
         super.onResume();

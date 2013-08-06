@@ -36,20 +36,20 @@ public class DataHelper {
 			db.execSQL(TABLE_CREATE_SUB_CAT);
 			db.execSQL(TABLE_CREATE_PRODUCTS);
 			
-			db.execSQL(TABLE_CREATE_TOPPING_SIZES);
-			db.execSQL(TABLE_CREATE_TOPPING_PRICES);
-			db.execSQL(TABLE_CREATE_SAUSES_AND_TOPPINGS);
+//			db.execSQL(TABLE_CREATE_TOPPING_SIZES);
+//			db.execSQL(TABLE_CREATE_TOPPING_PRICES);
+//			db.execSQL(CREATE_TABLE_SAUSES_AND_TOPPINGS);
 			
-			db.execSQL(TABLE_CREATE_FAVS);
-			db.execSQL(TABLE_CREATE_ORDERS);
+//			db.execSQL(CREATE_TABLE_FAVORITE);
+//			db.execSQL(TABLE_CREATE_ORDERS);
 			
 			db.execSQL(TABLE_CREATE_DELIVERY_LOCATIONS);
 			
 			db.execSQL(TABLE_CREATE_LOCATIONS_HISTORY);
 
-            db.execSQL(TABLE_CREATE_DEAL_ORDERS);
+//            db.execSQL(TABLE_CREATE_DEAL_ORDERS);
 
-            db.execSQL(TABLE_CREATE_DEAL);
+//            db.execSQL(TABLE_CREATE_DEAL);
 		}
 
 		@Override
@@ -74,18 +74,18 @@ public class DataHelper {
 	public static final String TABLE_NAME_SUB_CAT = "sub_categories";
 	public static final String TABLE_NAME_PRODUCTS = "products";
 
-	public static final String TABLE_NAME_TOPPING_SIZES = "topping_sizes";
-	public static final String TABLE_NAME_TOPPING_PRICES = "topping_prices";
-	public static final String TABLE_NAME_SAUSES_AND_TOPPINGS = "sauses_and_toppings";
+//	public static final String TABLE_NAME_TOPPING_SIZES = "topping_sizes";
+//	public static final String TABLE_NAME_TOPPING_PRICES = "topping_prices";
+//	public static final String TABLE_SAUCES_AND_TOPPINGS = "sauses_and_toppings";
 
-	public static final String TABLE_NAME_FAVS = "favourites";
-	public static final String TABLE_NAME_ORDERS = "orders";
+//	public static final String TABLE_FAVORITE = "favourites";
+//	public static final String TABLE_ORDERS = "table_orders";
 	
 	public static final String TABLE_NAME_DELIVERY_LOCATIONS = "delivery_locations";
 	public static final String TABLE_NAME_LOCATIONS_HISTORY= "locations_history";
 
-    public static final String TABLE_NAME_DEAL = "deals";
-    public static final String TABLE_NAME_DEAL_ORDERS = "deal_orders";
+//    public static final String TABLE_DEALS = "deals";
+//    public static final String TABLE_DEALS_ORDERS = "deal_orders";
 	
 	
 	static final int BUNDLE_INT = 0;
@@ -98,26 +98,26 @@ public class DataHelper {
 	static String[] table_subcats_columns = new String[] { "sr_no", "ProdCatID","SubCatID", "SubCatOf", "SubCatCode", "SubCatAbbr", "SubCatDesc", "DisplaySequence", "Thumbnail", "FullImage"};
 	static String[] table_products_columns = new String[] { "sr_no", "ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage"};
 
-	static String[] table_topping_sizes = new String[] { "sr_no", "ToppingSizeID","ToppingSizeCode", "ToppingSizeDesc","ToppingAbbr","ToppingAmount","DisplaySequence"};
-	static String[] table_topping_prices = new String[] { "sr_no", "ToppingID","ToppingCode", "ToppingAbbr", "ToppingDesc", "IsSauce", "CaloriesQty", "ToppingSizeID", "ToppingSizeCode", "ToppingSizeDesc", "ToppingPrice"};
-	static String[] table_sauses_and_toppings = new String[] { "sr_no", "ToppingID","ToppingCode", "ToppingAbbr", "ToppingDesc", "IsSauce", "CaloriesQty", "ProdID", "OwnPrice", "DisplaySequence", "IsFreeWithPizza"};
+//	static String[] table_topping_sizes = new String[] { "sr_no", "ToppingSizeID","ToppingSizeCode", "ToppingSizeDesc","ToppingAbbr","ToppingAmount","DisplaySequence"};
+//	static String[] table_topping_prices = new String[] { "sr_no", "ToppingID","ToppingCode", "ToppingAbbr", "ToppingDesc", "IsSauce", "CaloriesQty", "ToppingSizeID", "ToppingSizeCode", "ToppingSizeDesc", "ToppingPrice"};
+//	static String[] table_sauses_and_toppings = new String[] { "sr_no", "ToppingID","ToppingCode", "ToppingAbbr", "ToppingDesc", "IsSauce", "CaloriesQty", "ProdID", "OwnPrice", "DisplaySequence", "IsFreeWithPizza"};
 
-	static String[] table_favs_columns = new String[] { "sr_no","ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage", "customName","ProdCatName"};
+//	static String[] table_favorite = new String[] { "sr_no","ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage", "customName","ProdCatName"};
 	
-	static String[] table_order_columns = new String[] { "sr_no","ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage", "Quantity", "Crust", "Sauce", "Toppings","ProdCatName"};
+//	static String[] table_order_columns = new String[] { "sr_no","ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage", "Quantity", "Crust", "Sauce", "Toppings","ProdCatName"};
 	static String[] table_delivery_locations_columns = new String[] { "sr_no","SuburbName","SuburbAbbr","PostCode", "LocName", "LocPostalCode", "LocStreet", "LocAddress", "LocLongitude", "LocLatitude", "OpeningTime", "ClosingTime", "LocationID", "SuburbID"};
 	
 	static String[] table_locations_history_columns = new String[] { "sr_no","LocationID","LocName","LocSuburb", "LocPostalCode", "LocStreet", "LocAddress", "LocPhones", "LocLongitude", "LocLatitude", "OpeningTime", "ClosingTime", "isDelivery","unit","streetNum","streetName","crossStreetName","deliveryInstructions"};
 
-    static String[] table_deal_columns = new String[] { "sr_no", "CouponID","CouponTypeID", "CouponTypeCode","CouponCode","CouponAbbr","CouponDesc","DisplayText","IsPercentage","IsFixed","IsDiscountedProduct","Amount","MaxUsage","IsLimitedTimeOffer","EffectiveStartDate","EffectiveEndDate", "EffectiveTimeStart", "EffectiveTimeEnd","IsOnDelivery","IsOnPickup","IsOnSunday","IsOnMonday","IsOnTuesday","IsOnWednesday","IsOnThursday","IsOnFriday","IsOnSaturday","IsOnInternet","IsOnlyOnInternet","IsTaxable","IsPrerequisite","IsLocationBased","IsGreetingSpecials","Pic"};
-    static String[] table_deal_order_columns = new String[] { "sr_no","CouponID","CouponTypeID","CouponCode", "CouponGroupID", "DiscountedPrice", "ProdID", "DisplayName","Quantity","isUpdate","Image"};
+//    static String[] table_deal_columns = new String[] { "sr_no", "CouponID","CouponTypeID", "CouponTypeCode","CouponCode","CouponAbbr","CouponDesc","DisplayText","IsPercentage","IsFixed","IsDiscountedProduct","Amount","MaxUsage","IsLimitedTimeOffer","EffectiveStartDate","EffectiveEndDate", "EffectiveTimeStart", "EffectiveTimeEnd","IsOnDelivery","IsOnPickup","IsOnSunday","IsOnMonday","IsOnTuesday","IsOnWednesday","IsOnThursday","IsOnFriday","IsOnSaturday","IsOnInternet","IsOnlyOnInternet","IsTaxable","IsPrerequisite","IsLocationBased","IsGreetingSpecials","Pic"};
+//    static String[] table_deal_order_columns = new String[] { "sr_no","CouponID","CouponTypeID","CouponCode", "CouponGroupID", "DiscountedPrice", "ProdID", "DisplayName","Quantity","isUpdate","Image"};
 
     /**
 	 * Query for creating stories table
 	 * 
 	 */
-    private static final String TABLE_CREATE_DEAL = "create table "
-            + TABLE_NAME_DEAL+ " (sr_no integer primary key autoincrement, CouponID text,CouponTypeID text,CouponTypeCode text, CouponCode text, CouponAbbr text, CouponDesc text, DisplayText text, IsPercentage text, IsFixed text, IsDiscountedProduct text, Amount text, MaxUsage text,IsLimitedTimeOffer text,EffectiveStartDate text,EffectiveEndDate text,EffectiveTimeStart text,EffectiveTimeEnd text,IsOnDelivery text,IsOnPickup text,IsOnSunday text,IsOnMonday text,IsOnTuesday text,IsOnWednesday text,IsOnThursday text,IsOnFriday text,IsOnSaturday text,IsOnInternet text,IsOnlyOnInternet text,IsTaxable text,IsPrerequisite text,IsLocationBased text,IsGreetingSpecials text,Pic text);";
+//    private static final String TABLE_CREATE_DEAL = "create table "
+//            + TABLE_DEALS+ " (sr_no integer primary key autoincrement, CouponID text,CouponTypeID text,CouponTypeCode text, CouponCode text, CouponAbbr text, CouponDesc text, DisplayText text, IsPercentage text, IsFixed text, IsDiscountedProduct text, Amount text, MaxUsage text,IsLimitedTimeOffer text,EffectiveStartDate text,EffectiveEndDate text,EffectiveTimeStart text,EffectiveTimeEnd text,IsOnDelivery text,IsOnPickup text,IsOnSunday text,IsOnMonday text,IsOnTuesday text,IsOnWednesday text,IsOnThursday text,IsOnFriday text,IsOnSaturday text,IsOnInternet text,IsOnlyOnInternet text,IsTaxable text,IsPrerequisite text,IsLocationBased text,IsGreetingSpecials text,Pic text);";
 
     private static final String TABLE_CREATE_CATS = "create table "
 		+ TABLE_NAME_CATS + " (sr_no integer primary key autoincrement,  ProdCatID text, ProdCatCode text,  ProdCatAbbr text, ProdCatDesc text, AllowPartialSelection text, PartialSelectionText text, PartialSelectionSurcharge text, AllowSubCat1 text, SubCat1Text text, AllowSubCat2 text, SubCat2Text text, ProductBarText text, AllowOptions text, OptionBarText text, OptionCounting text, Thumbnail text, FullImage text);";
@@ -128,20 +128,20 @@ public class DataHelper {
 	private static final String TABLE_CREATE_PRODUCTS = "create table "
 		+ TABLE_NAME_PRODUCTS + " (sr_no integer primary key autoincrement, ProdCatID text,SubCatID1 text, SubCatID2 text, ProdID text, ProdCode text, DisplayName text, ProdAbbr text, ProdDesc text, IsAddDeliveryAmount text, DisplaySequence text, CaloriesQty text, Price text, Thumbnail text, FullImage text);";
 
-	private static final String TABLE_CREATE_TOPPING_SIZES = "create table "
-		+ TABLE_NAME_TOPPING_SIZES + " (sr_no integer primary key autoincrement,  ToppingSizeID text, ToppingSizeCode text,  ToppingSizeDesc text, ToppingAbbr text, ToppingAmount text, DisplaySequence text);";
+//	private static final String TABLE_CREATE_TOPPING_SIZES = "create table "
+//		+ TABLE_NAME_TOPPING_SIZES + " (sr_no integer primary key autoincrement,  ToppingSizeID text, ToppingSizeCode text,  ToppingSizeDesc text, ToppingAbbr text, ToppingAmount text, DisplaySequence text);";
 	
-	private static final String TABLE_CREATE_TOPPING_PRICES = "create table "
-		+ TABLE_NAME_TOPPING_PRICES + " (sr_no integer primary key autoincrement,  ToppingID text, ToppingCode text,  ToppingAbbr text,  ToppingDesc text,  IsSauce text,  CaloriesQty text,  ToppingSizeID text, ToppingSizeCode text, ToppingSizeDesc text, ToppingPrice text);";
+//	private static final String TABLE_CREATE_TOPPING_PRICES = "create table "
+//		+ TABLE_NAME_TOPPING_PRICES + " (sr_no integer primary key autoincrement,  ToppingID text, ToppingCode text,  ToppingAbbr text,  ToppingDesc text,  IsSauce text,  CaloriesQty text,  ToppingSizeID text, ToppingSizeCode text, ToppingSizeDesc text, ToppingPrice text);";
 	
-	private static final String TABLE_CREATE_SAUSES_AND_TOPPINGS = "create table "
-		+ TABLE_NAME_SAUSES_AND_TOPPINGS + " (sr_no integer primary key autoincrement, ToppingID text,ToppingCode text, ToppingAbbr text, ToppingDesc text, IsSauce text, CaloriesQty text, ProdID text, OwnPrice text, DisplaySequence text, IsFreeWithPizza text);";
+//	private static final String CREATE_TABLE_SAUSES_AND_TOPPINGS = "create table "
+//		+ TABLE_SAUCES_AND_TOPPINGS + " (sr_no integer primary key autoincrement, ToppingID text,ToppingCode text, ToppingAbbr text, ToppingDesc text, IsSauce text, CaloriesQty text, ProdID text, OwnPrice text, DisplaySequence text, IsFreeWithPizza text);";
 
-	private static final String TABLE_CREATE_FAVS = "create table "
-			+ TABLE_NAME_FAVS + " (sr_no integer primary key autoincrement, ProdCatID text,SubCatID1 text,SubCatID2 text, ProdID text, ProdCode text, DisplayName text, ProdAbbr text, ProdDesc text, IsAddDeliveryAmount text, DisplaySequence text, CaloriesQty text, Price text, Thumbnail text, FullImage text, customName text, ProdCatName text);";
+//	private static final String CREATE_TABLE_FAVORITE = "create table "
+//			+ TABLE_FAVORITE + " (sr_no integer primary key autoincrement, ProdCatID text,SubCatID1 text,SubCatID2 text, ProdID text, ProdCode text, DisplayName text, ProdAbbr text, ProdDesc text, IsAddDeliveryAmount text, DisplaySequence text, CaloriesQty text, Price text, Thumbnail text, FullImage text, customName text, ProdCatName text);";
 
-	private static final String TABLE_CREATE_ORDERS = "create table "
-			+ TABLE_NAME_ORDERS + " (sr_no integer primary key autoincrement, ProdCatID text,SubCatID1 text,SubCatID2 text, ProdID text, ProdCode text, DisplayName text, ProdAbbr text, ProdDesc text, IsAddDeliveryAmount text, DisplaySequence text, CaloriesQty text, Price text, Thumbnail text, FullImage text, Quantity text, Crust text, Sauce text, Toppings text, ProdCatName text);";
+//	private static final String TABLE_CREATE_ORDERS = "create table "
+//			+ TABLE_ORDERS + " (sr_no integer primary key autoincrement, ProdCatID text,SubCatID1 text,SubCatID2 text, ProdID text, ProdCode text, DisplayName text, ProdAbbr text, ProdDesc text, IsAddDeliveryAmount text, DisplaySequence text, CaloriesQty text, Price text, Thumbnail text, FullImage text, Quantity text, Crust text, Sauce text, Toppings text, ProdCatName text);";
 
 	private static final String TABLE_CREATE_DELIVERY_LOCATIONS = "create table "
 			+ TABLE_NAME_DELIVERY_LOCATIONS + " (sr_no integer primary key autoincrement, SuburbName text,SuburbAbbr text,PostCode text,LocName text,LocPostalCode text,LocStreet text,LocAddress text,LocLongitude text,LocLatitude text,OpeningTime text,ClosingTime text,LocationID text,SuburbID text);";
@@ -149,8 +149,7 @@ public class DataHelper {
 	private static final String TABLE_CREATE_LOCATIONS_HISTORY = "create table "
 			+ TABLE_NAME_LOCATIONS_HISTORY+ " (sr_no integer primary key autoincrement, LocationID text,LocName text,LocSuburb text, LocPostalCode text, LocStreet text, LocAddress text, LocPhones text, LocLongitude text, LocLatitude text, OpeningTime text, ClosingTime text, isDelivery text,unit text,streetNum text,streetName text,crossStreetName text,deliveryInstructions text);";
 
-    private static final String TABLE_CREATE_DEAL_ORDERS = "create table deal_orders (sr_no integer primary key autoincrement, CouponID text,CouponTypeID text,CouponCode text, CouponGroupID text, DiscountedPrice text, ProdID text, DisplayName text,Quantity text,isUpdate text ,Image text);";
-//private static final String TABLE_CREATE_DEAL_ORDERS="create table deal_orders (test_t text)";
+//    private static final String TABLE_CREATE_DEAL_ORDERS = "create table deal_orders (sr_no integer primary key autoincrement, CouponID text,CouponTypeID text,CouponCode text, CouponGroupID text, DiscountedPrice text, ProdID text, DisplayName text,Quantity text,isUpdate text ,Image text);";
     /**
 	 * Constructor
 	 */
@@ -168,15 +167,15 @@ public class DataHelper {
 //		
 //		sqLiteDb.delete(TABLE_NAME_TOPPING_SIZES, null, null);
 //		sqLiteDb.delete(TABLE_NAME_TOPPING_PRICES, null, null);
-//		sqLiteDb.delete(TABLE_NAME_SAUSES_AND_TOPPINGS, null, null);
+//		sqLiteDb.delete(TABLE_SAUCES_AND_TOPPINGS, null, null);
 //		
-//		sqLiteDb.delete(TABLE_NAME_FAVS, null, null);
-//		sqLiteDb.delete(TABLE_NAME_ORDERS, null, null);
+//		sqLiteDb.delete(TABLE_FAVORITE, null, null);
+//		sqLiteDb.delete(TABLE_ORDERS, null, null);
 //		sqLiteDb.delete(TABLE_NAME_DELIVERY_LOCATIONS, null, null);
 //		
 //		sqLiteDb.delete(TABLE_NAME_LOCATIONS_HISTORY, null, null);
 //
-//        sqLiteDb.delete(TABLE_NAME_DEAL,null,null);
+//        sqLiteDb.delete(TABLE_DEALS,null,null);
 //
 //        sqLiteDb.delete("deal_orders",null,null);
 //	}
@@ -184,34 +183,34 @@ public class DataHelper {
 	/**
 	 * clean up the table by tableNumber
 	 */
-	public void cleanTable(int tableNo) {
-		switch (tableNo) {
-		case BUNDLE_INT:
-			sqLiteDb.delete(TABLE_NAME_PRODUCTS, null, null);
-			sqLiteDb.delete(TABLE_NAME_SUB_CAT, null, null);
-			sqLiteDb.delete(TABLE_NAME_CATS, null, null);
+//	public void cleanTable(int tableNo) {
+//		switch (tableNo) {
+//		case BUNDLE_INT:
+//			sqLiteDb.delete(TABLE_NAME_PRODUCTS, null, null);
+//			sqLiteDb.delete(TABLE_NAME_SUB_CAT, null, null);
+//			sqLiteDb.delete(TABLE_NAME_CATS, null, null);
+//
+////			sqLiteDb.delete(TABLE_NAME_TOPPING_SIZES, null, null);
+//			sqLiteDb.delete(TABLE_NAME_TOPPING_PRICES, null, null);
+//			sqLiteDb.delete(TABLE_SAUCES_AND_TOPPINGS, null, null);
+//
+//			sqLiteDb.delete(TABLE_FAVORITE, null, null);
+//			sqLiteDb.delete(TABLE_ORDERS, null, null);
+//			
+//			break;
+//		default:
+//			break;
+//		}
+//	}
 
-			sqLiteDb.delete(TABLE_NAME_TOPPING_SIZES, null, null);
-			sqLiteDb.delete(TABLE_NAME_TOPPING_PRICES, null, null);
-			sqLiteDb.delete(TABLE_NAME_SAUSES_AND_TOPPINGS, null, null);
+//	public void cleanOrderTable() {
+//			sqLiteDb.delete(TABLE_ORDERS, null, null);
+//        sqLiteDb.delete("deal_orders",null,null);
+//	}
 
-			sqLiteDb.delete(TABLE_NAME_FAVS, null, null);
-			sqLiteDb.delete(TABLE_NAME_ORDERS, null, null);
-			
-			break;
-		default:
-			break;
-		}
-	}
-
-	public void cleanOrderTable() {
-			sqLiteDb.delete(TABLE_NAME_ORDERS, null, null);
-        sqLiteDb.delete("deal_orders",null,null);
-	}
-
-	public void cleanDealTable(){
-        sqLiteDb.delete(TABLE_NAME_DEAL,null,null);
-    }
+//	public void cleanDealTable(){
+//        sqLiteDb.delete(TABLE_DEALS,null,null);
+//    }
 	/**
 	 * Close database connection
 	 */
@@ -278,35 +277,34 @@ public class DataHelper {
 		return sqLiteDb.insert(TABLE_NAME_PRODUCTS, null, vals);
 	}
 
-	public synchronized long insertRecordFavs(String... values) {
+//	public synchronized long insertRecordFavs(String... values) {
+//
+//		ContentValues vals = new ContentValues();
+//		for (int i = 0; i < values.length; i++) {
+//			vals.put(table_favorite[i + 1], values[i]);
+//		}
+//
+//		return sqLiteDb.insert(TABLE_FAVORITE, null, vals);
+//	}
+//	public synchronized long insertRecordOrder(String... values) { 
+//
+//		ContentValues vals = new ContentValues();
+//		for (int i = 0; i < values.length; i++) {
+//			vals.put(table_order_columns[i + 1], values[i]);
+//		}
+//
+//		return sqLiteDb.insert(TABLE_ORDERS, null, vals);
+//	}
 
-		ContentValues vals = new ContentValues();
-		for (int i = 0; i < values.length; i++) {
-			vals.put(table_favs_columns[i + 1], values[i]);
-		}
-
-		return sqLiteDb.insert(TABLE_NAME_FAVS, null, vals);
-	}
-	public synchronized long insertRecordOrder(String... values) { 
-
-		ContentValues vals = new ContentValues();
-		for (int i = 0; i < values.length; i++) {
-			vals.put(table_order_columns[i + 1], values[i]);
-		}
-
-		return sqLiteDb.insert(TABLE_NAME_ORDERS, null, vals);
-	}
-
-    public synchronized long insertRecordDealOrder(String... values) {
-
-        ContentValues vals = new ContentValues();
-//        int x=table_deal_order_columns.length;
-        for (int i = 0; i < values.length; i++) {
-            vals.put(table_deal_order_columns[i + 1], values[i]);
-        }
-
-        return sqLiteDb.insert("deal_orders", null, vals);
-    }
+//    public synchronized long insertRecordDealOrder(String... values) {
+//
+//        ContentValues vals = new ContentValues();
+//        for (int i = 0; i < values.length; i++) {
+//            vals.put(table_deal_order_columns[i + 1], values[i]);
+//        }
+//
+//        return sqLiteDb.insert("deal_orders", null, vals);
+//    }
 
 	public synchronized long insertRecordLocHistory(String... values) { 
 
@@ -319,24 +317,24 @@ public class DataHelper {
 	}
 
     //rukshan .....
-    public synchronized long insertRecordDeal(String... values) {
-
-        ContentValues vals = new ContentValues();
-        for (int i = 0; i < values.length; i++) {
-            vals.put(table_deal_columns[i + 1], values[i]);
-        }
-        sqLiteDb.insert(TABLE_NAME_DEAL, null, vals);
-
-        return 0;
-    }
-
-    public synchronized Cursor getDealList(){
-        try {
-            return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_NAME_DEAL, null);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+//    public synchronized long insertRecordDeal(String... values) {
+//
+//        ContentValues vals = new ContentValues();
+//        for (int i = 0; i < values.length; i++) {
+//            vals.put(table_deal_columns[i + 1], values[i]);
+//        }
+//        sqLiteDb.insert(TABLE_DEALS, null, vals);
+//
+//        return 0;
+//    }
+//
+//    public synchronized Cursor getDealList(){
+//        try {
+//            return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_DEALS, null);
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
 
 
 
@@ -551,272 +549,272 @@ public synchronized String getCatCodeByCatId(String catId) {
 		}
 	}	
 //////////////////////////////////////////////////////////////////////////////////////////
-	public synchronized long insertToppingSizes(String... values) {
-	    Log.d("<<<>>>", "in dbhelper, inserting topping sizes");
-		ContentValues vals = new ContentValues();
-		for (int i = 0; i < values.length; i++) {
-			vals.put(table_topping_sizes[i + 1], values[i]);
-		}
+//	public synchronized long insertToppingSizes(String... values) {
+//	    Log.d("<<<>>>", "in dbhelper, inserting topping sizes");
+//		ContentValues vals = new ContentValues();
+//		for (int i = 0; i < values.length; i++) {
+//			vals.put(table_topping_sizes[i + 1], values[i]);
+//		}
+//
+//		return sqLiteDb.insert(TABLE_NAME_TOPPING_SIZES, null, vals);
+//	}
 
-		return sqLiteDb.insert(TABLE_NAME_TOPPING_SIZES, null, vals);
-	}
+//	public synchronized long insertToppingPrices(String... values) {
+//
+//		ContentValues vals = new ContentValues();
+//		for (int i = 0; i < values.length; i++) {
+//			vals.put(table_topping_prices[i + 1], values[i]);
+//		}
+//
+//		return sqLiteDb.insert(TABLE_NAME_TOPPING_PRICES, null, vals);
+//	}
 
-	public synchronized long insertToppingPrices(String... values) {
-
-		ContentValues vals = new ContentValues();
-		for (int i = 0; i < values.length; i++) {
-			vals.put(table_topping_prices[i + 1], values[i]);
-		}
-
-		return sqLiteDb.insert(TABLE_NAME_TOPPING_PRICES, null, vals);
-	}
-
-	public synchronized long insertRecordToppingSauces(String... values) {
-
-		ContentValues vals = new ContentValues();
-		for (int i = 0; i < values.length; i++) {
-			vals.put(table_sauses_and_toppings[i + 1], values[i]);
-		}
-
-		return sqLiteDb.insert(TABLE_NAME_SAUSES_AND_TOPPINGS, null, vals);
-	}
+//	public synchronized long insertRecordToppingSauces(String... values) {
+//
+//		ContentValues vals = new ContentValues();
+//		for (int i = 0; i < values.length; i++) {
+//			vals.put(table_sauses_and_toppings[i + 1], values[i]);
+//		}
+//
+//		return sqLiteDb.insert(TABLE_SAUCES_AND_TOPPINGS, null, vals);
+//	}
 ////////////////////////////////////////////////////////////////////////////////////////////
-	public synchronized boolean isEmptyToppingsTables(String prodId) {
-		
-		boolean recExists=false;
-		int count=-1;
-		try {
-			Cursor cursor=sqLiteDb.rawQuery("SELECT COUNT(*) AS num_rows FROM "+TABLE_NAME_SAUSES_AND_TOPPINGS+" WHERE ProdID="+prodId, null);
-			
-			if (cursor.moveToFirst()) {
-				count=cursor.getInt(0);				
-	        }
-			
-			if(count > 0)
-				recExists=true;
-			
-	        if (cursor != null && !cursor.isClosed()) {
-	            cursor.close();
-	        }
-	        return recExists;
-			
-		} catch (Exception e) {
-			return recExists;
-		}
-	}
+//	public synchronized boolean isEmptyToppingsTables(String prodId) {
+//		
+//		boolean recExists=false;
+//		int count=-1;
+//		try {
+//			Cursor cursor=sqLiteDb.rawQuery("SELECT COUNT(*) AS num_rows FROM "+TABLE_SAUCES_AND_TOPPINGS+" WHERE ProdID="+prodId, null);
+//			
+//			if (cursor.moveToFirst()) {
+//				count=cursor.getInt(0);				
+//	        }
+//			
+//			if(count > 0)
+//				recExists=true;
+//			
+//	        if (cursor != null && !cursor.isClosed()) {
+//	            cursor.close();
+//	        }
+//	        return recExists;
+//			
+//		} catch (Exception e) {
+//			return recExists;
+//		}
+//	}
 	
-	public synchronized boolean isEmptyToppingsPrices() {
-		
-		boolean recExists=false;
-		int count=-1;
-		try {
-			Cursor cursor=sqLiteDb.rawQuery("SELECT COUNT(*) AS num_rows FROM "+TABLE_NAME_TOPPING_PRICES+" ", null);
-			
-			if (cursor.moveToFirst()) {
-				count=cursor.getInt(0);				
-	        }
-			
-			if(count > 0)
-				recExists=true;
-			
-	        if (cursor != null && !cursor.isClosed()) {
-	            cursor.close();
-	        }
-	        return recExists;
-			
-		} catch (Exception e) {
-			return recExists;
-		}
-	}
-	public synchronized Cursor getPizzaToppings(String pizzaId) {
-		try {
-			return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_NAME_SAUSES_AND_TOPPINGS+" WHERE IsSauce='False' AND ProdID="+pizzaId+" order by DisplaySequence asc ", null);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	public synchronized Cursor getPizzaSauces(String pizzaId) {
-		try {
-			return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_NAME_SAUSES_AND_TOPPINGS+" WHERE IsSauce='True' AND ProdID="+pizzaId+" order by DisplaySequence asc ", null);
-		} catch (Exception e) {
-			return null;
-		}
-	}
+//	public synchronized boolean isEmptyToppingsPrices() {
+//		
+//		boolean recExists=false;
+//		int count=-1;
+//		try {
+//			Cursor cursor=sqLiteDb.rawQuery("SELECT COUNT(*) AS num_rows FROM "+TABLE_NAME_TOPPING_PRICES+" ", null);
+//			
+//			if (cursor.moveToFirst()) {
+//				count=cursor.getInt(0);				
+//	        }
+//			
+//			if(count > 0)
+//				recExists=true;
+//			
+//	        if (cursor != null && !cursor.isClosed()) {
+//	            cursor.close();
+//	        }
+//	        return recExists;
+//			
+//		} catch (Exception e) {
+//			return recExists;
+//		}
+//	}
+//	public synchronized Cursor getPizzaToppings(String pizzaId) {
+//		try {
+//			return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_SAUCES_AND_TOPPINGS+" WHERE IsSauce='False' AND ProdID="+pizzaId+" order by DisplaySequence asc ", null);
+//		} catch (Exception e) {
+//			return null;
+//		}
+//	}
+//
+//	public synchronized Cursor getPizzaSauces(String pizzaId) {
+//		try {
+//			return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_SAUCES_AND_TOPPINGS+" WHERE IsSauce='True' AND ProdID="+pizzaId+" order by DisplaySequence asc ", null);
+//		} catch (Exception e) {
+//			return null;
+//		}
+//	}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-	public synchronized boolean isFavAdded(String ProdID,String customName) {
-		String[] selectionArgs={ProdID,customName};
-		boolean recExists = false;
-		int count = -1;
-		try {
-			Cursor cursor = sqLiteDb.rawQuery(
-					"SELECT COUNT(*) AS num_rows FROM "
-							+ TABLE_NAME_FAVS + " where ProdID=? AND customName=? ", selectionArgs);
+//	public synchronized boolean isFavAdded(String ProdID,String customName) {
+//		String[] selectionArgs={ProdID,customName};
+//		boolean recExists = false;
+//		int count = -1;
+//		try {
+//			Cursor cursor = sqLiteDb.rawQuery(
+//					"SELECT COUNT(*) AS num_rows FROM "
+//							+ TABLE_FAVORITE + " where ProdID=? AND customName=? ", selectionArgs);
+//
+//			if (cursor.moveToFirst()) {
+//				count = cursor.getInt(0);
+//			}
+//
+//			if (count > 0)
+//				recExists = true;
+//
+//			if (cursor != null && !cursor.isClosed()) {
+//				cursor.close();
+//			}
+//			return recExists;
+//
+//		} catch (Exception e) {
+//			return recExists;
+//		}
+//	}
 
-			if (cursor.moveToFirst()) {
-				count = cursor.getInt(0);
-			}
+//	public boolean deleteRecordFav(String DATABASE_TABLE, String whereCause) {
+//		return sqLiteDb.delete(DATABASE_TABLE, whereCause, null) > 0;
+//	}
 
-			if (count > 0)
-				recExists = true;
+//	public synchronized Cursor getFavsList(){
+//		try {
+//			return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_FAVORITE, null);
+//		} catch (Exception e) {
+//			return null;
+//		}
+//	}
 
-			if (cursor != null && !cursor.isClosed()) {
-				cursor.close();
-			}
-			return recExists;
+//    public boolean deleteRecordDealOrder(String whereCause) {
+//        return sqLiteDb.delete("deal_orders", whereCause, null) > 0;
+//    }
+//
+//    public boolean deleteUnfinishedRecordDealOrder(String whereCause) {
+//        return sqLiteDb.delete("deal_orders", whereCause, null) > 0;
+//    }
+//
+//    public boolean isDealProductAvailable(String CouponGroupID,String couponID){
+//        Cursor dataCount = sqLiteDb.rawQuery("select * from deal_orders where CouponGroupID=" +CouponGroupID +" AND CouponID="+couponID , null);
+//        int i= dataCount.getCount();
+//        boolean b=false;
+//        if (i>0){
+//            b=true;
+//        }
+//        return b;
+//    }
+//
+//    public synchronized Cursor getDealOrdersList(){
+//        try {
+//            return sqLiteDb.rawQuery("SELECT * FROM deal_orders where isUpdate=1", null);
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
+//
+//    public synchronized Cursor getDealOrderData(String CouponGroupID,String CouponID) {
+//        try {
+//            return sqLiteDb.rawQuery("SELECT DisplayName,Image,CouponGroupID,DiscountedPrice,Quantity FROM deal_orders where isUpdate=0 AND CouponGroupID="+CouponGroupID+" AND CouponID="+CouponID, null);
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
 
-		} catch (Exception e) {
-			return recExists;
-		}
-	}
-
-	public boolean deleteRecordFav(String DATABASE_TABLE, String whereCause) {
-		return sqLiteDb.delete(DATABASE_TABLE, whereCause, null) > 0;
-	}
-
-	public synchronized Cursor getFavsList(){
-		try {
-			return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_NAME_FAVS, null);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-    public boolean deleteRecordDealOrder(String whereCause) {
-        return sqLiteDb.delete("deal_orders", whereCause, null) > 0;
-    }
-
-    public boolean deleteUnfinishedRecordDealOrder(String whereCause) {
-        return sqLiteDb.delete("deal_orders", whereCause, null) > 0;
-    }
-
-    public boolean isDealProductAvailable(String CouponGroupID,String couponID){
-        Cursor dataCount = sqLiteDb.rawQuery("select * from deal_orders where CouponGroupID=" +CouponGroupID +" AND CouponID="+couponID , null);
-        int i= dataCount.getCount();
-        boolean b=false;
-        if (i>0){
-            b=true;
-        }
-        return b;
-    }
-
-    public synchronized Cursor getDealOrdersList(){
-        try {
-            return sqLiteDb.rawQuery("SELECT * FROM deal_orders where isUpdate=1", null);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public synchronized Cursor getDealOrderData(String CouponGroupID,String CouponID) {
-        try {
-            return sqLiteDb.rawQuery("SELECT DisplayName,Image,CouponGroupID,DiscountedPrice,Quantity FROM deal_orders where isUpdate=0 AND CouponGroupID="+CouponGroupID+" AND CouponID="+CouponID, null);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public boolean updateDealOrder(){
-        try{
-            ContentValues  cv1 = new ContentValues();
-            cv1.put("isUpdate","1");
-            sqLiteDb.update("deal_orders",cv1,"isUpdate=0",null);
-        }catch (Exception e){
-
-        }
-        return true;
-    }
-
-    public boolean resetDealOrder(String couponID){
-        try{
-            ContentValues  cv1 = new ContentValues();
-            cv1.put("isUpdate","0");
-            sqLiteDb.update("deal_orders",cv1,"isUpdate=1 AND CouponID="+couponID,null);
-        }catch (Exception e){
-
-        }
-        return true;
-    }
-
-    public int getDealOrderCount(String couponID){
-        int b=0;
-        try{
-            Cursor dataCount = sqLiteDb.rawQuery("select * from deal_orders where CouponID=" +couponID , null);
-            b= dataCount.getCount();
-
-        }catch (Exception e){
-        }
-        return b;
-    }
+//    public boolean updateDealOrder(){
+//        try{
+//            ContentValues  cv1 = new ContentValues();
+//            cv1.put("isUpdate","1");
+//            sqLiteDb.update("deal_orders",cv1,"isUpdate=0",null);
+//        }catch (Exception e){
+//
+//        }
+//        return true;
+//    }
+//
+//    public boolean resetDealOrder(String couponID){
+//        try{
+//            ContentValues  cv1 = new ContentValues();
+//            cv1.put("isUpdate","0");
+//            sqLiteDb.update("deal_orders",cv1,"isUpdate=1 AND CouponID="+couponID,null);
+//        }catch (Exception e){
+//
+//        }
+//        return true;
+//    }
+//
+//    public int getDealOrderCount(String couponID){
+//        int b=0;
+//        try{
+//            Cursor dataCount = sqLiteDb.rawQuery("select * from deal_orders where CouponID=" +couponID , null);
+//            b= dataCount.getCount();
+//
+//        }catch (Exception e){
+//        }
+//        return b;
+//    }
 
 
 	
-	public boolean deleteRecordOrder(String whereCause) {
-		return sqLiteDb.delete(TABLE_NAME_ORDERS, whereCause, null) > 0;
-	}
-
-	public synchronized Cursor getOrdersList(){
-		try {
-			return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_NAME_ORDERS, null);
-		} catch (Exception e) {
-			return null;
-		}
-	}	
-	public synchronized Cursor getOrdersListWithType(String type){
-		try {
-			String[] selectionArgs={type};
-			return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_NAME_ORDERS+" WHERE ProdCatName=?",selectionArgs);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	public synchronized Cursor getOrdersListWithProdId(String pid){
-		try {
-			String[] selectionArgs={pid};
-			return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_NAME_ORDERS+" WHERE ProdID=?",selectionArgs);
-		} catch (Exception e) {
-			return null;
-		}
-	}
+//	public boolean deleteRecordOrder(String whereCause) {
+//		return sqLiteDb.delete(TABLE_ORDERS, whereCause, null) > 0;
+//	}
+//
+//	public synchronized Cursor getOrdersList(){
+//		try {
+//			return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_ORDERS, null);
+//		} catch (Exception e) {
+//			return null;
+//		}
+//	}	
+//	public synchronized Cursor getOrdersListWithType(String type){
+//		try {
+//			String[] selectionArgs={type};
+//			return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_ORDERS+" WHERE ProdCatName=?",selectionArgs);
+//		} catch (Exception e) {
+//			return null;
+//		}
+//	}
+//	public synchronized Cursor getOrdersListWithProdId(String pid){
+//		try {
+//			String[] selectionArgs={pid};
+//			return sqLiteDb.rawQuery("SELECT * FROM "+TABLE_ORDERS+" WHERE ProdID=?",selectionArgs);
+//		} catch (Exception e) {
+//			return null;
+//		}
+//	}
 	
-public synchronized String getToppingPrice(String toppingId,String toppingSize) {
-		
-		String[] selectionArgs={toppingId,toppingSize};
-		String returnValue=null;
-		try {
-			Cursor cursor=sqLiteDb.rawQuery("SELECT ToppingPrice AS val FROM "+TABLE_NAME_TOPPING_PRICES+" WHERE ToppingID=? AND ToppingSizeCode=?", selectionArgs);
-			
-			if (cursor.moveToFirst()) {
-				returnValue=cursor.getString(0);				
-	        }
-			
-			
-	        if (cursor != null && !cursor.isClosed()) {
-	            cursor.close();
-	        }
-	        return returnValue;
-			
-		} catch (Exception e) {
-			return returnValue;
-		} 
-	}
+//public synchronized String getToppingPrice(String toppingId,String toppingSize) {
+//		
+//		String[] selectionArgs={toppingId,toppingSize};
+//		String returnValue=null;
+//		try {
+//			Cursor cursor=sqLiteDb.rawQuery("SELECT ToppingPrice AS val FROM "+TABLE_NAME_TOPPING_PRICES+" WHERE ToppingID=? AND ToppingSizeCode=?", selectionArgs);
+//			
+//			if (cursor.moveToFirst()) {
+//				returnValue=cursor.getString(0);				
+//	        }
+//			
+//			
+//	        if (cursor != null && !cursor.isClosed()) {
+//	            cursor.close();
+//	        }
+//	        return returnValue;
+//			
+//		} catch (Exception e) {
+//			return returnValue;
+//		} 
+//	}
 
-public void updateOrderPrice(String sr_no, String price) {
-	try {
-	
-		String[] selectionArgs={sr_no};
-		
-		ContentValues vals = new ContentValues();
-		vals.put("Price",price);
-		
-		sqLiteDb.update(TABLE_NAME_ORDERS, vals, " sr_no=? ", selectionArgs);
-
-	} catch (Exception e) {
-		Log.e("DB Error", e.toString());
-		e.printStackTrace();
-	}
-}
+//public void updateOrderPrice(String sr_no, String price) {
+//	try {
+//	
+//		String[] selectionArgs={sr_no};
+//		
+//		ContentValues vals = new ContentValues();
+//		vals.put("Price",price);
+//		
+//		sqLiteDb.update(TABLE_ORDERS, vals, " sr_no=? ", selectionArgs);
+//
+//	} catch (Exception e) {
+//		Log.e("DB Error", e.toString());
+//		e.printStackTrace();
+//	}
+//}
 
 public synchronized long insertRecordDeliveryLocations(String... values) {
 

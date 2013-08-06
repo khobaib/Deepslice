@@ -1,6 +1,6 @@
 package com.deepslice.model;
 
-public class CouponDetailsVo {
+public class CouponDetails {
 	String CouponID = "";
 	String ID = "";
 	String ProdID = "";

@@ -2,7 +2,7 @@ package com.deepslice.model;
 
 import java.io.Serializable;
 
-public class ToppingsAndSaucesVo implements Serializable {
+public class ToppingsAndSauces implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private String ToppingID;

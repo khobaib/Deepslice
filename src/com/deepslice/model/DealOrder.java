@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Time: 10:03 PM
  * To change this template use File | Settings | File Templates.
  */
- public class  DealOrderVo implements Serializable {
+ public class  DealOrder implements Serializable {
     public int getSerialId() {
         return SerialId;
     }

@@ -10,7 +10,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import com.deepslice.database.AppDao;
-import com.deepslice.model.DealOrderVo;
+import com.deepslice.database.DeepsliceDatabase;
+import com.deepslice.model.DealOrder;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
 import org.apache.http.HttpEntity;
@@ -96,38 +97,62 @@ public class PayByCashActivity extends Activity{
 			}
 		});
 		///////////////////////////////
-		AppDao dao=null;
-		try {
-			dao=AppDao.getSingleton(getApplicationContext());
-			dao.openConnection();
+		
+		DeepsliceDatabase dbInstance = new DeepsliceDatabase(PayByCashActivity.this);
+		dbInstance.open();
+		ArrayList<String> orderInfo = dbInstance.getOrderInfo();
+        ArrayList<DealOrder> dealOrderVos=dbInstance.getDealOrdersList();
+        Double orderTotal=0.0;
+        if(null!=orderInfo && orderInfo.size()==2)
+        {
+            orderTotal=AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
 
-            ArrayList<String> orderInfo = dao.getOrderInfo();
-            ArrayList<DealOrderVo> dealOrderVos=dao.getDealOrdersList();
-            Double orderTotal=0.0;
-            if(null!=orderInfo && orderInfo.size()==2)
-            {
-                orderTotal=AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
+        }
+        Double dealTotal=0.0;
+        if(dealOrderVos!=null && dealOrderVos.size()>0){
 
+            for (int x=0;x<dealOrderVos.size();x++){
+                dealTotal+=(Double.parseDouble(dealOrderVos.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos.get(x).getQuantity())));
             }
-            Double dealTotal=0.0;
-            if(dealOrderVos!=null && dealOrderVos.size()>0){
-
-                for (int x=0;x<dealOrderVos.size();x++){
-                    dealTotal+=(Double.parseDouble(dealOrderVos.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos.get(x).getQuantity())));
-                }
-            }
-            double subT=dealTotal+orderTotal;
-            DecimalFormat twoDForm = new DecimalFormat("#.##");
-            subT= Double.valueOf(twoDForm.format(subT));
-            totalPrice.setText("TOTAL: $"+subT);
-
-		} catch (Exception ex)
-		{
-			System.out.println(ex.getMessage());
-		}finally{
-			if(null!=dao)
-				dao.closeConnection();
-		}
+        }
+        double subT=dealTotal+orderTotal;
+        DecimalFormat twoDForm = new DecimalFormat("#.##");
+        subT= Double.valueOf(twoDForm.format(subT));
+        totalPrice.setText("TOTAL: $"+subT);
+		dbInstance.close();
+		
+//		AppDao dao=null;
+//		try {
+//			dao=AppDao.getSingleton(getApplicationContext());
+//			dao.openConnection();
+//
+//            ArrayList<String> orderInfo = dao.getOrderInfo();
+//            ArrayList<DealOrder> dealOrderVos=dao.getDealOrdersList();
+//            Double orderTotal=0.0;
+//            if(null!=orderInfo && orderInfo.size()==2)
+//            {
+//                orderTotal=AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
+//
+//            }
+//            Double dealTotal=0.0;
+//            if(dealOrderVos!=null && dealOrderVos.size()>0){
+//
+//                for (int x=0;x<dealOrderVos.size();x++){
+//                    dealTotal+=(Double.parseDouble(dealOrderVos.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos.get(x).getQuantity())));
+//                }
+//            }
+//            double subT=dealTotal+orderTotal;
+//            DecimalFormat twoDForm = new DecimalFormat("#.##");
+//            subT= Double.valueOf(twoDForm.format(subT));
+//            totalPrice.setText("TOTAL: $"+subT);
+//
+//		} catch (Exception ex)
+//		{
+//			System.out.println(ex.getMessage());
+//		}finally{
+//			if(null!=dao)
+//				dao.closeConnection();
+//		}
 		
 		////////////////////////////////////////////////////////////////
 		myIp = getIPAddress(true);

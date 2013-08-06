@@ -15,7 +15,7 @@ import com.deepslice.database.AppDao;
 import com.deepslice.model.DeliveryAddressVo;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.model.LocationPoints;
-import com.deepslice.model.ToppingsHashmapVo;
+import com.deepslice.model.ToppingsHashmap;
 import com.deepslice.model.UserBean;
 
 public class AppProperties {
@@ -28,7 +28,7 @@ public class AppProperties {
 	public static final String COUPON_TYPE_PRODUCTS="P";
 	
 
-	public static HashMap<String, ToppingsHashmapVo> selectedToppings;
+	public static HashMap<String, ToppingsHashmap> selectedToppings;
 	public static boolean isFirstPizzaChosen;
 	public static boolean isLoogedIn	= false;
 	public static final String PREFS_NAME = "DeepSlice";

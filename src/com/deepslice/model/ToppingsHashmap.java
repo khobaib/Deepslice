@@ -2,7 +2,7 @@ package com.deepslice.model;
 
 import java.io.Serializable;
 
-public class ToppingsHashmapVo implements Serializable {
+public class ToppingsHashmap implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private String ToppingID;
