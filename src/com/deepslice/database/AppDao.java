@@ -39,181 +39,181 @@ public class AppDao {
     }
 
 
-    public ArrayList<ProductCategory> cursorToPeoductCats(Cursor cursor) {
-        if(null==cursor)
-            return null;
-        ArrayList<ProductCategory> list = new ArrayList<ProductCategory>();
-        if (cursor.moveToFirst()) {
-            do {
-                ProductCategory f = new ProductCategory();
-                f.setProdCatID(cursor.getString(1));
-                f.setProdCatCode(cursor.getString(2));
-                f.setProdCatAbbr(cursor.getString(3));
-                f.setProdCatDesc(cursor.getString(4));
-                f.setAllowPartialSelection(cursor.getString(5));
-                f.setPartialSelectionText(cursor.getString(6));
-                f.setPartialSelectionSurcharge(cursor.getString(7));
-                f.setAllowSubCat1(cursor.getString(8));
-                f.setSubCat1Text(cursor.getString(9));
-                f.setAllowSubCat2(cursor.getString(10));
-                f.setSubCat2Text(cursor.getString(11));
-                f.setProductBarText(cursor.getString(12));
-                f.setAllowOptions(cursor.getString(13));
-                f.setOptionBarText(cursor.getString(14));
-                f.setOptionCounting(cursor.getString(15));
-                f.setThumbnail(cursor.getString(16));
-                f.setFullImage(cursor.getString(17));
+//    public ArrayList<ProductCategory> cursorToPeoductCats(Cursor cursor) {
+//        if(null==cursor)
+//            return null;
+//        ArrayList<ProductCategory> list = new ArrayList<ProductCategory>();
+//        if (cursor.moveToFirst()) {
+//            do {
+//                ProductCategory f = new ProductCategory();
+//                f.setProdCatID(cursor.getString(1));
+//                f.setProdCatCode(cursor.getString(2));
+//                f.setProdCatAbbr(cursor.getString(3));
+//                f.setProdCatDesc(cursor.getString(4));
+//                f.setAllowPartialSelection(cursor.getString(5));
+//                f.setPartialSelectionText(cursor.getString(6));
+//                f.setPartialSelectionSurcharge(cursor.getString(7));
+//                f.setAllowSubCat1(cursor.getString(8));
+//                f.setSubCat1Text(cursor.getString(9));
+//                f.setAllowSubCat2(cursor.getString(10));
+//                f.setSubCat2Text(cursor.getString(11));
+//                f.setProductBarText(cursor.getString(12));
+//                f.setAllowOptions(cursor.getString(13));
+//                f.setOptionBarText(cursor.getString(14));
+//                f.setOptionCounting(cursor.getString(15));
+//                f.setThumbnail(cursor.getString(16));
+//                f.setFullImage(cursor.getString(17));
+//
+//                list.add(f);
+//            } while (cursor.moveToNext());
+//        }
+//        if (cursor != null && !cursor.isClosed()) {
+//            cursor.close();
+//        }
+//        return list;
+//    }
+//    public ArrayList<SubCategoryVo> cursorToSubCat(Cursor cursor) {
+//        ArrayList<SubCategoryVo> list = new ArrayList<SubCategoryVo>();
+//        if (cursor.moveToFirst()) {
+//            do {
+//                SubCategoryVo f = new SubCategoryVo();
+//                f.setProdCatID(cursor.getString(1));
+//                f.setSubCatID(cursor.getString(2));
+//                f.setSubCatOf(cursor.getString(3));
+//                f.setSubCatCode(cursor.getString(4));
+//                f.setSubCatAbbr(cursor.getString(5));
+//                f.setSubCatDesc(cursor.getString(6));
+//                f.setDisplaySequence(cursor.getString(7));
+//                f.setThumbnail(cursor.getString(8));
+//                f.setFullImage(cursor.getString(9));
+//
+//                list.add(f);
+//            } while (cursor.moveToNext());
+//        }
+//        if (cursor != null && !cursor.isClosed()) {
+//            cursor.close();
+//        }
+//        return list;
+//    }
+//    public ArrayList<AllProductsVo> cursorToAllProducts(Cursor cursor) {
+//        ArrayList<AllProductsVo> list = new ArrayList<AllProductsVo>();
+//        if (cursor.moveToFirst()) {
+//            do {
+//                AllProductsVo f = new AllProductsVo();
+//                f.setProdCatID(cursor.getString(1));
+//                f.setSubCatID1(cursor.getString(2));
+//                f.setSubCatID2(cursor.getString(3));
+//                f.setProdID(cursor.getString(4));
+//                f.setProdCode(cursor.getString(5));
+//                f.setDisplayName(cursor.getString(6));
+//                f.setProdAbbr(cursor.getString(7));
+//                f.setProdDesc(cursor.getString(8));
+//                f.setIsAddDeliveryAmount(cursor.getString(9));
+//                f.setDisplaySequence(cursor.getString(10));
+//                f.setCaloriesQty(cursor.getString(11));
+//                f.setPrice(cursor.getString(12));
+//                f.setThumbnail(cursor.getString(13));
+//                f.setFullImage(cursor.getString(14));
+//                list.add(f);
+//            } while (cursor.moveToNext());
+//        }
+//        if (cursor != null && !cursor.isClosed()) {
+//            cursor.close();
+//        }
+//        return list;
+//    }
 
-                list.add(f);
-            } while (cursor.moveToNext());
-        }
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-        return list;
-    }
-    public ArrayList<SubCategoryVo> cursorToSubCat(Cursor cursor) {
-        ArrayList<SubCategoryVo> list = new ArrayList<SubCategoryVo>();
-        if (cursor.moveToFirst()) {
-            do {
-                SubCategoryVo f = new SubCategoryVo();
-                f.setProdCatID(cursor.getString(1));
-                f.setSubCatID(cursor.getString(2));
-                f.setSubCatOf(cursor.getString(3));
-                f.setSubCatCode(cursor.getString(4));
-                f.setSubCatAbbr(cursor.getString(5));
-                f.setSubCatDesc(cursor.getString(6));
-                f.setDisplaySequence(cursor.getString(7));
-                f.setThumbnail(cursor.getString(8));
-                f.setFullImage(cursor.getString(9));
+//    public boolean insertProdCat(ArrayList<ProductCategory> aList ) {
+//        for (Iterator<ProductCategory> iterator = aList.iterator(); iterator.hasNext();) {
+//            ProductCategory f = (ProductCategory) iterator.next();
+//            dbHelper.insertRecordCats(
+//                    f.getProdCatID(),
+//                    f.getProdCatCode(),
+//                    f.getProdCatAbbr(),
+//                    f.getProdCatDesc(),
+//                    f.getAllowPartialSelection(),
+//                    f.getPartialSelectionText(),
+//                    f.getPartialSelectionSurcharge(),
+//                    f.getAllowSubCat1(),
+//                    f.getSubCat1Text(),
+//                    f.getAllowSubCat2(),
+//                    f.getSubCat2Text(),
+//                    f.getProductBarText(),
+//                    f.getAllowOptions(),
+//                    f.getOptionBarText(),
+//                    f.getOptionCounting(),
+//                    f.getThumbnail(),
+//                    f.getFullImage()
+//
+//                    );
+//        }
+//        return true;
+//    }
+//
+//    public boolean insertSubCatList(ArrayList<SubCategoryVo> aList ) {
+//        for (Iterator<SubCategoryVo> iterator = aList.iterator(); iterator.hasNext();) {
+//            SubCategoryVo f = (SubCategoryVo) iterator.next();
+//            dbHelper.insertRecordSubCat(
+//                    f.getProdCatID(),
+//                    f.getSubCatID(),
+//                    f.getSubCatOf(),
+//                    f.getSubCatCode(),
+//                    f.getSubCatAbbr(),
+//                    f.getSubCatDesc(),
+//                    f.getDisplaySequence(),
+//                    f.getThumbnail(),
+//                    f.getFullImage()
+//
+//                    );
+//        }
+//        return true;
+//    }
 
-                list.add(f);
-            } while (cursor.moveToNext());
-        }
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-        return list;
-    }
-    public ArrayList<AllProductsVo> cursorToAllProducts(Cursor cursor) {
-        ArrayList<AllProductsVo> list = new ArrayList<AllProductsVo>();
-        if (cursor.moveToFirst()) {
-            do {
-                AllProductsVo f = new AllProductsVo();
-                f.setProdCatID(cursor.getString(1));
-                f.setSubCatID1(cursor.getString(2));
-                f.setSubCatID2(cursor.getString(3));
-                f.setProdID(cursor.getString(4));
-                f.setProdCode(cursor.getString(5));
-                f.setDisplayName(cursor.getString(6));
-                f.setProdAbbr(cursor.getString(7));
-                f.setProdDesc(cursor.getString(8));
-                f.setIsAddDeliveryAmount(cursor.getString(9));
-                f.setDisplaySequence(cursor.getString(10));
-                f.setCaloriesQty(cursor.getString(11));
-                f.setPrice(cursor.getString(12));
-                f.setThumbnail(cursor.getString(13));
-                f.setFullImage(cursor.getString(14));
-                list.add(f);
-            } while (cursor.moveToNext());
-        }
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-        return list;
-    }
+//    public boolean insertAllProducts(ArrayList<AllProductsVo> aList ) {
+//        for (Iterator<AllProductsVo> iterator = aList.iterator(); iterator.hasNext();) {
+//            AllProductsVo f = (AllProductsVo) iterator.next();
+//            dbHelper.insertRecordProducts(
+//                    f.getProdCatID(),
+//                    f.getSubCatID1(),
+//                    f.getSubCatID2(),
+//                    f.getProdID(),
+//                    f.getProdCode(),
+//                    f.getDisplayName(),
+//                    f.getProdAbbr(),
+//                    f.getProdDesc(),
+//                    f.getIsAddDeliveryAmount(),
+//                    f.getDisplaySequence(),
+//                    f.getCaloriesQty(),
+//                    f.getPrice(),
+//                    f.getThumbnail(),
+//                    f.getFullImage()
+//                    );
+//        }
+//        return true;
+//    }
 
-    public boolean insertProdCat(ArrayList<ProductCategory> aList ) {
-        for (Iterator<ProductCategory> iterator = aList.iterator(); iterator.hasNext();) {
-            ProductCategory f = (ProductCategory) iterator.next();
-            dbHelper.insertRecordCats(
-                    f.getProdCatID(),
-                    f.getProdCatCode(),
-                    f.getProdCatAbbr(),
-                    f.getProdCatDesc(),
-                    f.getAllowPartialSelection(),
-                    f.getPartialSelectionText(),
-                    f.getPartialSelectionSurcharge(),
-                    f.getAllowSubCat1(),
-                    f.getSubCat1Text(),
-                    f.getAllowSubCat2(),
-                    f.getSubCat2Text(),
-                    f.getProductBarText(),
-                    f.getAllowOptions(),
-                    f.getOptionBarText(),
-                    f.getOptionCounting(),
-                    f.getThumbnail(),
-                    f.getFullImage()
-
-                    );
-        }
-        return true;
-    }
-
-    public boolean insertSubCatList(ArrayList<SubCategoryVo> aList ) {
-        for (Iterator<SubCategoryVo> iterator = aList.iterator(); iterator.hasNext();) {
-            SubCategoryVo f = (SubCategoryVo) iterator.next();
-            dbHelper.insertRecordSubCat(
-                    f.getProdCatID(),
-                    f.getSubCatID(),
-                    f.getSubCatOf(),
-                    f.getSubCatCode(),
-                    f.getSubCatAbbr(),
-                    f.getSubCatDesc(),
-                    f.getDisplaySequence(),
-                    f.getThumbnail(),
-                    f.getFullImage()
-
-                    );
-        }
-        return true;
-    }
-
-    public boolean insertAllProducts(ArrayList<AllProductsVo> aList ) {
-        for (Iterator<AllProductsVo> iterator = aList.iterator(); iterator.hasNext();) {
-            AllProductsVo f = (AllProductsVo) iterator.next();
-            dbHelper.insertRecordProducts(
-                    f.getProdCatID(),
-                    f.getSubCatID1(),
-                    f.getSubCatID2(),
-                    f.getProdID(),
-                    f.getProdCode(),
-                    f.getDisplayName(),
-                    f.getProdAbbr(),
-                    f.getProdDesc(),
-                    f.getIsAddDeliveryAmount(),
-                    f.getDisplaySequence(),
-                    f.getCaloriesQty(),
-                    f.getPrice(),
-                    f.getThumbnail(),
-                    f.getFullImage()
-                    );
-        }
-        return true;
-    }
-
-    public boolean recordExists() {
-        return dbHelper.isEmptyDB();
-    }
+//    public boolean recordExists() {
+//        return dbHelper.isEmptyDB();
+//    }
 
 
-    public String getMaxInsertedRecord(String tbl) {
-        return dbHelper.getMaxId(tbl);
-    }
+//    public String getMaxInsertedRecord(String tbl) {
+//        return dbHelper.getMaxId(tbl);
+//    }
 
-    public ArrayList<SubCategoryVo> getSubCategoriesPizza() {
-        Cursor ls = dbHelper.searchPizzaSubCats();
-        return cursorToSubCat(ls);
-    }
-    public ArrayList<SubCategoryVo> getSubCategoriesDrinks() {
-        Cursor ls = dbHelper.searchDrinksSubCats();
-        return cursorToSubCat(ls);
-    }
-
-    public ArrayList<ProductCategory> getSides() {
-        Cursor ls = dbHelper.searchSides();
-        return cursorToPeoductCats(ls);
-    }
+//    public ArrayList<SubCategoryVo> getSubCategoriesPizza() {
+//        Cursor ls = dbHelper.searchPizzaSubCats();
+//        return cursorToSubCat(ls);
+//    }
+//    public ArrayList<SubCategoryVo> getSubCategoriesDrinks() {
+//        Cursor ls = dbHelper.searchDrinksSubCats();
+//        return cursorToSubCat(ls);
+//    }
+//
+//    public ArrayList<ProductCategory> getSides() {
+//        Cursor ls = dbHelper.searchSides();
+//        return cursorToPeoductCats(ls);
+//    }
 //    public ArrayList<ToppingsAndSauces> getPizzaToppings(String pizzaId) {
 //        Cursor ls = dbHelper.getPizzaToppings(pizzaId);
 //        return cursorToToppingsAndSauces(ls);
@@ -226,48 +226,48 @@ public class AppDao {
 
 
 
-    public ArrayList<AllProductsVo> getProductsSelected(String catId,
-            String subCatId) {
+//    public ArrayList<AllProductsVo> getProductsSelected(String catId,
+//            String subCatId) {
+//
+//        Cursor cursor= dbHelper.getProductsSelected(catId,subCatId);
+//        try{		
+//            return cursorToAllProducts(cursor);
+//        }finally{
+//            cursor.close();	
+//        }
+//
+//    }
 
-        Cursor cursor= dbHelper.getProductsSelected(catId,subCatId);
-        try{		
-            return cursorToAllProducts(cursor);
-        }finally{
-            cursor.close();	
-        }
+//    public ArrayList<SubCategoryVo> getPizzaCrusts(String catId,
+//            String subCatId) {
+//
+//        Cursor cursor= dbHelper.searchPizzaCrusts(catId,subCatId);
+//        try{		
+//            return cursorToSubCat(cursor);
+//        }finally{
+//            cursor.close();	
+//        }
+//
+//    }
 
-    }
+//    public ArrayList<AllProductsVo> getProductsPizza(String catId,
+//            String subCatId) {
+//
+//        Cursor cursor= dbHelper.getProductsPizza(catId,subCatId);
+//        try{		
+//            return cursorToAllProducts(cursor);
+//        }finally{
+//            cursor.close();	
+//        }
+//
+//    }
 
-    public ArrayList<SubCategoryVo> getPizzaCrusts(String catId,
-            String subCatId) {
-
-        Cursor cursor= dbHelper.searchPizzaCrusts(catId,subCatId);
-        try{		
-            return cursorToSubCat(cursor);
-        }finally{
-            cursor.close();	
-        }
-
-    }
-
-    public ArrayList<AllProductsVo> getProductsPizza(String catId,
-            String subCatId) {
-
-        Cursor cursor= dbHelper.getProductsPizza(catId,subCatId);
-        try{		
-            return cursorToAllProducts(cursor);
-        }finally{
-            cursor.close();	
-        }
-
-    }
-
-    public String getCatIdByCatCode(String catCode) {
-        return dbHelper.getCatIdByCatCode(catCode);
-    }
-    public String getCatCodeByCatId(String catId) {
-        return dbHelper.getCatCodeByCatId(catId);
-    }
+//    public String getCatIdByCatCode(String catCode) {
+//        return dbHelper.getCatIdByCatCode(catCode);
+//    }
+//    public String getCatCodeByCatId(String catId) {
+//        return dbHelper.getCatCodeByCatId(catId);
+//    }
     ////////////////////////////////////////////////////////////////////////// cursors
     //////////////////////////////////////////////////////////////////////////
 
@@ -762,12 +762,12 @@ public class AppDao {
 //
 //    }
     ////////////////////////------------------
-    public boolean recordExistsLocationHistory(String LocationID,String SuburbID) {
-        return dbHelper.isLocationAlreadyAdded(LocationID, SuburbID);
-    }
-    public boolean locationHistoryExists(String isDelivery) {
-        return dbHelper.locationHistoryExists(isDelivery);
-    }
+//    public boolean recordExistsLocationHistory(String LocationID,String SuburbID) {
+//        return dbHelper.isLocationAlreadyAdded(LocationID, SuburbID);
+//    }
+//    public boolean locationHistoryExists(String isDelivery) {
+//        return dbHelper.locationHistoryExists(isDelivery);
+//    }
 
     public ArrayList<LocationDetails> cursorToLocationDetailsVo(Cursor cursor) {
         if(null==cursor)
@@ -880,161 +880,164 @@ public class AppDao {
 //        return voArrayList;  //To change body of created methods use File | Settings | File Templates.
 //    }
 
-    public boolean insertLocationHistory(LocationDetails f,String isDelivery) {
-        dbHelper.insertRecordLocHistory(
-                f.getLocationID(),
-                f.getLocName(),
-                f.getLocSuburb(),
-                f.getLocPostalCode(),
-                f.getLocStreet(),
-                f.getLocAddress(),
-                f.getLocPhones(),
-                f.getLocLongitude(),
-                f.getLocLatitude(),
-                f.getOpeningTime(),
-                f.getClosingTime(),
-                isDelivery,
-                f.getUnit(),
-                f.getStreetNum(),
-                f.getStreetName(),
-                f.getCrossStreetName(),
-                f.getDeliveryInstructions()
-                );
-
-        return true;
-    }
-
-    public ArrayList<LocationDetails> getLocationsHistory(String isDelivery) {
-        Cursor ls = dbHelper.getLocationHistory(isDelivery);
-        return cursorToLocationHistoryVo(ls);
-    }
-    public ArrayList<LocationDetails> cursorToLocationHistoryVo(Cursor cursor) {
-        if(null==cursor)
-            return null;
-        ArrayList<LocationDetails> list = new ArrayList<LocationDetails>();
-        if (cursor.moveToFirst()) {
-            do {
-                LocationDetails f = new LocationDetails();
-                int counter=1;
-                f.setLocationID(cursor.getString(counter++));
-                f.setLocName(cursor.getString(counter++));
-                f.setLocSuburb(cursor.getString(counter++));
-                f.setLocPostalCode(cursor.getString(counter++));
-                f.setLocStreet(cursor.getString(counter++));
-                f.setLocAddress(cursor.getString(counter++));
-                f.setLocPhones(cursor.getString(counter++));
-                f.setLocLongitude(cursor.getString(counter++));
-                f.setLocLatitude(cursor.getString(counter++));
-                f.setOpeningTime(cursor.getString(counter++));
-                f.setClosingTime(cursor.getString(counter++));
-
-                String isDelivery=cursor.getString(counter++);
-
-                f.setUnit(cursor.getString(counter++));
-                f.setStreetNum(cursor.getString(counter++));
-                f.setStreetName(cursor.getString(counter++));
-                f.setCrossStreetName(cursor.getString(counter++));
-                f.setDeliveryInstructions(cursor.getString(counter++));
-
-                list.add(f);
-            } while (cursor.moveToNext());
-        }
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-        return list;
-    }
+//    public boolean insertLocationHistory(LocationDetails f,String isDelivery) {
+//        dbHelper.insertRecordLocHistory(
+//                f.getLocationID(),
+//                f.getLocName(),
+//                f.getLocSuburb(),
+//                f.getLocPostalCode(),
+//                f.getLocStreet(),
+//                f.getLocAddress(),
+//                f.getLocPhones(),
+//                f.getLocLongitude(),
+//                f.getLocLatitude(),
+//                f.getOpeningTime(),
+//                f.getClosingTime(),
+//                isDelivery,
+//                f.getUnit(),
+//                f.getStreetNum(),
+//                f.getStreetName(),
+//                f.getCrossStreetName(),
+//                f.getDeliveryInstructions()
+//                );
+//
+//        return true;
+//    }
+//
+//    public ArrayList<LocationDetails> getLocationsHistory(String isDelivery) {
+//        Cursor ls = dbHelper.getLocationHistory(isDelivery);
+//        return cursorToLocationHistoryVo(ls);
+//    }
+//    public ArrayList<LocationDetails> cursorToLocationHistoryVo(Cursor cursor) {
+//        if(null==cursor)
+//            return null;
+//        ArrayList<LocationDetails> list = new ArrayList<LocationDetails>();
+//        if (cursor.moveToFirst()) {
+//            do {
+//                LocationDetails f = new LocationDetails();
+//                int counter=1;
+//                f.setLocationID(cursor.getString(counter++));
+//                f.setLocName(cursor.getString(counter++));
+//                f.setLocSuburb(cursor.getString(counter++));
+//                f.setLocPostalCode(cursor.getString(counter++));
+//                f.setLocStreet(cursor.getString(counter++));
+//                f.setLocAddress(cursor.getString(counter++));
+//                f.setLocPhones(cursor.getString(counter++));
+//                f.setLocLongitude(cursor.getString(counter++));
+//                f.setLocLatitude(cursor.getString(counter++));
+//                f.setOpeningTime(cursor.getString(counter++));
+//                f.setClosingTime(cursor.getString(counter++));
+//
+//                String isDelivery=cursor.getString(counter++);
+//
+//                f.setUnit(cursor.getString(counter++));
+//                f.setStreetNum(cursor.getString(counter++));
+//                f.setStreetName(cursor.getString(counter++));
+//                f.setCrossStreetName(cursor.getString(counter++));
+//                f.setDeliveryInstructions(cursor.getString(counter++));
+//
+//                list.add(f);
+//            } while (cursor.moveToNext());
+//        }
+//        if (cursor != null && !cursor.isClosed()) {
+//            cursor.close();
+//        }
+//        return list;
+//    }
+    
+    
+    
     /////==========================
-    public boolean recordExistsDeliveryLocatoins() {
-        return dbHelper.isEmptyDeliveryLocatoins();
-    }
+//    public boolean recordExistsDeliveryLocatoins() {
+//        return dbHelper.isEmptyDeliveryLocatoins();
+//    }
 
-    public ArrayList<DelLocations> cursorToDelLocationVo(Cursor cursor) {
-        if(null==cursor)
-            return null;
-        ArrayList<DelLocations> list = new ArrayList<DelLocations>();
-        if (cursor.moveToFirst()) {
-            do {
-                DelLocations f = new DelLocations();
-                int counter=1;
-                f.setSuburbName(cursor.getString(counter++));
-                f.setSuburbAbbr(cursor.getString(counter++));
-                f.setPostCode(cursor.getString(counter++));
-                f.setLocName(cursor.getString(counter++));
-                f.setLocPostalCode(cursor.getString(counter++));
-                f.setLocStreet(cursor.getString(counter++));
-                f.setLocAddress(cursor.getString(counter++));
-                f.setLocLongitude(cursor.getString(counter++));
-                f.setLocLatitude(cursor.getString(counter++));
-                f.setOpeningTime(cursor.getString(counter++));
-                f.setClosingTime(cursor.getString(counter++));
-                f.setLocationID(cursor.getString(counter++));
-                f.setSuburbID(cursor.getString(counter++));
+//    public ArrayList<DelLocations> cursorToDelLocationVo(Cursor cursor) {
+//        if(null==cursor)
+//            return null;
+//        ArrayList<DelLocations> list = new ArrayList<DelLocations>();
+//        if (cursor.moveToFirst()) {
+//            do {
+//                DelLocations f = new DelLocations();
+//                int counter=1;
+//                f.setSuburbName(cursor.getString(counter++));
+//                f.setSuburbAbbr(cursor.getString(counter++));
+//                f.setPostCode(cursor.getString(counter++));
+//                f.setLocName(cursor.getString(counter++));
+//                f.setLocPostalCode(cursor.getString(counter++));
+//                f.setLocStreet(cursor.getString(counter++));
+//                f.setLocAddress(cursor.getString(counter++));
+//                f.setLocLongitude(cursor.getString(counter++));
+//                f.setLocLatitude(cursor.getString(counter++));
+//                f.setOpeningTime(cursor.getString(counter++));
+//                f.setClosingTime(cursor.getString(counter++));
+//                f.setLocationID(cursor.getString(counter++));
+//                f.setSuburbID(cursor.getString(counter++));
+//
+//                list.add(f);
+//            } while (cursor.moveToNext());
+//        }
+//        if (cursor != null && !cursor.isClosed()) {
+//            cursor.close();
+//        }
+//        return list;
+//    }
 
-                list.add(f);
-            } while (cursor.moveToNext());
-        }
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-        return list;
-    }
+//    public boolean insertProdDeliveryLocations(ArrayList<DelLocations> aList ) {
+//        for (Iterator<DelLocations> iterator = aList.iterator(); iterator.hasNext();) {
+//            DelLocations f = (DelLocations) iterator.next();
+//            dbHelper.insertRecordDeliveryLocations(
+//                    f.getSuburbName(),
+//                    f.getSuburbAbbr(),
+//                    f.getPostCode(),
+//                    f.getLocName(),
+//                    f.getLocPostalCode(),
+//                    f.getLocStreet(),
+//                    f.getLocAddress(),
+//                    f.getLocLongitude(),
+//                    f.getLocLatitude(),
+//                    f.getOpeningTime(),
+//                    f.getClosingTime(),
+//                    f.getLocationID(),
+//                    f.getSuburbID()
+//
+//                    );
+//        }
+//        return true;
+//    }
+//
+//    public ArrayList<DelLocations> getAllDeliveryLocations() {
+//        Cursor ls = dbHelper.fetchAllRecordsDeliveryLocations();
+//        return cursorToDelLocationVo(ls);
+//    }
 
-    public boolean insertProdDeliveryLocations(ArrayList<DelLocations> aList ) {
-        for (Iterator<DelLocations> iterator = aList.iterator(); iterator.hasNext();) {
-            DelLocations f = (DelLocations) iterator.next();
-            dbHelper.insertRecordDeliveryLocations(
-                    f.getSuburbName(),
-                    f.getSuburbAbbr(),
-                    f.getPostCode(),
-                    f.getLocName(),
-                    f.getLocPostalCode(),
-                    f.getLocStreet(),
-                    f.getLocAddress(),
-                    f.getLocLongitude(),
-                    f.getLocLatitude(),
-                    f.getOpeningTime(),
-                    f.getClosingTime(),
-                    f.getLocationID(),
-                    f.getSuburbID()
-
-                    );
-        }
-        return true;
-    }
-
-    public ArrayList<DelLocations> getAllDeliveryLocations() {
-        Cursor ls = dbHelper.fetchAllRecordsDeliveryLocations();
-        return cursorToDelLocationVo(ls);
-    }
-
-    public ArrayList<AllProductsVo> getProductsListByIds(String prodIds) {
-
-        Cursor cursor= dbHelper.getProductsListById(prodIds);
-        try{		
-            return cursorToAllProducts(cursor);
-        }finally{
-            cursor.close();	
-        }
-
-    }
-
-    public AllProductsVo getProductById(String prodId) {
-
-        Cursor cursor= dbHelper.getProductById(prodId);
-        try{	
-            ArrayList<AllProductsVo> lst = cursorToAllProducts(cursor);
-            if(lst!=null && lst.size()>0)
-            {
-                return lst.get(0);
-            }
-            else{
-                return null;
-            }
-        }finally{
-            cursor.close();	
-        }
-
-    }
+//    public ArrayList<AllProductsVo> getProductsListByIds(String prodIds) {
+//
+//        Cursor cursor= dbHelper.getProductsListById(prodIds);
+//        try{		
+//            return cursorToAllProducts(cursor);
+//        }finally{
+//            cursor.close();	
+//        }
+//
+//    }
+//
+//    public AllProductsVo getProductById(String prodId) {
+//
+//        Cursor cursor= dbHelper.getProductById(prodId);
+//        try{	
+//            ArrayList<AllProductsVo> lst = cursorToAllProducts(cursor);
+//            if(lst!=null && lst.size()>0)
+//            {
+//                return lst.get(0);
+//            }
+//            else{
+//                return null;
+//            }
+//        }finally{
+//            cursor.close();	
+//        }
+//
+//    }
 
 }

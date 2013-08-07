@@ -40,30 +40,32 @@ public class WelcomeActivity extends Activity {
 
         boolean syncStatus =false;
 
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(WelcomeActivity.this);
+        dbInstance.open();
+        syncStatus=dbInstance.recordExistsDeliveryLocatoins() ;
+        dbInstance.cleanDeal(); 
+        dbInstance.close();
 
-        AppDao dao=null;
-        try {
-            dao=AppDao.getSingleton(getApplicationContext());
-            dao.openConnection();
-
-            syncStatus=dao.recordExistsDeliveryLocatoins() ;
-            if(syncStatus)
-            {
-                //				AppProperties.deliveryLocationsList=dao.getAllDeliveryLocations();
-            }
-            //			dao.insertOrUpdateList(questionList);
-            DeepsliceDatabase dbInstance = new DeepsliceDatabase(WelcomeActivity.this);
-            dbInstance.open();
-            dbInstance.cleanDeal();	
-            dbInstance.close();
-
-        } catch (Exception ex)
-        {
-            System.out.println(ex.getMessage());
-        }finally{
-            if(null!=dao)
-                dao.closeConnection();
-        }
+        //        AppDao dao=null;
+        //        try {
+        //            dao=AppDao.getSingleton(getApplicationContext());
+        //            dao.openConnection();
+        //
+        //            syncStatus=dao.recordExistsDeliveryLocatoins() ;
+        //            if(syncStatus)
+        //            {
+        //                //				AppProperties.deliveryLocationsList=dao.getAllDeliveryLocations();
+        //            }
+        //            //			dao.insertOrUpdateList(questionList);
+        //
+        //
+        //        } catch (Exception ex)
+        //        {
+        //            System.out.println(ex.getMessage());
+        //        }finally{
+        //            if(null!=dao)
+        //                dao.closeConnection();
+        //        }
 
         getDeliveryLocations(syncStatus);
 
@@ -167,20 +169,26 @@ public class WelcomeActivity extends Activity {
                     }
                 }
             }
-            AppDao dao=null;
-            try {
-                dao=AppDao.getSingleton(getApplicationContext());
-                dao.openConnection();
 
-                dao.insertProdDeliveryLocations(deliveryLocationList);
+            DeepsliceDatabase dbInstance = new DeepsliceDatabase(WelcomeActivity.this);
+            dbInstance.open();
+            dbInstance.insertProdDeliveryLocations(deliveryLocationList);
+            dbInstance.close();
 
-            } catch (Exception ex)
-            {
-                System.out.println(ex.getMessage());
-            }finally{
-                if(null!=dao)
-                    dao.closeConnection();
-            }
+            //            AppDao dao=null;
+            //            try {
+            //                dao=AppDao.getSingleton(getApplicationContext());
+            //                dao.openConnection();
+            //
+            //                dao.insertProdDeliveryLocations(deliveryLocationList);
+            //
+            //            } catch (Exception ex)
+            //            {
+            //                System.out.println(ex.getMessage());
+            //            }finally{
+            //                if(null!=dao)
+            //                    dao.closeConnection();
+            //            }
             //	      AppProperties.deliveryLocationsList=deliveryLocationList;
             System.out.println("Got delivery locations: "+deliveryLocationList.size());
             //////////////////////////////////////////////////////////

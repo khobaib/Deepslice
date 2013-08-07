@@ -39,7 +39,7 @@ import android.widget.TextView;
 
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.AllProducts;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.ProductCategory;
 import com.deepslice.model.SubCategoryVo;
@@ -170,20 +170,26 @@ public class MenuActivity extends Activity {
     protected void getProductCategories() {
 
         boolean synced =false;
-        AppDao dao=null;
-        try {
-            dao=AppDao.getSingleton(getApplicationContext());
-            dao.openConnection();
-
-            synced=dao.recordExists();
-
-        } catch (Exception ex)
-        {
-            System.out.println(ex.getMessage());
-        }finally{
-            if(null!=dao)
-                dao.closeConnection();
-        }
+        
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+        dbInstance.open();
+        synced=dbInstance.recordExists();
+        dbInstance.close();
+        
+//        AppDao dao=null;
+//        try {
+//            dao=AppDao.getSingleton(getApplicationContext());
+//            dao.openConnection();
+//
+//            synced=dao.recordExists();
+//
+//        } catch (Exception ex)
+//        {
+//            System.out.println(ex.getMessage());
+//        }finally{
+//            if(null!=dao)
+//                dao.closeConnection();
+//        }
 
         if(synced)
         {
@@ -218,20 +224,26 @@ public class MenuActivity extends Activity {
 
     private String getProdCatId(String abbr) {
         String pCatId="0";
-        AppDao dao=null;
-        try {
-            dao=AppDao.getSingleton(getApplicationContext());
-            dao.openConnection();
-
-            pCatId=dao.getCatIdByCatCode(abbr);
-
-        } catch (Exception ex)
-        {
-            System.out.println(ex.getMessage());
-        }finally{
-            if(null!=dao)
-                dao.closeConnection();
-        }
+        
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+        dbInstance.open();
+        pCatId=dbInstance.getCatIdByCatCode(abbr);
+        dbInstance.close();
+        
+//        AppDao dao=null;
+//        try {
+//            dao=AppDao.getSingleton(getApplicationContext());
+//            dao.openConnection();
+//
+//            pCatId=dao.getCatIdByCatCode(abbr);
+//
+//        } catch (Exception ex)
+//        {
+//            System.out.println(ex.getMessage());
+//        }finally{
+//            if(null!=dao)
+//                dao.closeConnection();
+//        }
 
         return pCatId;
     }
@@ -306,21 +318,26 @@ public class MenuActivity extends Activity {
                     }
                 }
             }
+            
+            DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+            dbInstance.open();
+            dbInstance.insertProdCat(pCatList);
+            dbInstance.close();
 
-            AppDao dao=null;
-            try {
-                dao=AppDao.getSingleton(getApplicationContext());
-                dao.openConnection();
-
-                dao.insertProdCat(pCatList);
-
-            } catch (Exception ex)
-            {
-                System.out.println(ex.getMessage());
-            }finally{
-                if(null!=dao)
-                    dao.closeConnection();
-            }
+//            AppDao dao=null;
+//            try {
+//                dao=AppDao.getSingleton(getApplicationContext());
+//                dao.openConnection();
+//
+//                dao.insertProdCat(pCatList);
+//
+//            } catch (Exception ex)
+//            {
+//                System.out.println(ex.getMessage());
+//            }finally{
+//                if(null!=dao)
+//                    dao.closeConnection();
+//            }
 
             System.out.println("Got product catetgories: "+pCatList.size());
             //////////////////////////////////////////////////////////
@@ -406,20 +423,26 @@ public class MenuActivity extends Activity {
             }
 
             //			AppProperties.subCatList = pCatList;
-            AppDao dao=null;
-            try {
-                dao=AppDao.getSingleton(getApplicationContext());
-                dao.openConnection();
-
-                dao.insertSubCatList(pCatList);
-
-            } catch (Exception ex)
-            {
-                System.out.println(ex.getMessage());
-            }finally{
-                if(null!=dao)
-                    dao.closeConnection();
-            }
+            
+            DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+            dbInstance.open();
+            dbInstance.insertSubCatList(pCatList);
+            dbInstance.close();
+            
+//            AppDao dao=null;
+//            try {
+//                dao=AppDao.getSingleton(getApplicationContext());
+//                dao.openConnection();
+//
+//                dao.insertSubCatList(pCatList);
+//
+//            } catch (Exception ex)
+//            {
+//                System.out.println(ex.getMessage());
+//            }finally{
+//                if(null!=dao)
+//                    dao.closeConnection();
+//            }
 
             System.out.println("Got product catetgories: " + pCatList.size());
             // ////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
@@ -485,17 +508,17 @@ public class MenuActivity extends Activity {
                 System.out.println("Error:" + errorMessage);
             }
 
-            ArrayList<AllProductsVo> pCatList = new ArrayList<AllProductsVo>();
+            ArrayList<AllProducts> pCatList = new ArrayList<AllProducts>();
 
             if (dataExists == true) {
-                AllProductsVo aBean;
+                AllProducts aBean;
                 for (int i = 0; i < resultsArray.length(); i++) {
                     JSONObject jsResult = resultsArray.getJSONObject(i);
                     if (jsResult != null) {
                         String jsonString = jsResult.toString();
-                        aBean = new AllProductsVo();
+                        aBean = new AllProducts();
                         aBean = gson
-                                .fromJson(jsonString, AllProductsVo.class);
+                                .fromJson(jsonString, AllProducts.class);
                         // System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
                         pCatList.add(aBean);
                     }
@@ -503,20 +526,26 @@ public class MenuActivity extends Activity {
             }
 
             //			AppProperties.allProductsList = pCatList;
-            AppDao dao=null;
-            try {
-                dao=AppDao.getSingleton(getApplicationContext());
-                dao.openConnection();
-
-                dao.insertAllProducts(pCatList);
-
-            } catch (Exception ex)
-            {
-                System.out.println(ex.getMessage());
-            }finally{
-                if(null!=dao)
-                    dao.closeConnection();
-            }
+            
+            DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+            dbInstance.open();
+            dbInstance.insertAllProducts(pCatList);
+            dbInstance.close();
+            
+//            AppDao dao=null;
+//            try {
+//                dao=AppDao.getSingleton(getApplicationContext());
+//                dao.openConnection();
+//
+//                dao.insertAllProducts(pCatList);
+//
+//            } catch (Exception ex)
+//            {
+//                System.out.println(ex.getMessage());
+//            }finally{
+//                if(null!=dao)
+//                    dao.closeConnection();
+//            }
 
             System.out.println("Got product catetgories: " + pCatList.size());
             // ////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP

@@ -13,7 +13,7 @@ public class FavoriteDbManager {
 
     private static final String TAG = FavoriteDbManager.class.getSimpleName();
 
-    static String[] table_favorites = new String[] { "sr_no","ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage", "customName","ProdCatName"};
+    static String[] table_favorites_columns = new String[] { "sr_no","ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage", "customName","ProdCatName"};
 
     public static final String TABLE_FAVORITES = "table_favorites";
 
@@ -30,10 +30,10 @@ public class FavoriteDbManager {
 
 
     public static long insert(SQLiteDatabase db, String... values) {
-        Log.d("<<<>>>", "in FavoriteDbManager, inserting favorite");
+        Log.d(TAG, "in FavoriteDbManager, inserting favorite");
         ContentValues cv = new ContentValues();
         for (int i = 0; i < values.length; i++) {
-            cv.put(table_favorites[i + 1], values[i]);
+            cv.put(table_favorites_columns[i + 1], values[i]);
         }
         return db.insert(TABLE_FAVORITES, null, cv);
     }

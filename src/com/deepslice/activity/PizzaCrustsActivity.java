@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.AllProducts;
 import com.deepslice.model.ToppingsAndSauces;
 
 public class PizzaCrustsActivity extends Activity{
@@ -24,7 +24,7 @@ public class PizzaCrustsActivity extends Activity{
     TextView favCountTxt;
     int currentCount=1;
 
-    AllProductsVo selectedBean;
+    AllProducts selectedBean;
 
     ListView listview;
     MyListAdapterSides myAdapter;
@@ -38,7 +38,7 @@ public class PizzaCrustsActivity extends Activity{
 
         Bundle b = this.getIntent().getExtras();
 
-        selectedBean=(AllProductsVo)b.getSerializable("selectedProduct");
+        selectedBean=(AllProducts)b.getSerializable("selectedProduct");
 
 
         //		  AppDao dao=null;

@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.deepslice.database.AppDao;
+import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DeliveryAddressVo;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.model.LocationPoints;
@@ -41,20 +42,25 @@ public class AppProperties {
 	public static String getCatName(Context ctx,String catId){
 		String catName=null;
 		
-		AppDao dao=null;
-		try {
-			dao=AppDao.getSingleton(ctx);
-			dao.openConnection();
-			
-			catName=dao.getCatCodeByCatId(catId);
-	
-		} catch (Exception ex)
-		{
-			System.out.println(ex.getMessage());
-		}finally{
-			if(null!=dao)
-				dao.closeConnection();
-		}
+		DeepsliceDatabase dbInstance = new DeepsliceDatabase(ctx);
+		dbInstance.open();
+		catName=dbInstance.getCatCodeByCatId(catId);
+		dbInstance.close();
+		
+//		AppDao dao=null;
+//		try {
+//			dao=AppDao.getSingleton(ctx);
+//			dao.openConnection();
+//			
+//			catName=dao.getCatCodeByCatId(catId);
+//	
+//		} catch (Exception ex)
+//		{
+//			System.out.println(ex.getMessage());
+//		}finally{
+//			if(null!=dao)
+//				dao.closeConnection();
+//		}
 
 		
 		return catName;

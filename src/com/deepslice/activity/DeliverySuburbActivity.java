@@ -44,6 +44,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.deepslice.database.AppDao;
+import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DelLocations;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.utilities.AppProperties;
@@ -53,245 +54,258 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class DeliverySuburbActivity extends Activity {
-	SharedPreferences settings;
-	ImageView addPic;
-	ListView listview;
-	StateListAdapter eventsAdapter;	
-//	private static ArrayList<DelLocations> storeLocations;
-	static String cityName="";
-	static String stName="";
+    SharedPreferences settings;
+    ImageView addPic;
+    ListView listview;
+    StateListAdapter eventsAdapter;	
+    //	private static ArrayList<DelLocations> storeLocations;
+    static String cityName="";
+    static String stName="";
     String postCode="",suburbName="";
-	EditText input_text ;
-	ProgressDialog pd;
-	ImageView clearTextIcon;
-	 ArrayList<DelLocations> deliveryLocationList;
-	 LocationDetails selectedLocation;
-	 DelLocations eBean;
-	 ArrayList<DelLocations> locList = null;
+    EditText input_text ;
+    ProgressDialog pd;
+    ImageView clearTextIcon;
+    ArrayList<DelLocations> deliveryLocationList;
+    LocationDetails selectedLocation;
+    DelLocations eBean;
+    ArrayList<DelLocations> locList = null;
     /** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.delivery_suburb);
-		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		listview = (ListView) findViewById(R.id.listView1);
-		
-		deliveryLocationList=new ArrayList<DelLocations>();
-		eventsAdapter = new StateListAdapter(this,R.layout.line_item_del, deliveryLocationList);
-		listview.setAdapter(eventsAdapter);
-		
-		listview.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View v, int position,
-					long id) {
-				eBean = (DelLocations) v.getTag();
-				if (eBean != null) {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.delivery_suburb);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        listview = (ListView) findViewById(R.id.listView1);
+
+        deliveryLocationList=new ArrayList<DelLocations>();
+        eventsAdapter = new StateListAdapter(this,R.layout.line_item_del, deliveryLocationList);
+        listview.setAdapter(eventsAdapter);
+
+        listview.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position,
+                    long id) {
+                eBean = (DelLocations) v.getTag();
+                if (eBean != null) {
                     postCode=eBean.getPostCode();
                     suburbName=eBean.getSuburbName();
-					getLocationDetails(eBean.getLocationID()) ;
-//					AppProperties.saveLocationObj(DeliverySuburbActivity.this, eBean);
-//					Intent intent = new Intent(DeliverySuburbActivity.this,DeliveryAddress.class);
-//					Bundle bundle = new Bundle();
-//					bundle.putString("location",eBean.getSuburbName()+" "+eBean.getPostCode());
-//					bundle.putString("store",eBean.getLocName());
-//					bundle.putString("suburbId",eBean.getSuburbID());
-//					bundle.putInt("position", position);
-//					intent.putExtras(bundle);
-//					startActivityForResult(intent, 56);
-				}
-			}
-		});
-
-		
-		clearTextIcon = (ImageView) findViewById(R.id.imageView3);
-		clearTextIcon.setVisibility(View.INVISIBLE);
-		clearTextIcon.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-//				clearTextIcon.setVisibility(View.INVISIBLE);
-				input_text.setText("");
-//				deliveryLocationList=new ArrayList<DelLocations>();
-//				eventsAdapter = new StateListAdapter(DeliverySuburbActivity.this,R.layout.line_item_del, deliveryLocationList);
-//				eventsAdapter.notifyDataSetChanged();
-//				listview.setAdapter(eventsAdapter);
-			}
-		});
-		input_text = (EditText) findViewById(R.id.autoCompleteTextView1);
-		input_text.addTextChangedListener(new TextWatcher() {
-			public void afterTextChanged(Editable s) {
-				String st=input_text.getText().toString();
-//				if (st.trim().length() > 0) 
-//				{
-//					searchIcon.setVisibility(View.VISIBLE);
-//				}
-				if (st.trim().length() > 0) 
-				{
-					clearTextIcon.setVisibility(View.VISIBLE);
-					getDeliveryLocations(st);
-				}
-				if (st.trim().length() <= 0) 
-				{
-						clearTextIcon.setVisibility(View.INVISIBLE);
-//						input_text.setText("");
-						deliveryLocationList=new ArrayList<DelLocations>();
-						eventsAdapter = new StateListAdapter(DeliverySuburbActivity.this,R.layout.line_item_del, deliveryLocationList);
-						eventsAdapter.notifyDataSetChanged();
-						listview.setAdapter(eventsAdapter);
-				}
-			
-			}
-
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				
-				
-			}
-		});
-		
-		
-		ImageView emgBack= (ImageView)findViewById(R.id.farwordImageView);
-		emgBack.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				finish();
-			}
-		});
-
-		boolean syncStatus =false;
-		AppDao dao=null;
-		try {
-			dao=AppDao.getSingleton(getApplicationContext());
-			dao.openConnection();
-			
-			syncStatus=dao.recordExistsDeliveryLocatoins() ;
-			if(syncStatus)
-			{
-				locList=dao.getAllDeliveryLocations();
-			}
-			else{
-				locList=new ArrayList<DelLocations>();
-			}
-			
-//			dao.insertOrUpdateList(questionList);
-			
-		} catch (Exception ex)
-		{
-			locList=new ArrayList<DelLocations>();
-			System.out.println(ex.getMessage());
-		}finally{
-			if(null!=dao)
-				dao.closeConnection();
-		}
-
-	}
-	
-	
-	protected void getDeliveryLocations(final String postCodeOrSubId) {
+                    getLocationDetails(eBean.getLocationID()) ;
+                    //					AppProperties.saveLocationObj(DeliverySuburbActivity.this, eBean);
+                    //					Intent intent = new Intent(DeliverySuburbActivity.this,DeliveryAddress.class);
+                    //					Bundle bundle = new Bundle();
+                    //					bundle.putString("location",eBean.getSuburbName()+" "+eBean.getPostCode());
+                    //					bundle.putString("store",eBean.getLocName());
+                    //					bundle.putString("suburbId",eBean.getSuburbID());
+                    //					bundle.putInt("position", position);
+                    //					intent.putExtras(bundle);
+                    //					startActivityForResult(intent, 56);
+                }
+            }
+        });
 
 
-		try{
-		if(AppProperties.isNull(postCodeOrSubId))
-			return;
-			
+        clearTextIcon = (ImageView) findViewById(R.id.imageView3);
+        clearTextIcon.setVisibility(View.INVISIBLE);
+        clearTextIcon.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                //				clearTextIcon.setVisibility(View.INVISIBLE);
+                input_text.setText("");
+                //				deliveryLocationList=new ArrayList<DelLocations>();
+                //				eventsAdapter = new StateListAdapter(DeliverySuburbActivity.this,R.layout.line_item_del, deliveryLocationList);
+                //				eventsAdapter.notifyDataSetChanged();
+                //				listview.setAdapter(eventsAdapter);
+            }
+        });
+        input_text = (EditText) findViewById(R.id.autoCompleteTextView1);
+        input_text.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                String st=input_text.getText().toString();
+                //				if (st.trim().length() > 0) 
+                //				{
+                //					searchIcon.setVisibility(View.VISIBLE);
+                //				}
+                if (st.trim().length() > 0) 
+                {
+                    clearTextIcon.setVisibility(View.VISIBLE);
+                    getDeliveryLocations(st);
+                }
+                if (st.trim().length() <= 0) 
+                {
+                    clearTextIcon.setVisibility(View.INVISIBLE);
+                    //						input_text.setText("");
+                    deliveryLocationList=new ArrayList<DelLocations>();
+                    eventsAdapter = new StateListAdapter(DeliverySuburbActivity.this,R.layout.line_item_del, deliveryLocationList);
+                    eventsAdapter.notifyDataSetChanged();
+                    listview.setAdapter(eventsAdapter);
+                }
 
-			deliveryLocationList = new ArrayList<DelLocations>();
-			
-			for (DelLocations delLocations : locList) {
-				
-//				boolean inName = Pattern.compile(Pattern.quote(postCodeOrSubId), Pattern.CASE_INSENSITIVE).matcher(delLocations.getSuburbName()).find();
-//				boolean inAbbr = Pattern.compile(Pattern.quote(postCodeOrSubId), Pattern.CASE_INSENSITIVE).matcher(delLocations.getSuburbAbbr()).find();
-//				boolean inPostcode = Pattern.compile(Pattern.quote(postCodeOrSubId), Pattern.CASE_INSENSITIVE).matcher(delLocations.getPostCode()).find();
-				
-//				if(delLocations.getSuburbName().toLowerCase().contains(postCodeOrSubId.toLowerCase()) || 
-//						delLocations.getSuburbAbbr().toLowerCase().contains(postCodeOrSubId.toLowerCase()) ||
-//						delLocations.getPostCode().toLowerCase().contains(postCodeOrSubId.toLowerCase()) 
-//						)
-				if(delLocations.getSuburbName().toLowerCase().startsWith(postCodeOrSubId.toLowerCase()) || 
-						delLocations.getSuburbAbbr().toLowerCase().startsWith(postCodeOrSubId.toLowerCase()) ||
-						delLocations.getPostCode().toLowerCase().startsWith(postCodeOrSubId.toLowerCase()) 
-						)
-					deliveryLocationList.add(delLocations);
-			}
-			eventsAdapter = new StateListAdapter(this,R.layout.line_item_del, deliveryLocationList);
-			eventsAdapter.notifyDataSetChanged();
-			listview.setAdapter(eventsAdapter);	
-			
-//			System.out.println("====>>>>> "+searchedList.size());
-//			AppProperties.deliveryLocationsSearched=searchedList;
-//			myAdapter = new MyListAdapter(this,R.layout.line_item, searchedList);
-//			listview.setAdapter(myAdapter);
-//			myAdapter.notifyDataSetChanged();
-			
-			
-			
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-	}
-	
-	
-	
-	final Handler mHandler = new Handler();
-	final Runnable mUpdateResults = new Runnable() {        
-		public void run() {            
-			updateResultsInUi();        
-		}    
-	};
-	String serverResponse;
-	protected void getDeliveryLocationsOld(final String postCodeOrSubId) {        
-		pd = ProgressDialog.show(DeliverySuburbActivity.this, "", "Please wait...", true, false);
+            }
 
-		Thread t = new Thread() {            
-			public void run() {                
-			
-				try {
-					//calling the auth service
-					startLongRunningOperation(postCodeOrSubId);
-				} catch (Exception ex)
-				{
-					System.out.println(ex.getMessage());
-				}
-				mHandler.post(mUpdateResults);            
-			}
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                    int after) {
+            }
 
-			
-		};        
-		t.start();    	
-	}
-	String delLocError="";
-	public void startLongRunningOperation(final String postCodeOrSubId) {
-		
-//		storeLocations=AppProperties.getCityAllCarersFromCache(cityName);
-//		if(null != storeLocations && storeLocations.size()>0)
-//			return;
-		
-		StringBuilder builder = new StringBuilder();
-		HttpClient client = new DefaultHttpClient();
-		
-		HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/DeliveryLocation.aspx?SubQueryName="+postCodeOrSubId);
-		try {
-			HttpResponse response = client.execute(httpGet);
-			StatusLine statusLine = response.getStatusLine();
-			int statusCode = statusLine.getStatusCode();
-			if (statusCode == 200) {
-				HttpEntity entity = response.getEntity();
-				InputStream content = entity.getContent();
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(content));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					builder.append(line);
-				}
-			} else {
-				System.out.println("Failed to download file");
-			}
-		
+            public void onTextChanged(CharSequence s, int start, int before,
+                    int count) {
 
-		serverResponse = builder.toString();
-		
-		//////////////////////////////////////////////////////////
-		String errorMessage="";
+
+            }
+        });
+
+
+        ImageView emgBack= (ImageView)findViewById(R.id.farwordImageView);
+        emgBack.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        boolean syncStatus = false;
+
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DeliverySuburbActivity.this);
+        dbInstance.open();
+        syncStatus=dbInstance.recordExistsDeliveryLocatoins() ;
+        if(syncStatus)
+        {
+            locList=dbInstance.getAllDeliveryLocations();
+        }
+        else{
+            locList=new ArrayList<DelLocations>();
+        }
+        dbInstance.close();
+
+        //		AppDao dao=null;
+        //		try {
+        //			dao=AppDao.getSingleton(getApplicationContext());
+        //			dao.openConnection();
+        //			
+        //			syncStatus=dao.recordExistsDeliveryLocatoins() ;
+        //			if(syncStatus)
+        //			{
+        //				locList=dao.getAllDeliveryLocations();
+        //			}
+        //			else{
+        //				locList=new ArrayList<DelLocations>();
+        //			}
+        //			
+        ////			dao.insertOrUpdateList(questionList);
+        //			
+        //		} catch (Exception ex)
+        //		{
+        //			locList=new ArrayList<DelLocations>();
+        //			System.out.println(ex.getMessage());
+        //		}finally{
+        //			if(null!=dao)
+        //				dao.closeConnection();
+        //		}
+
+    }
+
+
+    protected void getDeliveryLocations(final String postCodeOrSubId) {
+
+
+        try{
+            if(AppProperties.isNull(postCodeOrSubId))
+                return;
+
+
+            deliveryLocationList = new ArrayList<DelLocations>();
+
+            for (DelLocations delLocations : locList) {
+
+                //				boolean inName = Pattern.compile(Pattern.quote(postCodeOrSubId), Pattern.CASE_INSENSITIVE).matcher(delLocations.getSuburbName()).find();
+                //				boolean inAbbr = Pattern.compile(Pattern.quote(postCodeOrSubId), Pattern.CASE_INSENSITIVE).matcher(delLocations.getSuburbAbbr()).find();
+                //				boolean inPostcode = Pattern.compile(Pattern.quote(postCodeOrSubId), Pattern.CASE_INSENSITIVE).matcher(delLocations.getPostCode()).find();
+
+                //				if(delLocations.getSuburbName().toLowerCase().contains(postCodeOrSubId.toLowerCase()) || 
+                //						delLocations.getSuburbAbbr().toLowerCase().contains(postCodeOrSubId.toLowerCase()) ||
+                //						delLocations.getPostCode().toLowerCase().contains(postCodeOrSubId.toLowerCase()) 
+                //						)
+                if(delLocations.getSuburbName().toLowerCase().startsWith(postCodeOrSubId.toLowerCase()) || 
+                        delLocations.getSuburbAbbr().toLowerCase().startsWith(postCodeOrSubId.toLowerCase()) ||
+                        delLocations.getPostCode().toLowerCase().startsWith(postCodeOrSubId.toLowerCase()) 
+                        )
+                    deliveryLocationList.add(delLocations);
+            }
+            eventsAdapter = new StateListAdapter(this,R.layout.line_item_del, deliveryLocationList);
+            eventsAdapter.notifyDataSetChanged();
+            listview.setAdapter(eventsAdapter);	
+
+            //			System.out.println("====>>>>> "+searchedList.size());
+            //			AppProperties.deliveryLocationsSearched=searchedList;
+            //			myAdapter = new MyListAdapter(this,R.layout.line_item, searchedList);
+            //			listview.setAdapter(myAdapter);
+            //			myAdapter.notifyDataSetChanged();
+
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+
+    final Handler mHandler = new Handler();
+    final Runnable mUpdateResults = new Runnable() {        
+        public void run() {            
+            updateResultsInUi();        
+        }    
+    };
+    String serverResponse;
+    protected void getDeliveryLocationsOld(final String postCodeOrSubId) {        
+        pd = ProgressDialog.show(DeliverySuburbActivity.this, "", "Please wait...", true, false);
+
+        Thread t = new Thread() {            
+            public void run() {                
+
+                try {
+                    //calling the auth service
+                    startLongRunningOperation(postCodeOrSubId);
+                } catch (Exception ex)
+                {
+                    System.out.println(ex.getMessage());
+                }
+                mHandler.post(mUpdateResults);            
+            }
+
+
+        };        
+        t.start();    	
+    }
+    String delLocError="";
+    public void startLongRunningOperation(final String postCodeOrSubId) {
+
+        //		storeLocations=AppProperties.getCityAllCarersFromCache(cityName);
+        //		if(null != storeLocations && storeLocations.size()>0)
+        //			return;
+
+        StringBuilder builder = new StringBuilder();
+        HttpClient client = new DefaultHttpClient();
+
+        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/DeliveryLocation.aspx?SubQueryName="+postCodeOrSubId);
+        try {
+            HttpResponse response = client.execute(httpGet);
+            StatusLine statusLine = response.getStatusLine();
+            int statusCode = statusLine.getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+                InputStream content = entity.getContent();
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(content));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+            } else {
+                System.out.println("Failed to download file");
+            }
+
+
+            serverResponse = builder.toString();
+
+            //////////////////////////////////////////////////////////
+            String errorMessage="";
             if (statusCode==200){
                 GsonBuilder gsonb = new GsonBuilder();
                 Gson gson = gsonb.create();
@@ -337,23 +351,23 @@ public class DeliverySuburbActivity extends Activity {
                 deliveryLocationList = new ArrayList<DelLocations>();
             }
 
-	      //////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
-		//////////////////////////////////////////////////////////
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}catch (Exception e) {
-			delLocError=e.getMessage();
-		e.printStackTrace();
-	}
-	}
-	
-	private void updateResultsInUi() { 
-		pd.dismiss();
-		
-		try{
-		    if(deliveryLocationList.size()>0){
+            //////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
+            //////////////////////////////////////////////////////////
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }catch (Exception e) {
+            delLocError=e.getMessage();
+            e.printStackTrace();
+        }
+    }
+
+    private void updateResultsInUi() { 
+        pd.dismiss();
+
+        try{
+            if(deliveryLocationList.size()>0){
                 eventsAdapter = new StateListAdapter(this,R.layout.line_item_del, deliveryLocationList);
                 eventsAdapter.notifyDataSetChanged();
                 listview.setAdapter(eventsAdapter);
@@ -368,161 +382,161 @@ public class DeliverySuburbActivity extends Activity {
                     } });
                 alertDialog.show();
             }
-		} catch (Exception e){
-			e.getMessage();
-			AlertDialog alertDialog = new AlertDialog.Builder(DeliverySuburbActivity.this).create();
-		    alertDialog.setTitle("Login");
-		    alertDialog.setMessage("Connection Error");
-		    alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-		      public void onClick(DialogInterface dialog, int which) {
-		        return;
-		    } }); 
-		    alertDialog.show();
-		}
-		
-	}
-	
-////////////////////////////////////////LIST ADAPTER	
-	private class StateListAdapter extends ArrayAdapter<DelLocations> {
+        } catch (Exception e){
+            e.getMessage();
+            AlertDialog alertDialog = new AlertDialog.Builder(DeliverySuburbActivity.this).create();
+            alertDialog.setTitle("Login");
+            alertDialog.setMessage("Connection Error");
+            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    return;
+                } }); 
+            alertDialog.show();
+        }
 
-		private ArrayList<DelLocations> items;
-		 
-		
-		public StateListAdapter(Context context, int viewResourceId,
-				ArrayList<DelLocations> items) {
-			super(context, viewResourceId, items);
-			this.items = items;
-			
-		}
+    }
 
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			if (convertView == null) {
-				LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				convertView = mInflater.inflate(R.layout.line_item_del,null);
-			}
-			DelLocations event = items.get(position);
-			if (event != null) {
-				
-				TextView title = (TextView) convertView.findViewById(R.id.textView1);
-				
-//				title.setText(event.getSuburbName()+ " "+event.getSuburbAbbr()+ " "+event.getPostCode());
-				title.setText(event.getSuburbName() +" "+event.getPostCode());
+    ////////////////////////////////////////LIST ADAPTER	
+    private class StateListAdapter extends ArrayAdapter<DelLocations> {
 
-				convertView.setTag(event);
-			}
-			return convertView;
-		}
+        private ArrayList<DelLocations> items;
 
-	}
-///////////////////////// END LIST ADAPTER	
 
-	// ////////////////////////////////////////////////////////////////////////////////////////////
-	// ////////////////////////////////////////////////////////////////////////////////////////////
-	// ////////////////////////////////////////////////////////////////////////////////////////////
-	// ////////////////////////////////////////////////////////////////////////////////////////////
+        public StateListAdapter(Context context, int viewResourceId,
+                ArrayList<DelLocations> items) {
+            super(context, viewResourceId, items);
+            this.items = items;
 
-	final Handler mHandlerLoc = new Handler();
-	final Runnable mUpdateResultsLoc = new Runnable() {
-		public void run() {
-			updateResultsInUiLoc();
-		}
-	};
+        }
 
-	protected void getLocationDetails(final String locationId) {
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = mInflater.inflate(R.layout.line_item_del,null);
+            }
+            DelLocations event = items.get(position);
+            if (event != null) {
+
+                TextView title = (TextView) convertView.findViewById(R.id.textView1);
+
+                //				title.setText(event.getSuburbName()+ " "+event.getSuburbAbbr()+ " "+event.getPostCode());
+                title.setText(event.getSuburbName() +" "+event.getPostCode());
+
+                convertView.setTag(event);
+            }
+            return convertView;
+        }
+
+    }
+    ///////////////////////// END LIST ADAPTER	
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+
+    final Handler mHandlerLoc = new Handler();
+    final Runnable mUpdateResultsLoc = new Runnable() {
+        public void run() {
+            updateResultsInUiLoc();
+        }
+    };
+
+    protected void getLocationDetails(final String locationId) {
         Log.d("locationId",locationId);
         pd = ProgressDialog.show(DeliverySuburbActivity.this, "", "Please wait...", true, false);
-		Thread t = new Thread() {
-			public void run() {
+        Thread t = new Thread() {
+            public void run() {
 
-				try {
-					// calling the auth service
+                try {
+                    // calling the auth service
 
-					populateLocationDetails(locationId);
+                    populateLocationDetails(locationId);
 
-				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
-				}
-				mHandlerLoc.post(mUpdateResultsLoc);
-			}
-
-		};
-		t.start();
-	}
-
-	public void populateLocationDetails(
-			final String locationId) {
-
-		StringBuilder builder = new StringBuilder();
-		HttpClient client = new DefaultHttpClient();
-		HttpGet httpGet;
-		HttpResponse response;
-		StatusLine statusLine;
-		int statusCode;
-		LocationDetails locsTemp;
-
-			try {
-				httpGet = new HttpGet(Constants.ROOT_URL+ "/GetLocationDetail.aspx?LocationID="+ locationId);
-
-				response = client.execute(httpGet);
-                statusLine=response.getStatusLine();
-                statusCode=statusLine.getStatusCode();
-				HttpEntity entity = response.getEntity();
-				InputStream content = entity.getContent();
-
-				serverResponse = Utils.convertStreamToString(content);
-
-				String errorMessage = "";
-                if (statusCode==200) {
-                    GsonBuilder gsonb = new GsonBuilder();
-                    Gson gson = gsonb.create();
-                    JSONArray results = new JSONArray(serverResponse);
-                    JSONObject respOuter = results.getJSONObject(0);
-                    JSONObject resp = respOuter.getJSONObject("Response");
-                    JSONObject errors = resp.getJSONObject("Errors");
-                    boolean hasError = errors.has("Message");
-                    if (hasError==false) {
-                        JSONArray resultsArray = null;
-                        Object data = resp.get("Data");
-                        boolean dataExists = false;
-                        if (data instanceof JSONArray) {
-                            resultsArray = (JSONArray) data;
-                            dataExists = true;
-                        }
-
-                        //				LocationDetails locs = new LocationDetails();
-
-                        if (dataExists == true) {
-
-                            JSONObject jsResult = resultsArray.getJSONObject(0);
-                            if (jsResult != null) {
-                                String jsonString = jsResult.toString();
-                                selectedLocation = gson.fromJson(jsonString,LocationDetails.class);
-                            }
-                        }
-
-                    }
-                }else {
-                    //selectedLocation=new LocationDetails();
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
                 }
+                mHandlerLoc.post(mUpdateResultsLoc);
+            }
+
+        };
+        t.start();
+    }
+
+    public void populateLocationDetails(
+            final String locationId) {
+
+        StringBuilder builder = new StringBuilder();
+        HttpClient client = new DefaultHttpClient();
+        HttpGet httpGet;
+        HttpResponse response;
+        StatusLine statusLine;
+        int statusCode;
+        LocationDetails locsTemp;
+
+        try {
+            httpGet = new HttpGet(Constants.ROOT_URL+ "/GetLocationDetail.aspx?LocationID="+ locationId);
+
+            response = client.execute(httpGet);
+            statusLine=response.getStatusLine();
+            statusCode=statusLine.getStatusCode();
+            HttpEntity entity = response.getEntity();
+            InputStream content = entity.getContent();
+
+            serverResponse = Utils.convertStreamToString(content);
+
+            String errorMessage = "";
+            if (statusCode==200) {
+                GsonBuilder gsonb = new GsonBuilder();
+                Gson gson = gsonb.create();
+                JSONArray results = new JSONArray(serverResponse);
+                JSONObject respOuter = results.getJSONObject(0);
+                JSONObject resp = respOuter.getJSONObject("Response");
+                JSONObject errors = resp.getJSONObject("Errors");
+                boolean hasError = errors.has("Message");
+                if (hasError==false) {
+                    JSONArray resultsArray = null;
+                    Object data = resp.get("Data");
+                    boolean dataExists = false;
+                    if (data instanceof JSONArray) {
+                        resultsArray = (JSONArray) data;
+                        dataExists = true;
+                    }
+
+                    //				LocationDetails locs = new LocationDetails();
+
+                    if (dataExists == true) {
+
+                        JSONObject jsResult = resultsArray.getJSONObject(0);
+                        if (jsResult != null) {
+                            String jsonString = jsResult.toString();
+                            selectedLocation = gson.fromJson(jsonString,LocationDetails.class);
+                        }
+                    }
+
+                }
+            }else {
+                //selectedLocation=new LocationDetails();
+            }
 
 
-				// ////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
-				// ////////////////////////////////////////////////////////
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
+            // ////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
+            // ////////////////////////////////////////////////////////
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
 
-				e.printStackTrace();
-			}
+            e.printStackTrace();
+        }
 
 
-	}
+    }
 
-	private void updateResultsInUiLoc() {
-		pd.dismiss();
+    private void updateResultsInUiLoc() {
+        pd.dismiss();
         if (selectedLocation!=null){
             selectedLocation.setLocPostalCode(postCode);
             selectedLocation.setLocSuburb(suburbName);
@@ -548,28 +562,28 @@ public class DeliverySuburbActivity extends Activity {
             alertDialog.show();
         }
 
-//		AppDao dao=null;
-//		try {
-//			dao=AppDao.getSingleton(getApplicationContext());
-//			dao.openConnection();
-//		
-//			dao.insertLocationHistory(selectedLocation, "True");
-//			
-//
-//		} catch (Exception ex)
-//		{
-//			System.out.println(ex.getMessage());
-//		}finally{
-//			if(null!=dao)
-//				dao.closeConnection();
-//		}
-		
+        //		AppDao dao=null;
+        //		try {
+        //			dao=AppDao.getSingleton(getApplicationContext());
+        //			dao.openConnection();
+        //		
+        //			dao.insertLocationHistory(selectedLocation, "True");
+        //			
+        //
+        //		} catch (Exception ex)
+        //		{
+        //			System.out.println(ex.getMessage());
+        //		}finally{
+        //			if(null!=dao)
+        //				dao.closeConnection();
+        //		}
 
-	}
 
-	// ////////////////////////////////////////////////////////////////////////////////////////////
-	// ////////////////////////////////////////////////////////////////////////////////////////////
-	// ////////////////////////////////////////////////////////////////////////////////////////////
-	// ////////////////////////////////////////////////////////////////////////////////////////////
+    }
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////
 
 }

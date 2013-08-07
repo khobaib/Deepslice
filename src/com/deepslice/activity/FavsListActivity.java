@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.AllProducts;
 import com.deepslice.model.Favourites;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
@@ -187,9 +187,9 @@ public class FavsListActivity extends Activity{
     //===========================================================================================
     //===========================================================================================
 
-    private AllProductsVo getProdBean(Favourites favBean) {
+    private AllProducts getProdBean(Favourites favBean) {
 
-        AllProductsVo prod = new AllProductsVo();
+        AllProducts prod = new AllProducts();
         prod.setProdCatID(favBean.getProdCatID());
         prod.setSubCatID1(favBean.getSubCatID1());
         prod.setSubCatID2(favBean.getSubCatID2());

@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import com.deepslice.database.AppDao;
+import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.utilities.AppProperties;
 
@@ -42,21 +43,26 @@ public class LocationFromHistoryActivity extends Activity {
 
 		deliveryLocationList=new ArrayList<LocationDetails>();
 		
-		AppDao dao=null;
-		try {
-			dao=AppDao.getSingleton(getApplicationContext());
-			dao.openConnection();
-		
-			deliveryLocationList = dao.getLocationsHistory("True");
-			
-
-		} catch (Exception ex)
-		{
-			System.out.println(ex.getMessage());
-		}finally{
-			if(null!=dao)
-				dao.closeConnection();
-		}
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(LocationFromHistoryActivity.this);
+        dbInstance.open(); 
+        deliveryLocationList = dbInstance.getLocationsHistory("True");
+        dbInstance.close();
+        
+//		AppDao dao=null;
+//		try {
+//			dao=AppDao.getSingleton(getApplicationContext());
+//			dao.openConnection();
+//		
+//			deliveryLocationList = dao.getLocationsHistory("True");
+//			
+//
+//		} catch (Exception ex)
+//		{
+//			System.out.println(ex.getMessage());
+//		}finally{
+//			if(null!=dao)
+//				dao.closeConnection();
+//		}
 		
 		if(deliveryLocationList==null || deliveryLocationList.size()<=0)
 		{

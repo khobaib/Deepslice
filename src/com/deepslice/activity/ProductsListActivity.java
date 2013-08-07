@@ -43,7 +43,7 @@ import android.widget.TextView;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.AllProducts;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.ToppingPrices;
 import com.deepslice.model.ToppingSizes;
@@ -57,7 +57,7 @@ public class ProductsListActivity extends Activity{
 
     private static final int REQUEST_CODE_IS_PIZZA_HALF = 1001;
 
-    ArrayList<AllProductsVo> allProductsList;
+    ArrayList<AllProducts> allProductsList;
 
     ListView listview;
     MyListAdapterProd myAdapter;
@@ -73,7 +73,7 @@ public class ProductsListActivity extends Activity{
     boolean syncedToppings =false;
 
     public ImageLoader imageLoader;
-    AllProductsVo selectedBean;	
+    AllProducts selectedBean;	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,31 +98,46 @@ public class ProductsListActivity extends Activity{
         else{
             title.setText(titeDisplay);
         }
-
-        AppDao dao=null;
-        try {
-            dao=AppDao.getSingleton(getApplicationContext());
-            dao.openConnection();
-
-            if("Pizza".equals(catType)){
-                //allProductsList=dao.getProductsPizza(catId,subCatId);
-                allProductsList=new ArrayList<AllProductsVo>();
-                GetDataFromApiCall();
-            }
-            else
-            {
-                // GetDataFromApiCall();
-                allProductsList=dao.getProductsSelected(catId,subCatId);
-                int t=allProductsList.size();
-            }
-
-        } catch (Exception ex)
-        {
-            System.out.println(ex.getMessage());
-        }finally{
-            if(null!=dao)
-                dao.closeConnection();
+        
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(ProductsListActivity.this);
+        dbInstance.open();
+        if("Pizza".equals(catType)){
+            //allProductsList=dao.getProductsPizza(catId,subCatId);
+            allProductsList=new ArrayList<AllProducts>();
+            GetDataFromApiCall();
         }
+        else
+        {
+            // GetDataFromApiCall();
+            allProductsList=dbInstance.getProductsSelected(catId,subCatId);
+            int t = allProductsList.size();
+        }
+        dbInstance.close();
+
+//        AppDao dao=null;
+//        try {
+//            dao=AppDao.getSingleton(getApplicationContext());
+//            dao.openConnection();
+//
+//            if("Pizza".equals(catType)){
+//                //allProductsList=dao.getProductsPizza(catId,subCatId);
+//                allProductsList=new ArrayList<AllProductsVo>();
+//                GetDataFromApiCall();
+//            }
+//            else
+//            {
+//                // GetDataFromApiCall();
+//                allProductsList=dao.getProductsSelected(catId,subCatId);
+//                int t=allProductsList.size();
+//            }
+//
+//        } catch (Exception ex)
+//        {
+//            System.out.println(ex.getMessage());
+//        }finally{
+//            if(null!=dao)
+//                dao.closeConnection();
+//        }
 
         listview = (ListView) findViewById(R.id.listView1);
         myAdapter = new MyListAdapterProd(this,R.layout.line_item_product, allProductsList);
@@ -132,7 +147,7 @@ public class ProductsListActivity extends Activity{
         listview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position,
                     long id) {
-                AllProductsVo eBean = (AllProductsVo) v.getTag();
+                AllProducts eBean = (AllProducts) v.getTag();
                 if (eBean != null) {
                     selectedBean = eBean;
 
@@ -192,12 +207,12 @@ public class ProductsListActivity extends Activity{
     // ////////////////////////////////////////////////////////////////////////////////////////////
     // ////////////////////////////////////////////////////////////////////////////////////////////
 
-    private class MyListAdapterProd extends ArrayAdapter<AllProductsVo> {
+    private class MyListAdapterProd extends ArrayAdapter<AllProducts> {
 
-        private ArrayList<AllProductsVo> items;
+        private ArrayList<AllProducts> items;
 
         public MyListAdapterProd(Context context, int viewResourceId,
-                ArrayList<AllProductsVo> items) {
+                ArrayList<AllProducts> items) {
             super(context, viewResourceId, items);
             this.items = items;
 
@@ -209,7 +224,7 @@ public class ProductsListActivity extends Activity{
                 LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = mInflater.inflate(R.layout.line_item_product, null);
             }
-            AllProductsVo event = items.get(position);
+            AllProducts event = items.get(position);
             if (event != null) {
 
                 TextView title = (TextView) convertView.findViewById(R.id.textView1);
@@ -314,20 +329,26 @@ public class ProductsListActivity extends Activity{
 
     private String getProdCatId(String abbr) {
         String pCatId="0";
-        AppDao dao=null;
-        try {
-            dao=AppDao.getSingleton(getApplicationContext());
-            dao.openConnection();
-
-            pCatId=dao.getCatIdByCatCode(abbr);
-
-        } catch (Exception ex)
-        {
-            System.out.println(ex.getMessage());
-        }finally{
-            if(null!=dao)
-                dao.closeConnection();
-        }
+        
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(ProductsListActivity.this);
+        dbInstance.open();
+        pCatId=dbInstance.getCatIdByCatCode(abbr);
+        dbInstance.close();
+        
+//        AppDao dao=null;
+//        try {
+//            dao=AppDao.getSingleton(getApplicationContext());
+//            dao.openConnection();
+//
+//            pCatId=dao.getCatIdByCatCode(abbr);
+//
+//        } catch (Exception ex)
+//        {
+//            System.out.println(ex.getMessage());
+//        }finally{
+//            if(null!=dao)
+//                dao.closeConnection();
+//        }
 
         return pCatId;
     }
@@ -904,12 +925,12 @@ public class ProductsListActivity extends Activity{
 
             if(dataExists==true)
             {
-                allProductsList=new ArrayList<AllProductsVo>();
+                allProductsList=new ArrayList<AllProducts>();
                 for(int i=0; i<resultsArray.length(); i++){
                     JSONObject jsResult = resultsArray.getJSONObject(i);
                     if(jsResult!=null){
                         if (jsResult.getString("SubCatID1").equalsIgnoreCase(subCatId)){
-                            AllProductsVo allProductsVo=new AllProductsVo();
+                            AllProducts allProductsVo=new AllProducts();
                             allProductsVo.setCaloriesQty(jsResult.getString("CaloriesQty"));
                             allProductsVo.setDisplayName(jsResult.getString("DisplayName"));
                             allProductsVo.setDisplaySequence(jsResult.getString("DisplaySequence"));
@@ -931,7 +952,7 @@ public class ProductsListActivity extends Activity{
                 }
             } else {
 
-                allProductsList=new ArrayList<AllProductsVo>();
+                allProductsList=new ArrayList<AllProducts>();
             }
             //////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
             //////////////////////////////////////////////////////////

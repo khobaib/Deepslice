@@ -42,7 +42,7 @@ import android.widget.Toast;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.AllProducts;
 import com.deepslice.model.CouponData;
 import com.deepslice.model.Coupons;
 import com.deepslice.model.DealOrder;
@@ -68,13 +68,13 @@ public class DealGroup extends Activity {
     String couponGroupID,couponID,productCatId="0",prodCatCode="",productName="",productId="",prdId="";
     ProgressDialog pd;
     ArrayList<CouponData> couponData;
-    ArrayList<AllProductsVo> pList;
+    ArrayList<AllProducts> pList;
     ArrayList<DealOrder> dealOrderVos;
     int currentPosition,Qty=0;
     public ImageLoader imageLoader;
     ListView listView;
     MyListAdapter myAdapter;
-    AllProductsVo selectedBean;
+    AllProducts selectedBean;
     Coupons couponsVo;
     ArrayList<String> couponsId;
     TextView textViewTitle,textViewSub;
@@ -95,7 +95,7 @@ public class DealGroup extends Activity {
         couponsId=bundle.getStringArrayList("couponsID");
         Qty=Integer.parseInt(bundle.getString("Qty"));
         couponData = new ArrayList<CouponData>();
-         pList = new ArrayList<AllProductsVo>();
+         pList = new ArrayList<AllProducts>();
         dealOrderVos=new ArrayList<DealOrder>();
         imageLoader=new ImageLoader(this);
         listView=(ListView)findViewById(R.id.listView1);
@@ -110,7 +110,7 @@ public class DealGroup extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 currentPosition=position;
-                AllProductsVo eBean = (AllProductsVo) view.getTag();
+                AllProducts eBean = (AllProducts) view.getTag();
                 if (eBean != null) {
                     selectedBean = eBean;
 //                    if(!selectedBean.getProdCatID().equalsIgnoreCase(prodCatCode)){
@@ -332,27 +332,41 @@ public class DealGroup extends Activity {
                             couponDetails.add(aBean);
                         }
                     }
-                    AppDao dao=null;
-                    try {
-                        dao=AppDao.getSingleton(getApplicationContext());
-                        dao.openConnection();
-                        for (int i=0;i<couponDetails.size();i++){
-                            aBean=new CouponData();
-                            aBean=couponDetails.get(i);
-                            if (aBean.getCouponGroupID().equalsIgnoreCase(couponGroupID)){
-                                pList.add(dao.getProductById(aBean.getProdID()));
-                                couponData.add(aBean);
-                            }
-
+                    
+                    DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
+                    dbInstance.open();
+                    for (int i=0;i<couponDetails.size();i++){
+                        aBean=new CouponData();
+                        aBean=couponDetails.get(i);
+                        if (aBean.getCouponGroupID().equalsIgnoreCase(couponGroupID)){
+                            pList.add(dbInstance.getProductById(aBean.getProdID()));
+                            couponData.add(aBean);
                         }
 
-                    } catch (Exception ex)
-                    {
-                        System.out.println(ex.getMessage());
-                    }finally{
-                        if(null!=dao)
-                            dao.closeConnection();
                     }
+                    dbInstance.close();
+                    
+//                    AppDao dao=null;
+//                    try {
+//                        dao=AppDao.getSingleton(getApplicationContext());
+//                        dao.openConnection();
+//                        for (int i=0;i<couponDetails.size();i++){
+//                            aBean=new CouponData();
+//                            aBean=couponDetails.get(i);
+//                            if (aBean.getCouponGroupID().equalsIgnoreCase(couponGroupID)){
+//                                pList.add(dao.getProductById(aBean.getProdID()));
+//                                couponData.add(aBean);
+//                            }
+//
+//                        }
+//
+//                    } catch (Exception ex)
+//                    {
+//                        System.out.println(ex.getMessage());
+//                    }finally{
+//                        if(null!=dao)
+//                            dao.closeConnection();
+//                    }
 
 
                 }
@@ -376,13 +390,13 @@ public class DealGroup extends Activity {
         }
     }
 
-    private class MyListAdapter extends ArrayAdapter<AllProductsVo> {
+    private class MyListAdapter extends ArrayAdapter<AllProducts> {
 
-        private ArrayList<AllProductsVo> items;
+        private ArrayList<AllProducts> items;
         private ArrayList<CouponData> couponData;
 
         public MyListAdapter(Context context, int viewResourceId,
-                                ArrayList<AllProductsVo> items,ArrayList<CouponData> couponDatas) {
+                                ArrayList<AllProducts> items,ArrayList<CouponData> couponDatas) {
             super(context, viewResourceId, items);
             this.items = items;
             Log.d("count...................",items.size()+"");
@@ -395,7 +409,7 @@ public class DealGroup extends Activity {
                 LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = mInflater.inflate(R.layout.deal_single_item, null);
             }
-            AllProductsVo event = items.get(position);
+            AllProducts event = items.get(position);
             if (event != null) {
 
                 TextView title = (TextView) convertView.findViewById(R.id.textView1);

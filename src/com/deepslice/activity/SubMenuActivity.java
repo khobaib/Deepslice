@@ -12,7 +12,7 @@ import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.AllProducts;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.ProductCategory;
 import com.deepslice.model.SubCategoryVo;
@@ -24,7 +24,7 @@ public class SubMenuActivity extends Activity{
 
     ArrayList<ProductCategory> productCatList;
     ArrayList<SubCategoryVo> subCatList;
-    ArrayList<AllProductsVo> allProductsList;
+    ArrayList<AllProducts> allProductsList;
 
     ListView listview;
     MyListAdapterSides myAdapter;
@@ -41,20 +41,26 @@ public class SubMenuActivity extends Activity{
         catType=b.getString("catType");
         TextView title = (TextView) findViewById(R.id.headerTextView);
         title.setText(catType);
-        AppDao dao=null;
-        try {
-            dao=AppDao.getSingleton(getApplicationContext());
-            dao.openConnection();
-
-            productCatList=dao.getSides();
-
-        } catch (Exception ex)
-        {
-            System.out.println(ex.getMessage());
-        }finally{
-            if(null!=dao)
-                dao.closeConnection();
-        }
+        
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(SubMenuActivity.this);
+        dbInstance.open(); 
+        productCatList=dbInstance.getSides();
+        dbInstance.close();
+        
+//        AppDao dao=null;
+//        try {
+//            dao=AppDao.getSingleton(getApplicationContext());
+//            dao.openConnection();
+//
+//            productCatList=dao.getSides();
+//
+//        } catch (Exception ex)
+//        {
+//            System.out.println(ex.getMessage());
+//        }finally{
+//            if(null!=dao)
+//                dao.closeConnection();
+//        }
 
         listview = (ListView) findViewById(R.id.listView1);				
         myAdapter = new MyListAdapterSides(this,R.layout.line_item_yello, productCatList);

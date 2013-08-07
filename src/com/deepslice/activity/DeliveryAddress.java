@@ -36,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deepslice.database.AppDao;
+import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.model.StreetsBean;
 import com.deepslice.utilities.AppProperties;
@@ -131,21 +132,26 @@ public class DeliveryAddress extends Activity implements OnClickListener {
 			AppProperties.saveLocationObj(DeliveryAddress.this, selectedLocation);
 			
 			//////////
-			AppDao dao=null;
-			try {
-				dao=AppDao.getSingleton(getApplicationContext());
-				dao.openConnection();
-			
-				dao.insertLocationHistory(selectedLocation, "True");
-				
-
-			} catch (Exception ex)
-			{
-				System.out.println(ex.getMessage());
-			}finally{
-				if(null!=dao)
-					dao.closeConnection();
-			}
+	        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DeliveryAddress.this);
+	        dbInstance.open();
+	        dbInstance.insertLocationHistory(selectedLocation, "True");
+	        dbInstance.close();
+	        
+//			AppDao dao=null;
+//			try {
+//				dao=AppDao.getSingleton(getApplicationContext());
+//				dao.openConnection();
+//			
+//				dao.insertLocationHistory(selectedLocation, "True");
+//				
+//
+//			} catch (Exception ex)
+//			{
+//				System.out.println(ex.getMessage());
+//			}finally{
+//				if(null!=dao)
+//					dao.closeConnection();
+//			}
 
 			/////////////////////////
 			

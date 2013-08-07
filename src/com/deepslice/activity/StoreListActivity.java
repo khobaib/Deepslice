@@ -39,6 +39,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.deepslice.database.AppDao;
+import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.model.LocationPoints;
 import com.deepslice.utilities.AppProperties;
@@ -83,21 +84,27 @@ public class StoreListActivity extends Activity {
 					AppProperties.saveLocationObj(StoreListActivity.this, eBean);
 					
 //////////////saving history
-					AppDao dao=null;
-					try {
-						dao=AppDao.getSingleton(getApplicationContext());
-						dao.openConnection();
 					
-						dao.insertLocationHistory(eBean, "False");
-						
-
-					} catch (Exception ex)
-					{
-						System.out.println(ex.getMessage());
-					}finally{
-						if(null!=dao)
-							dao.closeConnection();
-					}
+			        DeepsliceDatabase dbInstance = new DeepsliceDatabase(StoreListActivity.this);
+			        dbInstance.open(); 
+			        dbInstance.insertLocationHistory(eBean, "False");
+			        dbInstance.close();
+			        
+//					AppDao dao=null;
+//					try {
+//						dao=AppDao.getSingleton(getApplicationContext());
+//						dao.openConnection();
+//					
+//						dao.insertLocationHistory(eBean, "False");
+//						
+//
+//					} catch (Exception ex)
+//					{
+//						System.out.println(ex.getMessage());
+//					}finally{
+//						if(null!=dao)
+//							dao.closeConnection();
+//					}
 //////
 					
 //					Intent intent;

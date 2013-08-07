@@ -25,7 +25,7 @@ import android.widget.Toast;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProductsVo;
+import com.deepslice.model.AllProducts;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.Favourites;
 import com.deepslice.model.LabelValueBean;
@@ -46,7 +46,7 @@ public class PizzaDetailsActivity extends Activity{
 
     TextView favCountTxt;
     int currentCount=1;
-    AllProductsVo selectedBean;
+    AllProducts selectedBean;
 
     ImageLoader imageLoader;
 
@@ -91,7 +91,7 @@ public class PizzaDetailsActivity extends Activity{
         TextView headerTextView=(TextView)findViewById(R.id.headerTextView);
         selectedCrusts=(TextView)findViewById(R.id.selectedCrust);
         if(b.containsKey("selectedProduct")){
-            selectedBean=(AllProductsVo)b.getSerializable("selectedProduct");
+            selectedBean=(AllProducts)b.getSerializable("selectedProduct");
             productId=selectedBean.getProdID();
             pDesc.setText(selectedBean.getProdDesc());
             imageLoader.DisplayImage(selectedBean.getFullImage(), pImage);
@@ -341,33 +341,54 @@ public class PizzaDetailsActivity extends Activity{
         AppDao dao=null;
         if(!isDeal){
 
-            try {
-                dao=AppDao.getSingleton(getApplicationContext());
-                dao.openConnection();
+            //            try {
 
-                ArrayList<SubCategoryVo> crustList=new ArrayList<SubCategoryVo>();
-                if (isDeal){
-                    AllProductsVo allProductsVo=dao.getProductById(dealOrderVo.getProdID());
-                    crustList = dao.getPizzaCrusts(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
-                }else {
-                    crustList = dao.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
-                }
-                if(crustList != null && crustList.size()>0 )
-                {
-                    SubCategoryVo crLocal = crustList.get(0);
-                    crustName=crLocal.getSubCatDesc();
-                    crustCatId=crLocal.getProdCatID();
-                    crustSubCatId=crLocal.getSubCatID();
-
-                    selectedCrusts.setText(crustName);
-                }
-            } catch (Exception ex)
-            {
-                System.out.println(ex.getMessage());
-            }finally{
-                if(null!=dao)
-                    dao.closeConnection();
+            DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaDetailsActivity.this);
+            dbInstance.open();
+            ArrayList<SubCategoryVo> crustList=new ArrayList<SubCategoryVo>();
+            if (isDeal){
+                AllProducts allProductsVo=dbInstance.getProductById(dealOrderVo.getProdID());
+                crustList = dbInstance.getPizzaCrusts(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
+            }else {
+                crustList = dbInstance.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
             }
+            if(crustList != null && crustList.size()>0 ) {
+                SubCategoryVo crLocal = crustList.get(0);
+                crustName=crLocal.getSubCatDesc();
+                crustCatId=crLocal.getProdCatID();
+                crustSubCatId=crLocal.getSubCatID();
+
+                selectedCrusts.setText(crustName);
+            }
+            dbInstance.close();
+
+
+            //                dao=AppDao.getSingleton(getApplicationContext());
+            //                dao.openConnection();
+            //
+            //                ArrayList<SubCategoryVo> crustList=new ArrayList<SubCategoryVo>();
+            //                if (isDeal){
+            //                    AllProductsVo allProductsVo=dao.getProductById(dealOrderVo.getProdID());
+            //                    crustList = dao.getPizzaCrusts(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
+            //                }else {
+            //                    crustList = dao.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
+            //                }
+            //                if(crustList != null && crustList.size()>0 )
+            //                {
+            //                    SubCategoryVo crLocal = crustList.get(0);
+            //                    crustName=crLocal.getSubCatDesc();
+            //                    crustCatId=crLocal.getProdCatID();
+            //                    crustSubCatId=crLocal.getSubCatID();
+            //
+            //                    selectedCrusts.setText(crustName);
+            //                }
+            //            } catch (Exception ex)
+            //            {
+            //                System.out.println(ex.getMessage());
+            //            }finally{
+            //                if(null!=dao)
+            //                    dao.closeConnection();
+            //            }
         }
         ////////////////////
 

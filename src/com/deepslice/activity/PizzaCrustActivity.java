@@ -17,7 +17,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.deepslice.database.AppDao;
-import com.deepslice.model.AllProductsVo;
+import com.deepslice.database.DeepsliceDatabase;
+import com.deepslice.model.AllProducts;
 import com.deepslice.model.ProdAndSubCategory;
 import com.deepslice.model.SubCategoryVo;
 import com.deepslice.utilities.DeepsliceApplication;
@@ -27,7 +28,7 @@ public class PizzaCrustActivity extends Activity{
 	TextView favCountTxt;
 	int currentCount=1;
 
-	AllProductsVo selectedBean;
+	AllProducts selectedBean;
 	
 	ListView listview;
 	MyListAdapterSides myAdapter;
@@ -49,30 +50,36 @@ public class PizzaCrustActivity extends Activity{
         Bundle b = this.getIntent().getExtras();
         if(b.getBoolean("isDeal",false)){
             isDeal=true;
-            selectedBean=(AllProductsVo)b.getSerializable("selectedProduct");
+            selectedBean=(AllProducts)b.getSerializable("selectedProduct");
             crustCatId=b.getString("catId");
             crustSubCatId=b.getString("subCatId");
             currentProductId=b.getString("prdID");
             myListAdapterDealSides = new MyListAdapterDealSides(this,R.layout.line_item_crust, appInstance.getCouponData().getProdAndSubCategories());
             listview.setAdapter(myListAdapterDealSides);
         }else {
-		selectedBean=(AllProductsVo)b.getSerializable("selectedProduct");
+		selectedBean=(AllProducts)b.getSerializable("selectedProduct");
 		crustCatId=b.getString("catId");
 		crustSubCatId=b.getString("subCatId");
-		  AppDao dao=null;
-			try {
-				dao=AppDao.getSingleton(getApplicationContext());
-				dao.openConnection();
-				
-				crustList=dao.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
-				
-			} catch (Exception ex)
-			{
-				System.out.println(ex.getMessage());
-			}finally{
-				if(null!=dao)
-					dao.closeConnection();
-			}
+		
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaCrustActivity.this);
+        dbInstance.open(); 
+        crustList=dbInstance.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
+        dbInstance.close();
+        
+//		  AppDao dao=null;
+//			try {
+//				dao=AppDao.getSingleton(getApplicationContext());
+//				dao.openConnection();
+//				
+//				crustList=dao.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
+//				
+//			} catch (Exception ex)
+//			{
+//				System.out.println(ex.getMessage());
+//			}finally{
+//				if(null!=dao)
+//					dao.closeConnection();
+//			}
             myAdapter = new MyListAdapterSides(this,R.layout.line_item_crust, crustList);
             listview.setAdapter(myAdapter);
         }
