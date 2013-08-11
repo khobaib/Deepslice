@@ -2,7 +2,7 @@ package com.deepslice.model;
 
 import java.io.Serializable;
 
-public class DeliveryAddressVo implements Serializable {
+public class DeliveryAddress implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private String unit;

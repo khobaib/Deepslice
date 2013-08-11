@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import com.deepslice.http.HttpProxyConnection;
 import com.deepslice.http.HttpResponseModel;
-import com.deepslice.model.CustomerDetailsVo;
+import com.deepslice.model.CustomerDetails;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.Utils;
@@ -38,7 +38,7 @@ import java.util.HashMap;
 
 public class RegisterActivity extends Activity implements OnClickListener {
 
-	CustomerDetailsVo customerDetailsVo;
+	CustomerDetails customerDetailsVo;
 	EditText passwordEditText;
 	EditText conformPasswordEditText;
 	Button privacyPolicyButton;
@@ -59,7 +59,7 @@ public class RegisterActivity extends Activity implements OnClickListener {
 		initializeAllViews();
 
 		Bundle exBundle = getIntent().getExtras();
-		customerDetailsVo = (CustomerDetailsVo) exBundle
+		customerDetailsVo = (CustomerDetails) exBundle
 				.getSerializable(Constants.CUSTOMER_DETAILS);
 		
 		

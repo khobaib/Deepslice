@@ -163,7 +163,7 @@ public class DeliverySuburbActivity extends Activity {
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DeliverySuburbActivity.this);
         dbInstance.open();
-        syncStatus=dbInstance.recordExistsDeliveryLocatoins() ;
+        syncStatus=dbInstance.isExistsDeliveryLocations() ;
         if(syncStatus)
         {
             locList=dbInstance.getAllDeliveryLocations();

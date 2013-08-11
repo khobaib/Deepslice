@@ -1,6 +1,15 @@
 package com.deepslice.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class ToppingsAndSauces implements Serializable {
 
@@ -15,6 +24,32 @@ public class ToppingsAndSauces implements Serializable {
 	private String OwnPrice;
 	private String DisplaySequence;
 	private String IsFreeWithPizza;
+	
+	public ToppingsAndSauces() {
+    }
+	
+    public static List<ToppingsAndSauces> parseToppingsAndSauces(JSONArray toppingsSaucesArray){
+        List<ToppingsAndSauces> toppingSauceList = new ArrayList<ToppingsAndSauces>();
+        GsonBuilder gsonb = new GsonBuilder();
+        Gson gson = gsonb.create();
+
+        try {
+            for(int i=0; i<toppingsSaucesArray.length(); i++){
+
+                JSONObject thisToppings = toppingsSaucesArray.getJSONObject(i);
+                if(thisToppings!=null){
+                    String jsonString = thisToppings.toString();
+                    ToppingsAndSauces ts = gson.fromJson(jsonString, ToppingsAndSauces.class);
+                    toppingSauceList.add(ts);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return toppingSauceList;
+    }	
+	
+	
 	public String getToppingID() {
 		return ToppingID;
 	}

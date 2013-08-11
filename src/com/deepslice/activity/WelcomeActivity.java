@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -14,17 +15,22 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
-import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DelLocations;
 import com.deepslice.model.LocationPoints;
+import com.deepslice.model.ServerResponse;
+import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
 import com.google.gson.Gson;
@@ -32,261 +38,167 @@ import com.google.gson.GsonBuilder;
 
 public class WelcomeActivity extends Activity {
 
+    JsonParser jsonParser = new JsonParser();
+
+    List<DelLocations> deliveryLocationList;
+    List<LocationPoints> locPoints;
+
+    Boolean isDeliveryLocationsExist;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);
 
-        boolean syncStatus =false;
-
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(WelcomeActivity.this);
         dbInstance.open();
-        syncStatus=dbInstance.recordExistsDeliveryLocatoins() ;
+        isDeliveryLocationsExist = dbInstance.isExistsDeliveryLocations() ;
         dbInstance.cleanDeal(); 
         dbInstance.close();
 
-        //        AppDao dao=null;
-        //        try {
-        //            dao=AppDao.getSingleton(getApplicationContext());
-        //            dao.openConnection();
-        //
-        //            syncStatus=dao.recordExistsDeliveryLocatoins() ;
-        //            if(syncStatus)
-        //            {
-        //                //				AppProperties.deliveryLocationsList=dao.getAllDeliveryLocations();
-        //            }
-        //            //			dao.insertOrUpdateList(questionList);
-        //
-        //
-        //        } catch (Exception ex)
-        //        {
-        //            System.out.println(ex.getMessage());
-        //        }finally{
-        //            if(null!=dao)
-        //                dao.closeConnection();
-        //        }
-
-        getDeliveryLocations(syncStatus);
+        new GetLocationPoints().execute();
 
     }
 
 
+    public class GetDeliveryLocation extends AsyncTask<Void, Void, Boolean>{
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+
+            String url = Constants.ROOT_URL + "DeliveryLocation.aspx?SubQueryName=";
+            long reqSendingTime = System.currentTimeMillis();
+            ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+            long responseReceivedTime = System.currentTimeMillis();
+            Log.d(">>>><<<", "time for cloud retrieve = " + (responseReceivedTime - reqSendingTime)/1000 + " second");
+            if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
+                JSONObject jsonObj = response.getjObj();
+                try {
+                    JSONObject responseObj = jsonObj.getJSONObject("Response");
+                    int status = responseObj.getInt("Status");
+                    JSONArray data = responseObj.getJSONArray("Data");
+                    JSONObject errors = responseObj.getJSONObject("Errors");
+
+                    deliveryLocationList = DelLocations.parseDeliveryLocations(data);
+                    long arrayParsedTime = System.currentTimeMillis();
+                    Log.d(">>>><<<", "time for array parsing = " + (arrayParsedTime - responseReceivedTime)/1000 + " second");
+
+                    return true;
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if(result){
+                updateDbDeliveryLocation();
+//                updateResultsInUi();
+            }
+        }
+    }
+    
+    
     final Handler mHandler = new Handler();
     final Runnable mUpdateResults = new Runnable() {        
         public void run() {            
             updateResultsInUi();        
         }    
     };
-    String serverResponseDLocs;
-    protected void getDeliveryLocations(final boolean synced) {        
 
+
+    public void updateDbDeliveryLocation(){
+        
+        // running in a thread because we want to show the progressbar loading in UI when rows are INSERTED in db.
         Thread t = new Thread() {            
             public void run() {                
+                long dbInsertStartTime = System.currentTimeMillis();
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(WelcomeActivity.this);
+                dbInstance.open();
+                dbInstance.insertProdDeliveryLocations(deliveryLocationList);
+                dbInstance.close();
+                long dbInsertEndTime = System.currentTimeMillis();
+                Log.d(">>>><<<", "time for db insertion of " + deliveryLocationList.size() + " delivery location = " + (dbInsertEndTime - dbInsertStartTime)/1000 + " second");
 
-                try {
-                    //calling the auth service
-                    if(synced==false)
-                        populateDeliveryLocations();
-
-                    populateLocationPoints();
-                } catch (Exception ex)
-                {
-                    System.out.println(ex.getMessage());
-                }
                 mHandler.post(mUpdateResults);            
             }
-
-
         };        
-        t.start();    	
+        t.start();  
     }
-    public void populateDeliveryLocations() {
-
-        StringBuilder builder = new StringBuilder();
-        HttpClient client = new DefaultHttpClient();
-
-        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/DeliveryLocation.aspx?SubQueryName=");
-        try {
-            HttpResponse response = client.execute(httpGet);
-            StatusLine statusLine = response.getStatusLine();
-            int statusCode = statusLine.getStatusCode();
-            if (statusCode == 200) {
-                HttpEntity entity = response.getEntity();
-                InputStream content = entity.getContent();
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(content));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    builder.append(line);
-                }
-            } else {
-                System.out.println("Failed to download file");
-            }
 
 
-            serverResponseDLocs = builder.toString();
+    public class GetLocationPoints extends AsyncTask<Void, Void, Boolean>{
 
-            //////////////////////////////////////////////////////////
-            String errorMessage="";
-            GsonBuilder gsonb = new GsonBuilder();
-            Gson gson = gsonb.create();
-            JSONArray results = new JSONArray(serverResponseDLocs);
-            JSONObject respOuter = results.getJSONObject(0);
-            JSONObject resp = respOuter.getJSONObject("Response");
-            //	      String status = resp.getString("Status");
-            JSONArray resultsArray =null;
-            Object data= resp.get("Data");
-            boolean dataExists=false;
-            if(data instanceof JSONArray)
-            {
-                resultsArray =(JSONArray)data;
-                dataExists=true;
-            }
 
-            JSONObject errors = resp.getJSONObject("Errors");
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
 
-            boolean hasError=errors.has("Message");
-            if(hasError)
-            {
-                errorMessage=errors.getString("Message");
-                System.out.println("Error:"+errorMessage);
-            }
+        @Override
+        protected Boolean doInBackground(Void... params) {
 
-            ArrayList<DelLocations> deliveryLocationList = new ArrayList<DelLocations>();
+            String url = Constants.ROOT_URL + "GetLocationsPoints.aspx";
+            ServerResponse response = jsonParser.retrieveGETResponse(url, null);
 
-            if(dataExists==true)
-            {
-                DelLocations aBean;
-                for(int i=0; i<resultsArray.length(); i++){
-                    JSONObject jsResult = resultsArray.getJSONObject(i);
-                    if(jsResult!=null){
-                        String jsonString = jsResult.toString();
-                        aBean=new DelLocations();
-                        aBean=gson.fromJson(jsonString, DelLocations.class);
-                        //                System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
-                        deliveryLocationList.add(aBean);
-                    }
+            if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
+                JSONObject jsonObj = response.getjObj();
+                try {
+                    JSONObject responseObj = jsonObj.getJSONObject("Response");
+                    int status = responseObj.getInt("Status");
+                    JSONArray data = responseObj.getJSONArray("Data");
+                    JSONObject errors = responseObj.getJSONObject("Errors");
+
+                    locPoints = LocationPoints.parseLocationPoints(data);
+
+                    // Here we store in static data field but we have to create a db table for it
+                    AppProperties.locationPointsList=locPoints;
+                    System.out.println("Got location points: "+locPoints.size());
+
+                    return true;
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
             }
+            return false;
+        }
 
-            DeepsliceDatabase dbInstance = new DeepsliceDatabase(WelcomeActivity.this);
-            dbInstance.open();
-            dbInstance.insertProdDeliveryLocations(deliveryLocationList);
-            dbInstance.close();
-
-            //            AppDao dao=null;
-            //            try {
-            //                dao=AppDao.getSingleton(getApplicationContext());
-            //                dao.openConnection();
-            //
-            //                dao.insertProdDeliveryLocations(deliveryLocationList);
-            //
-            //            } catch (Exception ex)
-            //            {
-            //                System.out.println(ex.getMessage());
-            //            }finally{
-            //                if(null!=dao)
-            //                    dao.closeConnection();
-            //            }
-            //	      AppProperties.deliveryLocationsList=deliveryLocationList;
-            System.out.println("Got delivery locations: "+deliveryLocationList.size());
-            //////////////////////////////////////////////////////////
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }catch (Exception e) {
-
-            e.printStackTrace();
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+//            if(pDialog.isShowing())
+//                pDialog.dismiss();
+            if(result){
+                if(isDeliveryLocationsExist == false)
+                    new GetDeliveryLocation().execute();
+                else
+                    updateResultsInUi();
+            }
         }
     }
 
-    public void populateLocationPoints() {
 
-        StringBuilder builder = new StringBuilder();
-        HttpClient client = new DefaultHttpClient();
+    //    String serverResponseDLocs;
+    //    protected void getDeliveryLocations() {     
+    //
+    //        new GetLocationPoints().execute();
+    //
+    //    }
 
-        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetLocationsPoints.aspx");
-        try {
-            HttpResponse response = client.execute(httpGet);
-            StatusLine statusLine = response.getStatusLine();
-            int statusCode = statusLine.getStatusCode();
-            if (statusCode == 200) {
-                HttpEntity entity = response.getEntity();
-                InputStream content = entity.getContent();
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(content));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    builder.append(line);
-                }
-            } else {
-                System.out.println("Failed to download file");
-            }
-
-
-            serverResponseDLocs = builder.toString();
-
-            //////////////////////////////////////////////////////////
-            String errorMessage="";
-            GsonBuilder gsonb = new GsonBuilder();
-            Gson gson = gsonb.create();
-            JSONArray results = new JSONArray(serverResponseDLocs);
-            JSONObject respOuter = results.getJSONObject(0);
-            JSONObject resp = respOuter.getJSONObject("Response");
-            //	      String status = resp.getString("Status");
-            JSONArray resultsArray =null;
-            Object data= resp.get("Data");
-            boolean dataExists=false;
-            if(data instanceof JSONArray)
-            {
-                resultsArray =(JSONArray)data;
-                dataExists=true;
-            }
-
-            JSONObject errors = resp.getJSONObject("Errors");
-
-            boolean hasError=errors.has("Message");
-            if(hasError)
-            {
-                errorMessage=errors.getString("Message");
-                System.out.println("Error:"+errorMessage);
-            }
-
-            ArrayList<LocationPoints> locPoints = new ArrayList<LocationPoints>();
-
-            if(dataExists==true)
-            {
-                LocationPoints aBean;
-                for(int i=0; i<resultsArray.length(); i++){
-                    JSONObject jsResult = resultsArray.getJSONObject(i);
-                    if(jsResult!=null){
-                        String jsonString = jsResult.toString();
-                        aBean=new LocationPoints();
-                        aBean=gson.fromJson(jsonString, LocationPoints.class);
-                        //                System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
-                        locPoints.add(aBean);
-                    }
-                }
-            }
-
-            AppProperties.locationPointsList=locPoints;
-            System.out.println("Got location points: "+locPoints.size());
-            //////////////////////////////////////////////////////////
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }catch (Exception e) {
-
-            e.printStackTrace();
-        }
-    }
 
     private void updateResultsInUi() { 
-        Intent intent = new Intent(WelcomeActivity.this,
-                PickupDeliverActivity.class);
+        Intent intent = new Intent(WelcomeActivity.this, PickupDeliverActivity.class);
         //intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         WelcomeActivity.this.finish();

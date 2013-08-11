@@ -44,7 +44,7 @@ import android.widget.Toast;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProducts;
+import com.deepslice.model.Products;
 import com.deepslice.model.CouponGroups;
 import com.deepslice.model.Coupons;
 import com.deepslice.model.DealOrder;
@@ -66,7 +66,7 @@ public class DealsListActivity extends Activity{
     String couponId,couponDesc,productCatId="0",prodCatCode;
     public ImageLoader imageLoader;
     int numOfDeals=0;
-    AllProducts selectedBean;
+    Products selectedBean;
     Coupons couponsVo;
     ArrayList<String> couponsId;
     ArrayList<ArrayList<String>> arrayListProductName;
@@ -366,7 +366,7 @@ public class DealsListActivity extends Activity{
         }
     }
 
-    private Order getOrderBean(AllProducts prodBean, String catType) {
+    private Order getOrderBean(Products prodBean, String catType) {
 
         Order f = new Order();
         f.setProdCatID(prodBean.getProdCatID());

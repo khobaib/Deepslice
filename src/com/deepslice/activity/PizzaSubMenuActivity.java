@@ -14,10 +14,10 @@ import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProducts;
+import com.deepslice.model.Products;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.ProductCategory;
-import com.deepslice.model.SubCategoryVo;
+import com.deepslice.model.ProductSubCategory;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -27,8 +27,8 @@ public class  PizzaSubMenuActivity extends Activity{
     private static final int REQUEST_CODE_IS_PIZZA_HALF = 1001;
 
     ArrayList<ProductCategory> productCatList;
-    ArrayList<SubCategoryVo> subCatList;
-    ArrayList<AllProducts> allProductsList;
+    ArrayList<ProductSubCategory> subCatList;
+    ArrayList<Products> allProductsList;
 
     Boolean isHalf = false;
 
@@ -50,28 +50,13 @@ public class  PizzaSubMenuActivity extends Activity{
         subCatList = dbInstance.getSubCategoriesPizza();
         dbInstance.close();
 
-//        AppDao dao=null;
-//        try {
-//            dao=AppDao.getSingleton(getApplicationContext());
-//            dao.openConnection();
-//
-//            subCatList=dao.getSubCategoriesPizza();
-//
-//        } catch (Exception ex)
-//        {
-//            System.out.println(ex.getMessage());
-//        }finally{
-//            if(null!=dao)
-//                dao.closeConnection();
-//        }
-
         listview = (ListView) findViewById(R.id.listView1);				
         myAdapter = new MyListAdapterPizza(this,R.layout.line_item_yello, subCatList);
         listview.setAdapter(myAdapter);
 
         listview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                SubCategoryVo eBean = (SubCategoryVo) v.getTag();
+                ProductSubCategory eBean = (ProductSubCategory) v.getTag();
                 if (eBean != null) {
 
                     Intent intent=new Intent(PizzaSubMenuActivity.this,ProductsListActivity.class);
@@ -177,15 +162,13 @@ public class  PizzaSubMenuActivity extends Activity{
         }
     }
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////////////////////////
 
-    private class MyListAdapterPizza extends ArrayAdapter<SubCategoryVo> {
+    private class MyListAdapterPizza extends ArrayAdapter<ProductSubCategory> {
 
-        private ArrayList<SubCategoryVo> items;
+        private ArrayList<ProductSubCategory> items;
 
         public MyListAdapterPizza(Context context, int viewResourceId,
-                ArrayList<SubCategoryVo> items) {
+                ArrayList<ProductSubCategory> items) {
             super(context, viewResourceId, items);
             this.items = items;
 
@@ -197,7 +180,7 @@ public class  PizzaSubMenuActivity extends Activity{
                 LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = mInflater.inflate(R.layout.line_item_yello, null);
             }
-            SubCategoryVo event = items.get(position);
+            ProductSubCategory event = items.get(position);
             if (event != null) {
 
                 TextView title = (TextView) convertView
@@ -214,6 +197,7 @@ public class  PizzaSubMenuActivity extends Activity{
     // /////////////////////// END LIST ADAPTER
     @Override
     protected void onResume() {
+        super.onResume();
         // //////////////////////////////////////////////////////////////////////////////
         
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaSubMenuActivity.this);
@@ -259,68 +243,8 @@ public class  PizzaSubMenuActivity extends Activity{
         else{
             favCount.setVisibility(View.INVISIBLE);
         }
-        dbInstance.close();
-        
-//        AppDao dao = null;
-//        try {
-//            dao = AppDao.getSingleton(getApplicationContext());
-//            dao.openConnection();
-//            ArrayList<String> orderInfo = dao.getOrderInfo();
-//            ArrayList<DealOrder>dealOrderVos1= dao.getDealOrdersList();
-//            TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-//            double tota=0.00;
-//            int dealCount=0;
-//            if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
-//                dealCount=dealOrderVos1.size();
-//                for (int x=0;x<dealOrderVos1.size();x++){
-//                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-//                }
-//            }
-//
-//            int orderInfoCount= 0;
-//            double  orderInfoTotal=0.0;
-//            if ((null != orderInfo && orderInfo.size() == 2) ) {
-//                orderInfoCount=Integer.parseInt(orderInfo.get(0));
-//                orderInfoTotal=Double.parseDouble(orderInfo.get(1));
-//            }
-//            int numPro=orderInfoCount+dealCount;
-//            double subTotal=orderInfoTotal+tota;
-//            DecimalFormat twoDForm = new DecimalFormat("#.##");
-//            subTotal= Double.valueOf(twoDForm.format(subTotal));
-//            if(numPro>0){
-//                itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
-//                itemsPrice.setVisibility(View.VISIBLE);
-//            }
-//
-//            else{
-//                itemsPrice.setVisibility(View.INVISIBLE);
-//
-//            }
-//
-//            TextView favCount = (TextView) findViewById(R.id.favCount);
-//            String fvs=dao.getFavCount();
-//            if (null != fvs && !fvs.equals("0")) {
-//                favCount.setText(fvs);
-//                favCount.setVisibility(View.VISIBLE);
-//            }
-//            else{
-//                favCount.setVisibility(View.INVISIBLE);
-//            }
-//
-//
-//
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//        } finally {
-//            if (null != dao)
-//                dao.closeConnection();
-//        }
-        // ///////////////////////////////////////////////////////////////////////
+        dbInstance.close();        
 
-        super.onResume();
     }
-
-
-    //rukshan add
 
 }

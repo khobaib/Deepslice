@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.deepslice.model.AllProducts;
+import com.deepslice.model.Products;
 import com.deepslice.model.CouponDetails;
 import com.deepslice.model.Coupons;
 import com.deepslice.model.DealOrder;
@@ -20,7 +20,7 @@ import com.deepslice.model.Favourites;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.model.Order;
 import com.deepslice.model.ProductCategory;
-import com.deepslice.model.SubCategoryVo;
+import com.deepslice.model.ProductSubCategory;
 import com.deepslice.model.ToppingPrices;
 import com.deepslice.model.ToppingSizes;
 import com.deepslice.model.ToppingsAndSauces;
@@ -125,7 +125,7 @@ public class DeepsliceDatabase {
     
     // Topping & Sauce
 
-    public boolean insertToppingSizes(ArrayList<ToppingSizes> aList ) {
+    public boolean insertToppingSizes(List<ToppingSizes> aList ) {
         for (Iterator<ToppingSizes> iterator = aList.iterator(); iterator.hasNext();) {
             ToppingSizes f = (ToppingSizes) iterator.next();
             ToppingSizeDbManager.insert(this.db,
@@ -137,7 +137,7 @@ public class DeepsliceDatabase {
     }
 
 
-    public boolean insertToppingPrices(ArrayList<ToppingPrices> aList ) {
+    public boolean insertToppingPrices(List<ToppingPrices> aList ) {
         for (Iterator<ToppingPrices> iterator = aList.iterator(); iterator.hasNext();) {
             ToppingPrices f = (ToppingPrices) iterator.next();
             ToppingPriceDbManager.insert(this.db,
@@ -205,7 +205,7 @@ public class DeepsliceDatabase {
     }
 
 
-    public boolean insertToppingSauces(ArrayList<ToppingsAndSauces> aList ) {
+    public boolean insertToppingSauces(List<ToppingsAndSauces> aList ) {
         for (Iterator<ToppingsAndSauces> iterator = aList.iterator(); iterator.hasNext();) {
             ToppingsAndSauces f = (ToppingsAndSauces) iterator.next();
             SauceAndToppingDbManager.insert(this.db,
@@ -662,9 +662,9 @@ public class DeepsliceDatabase {
 
     // Products
 
-    public boolean insertAllProducts(ArrayList<AllProducts> aList ) {
-        for (Iterator<AllProducts> iterator = aList.iterator(); iterator.hasNext();) {
-            AllProducts f = (AllProducts) iterator.next();
+    public boolean insertAllProducts(List<Products> aList ) {
+        for (Iterator<Products> iterator = aList.iterator(); iterator.hasNext();) {
+            Products f = (Products) iterator.next();
             ProductDbManager.insert(this.db,
                     f.getProdCatID(),
                     f.getSubCatID1(),
@@ -686,8 +686,7 @@ public class DeepsliceDatabase {
     }
 
 
-    public ArrayList<AllProducts> getProductsSelected(String catId,
-            String subCatId) {
+    public List<Products> getProductsSelected(String catId, String subCatId) {
 
         Cursor cursor= ProductDbManager.getProductsSelected(this.db, catId, subCatId);
         try{        
@@ -699,8 +698,7 @@ public class DeepsliceDatabase {
     }
 
 
-    public ArrayList<AllProducts> getProductsPizza(String catId,
-            String subCatId) {
+    public List<Products> getProductsPizza(String catId, String subCatId) {
 
         Cursor cursor= ProductDbManager.getProductsPizza(this.db, catId, subCatId);
         try{        
@@ -711,7 +709,7 @@ public class DeepsliceDatabase {
 
     }
 
-    public ArrayList<AllProducts> getProductsListByIds(String prodIds) {
+    public List<Products> getProductsListByIds(String prodIds) {
 
         Cursor cursor= ProductDbManager.getProductsListById(this.db, prodIds);
         try{        
@@ -722,11 +720,11 @@ public class DeepsliceDatabase {
 
     }
 
-    public AllProducts getProductById(String prodId) {
+    public Products getProductById(String prodId) {
 
         Cursor cursor= ProductDbManager.getProductById(this.db, prodId);
         try{    
-            ArrayList<AllProducts> lst = cursorToAllProducts(cursor);
+            List<Products> lst = cursorToAllProducts(cursor);
             if(lst!=null && lst.size()>0)
             {
                 return lst.get(0);
@@ -741,11 +739,11 @@ public class DeepsliceDatabase {
     }
 
 
-    public ArrayList<AllProducts> cursorToAllProducts(Cursor cursor) {
-        ArrayList<AllProducts> list = new ArrayList<AllProducts>();
+    public List<Products> cursorToAllProducts(Cursor cursor) {
+        List<Products> list = new ArrayList<Products>();
         if (cursor.moveToFirst()) {
             do {
-                AllProducts f = new AllProducts();
+                Products f = new Products();
                 f.setProdCatID(cursor.getString(1));
                 f.setSubCatID1(cursor.getString(2));
                 f.setSubCatID2(cursor.getString(3));
@@ -772,11 +770,11 @@ public class DeepsliceDatabase {
 
     // Delivery Location
 
-    public boolean recordExistsDeliveryLocatoins() {
-        return DeliveryLocationDbManager.isEmptyDeliveryLocatoins(this.db);
+    public boolean isExistsDeliveryLocations() {
+        return DeliveryLocationDbManager.isExistDeliveryLocations(this.db);
     }
 
-    public boolean insertProdDeliveryLocations(ArrayList<DelLocations> aList ) {
+    public boolean insertProdDeliveryLocations(List<DelLocations> aList ) {
         for (Iterator<DelLocations> iterator = aList.iterator(); iterator.hasNext();) {
             DelLocations f = (DelLocations) iterator.next();
             DeliveryLocationDbManager.insert(this.db,
@@ -916,7 +914,7 @@ public class DeepsliceDatabase {
     
     // Categories & Sub-categories
     
-    public boolean insertProdCat(ArrayList<ProductCategory> aList ) {
+    public boolean insertProdCat(List<ProductCategory> aList ) {
         for (Iterator<ProductCategory> iterator = aList.iterator(); iterator.hasNext();) {
             ProductCategory f = (ProductCategory) iterator.next();
             CategoryDbManager.insertCategory(this.db,
@@ -943,9 +941,9 @@ public class DeepsliceDatabase {
         return true;
     }
 
-    public boolean insertSubCatList(ArrayList<SubCategoryVo> aList ) {
-        for (Iterator<SubCategoryVo> iterator = aList.iterator(); iterator.hasNext();) {
-            SubCategoryVo f = (SubCategoryVo) iterator.next();
+    public boolean insertSubCatList(List<ProductSubCategory> aList ) {
+        for (Iterator<ProductSubCategory> iterator = aList.iterator(); iterator.hasNext();) {
+            ProductSubCategory f = (ProductSubCategory) iterator.next();
             CategoryDbManager.insertSubcategory(this.db,
                     f.getProdCatID(),
                     f.getSubCatID(),
@@ -966,11 +964,11 @@ public class DeepsliceDatabase {
         return CategoryDbManager.isEmptyDB(this.db);
     }
     
-    public ArrayList<SubCategoryVo> getSubCategoriesPizza() {
+    public ArrayList<ProductSubCategory> getSubCategoriesPizza() {
         Cursor ls = CategoryDbManager.searchPizzaSubCats(this.db);
         return cursorToSubCat(ls);
     }
-    public ArrayList<SubCategoryVo> getSubCategoriesDrinks() {
+    public ArrayList<ProductSubCategory> getSubCategoriesDrinks() {
         Cursor ls = CategoryDbManager.searchDrinksSubCats(this.db);
         return cursorToSubCat(ls);
     }
@@ -981,7 +979,7 @@ public class DeepsliceDatabase {
     }
     
     
-    public ArrayList<SubCategoryVo> getPizzaCrusts(String catId,
+    public ArrayList<ProductSubCategory> getPizzaCrusts(String catId,
             String subCatId) {
 
         Cursor cursor= CategoryDbManager.searchPizzaCrusts(this.db, catId,subCatId);
@@ -1002,11 +1000,11 @@ public class DeepsliceDatabase {
     }
     
     
-    public ArrayList<SubCategoryVo> cursorToSubCat(Cursor cursor) {
-        ArrayList<SubCategoryVo> list = new ArrayList<SubCategoryVo>();
+    public ArrayList<ProductSubCategory> cursorToSubCat(Cursor cursor) {
+        ArrayList<ProductSubCategory> list = new ArrayList<ProductSubCategory>();
         if (cursor.moveToFirst()) {
             do {
-                SubCategoryVo f = new SubCategoryVo();
+                ProductSubCategory f = new ProductSubCategory();
                 f.setProdCatID(cursor.getString(1));
                 f.setSubCatID(cursor.getString(2));
                 f.setSubCatOf(cursor.getString(3));

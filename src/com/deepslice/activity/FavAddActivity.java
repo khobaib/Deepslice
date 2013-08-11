@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import android.widget.*;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProducts;
+import com.deepslice.model.Products;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.Favourites;
 import com.deepslice.model.Order;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class FavAddActivity extends Activity {
     TextView favCountTxt;
     int currentCount=1;
-    AllProducts prodBean;
+    Products prodBean;
     EditText editView;
     String catType,couponGroupID,productId="";
     boolean isDeal=false;
@@ -35,7 +35,7 @@ public class FavAddActivity extends Activity {
         Bundle b = this.getIntent().getExtras();
         String itemName=b.getString("itemName");
         catType=b.getString("catType");
-        prodBean=(AllProducts)b.getSerializable("prodBean");
+        prodBean=(Products)b.getSerializable("prodBean");
         Button buttonAddOrders= (Button)findViewById(R.id.buttonAddOrders);
         isDeal=b.getBoolean("isDeal",false);
         if (isDeal){

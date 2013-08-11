@@ -12,10 +12,10 @@ import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProducts;
+import com.deepslice.model.Products;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.ProductCategory;
-import com.deepslice.model.SubCategoryVo;
+import com.deepslice.model.ProductSubCategory;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -23,8 +23,8 @@ import java.util.ArrayList;
 public class DrinksSubMenuActivity extends Activity{
 
     ArrayList<ProductCategory> productCatList;
-    ArrayList<SubCategoryVo> subCatList;
-    ArrayList<AllProducts> allProductsList;
+    ArrayList<ProductSubCategory> subCatList;
+    ArrayList<Products> allProductsList;
 
     ListView listview;
     MyListAdapterDrinks myAdapter;
@@ -69,7 +69,7 @@ public class DrinksSubMenuActivity extends Activity{
         listview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position,
                     long id) {
-                SubCategoryVo eBean = (SubCategoryVo) v.getTag();
+                ProductSubCategory eBean = (ProductSubCategory) v.getTag();
                 if (eBean != null) {
 
                     Intent intent=new Intent(DrinksSubMenuActivity.this,ProductsListActivity.class);
@@ -120,12 +120,12 @@ public class DrinksSubMenuActivity extends Activity{
     // ////////////////////////////////////////////////////////////////////////////////////////////
     // ////////////////////////////////////////////////////////////////////////////////////////////
 
-    private class MyListAdapterDrinks extends ArrayAdapter<SubCategoryVo> {
+    private class MyListAdapterDrinks extends ArrayAdapter<ProductSubCategory> {
 
-        private ArrayList<SubCategoryVo> items;
+        private ArrayList<ProductSubCategory> items;
 
         public MyListAdapterDrinks(Context context, int viewResourceId,
-                ArrayList<SubCategoryVo> items) {
+                ArrayList<ProductSubCategory> items) {
             super(context, viewResourceId, items);
             this.items = items;
 
@@ -137,7 +137,7 @@ public class DrinksSubMenuActivity extends Activity{
                 LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = mInflater.inflate(R.layout.line_item_yello, null);
             }
-            SubCategoryVo event = items.get(position);
+            ProductSubCategory event = items.get(position);
             if (event != null) {
 
                 TextView title = (TextView) convertView

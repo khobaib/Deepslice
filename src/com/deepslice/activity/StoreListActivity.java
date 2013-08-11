@@ -5,6 +5,7 @@ package com.deepslice.activity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -38,7 +39,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.model.LocationPoints;
@@ -182,7 +182,7 @@ public class StoreListActivity extends Activity {
  
 		try{
 		
-			ArrayList<LocationPoints> locList = AppProperties.locationPointsList;
+			List<LocationPoints> locList = AppProperties.locationPointsList;
 			
 			
 			ArrayList<LocationPoints> selectedList = new ArrayList<LocationPoints>();

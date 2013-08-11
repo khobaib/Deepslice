@@ -18,9 +18,9 @@ import android.widget.TextView;
 
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProducts;
+import com.deepslice.model.Products;
 import com.deepslice.model.ProdAndSubCategory;
-import com.deepslice.model.SubCategoryVo;
+import com.deepslice.model.ProductSubCategory;
 import com.deepslice.utilities.DeepsliceApplication;
 
 public class PizzaCrustActivity extends Activity{
@@ -28,13 +28,13 @@ public class PizzaCrustActivity extends Activity{
 	TextView favCountTxt;
 	int currentCount=1;
 
-	AllProducts selectedBean;
+	Products selectedBean;
 	
 	ListView listview;
 	MyListAdapterSides myAdapter;
     MyListAdapterDealSides myListAdapterDealSides;
 
-	ArrayList<SubCategoryVo> crustList;
+	ArrayList<ProductSubCategory> crustList;
     ArrayList<ProdAndSubCategory> prodAndSubCategories;
 	String crustCatId="", crustSubCatId="";
     String currentProductId="";
@@ -50,14 +50,14 @@ public class PizzaCrustActivity extends Activity{
         Bundle b = this.getIntent().getExtras();
         if(b.getBoolean("isDeal",false)){
             isDeal=true;
-            selectedBean=(AllProducts)b.getSerializable("selectedProduct");
+            selectedBean=(Products)b.getSerializable("selectedProduct");
             crustCatId=b.getString("catId");
             crustSubCatId=b.getString("subCatId");
             currentProductId=b.getString("prdID");
             myListAdapterDealSides = new MyListAdapterDealSides(this,R.layout.line_item_crust, appInstance.getCouponData().getProdAndSubCategories());
             listview.setAdapter(myListAdapterDealSides);
         }else {
-		selectedBean=(AllProducts)b.getSerializable("selectedProduct");
+		selectedBean=(Products)b.getSerializable("selectedProduct");
 		crustCatId=b.getString("catId");
 		crustSubCatId=b.getString("subCatId");
 		
@@ -102,7 +102,7 @@ public class PizzaCrustActivity extends Activity{
                             finish();
                         }
                     }else {
-                        SubCategoryVo eBean = (SubCategoryVo) v.getTag();
+                        ProductSubCategory eBean = (ProductSubCategory) v.getTag();
                         if (eBean != null) {
                             Intent resultData = new Intent();
                             resultData.putExtra("name", eBean.getSubCatDesc());
@@ -121,12 +121,12 @@ public class PizzaCrustActivity extends Activity{
 	// ////////////////////////////////////////////////////////////////////////////////////////////
 	// ////////////////////////////////////////////////////////////////////////////////////////////
 
-	private class MyListAdapterSides extends ArrayAdapter<SubCategoryVo> {
+	private class MyListAdapterSides extends ArrayAdapter<ProductSubCategory> {
 
-		private ArrayList<SubCategoryVo> items;
+		private ArrayList<ProductSubCategory> items;
 
 		public MyListAdapterSides(Context context, int viewResourceId,
-				ArrayList<SubCategoryVo> items) {
+				ArrayList<ProductSubCategory> items) {
 			super(context, viewResourceId, items);
 			this.items = items;
 
@@ -139,7 +139,7 @@ public class PizzaCrustActivity extends Activity{
 				LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				convertView = mInflater.inflate(R.layout.line_item_crust, null);
 			}
-			final SubCategoryVo event = items.get(position);
+			final ProductSubCategory event = items.get(position);
 			if (event != null) {
 
 				TextView title = (TextView) convertView.findViewById(R.id.textView1);

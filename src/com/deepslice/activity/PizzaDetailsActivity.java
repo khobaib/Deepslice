@@ -25,13 +25,13 @@ import android.widget.Toast;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProducts;
+import com.deepslice.model.Products;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.Favourites;
 import com.deepslice.model.LabelValueBean;
 import com.deepslice.model.Order;
 import com.deepslice.model.ProdAndSubCategory;
-import com.deepslice.model.SubCategoryVo;
+import com.deepslice.model.ProductSubCategory;
 import com.deepslice.model.ToppingsAndSauces;
 import com.deepslice.model.ToppingsHashmap;
 import com.deepslice.utilities.AppProperties;
@@ -46,7 +46,7 @@ public class PizzaDetailsActivity extends Activity{
 
     TextView favCountTxt;
     int currentCount=1;
-    AllProducts selectedBean;
+    Products selectedBean;
 
     ImageLoader imageLoader;
 
@@ -91,7 +91,7 @@ public class PizzaDetailsActivity extends Activity{
         TextView headerTextView=(TextView)findViewById(R.id.headerTextView);
         selectedCrusts=(TextView)findViewById(R.id.selectedCrust);
         if(b.containsKey("selectedProduct")){
-            selectedBean=(AllProducts)b.getSerializable("selectedProduct");
+            selectedBean=(Products)b.getSerializable("selectedProduct");
             productId=selectedBean.getProdID();
             pDesc.setText(selectedBean.getProdDesc());
             imageLoader.DisplayImage(selectedBean.getFullImage(), pImage);
@@ -345,15 +345,15 @@ public class PizzaDetailsActivity extends Activity{
 
             DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaDetailsActivity.this);
             dbInstance.open();
-            ArrayList<SubCategoryVo> crustList=new ArrayList<SubCategoryVo>();
+            ArrayList<ProductSubCategory> crustList=new ArrayList<ProductSubCategory>();
             if (isDeal){
-                AllProducts allProductsVo=dbInstance.getProductById(dealOrderVo.getProdID());
+                Products allProductsVo=dbInstance.getProductById(dealOrderVo.getProdID());
                 crustList = dbInstance.getPizzaCrusts(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
             }else {
                 crustList = dbInstance.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
             }
             if(crustList != null && crustList.size()>0 ) {
-                SubCategoryVo crLocal = crustList.get(0);
+                ProductSubCategory crLocal = crustList.get(0);
                 crustName=crLocal.getSubCatDesc();
                 crustCatId=crLocal.getProdCatID();
                 crustSubCatId=crLocal.getSubCatID();

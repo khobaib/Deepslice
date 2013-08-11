@@ -7,13 +7,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.DeliveryAddressVo;
+import com.deepslice.model.DeliveryAddress;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.model.LocationPoints;
 import com.deepslice.model.ToppingsHashmap;
@@ -35,7 +35,7 @@ public class AppProperties {
 	public static final String PREFS_NAME = "DeepSlice";
 	private static AppProperties mInstance = null;
 	
-	public static ArrayList<LocationPoints> locationPointsList;
+	public static List<LocationPoints> locationPointsList;
 	public static ArrayList<LocationDetails> locationPointsSearched;
 	
 
@@ -199,7 +199,7 @@ public class AppProperties {
 		
 		return obj;
 	}
-    public static void saveDeliveryAddressObj(Context ct, DeliveryAddressVo eBean) {
+    public static void saveDeliveryAddressObj(Context ct, DeliveryAddress eBean) {
 
 		AppSharedPreference.putData(ct, "d_cstreet", eBean.getCrossStreetName());
 		AppSharedPreference.putData(ct, "d_inst", eBean.getDeliveryInstructions());
@@ -209,9 +209,9 @@ public class AppProperties {
 		
 	}
     
-    public static DeliveryAddressVo getDeliveryAddressObj(Context ct) {
+    public static DeliveryAddress getDeliveryAddressObj(Context ct) {
 
-    	DeliveryAddressVo obj=new DeliveryAddressVo();
+    	DeliveryAddress obj=new DeliveryAddress();
 		obj.setCrossStreetName(AppSharedPreference.getData(ct, "d_cstreet", null));
 		obj.setDeliveryInstructions(AppSharedPreference.getData(ct, "d_inst", null));
 		obj.setStreetName(AppSharedPreference.getData(ct, "d_st_name", null));

@@ -1,6 +1,15 @@
 package com.deepslice.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class ToppingPrices implements Serializable {
 
@@ -15,6 +24,33 @@ public class ToppingPrices implements Serializable {
 	private String ToppingSizeCode;
 	private String ToppingSizeDesc;
 	private String ToppingPrice;
+	
+	public ToppingPrices() {
+        // TODO Auto-generated constructor stub
+    }
+	
+    public static List<ToppingPrices> parseToppingsPriceList(JSONArray priceArray){
+        List<ToppingPrices> priceList = new ArrayList<ToppingPrices>();
+        GsonBuilder gsonb = new GsonBuilder();
+        Gson gson = gsonb.create();
+
+        try {
+            for(int i=0; i<priceArray.length(); i++){
+
+                JSONObject thisPrice = priceArray.getJSONObject(i);
+                if(thisPrice!=null){
+                    String jsonString = thisPrice.toString();
+                    ToppingPrices price = gson.fromJson(jsonString, ToppingPrices.class);
+                    priceList.add(price);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return priceList;
+    }
+	
+	
 	public String getToppingID() {
 		return ToppingID;
 	}

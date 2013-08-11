@@ -12,10 +12,10 @@ import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProducts;
+import com.deepslice.model.Products;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.ProductCategory;
-import com.deepslice.model.SubCategoryVo;
+import com.deepslice.model.ProductSubCategory;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -23,8 +23,8 @@ import java.util.ArrayList;
 public class SubMenuActivity extends Activity{
 
     ArrayList<ProductCategory> productCatList;
-    ArrayList<SubCategoryVo> subCatList;
-    ArrayList<AllProducts> allProductsList;
+    ArrayList<ProductSubCategory> subCatList;
+    ArrayList<Products> allProductsList;
 
     ListView listview;
     MyListAdapterSides myAdapter;

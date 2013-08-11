@@ -42,7 +42,7 @@ import android.widget.Toast;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProducts;
+import com.deepslice.model.Products;
 import com.deepslice.model.CouponData;
 import com.deepslice.model.Coupons;
 import com.deepslice.model.DealOrder;
@@ -68,13 +68,13 @@ public class DealGroup extends Activity {
     String couponGroupID,couponID,productCatId="0",prodCatCode="",productName="",productId="",prdId="";
     ProgressDialog pd;
     ArrayList<CouponData> couponData;
-    ArrayList<AllProducts> pList;
+    ArrayList<Products> pList;
     ArrayList<DealOrder> dealOrderVos;
     int currentPosition,Qty=0;
     public ImageLoader imageLoader;
     ListView listView;
     MyListAdapter myAdapter;
-    AllProducts selectedBean;
+    Products selectedBean;
     Coupons couponsVo;
     ArrayList<String> couponsId;
     TextView textViewTitle,textViewSub;
@@ -95,7 +95,7 @@ public class DealGroup extends Activity {
         couponsId=bundle.getStringArrayList("couponsID");
         Qty=Integer.parseInt(bundle.getString("Qty"));
         couponData = new ArrayList<CouponData>();
-         pList = new ArrayList<AllProducts>();
+         pList = new ArrayList<Products>();
         dealOrderVos=new ArrayList<DealOrder>();
         imageLoader=new ImageLoader(this);
         listView=(ListView)findViewById(R.id.listView1);
@@ -110,7 +110,7 @@ public class DealGroup extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 currentPosition=position;
-                AllProducts eBean = (AllProducts) view.getTag();
+                Products eBean = (Products) view.getTag();
                 if (eBean != null) {
                     selectedBean = eBean;
 //                    if(!selectedBean.getProdCatID().equalsIgnoreCase(prodCatCode)){
@@ -390,13 +390,13 @@ public class DealGroup extends Activity {
         }
     }
 
-    private class MyListAdapter extends ArrayAdapter<AllProducts> {
+    private class MyListAdapter extends ArrayAdapter<Products> {
 
-        private ArrayList<AllProducts> items;
+        private ArrayList<Products> items;
         private ArrayList<CouponData> couponData;
 
         public MyListAdapter(Context context, int viewResourceId,
-                                ArrayList<AllProducts> items,ArrayList<CouponData> couponDatas) {
+                                ArrayList<Products> items,ArrayList<CouponData> couponDatas) {
             super(context, viewResourceId, items);
             this.items = items;
             Log.d("count...................",items.size()+"");
@@ -409,7 +409,7 @@ public class DealGroup extends Activity {
                 LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = mInflater.inflate(R.layout.deal_single_item, null);
             }
-            AllProducts event = items.get(position);
+            Products event = items.get(position);
             if (event != null) {
 
                 TextView title = (TextView) convertView.findViewById(R.id.textView1);

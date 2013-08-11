@@ -1,5 +1,15 @@
 package com.deepslice.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 public class ProductCategory {
 	public String ProdCatID;
     public String ProdCatCode;
@@ -21,6 +31,37 @@ public class ProductCategory {
     
     private String Thumbnail;
 	private String FullImage;
+	
+	public ProductCategory() {
+        // TODO Auto-generated constructor stub
+    }
+	
+	
+    public static List<ProductCategory> parseProductCategories(JSONArray catArray){
+        List<ProductCategory> categoryList = new ArrayList<ProductCategory>();
+        GsonBuilder gsonb = new GsonBuilder();
+        Gson gson = gsonb.create();
+        //        DelLocations aBean;
+
+        try {
+            for(int i=0; i<catArray.length(); i++){
+
+                JSONObject thisCategory = catArray.getJSONObject(i);
+                if(thisCategory!=null){
+                    String jsonString = thisCategory.toString();
+                    //                aBean=new DelLocations();
+                    ProductCategory category =gson.fromJson(jsonString, ProductCategory.class);
+                    //                System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
+                    categoryList.add(category);
+                }
+
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return categoryList;
+    }
 	
 	public String getThumbnail() {
 		return Thumbnail;

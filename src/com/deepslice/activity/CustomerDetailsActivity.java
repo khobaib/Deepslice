@@ -8,7 +8,7 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.*;
 import com.deepslice.database.HelperSharedPreferences;
-import com.deepslice.model.CustomerDetailsVo;
+import com.deepslice.model.CustomerDetails;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Constants;
 
@@ -121,8 +121,8 @@ public class CustomerDetailsActivity extends Activity implements
 
 	}
 
-	private CustomerDetailsVo getCustomerDetailsVo() {
-		CustomerDetailsVo customerDetailsVo = new CustomerDetailsVo();
+	private CustomerDetails getCustomerDetailsVo() {
+		CustomerDetails customerDetailsVo = new CustomerDetails();
 		customerDetailsVo.setName(nameEditText.getText().toString().trim());
 		customerDetailsVo.setEmail(emailEditText.getText().toString().trim());
 		customerDetailsVo.setPhone(phoneEditText.getText().toString().trim());

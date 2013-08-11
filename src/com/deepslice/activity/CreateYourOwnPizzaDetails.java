@@ -42,7 +42,7 @@ import android.widget.Toast;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.AllProducts;
+import com.deepslice.model.Products;
 import com.deepslice.model.CreateOwnPizzaData;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.Favourites;
@@ -86,7 +86,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
 
     CreateOwnPizzaData selectedPizzaData;
     List<String> prodIds;
-    ArrayList<AllProducts> productList;
+    ArrayList<Products> productList;
 
     //    private ProgressDialog pDialog;
     JsonParser jsonParser = new JsonParser();
@@ -110,7 +110,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
         currentCount = 1;
         imageLoader = new ImageLoader(CreateYourOwnPizzaDetails.this);
 
-        productList = new ArrayList<AllProducts>();
+        productList = new ArrayList<Products>();
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
         dbInstance.open();
         for (int i=0;i<prodIds.size();i++){

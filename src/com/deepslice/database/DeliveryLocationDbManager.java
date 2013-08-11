@@ -35,28 +35,38 @@ public class DeliveryLocationDbManager {
         return db.insert(TABLE_DELIVERY_LOCATIONS, null, cv);
     }
 
-    public static boolean isEmptyDeliveryLocatoins(SQLiteDatabase db) {
-        Log.d(TAG, "in DeliveryLocationDbManager, isEmptyDeliveryLocatoins");
-        boolean recExists=false;
-        int count=-1;
-        try {
-            Cursor cursor=db.rawQuery("SELECT COUNT(*) AS num_rows FROM "+TABLE_DELIVERY_LOCATIONS+" ", null);
+    public static boolean isExistDeliveryLocations(SQLiteDatabase db) {
+        
+        Log.d(TAG, "in DeliveryLocationDbManager, isExistDeliveryLocations");
+        boolean itemExist = false;
+        Cursor c = db.query(TABLE_DELIVERY_LOCATIONS, null, null, null, null, null, null);
 
-            if (cursor.moveToFirst()) {
-                count=cursor.getInt(0);             
-            }
-
-            if(count > 0)
-                recExists=true;
-
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-            return recExists;
-
-        } catch (Exception e) {
-            return recExists;
+        if ((c != null) && (c.getCount() > 0)) {
+            itemExist = true;
         }
+        return itemExist;
+        
+//        Log.d(TAG, "in DeliveryLocationDbManager, isEmptyDeliveryLocations");
+//        boolean recExists=false;
+//        int count=-1;
+//        try {
+//            Cursor cursor=db.rawQuery("SELECT COUNT(*) AS num_rows FROM "+TABLE_DELIVERY_LOCATIONS+" ", null);
+//
+//            if (cursor.moveToFirst()) {
+//                count=cursor.getInt(0);             
+//            }
+//
+//            if(count > 0)
+//                recExists=true;
+//
+//            if (cursor != null && !cursor.isClosed()) {
+//                cursor.close();
+//            }
+//            return recExists;
+//
+//        } catch (Exception e) {
+//            return recExists;
+//        }
     }
 
     public static Cursor fetchAllRecordsDeliveryLocations(SQLiteDatabase db) {
