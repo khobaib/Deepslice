@@ -156,6 +156,7 @@ public class DealsListActivity extends Activity{
             public void onClick(View v) {
 
                 Intent intent=new Intent(DealsListActivity.this,MenuActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
             }
@@ -172,40 +173,22 @@ public class DealsListActivity extends Activity{
             }
         });
 
-        Button buttonCancel=(Button)findViewById(R.id.buttonCancel);
-        buttonCancel.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsListActivity.this);
-                dbInstance.open();
-                if(dbInstance.deleteDealOrderRec(couponId)){
-                    Toast.makeText(DealsListActivity.this, "successfully canceled", Toast.LENGTH_LONG).show();
-                    doResumeWork();
-                }else {
-                    Toast.makeText(DealsListActivity.this, "no data", Toast.LENGTH_LONG).show();
-                }
-                dbInstance.close();
-
-
-                //                AppDao dao = null;
-                //                try {
-                //                    dao = AppDao.getSingleton(getApplicationContext());
-                //                    dao.openConnection();
-                //                  if(dao.deleteDealOrderRec(couponId)){
-                //                    Toast.makeText(DealsListActivity.this, "successfully canceled", Toast.LENGTH_LONG).show();
-                //                    doResumeWork();
-                //                  }else {
-                //                      Toast.makeText(DealsListActivity.this, "no data", Toast.LENGTH_LONG).show();
-                //                  }
-                //
-                //                } catch (Exception ex) {
-                //                    System.out.println(ex.getMessage());
-                //                } finally {
-                //                    if (null != dao)
-                //                        dao.closeConnection();
-                //                }
-            }
-        });
+//        Button buttonCancel=(Button)findViewById(R.id.buttonCancel);
+//        buttonCancel.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsListActivity.this);
+//                dbInstance.open();
+//                if(dbInstance.deleteDealOrderRec(couponId)){
+//                    Toast.makeText(DealsListActivity.this, "successfully canceled", Toast.LENGTH_LONG).show();
+//                    doResumeWork();
+//                }else {
+//                    Toast.makeText(DealsListActivity.this, "no data", Toast.LENGTH_LONG).show();
+//                }
+//                dbInstance.close();
+//            }
+//        });
+        
         //comment = add new image for GET A DEAL
         RelativeLayout buttonGetADeal=(RelativeLayout)findViewById(R.id.getDeal);
         buttonGetADeal.setOnClickListener(new OnClickListener() {
@@ -243,40 +226,6 @@ public class DealsListActivity extends Activity{
                     dbInstance.close();
                     finish();
 
-
-
-                    //                    AppDao dao=null;
-                    //                    try {
-                    //                        dao=AppDao.getSingleton(getApplicationContext());
-                    //                        dao.openConnection();
-                    //                        dao.updateDealOrder();
-                    //                        Toast.makeText(DealsListActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
-                    //
-                    //                        ArrayList<DealOrder>dealOrderVos1= dao.getDealOrdersList();
-                    //                        int i=dealOrderVos1.size();
-                    //                        double tota=0.00;
-                    //                        for (int x=0;x<dealOrderVos1.size();x++){
-                    //                            tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-                    //                        }
-                    //                        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-                    //                        if (null != dealOrderVos1 && dealOrderVos1.size() > 0) {
-                    //                            itemsPrice.setText(i+" Items "+"\n$" + tota);
-                    //                            itemsPrice.setVisibility(View.VISIBLE);
-                    //                        }
-                    //                        else{
-                    //                            itemsPrice.setVisibility(View.INVISIBLE);
-                    //
-                    //                        }
-                    //                        AppSharedPreference.clearDealCoupon(DealsListActivity.this,couponsId);
-                    //                        finish();
-                    //
-                    //                    } catch (Exception ex)
-                    //                    {
-                    //                        System.out.println(ex.getMessage());
-                    //                    }finally{
-                    //                        if(null!=dao)
-                    //                            dao.closeConnection();
-                    //                    }
                 }else if(AppSharedPreference.getBoolean(DealsListActivity.this,couponId)){
 
                     DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsListActivity.this);
@@ -302,41 +251,6 @@ public class DealsListActivity extends Activity{
                     AppSharedPreference.putBoolean(DealsListActivity.this,couponsId+"",false);
                     dbInstance.close();
                     finish();
-
-
-
-                    //                    AppDao dao=null;
-                    //                    try {
-                    //                        dao=AppDao.getSingleton(getApplicationContext());
-                    //                        dao.openConnection();
-                    //                        dao.updateDealOrder();
-                    //                        Toast.makeText(DealsListActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
-                    //
-                    //                        ArrayList<DealOrder>dealOrderVos1= dao.getDealOrdersList();
-                    //                        int i=dealOrderVos1.size();
-                    //                        double tota=0.00;
-                    //                        for (int x=0;x<dealOrderVos1.size();x++){
-                    //                            tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-                    //                        }
-                    //                        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-                    //                        if (null != dealOrderVos1 && dealOrderVos1.size() > 0) {
-                    //                            itemsPrice.setText(i+" Items "+"\n$" + tota);
-                    //                            itemsPrice.setVisibility(View.VISIBLE);
-                    //                        }
-                    //                        else{
-                    //                            itemsPrice.setVisibility(View.INVISIBLE);
-                    //
-                    //                        }
-                    //                        AppSharedPreference.putBoolean(DealsListActivity.this,couponsId+"",false);
-                    //                        finish();
-                    //
-                    //                    } catch (Exception ex)
-                    //                    {
-                    //                        System.out.println(ex.getMessage());
-                    //                    }finally{
-                    //                        if(null!=dao)
-                    //                            dao.closeConnection();
-                    //                    }
                 }else {
 
                     Toast.makeText(DealsListActivity.this, "Select product from deal groups", Toast.LENGTH_LONG).show();
@@ -551,85 +465,6 @@ public class DealsListActivity extends Activity{
         listview.setAdapter(myAdapter);
         dbInstance.close();
 
-
-        //    AppDao dao = null;
-        //    try {
-        //        dao = AppDao.getSingleton(getApplicationContext());
-        //        dao.openConnection();
-        //        ArrayList<String> orderInfo = dao.getOrderInfo();
-        //        ArrayList<DealOrder>dealOrderVos1= dao.getDealOrdersList();
-        //        arrayListProductName=new ArrayList<ArrayList<String>>();
-        //        double total=0;
-        //        if(couponsId.size()>0){
-        //            for (int i=0;i<couponsId.size();i++){
-        //                if(dao.getDealData(couponsId.get(i),couponId).size()>0){
-        //                    arrayListProductName.add(dao.getDealData(couponsId.get(i),couponId));
-        //                }
-        //                Log.d("................",arrayListProductName.toString());
-        //            }
-        //        }
-        //        if(arrayListProductName.size()>0){
-        //            for(int i=0;i<arrayListProductName.size();i++){
-        //                total+=(Double.parseDouble(arrayListProductName.get(i).get(3))) * (Double.parseDouble(arrayListProductName.get(i).get(4)) );
-        //            }
-        //        }
-        //        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-        //        TextView textView=(TextView)findViewById(R.id.textViewPrice);
-        //        double tota=0.00;
-        //        int dealCount=0;
-        //        if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
-        //            dealCount=dealOrderVos1.size();
-        //            for (int x=0;x<dealOrderVos1.size();x++){
-        //                tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-        //            }
-        //        }
-        //
-        //        textView.setText("$"+total);
-        //        int orderInfoCount= 0;
-        //        double  orderInfoTotal=0.0;
-        //        if ((null != orderInfo && orderInfo.size() == 2) ) {
-        //            orderInfoCount=Integer.parseInt(orderInfo.get(0));
-        //            orderInfoTotal=Double.parseDouble(orderInfo.get(1));
-        //        }
-        //        int numPro=orderInfoCount+dealCount;
-        //        double subTotal=orderInfoTotal+tota;
-        //        DecimalFormat twoDForm = new DecimalFormat("#.##");
-        //        subTotal= Double.valueOf(twoDForm.format(subTotal));
-        //        if(numPro>0){
-        //            itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
-        //            itemsPrice.setVisibility(View.VISIBLE);
-        //        }
-        //
-        //        else{
-        //            itemsPrice.setVisibility(View.INVISIBLE);
-        //
-        //        }
-        //
-        //        TextView favCount = (TextView) findViewById(R.id.favCount);
-        //        String fvs=dao.getFavCount();
-        //        if (null != fvs && !fvs.equals("0")) {
-        //            favCount.setText(fvs);
-        //            favCount.setVisibility(View.VISIBLE);
-        //        }
-        //        else{
-        //            favCount.setVisibility(View.INVISIBLE);
-        //        }
-        //
-        //        listview.invalidate();
-        //        myAdapter = new MyListAdapterFav(this,R.layout.line_item_deal, allProductsList);
-        //        listview.setAdapter(myAdapter);
-        //
-        //
-        //    } catch (Exception ex) {
-        //        System.out.println(ex.getMessage());
-        //    } finally {
-        //        if (null != dao)
-        //            dao.closeConnection();
-        //    }
-        // ///////////////////////////////////////////////////////////////////////
-
-        // ///////////////////////////////////////////////////////////////////////
-
     }
 
     final Handler mHandlerDetails = new Handler();
@@ -668,7 +503,7 @@ public class DealsListActivity extends Activity{
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
         //comment = new api implementation to get coupon groups for coupon id
-        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetCouponGroups.aspx?CouponID="+couponId);
+        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"GetCouponGroups.aspx?CouponID="+couponId);
         Log.d("req..deal....", Constants.ROOT_URL+"/GetCouponGroups.aspx?CouponID="+couponId);
         try {
             HttpResponse response = client.execute(httpGet);
@@ -738,32 +573,6 @@ public class DealsListActivity extends Activity{
             }else {
                 allProductsList=new ArrayList<CouponGroups>();
             }
-            //
-            //
-            //		AppDao dao=null;
-            //		try {
-            //			dao=AppDao.getSingleton(getApplicationContext());
-            //			dao.openConnection();
-            //			allProductsList=new ArrayList<AllProductsVo>();
-            //			AllProductsVo tempProd=null;
-            //		      for (CouponGroupsVo couponDetailsVo : couponDetails) {
-            //		    	  	tempProd = dao.getProductById(couponDetailsVo.getCouponID());
-            //		    	  	if(tempProd != null)
-            //		    	  	{
-            //		    	  		tempProd.setPrice(couponDetailsVo.getDiscountedPrice());
-            //		    	  		allProductsList.add(tempProd);
-            //		    	  	}
-            //		      }
-            //
-            //
-            //		} catch (Exception ex)
-            //		{
-            //			System.out.println(ex.getMessage());
-            //		}finally{
-            //			if(null!=dao)
-            //				dao.closeConnection();
-            //		}
-
             //////////////////////////////////////////////////////////
         } catch (ClientProtocolException e) {
             e.printStackTrace();

@@ -26,7 +26,8 @@
             style="@style/buttonHVCenter"
             android:textColor="#fff"
             android:visibility="visible"
-            android:background="@drawable/btn_bg_new" android:text="START ORDER" android:textSize="16dp"/>
+            android:textStyle="bold"
+            android:background="@drawable/btn_bg_new" android:text="Complete Order" android:textSize="16dp"/>
     </RelativeLayout>
 
     <ImageView

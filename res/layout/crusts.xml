@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/backGround">
+    style="@style/backGround" >
 
     <RelativeLayout
         android:id="@+id/headerRelativeLayout"
@@ -21,30 +21,30 @@
         android:id="@+id/logoImageView"
         style="@style/logoImage" />
 
-    
-
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/logoImageView"
         android:layout_above="@+id/footerRelativeLayout"
+        android:layout_below="@+id/logoImageView"
         android:layout_centerHorizontal="true"
         android:background="@android:color/transparent"
         android:cacheColorHint="@android:color/transparent"
         android:divider="@android:color/transparent"
         android:dividerHeight="3dp" >
-
     </ListView>
-<RelativeLayout android:visibility="gone"
+
+    <RelativeLayout
         android:id="@+id/footerRelativeLayout"
-        style="@style/footer" >
+        style="@style/footer"
+        android:visibility="gone" >
 
         <Button
             android:id="@+id/startOrderingButton"
             style="@style/buttonHVCenter"
-            android:textColor="#fff"
+            android:background="@drawable/green_butt"
             android:text="Done"
-            android:background="@drawable/green_butt" />
+            android:textColor="#fff" />
     </RelativeLayout>
+
 </RelativeLayout>

@@ -65,21 +65,7 @@ public class PizzaCrustActivity extends Activity{
         dbInstance.open(); 
         crustList=dbInstance.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
         dbInstance.close();
-        
-//		  AppDao dao=null;
-//			try {
-//				dao=AppDao.getSingleton(getApplicationContext());
-//				dao.openConnection();
-//				
-//				crustList=dao.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
-//				
-//			} catch (Exception ex)
-//			{
-//				System.out.println(ex.getMessage());
-//			}finally{
-//				if(null!=dao)
-//					dao.closeConnection();
-//			}
+
             myAdapter = new MyListAdapterSides(this,R.layout.line_item_crust, crustList);
             listview.setAdapter(myAdapter);
         }

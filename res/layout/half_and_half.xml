@@ -21,14 +21,13 @@
         android:id="@+id/logoImageView"
         style="@style/logoImage" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/zouterLayout"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/lowerLayout"
         android:layout_below="@+id/headerRelativeLayout"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical" >
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp" >
 
         <Button
             android:id="@+id/buttonStHalf"
@@ -41,18 +40,43 @@
             android:text="1st Half Pizza"
             android:textSize="17dp" />
 
+        <ImageView
+            android:id="@+id/iv_tick_1st_half"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/buttonStHalf"
+            android:layout_alignRight="@+id/buttonStHalf"
+            android:layout_alignTop="@+id/buttonStHalf"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="8dp"
+            android:visibility="gone"
+            android:src="@drawable/tick" />
+
         <Button
             android:id="@+id/buttonNdHalf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/buttonStHalf"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/pizza_yellow"
             android:gravity="center_vertical"
             android:paddingLeft="30dp"
             android:text="2nd Half Pizza"
             android:textSize="17dp" />
-    </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_tick_2nd_half"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/buttonNdHalf"
+            android:layout_alignRight="@+id/buttonNdHalf"
+            android:layout_alignTop="@+id/buttonNdHalf"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="8dp"
+            android:visibility="gone"
+            android:src="@drawable/tick" />
+    </RelativeLayout>
 
     <TableLayout
         xmlns:android="http://schemas.android.com/apk/res/android"

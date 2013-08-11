@@ -20,6 +20,7 @@ public class DeepsliceApplication extends Application {
     private CouponData couponData;
     private DealOrder dealOrderVo;
     private Order halfOder;
+    private String halfCrust;               // for demo
     private List<CreateOwnPizzaData> createPizzaDataList;
 
 
@@ -34,9 +35,14 @@ public class DeepsliceApplication extends Application {
     public Order getHalfOder() {
         return halfOder;
     }
+    
+    public String getHalfCrust(){
+        return halfCrust;
+    }
 
-    public void setHalfOder(Order halfOder) {
+    public void setHalfOder(Order halfOder, String crust) {
         this.halfOder = halfOder;
+        this.halfCrust = crust;
     }
 
     public DealOrder getDealOrderVo() {

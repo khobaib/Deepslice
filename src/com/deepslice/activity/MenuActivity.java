@@ -1,20 +1,9 @@
 package com.deepslice.activity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +13,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.deepslice.activity.WelcomeActivity.GetDeliveryLocation;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.ProductCategory;
@@ -43,8 +30,6 @@ import com.deepslice.model.Products;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.Constants;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public class MenuActivity extends Activity {
 
@@ -93,9 +78,10 @@ public class MenuActivity extends Activity {
             public void onClick(View v) {
 
                 Intent intent=new Intent(MenuActivity.this,PizzaSubMenuActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putString("catType","Pizza");
-                intent.putExtras(bundle);
+                intent.putExtra("isHalf", false);
+//                Bundle bundle=new Bundle();
+//                bundle.putString("catType","Pizza");
+//                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -143,7 +129,7 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String pastaId=getProdCatId("Deals");
-                Intent intent=new Intent(MenuActivity.this,DealsActivity.class);
+                Intent intent=new Intent(MenuActivity.this, DealsActivity.class);
                 Bundle bundle=new Bundle();
                 bundle.putString("catId",pastaId);
                 bundle.putString("subCatId","0");

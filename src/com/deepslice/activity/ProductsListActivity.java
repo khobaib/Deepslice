@@ -160,6 +160,7 @@ public class ProductsListActivity extends Activity{
             public void onClick(View v) {
 
                 Intent intent=new Intent(ProductsListActivity.this,MenuActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
             }
@@ -233,7 +234,9 @@ public class ProductsListActivity extends Activity{
             updateResultsInUi();        
         }    
     };
-    String serverResponse;
+    
+    
+//    String serverResponse;
     protected void updateTopingSaucesData(final String prodId) {
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(ProductsListActivity.this);
@@ -397,7 +400,6 @@ public class ProductsListActivity extends Activity{
                 e.printStackTrace();
             }
         }
-
     } 
 
     private void updateResultsInUi() { 

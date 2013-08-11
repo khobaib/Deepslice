@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -15,6 +16,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -47,9 +49,11 @@ import com.deepslice.model.CouponData;
 import com.deepslice.model.Coupons;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.ProdAndSubCategory;
+import com.deepslice.model.ServerResponse;
 import com.deepslice.model.ToppingPrices;
 import com.deepslice.model.ToppingSizes;
 import com.deepslice.model.ToppingsAndSauces;
+import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Constants;
@@ -84,6 +88,14 @@ public class DealGroup extends Activity {
     boolean syncedToppings =false;
     DealOrder dealOrderVo;
     DeepsliceApplication globalObject;
+    
+    List<ToppingPrices> toppingsPriceList;
+    List<ToppingSizes> toppingsSizeList;
+    List<ToppingsAndSauces> toppingsAndSaucesList;
+    
+    JsonParser jsonParser = new JsonParser();
+    
+    
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.deal_group_data);
@@ -136,26 +148,6 @@ public class DealGroup extends Activity {
                         gotoActivity(false);
                     }
                     //comment by rukshan
-
-//
-//					AppDao dao=null;
-//					try {
-//						dao=AppDao.getSingleton(getApplicationContext());
-//
-//						dao.openConnection();
-//
-//							dao.insertOrder(getOrderBean(eBean,prodType));
-//
-//							Toast.makeText(DealsListActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
-//
-//					} catch (Exception ex)
-//					{
-//						System.out.println(ex.getMessage());
-//					}finally{
-//						if(null!=dao)
-//							dao.closeConnection();
-//					}
-//					doResumeWork();
                 }
             }
         });
@@ -187,6 +179,7 @@ public class DealGroup extends Activity {
             public void onClick(View v) {
 
                 Intent intent=new Intent(DealGroup.this,MenuActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
             }
@@ -248,7 +241,7 @@ public class DealGroup extends Activity {
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
    //comment = new api implementation to get deals for coupon id
-        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetCouponDetail.aspx?CouponID="+couponID);
+        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"GetCouponDetail.aspx?CouponID="+couponID);
         Log.d("req......",Constants.ROOT_URL+"/GetCouponDetail.aspx?CouponID="+couponID);
         try {
             HttpResponse response = client.execute(httpGet);
@@ -345,30 +338,6 @@ public class DealGroup extends Activity {
 
                     }
                     dbInstance.close();
-                    
-//                    AppDao dao=null;
-//                    try {
-//                        dao=AppDao.getSingleton(getApplicationContext());
-//                        dao.openConnection();
-//                        for (int i=0;i<couponDetails.size();i++){
-//                            aBean=new CouponData();
-//                            aBean=couponDetails.get(i);
-//                            if (aBean.getCouponGroupID().equalsIgnoreCase(couponGroupID)){
-//                                pList.add(dao.getProductById(aBean.getProdID()));
-//                                couponData.add(aBean);
-//                            }
-//
-//                        }
-//
-//                    } catch (Exception ex)
-//                    {
-//                        System.out.println(ex.getMessage());
-//                    }finally{
-//                        if(null!=dao)
-//                            dao.closeConnection();
-//                    }
-
-
                 }
 
                 System.out.println(couponDetails.size());
@@ -376,8 +345,6 @@ public class DealGroup extends Activity {
 
 
             }
-
-            //////////////////////////////////////////////////////////
         } catch (ClientProtocolException e) {
             e.printStackTrace();
             delLocError=e.getMessage();
@@ -444,8 +411,7 @@ public class DealGroup extends Activity {
 
     @Override
     protected void onResume() {
-        // //////////////////////////////////////////////////////////////////////////////
-        
+        super.onResume();
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
         dbInstance.open();
         ArrayList<String> orderInfo = dbInstance.getOrderInfo();
@@ -490,66 +456,6 @@ public class DealGroup extends Activity {
             favCount.setVisibility(View.INVISIBLE);
         }
         dbInstance.close();
-        
-        
-//        AppDao dao = null;
-//        try {
-//            dao = AppDao.getSingleton(getApplicationContext());
-//            dao.openConnection();
-//           // dao.updateDealOrder();
-//            ArrayList<String> orderInfo = dao.getOrderInfo();
-//            ArrayList<DealOrder>dealOrderVos1= dao.getDealOrdersList();
-//            TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-//            double tota=0.00;
-//            int dealCount=0;
-//            if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
-//                dealCount=dealOrderVos1.size();
-//                for (int x=0;x<dealOrderVos1.size();x++){
-//                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice()))*(Integer.parseInt(dealOrderVos1.get(x).getQuantity()));
-//                }
-//            }
-//
-//            int orderInfoCount= 0;
-//            double  orderInfoTotal=0.0;
-//            if ((null != orderInfo && orderInfo.size() == 2) ) {
-//                orderInfoCount=Integer.parseInt(orderInfo.get(0));
-//                orderInfoTotal=Double.parseDouble(orderInfo.get(1));
-//            }
-//            int numPro=orderInfoCount+dealCount;
-//            double subTotal=orderInfoTotal+tota;
-//            DecimalFormat twoDForm = new DecimalFormat("#.##");
-//            subTotal= Double.valueOf(twoDForm.format(subTotal));
-//            if(numPro>0){
-//                itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
-//                itemsPrice.setVisibility(View.VISIBLE);
-//            }
-//
-//            else{
-//                itemsPrice.setVisibility(View.INVISIBLE);
-//
-//            }
-//
-//            TextView favCount = (TextView) findViewById(R.id.favCount);
-//            String fvs=dao.getFavCount();
-//            if (null != fvs && !fvs.equals("0")) {
-//                favCount.setText(fvs);
-//                favCount.setVisibility(View.VISIBLE);
-//            }
-//            else{
-//                favCount.setVisibility(View.INVISIBLE);
-//            }
-//
-//
-//
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//        } finally {
-//            if (null != dao)
-//                dao.closeConnection();
-//        }
-        // ///////////////////////////////////////////////////////////////////////
-
-        super.onResume();
     }
 
 
@@ -682,25 +588,6 @@ public class DealGroup extends Activity {
         }
     }
     private void gotoActivity(boolean isPizza) {
-//        boolean isAdd= AppSharedPreference.getBoolean(DealGroup.this,couponGroupID);
-//        if(isAdd)
-//        {
-//            AppDao dao=null;
-//            try {
-//                dao=AppDao.getSingleton(getApplicationContext());
-//                dao.openConnection();
-//                dao.deleteDealOrderRecByGroupID(couponGroupID);
-//                AppSharedPreference.putBoolean(DealGroup.this, couponGroupID, false);
-//
-//            } catch (Exception ex)
-//            {
-//                System.out.println(ex.getMessage());
-//            }finally{
-//                if(null!=dao)
-//                    dao.closeConnection();
-//            }
-//        }
-//
         dealOrderVo=new DealOrder();
         dealOrderVo.setCouponID(couponsVo.getCouponID());
         dealOrderVo.setCouponTypeID(couponsVo.getCouponTypeID());
@@ -716,15 +603,6 @@ public class DealGroup extends Activity {
         if(isPizza){
         	updateTopingSaucesData(dealOrderVo.getProdID());
         	Log.d("????????", "Deal's product id in updateTopingSaucesData = " + dealOrderVo.getProdID());
-//            globalObject.setDealOrderVo(dealOrderVo);
-//            Intent intent=new Intent(DealGroup.this,PizzaDetailsActivity.class);
-//            Bundle bundle=new Bundle();
-//            bundle.putSerializable("selectedProduct",selectedBean);
-//            bundle.putString("prdID",prdId);
-//            bundle.putBoolean("isDeal",true);
-//            intent.putExtras(bundle);
-//            startActivity(intent);
-//            finish();
         }else {
             addDeals(dealOrderVo);
         }
@@ -755,22 +633,6 @@ public class DealGroup extends Activity {
     
     protected void updateTopingSaucesData(final String prodId) {
 
-
-//        AppDao dao=null;
-//        try {
-//            dao=AppDao.getSingleton(getApplicationContext());
-//            dao.openConnection();
-//
-//            syncedPrices=dao.recordExistsToppingPrices();
-//            syncedToppings=dao.recordExistsToppings(prodId);
-//
-//        } catch (Exception ex)
-//        {
-//            System.out.println(ex.getMessage());
-//        }finally{
-//            if(null!=dao)
-//                dao.closeConnection();
-//        }
         
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
         dbInstance.open();
@@ -792,12 +654,12 @@ public class DealGroup extends Activity {
                     try {
 
                         if(syncedToppings==false)
-                            populateToppingsAndSauces(prodId);
+                            GetPizzaToppingAndSauces(prodId);
 
                         if(syncedPrices==false)
                         {
-                            populateToppingSizes();
-                            populateToppingPrices();
+                            GetPizzaToppingsSizes();
+                            GetPizzaToppingsPrices();
                         }
 
                     } catch (Exception ex)
@@ -813,135 +675,134 @@ public class DealGroup extends Activity {
         }
 
     }
+    
+    
+    
+    private void GetPizzaToppingAndSauces(String prodId){
+
+        String url = Constants.ROOT_URL + "GetPizzaToppingsAndSauces.aspx?prodID=" + prodId;
+        long dataRetrieveStartTime = System.currentTimeMillis();
+        ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+
+        long dataRetrieveEndTime = System.currentTimeMillis();
+        Log.d("TIME", "time to retrieve topping-sauce data for prodId " + prodId + " = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");
+
+
+        if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
+            JSONObject jsonObj = response.getjObj();
+            try {
+                JSONObject responseObj = jsonObj.getJSONObject("Response");
+                int status = responseObj.getInt("Status");
+                JSONArray data = responseObj.getJSONArray("Data");
+                JSONObject errors = responseObj.getJSONObject("Errors");
+
+                toppingsAndSaucesList = ToppingsAndSauces.parseToppingsAndSauces(data);
+
+                long productParseEndTime = System.currentTimeMillis();
+                Log.d("TIME", "time to parse topping-sauce list of item " + toppingsAndSaucesList.size() + " = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
+
+                long dbInsertionStart = System.currentTimeMillis();
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
+                dbInstance.open();
+                dbInstance.insertToppingSauces(toppingsAndSaucesList);
+                dbInstance.close();
+                long dbInsertionEnd = System.currentTimeMillis();
+                Log.d("TIME", "time to insert topping-sauce data " + " = " + (dbInsertionEnd - dbInsertionStart)/1000 + " second");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } 
+    }
+
+
+    private void GetPizzaToppingsSizes(){
+
+        String url = Constants.ROOT_URL + "GetToppingSizes.aspx";
+        long dataRetrieveStartTime = System.currentTimeMillis();
+        ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+
+        long dataRetrieveEndTime = System.currentTimeMillis();
+        Log.d("TIME", "time to retrieve topping SIZE data = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");
+
+
+        if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
+            JSONObject jsonObj = response.getjObj();
+            try {
+                JSONObject responseObj = jsonObj.getJSONObject("Response");
+                int status = responseObj.getInt("Status");
+                JSONArray data = responseObj.getJSONArray("Data");
+                JSONObject errors = responseObj.getJSONObject("Errors");
+
+                toppingsSizeList = ToppingSizes.parseToppingsSizes(data);
+
+                long productParseEndTime = System.currentTimeMillis();
+                Log.d("TIME", "time to parse topping Size list of item " + toppingsSizeList.size() + " = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
+                long dbInsertionStart = System.currentTimeMillis();
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
+                dbInstance.open();
+                dbInstance.insertToppingSizes(toppingsSizeList);
+                dbInstance.close();
+                long dbInsertionEnd = System.currentTimeMillis();
+                Log.d("TIME", "time to insert topping-size data " + " = " + (dbInsertionEnd - dbInsertionStart)/1000 + " second");
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    } 
+
+
+    private void GetPizzaToppingsPrices(){
+        String url = Constants.ROOT_URL + "GetToppingPrices.aspx";
+        long dataRetrieveStartTime = System.currentTimeMillis();
+        ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+
+        long dataRetrieveEndTime = System.currentTimeMillis();
+        Log.d("TIME", "time to retrieve topping PRICE data = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");
+
+
+        if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
+            JSONObject jsonObj = response.getjObj();
+            try {
+                JSONObject responseObj = jsonObj.getJSONObject("Response");
+                int status = responseObj.getInt("Status");
+                JSONArray data = responseObj.getJSONArray("Data");
+                JSONObject errors = responseObj.getJSONObject("Errors");
+
+                toppingsPriceList = ToppingPrices.parseToppingsPriceList(data);
+
+                long productParseEndTime = System.currentTimeMillis();
+                Log.d("TIME", "time to parse topping PRICE list of item " + toppingsPriceList.size() + " = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
+                long dbInsertionStart = System.currentTimeMillis();
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
+                dbInstance.open();
+                syncedPrices = dbInstance.insertToppingPrices(toppingsPriceList);
+                dbInstance.close();
+                long dbInsertionEnd = System.currentTimeMillis();
+                Log.d("TIME", "time to insert topping-price data " + " = " + (dbInsertionEnd - dbInsertionStart)/1000 + " second");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    } 
+    
+    
 
     private void updateResults() {
     	
         globalObject.setDealOrderVo(dealOrderVo);
         Intent intent=new Intent(DealGroup.this,PizzaDetailsActivity.class);
         Bundle bundle=new Bundle();
-        bundle.putSerializable("selectedProduct",selectedBean);
+        bundle.putSerializable("selectedProduct", selectedBean);
         bundle.putString("prdID",prdId);
         bundle.putBoolean("isDeal",true);
         intent.putExtras(bundle);
         startActivity(intent);
         finish();
-
-//        if(productName.equalsIgnoreCase("Pizza")){
-//            //AppSharedPreference.putBoolean(DealGroup.this, couponGroupID, true);
-//            Intent i=new Intent(DealGroup.this, PizzaDetailsActivity.class);
-//            Bundle bundle=new Bundle();
-//            bundle.putSerializable("selectedProduct",selectedBean);
-//            bundle.putSerializable("dealData",dealOrderVo);
-//            bundle.putBoolean("isDeal", true);
-//            bundle.putStringArrayList("couponsId", couponsId);
-//            bundle.putString("couponGroupID",couponGroupID);
-//            bundle.putString("couponID",couponID);
-//            bundle.putString("productId",productId);
-//            i.putExtras(bundle);
-//            startActivityForResult(i, 112233);
-//            finish();
-//        }else if (productName.equalsIgnoreCase("Drinks"))
-//        {
-//            //AppSharedPreference.putBoolean(DealGroup.this, couponGroupID, true);
-//            Intent i=new Intent(DealGroup.this, FavAddActivity.class);
-//            Bundle bundle=new Bundle();
-//            bundle.putString("itemName",selectedBean.getDisplayName());
-//            bundle.putSerializable("prodBean",selectedBean);
-//            bundle.putSerializable("dealData",dealOrderVo);
-//            bundle.putBoolean("isDeal",true);
-//            bundle.putStringArrayList("couponsId",couponsId);
-//            bundle.putString("couponGroupID",couponGroupID);
-//            bundle.putString("couponID",couponID);
-//            bundle.putString("productId",productId);
-//            i.putExtras(bundle);
-//            startActivityForResult(i, 112233);
-//            finish();
-//        }else if(productName.equalsIgnoreCase("Breads")) {
-//            Intent i=new Intent(DealGroup.this, FavAddActivity.class);
-//            Bundle bundle=new Bundle();
-//            bundle.putString("itemName",selectedBean.getDisplayName());
-//            bundle.putSerializable("prodBean",selectedBean);
-//            bundle.putSerializable("dealData",dealOrderVo);
-//            bundle.putBoolean("isDeal",true);
-//            bundle.putStringArrayList("couponsId",couponsId);
-//            bundle.putString("couponGroupID",couponGroupID);
-//            bundle.putString("couponID",couponID);
-//            bundle.putString("productId",productId);
-//            i.putExtras(bundle);
-//            startActivityForResult(i, 112233);
-//            finish();
-//            //setDeals(dealOrderVo);
-//        }
-
     }
-	
-//	protected void updateTopingSaucesData(final String prodId) {
-//		
-//		
-//		AppDao dao=null;
-//		try {
-//			dao=AppDao.getSingleton(getApplicationContext());
-//			dao.openConnection();
-//			
-//			syncedPrices=dao.recordExistsToppingPrices();
-//			syncedToppings=dao.recordExistsToppings(prodId);
-//	
-////			dao.insertOrUpdateList(questionList);
-//			
-//		} catch (Exception ex)
-//		{
-//			System.out.println(ex.getMessage());
-//		}finally{
-//			if(null!=dao)
-//				dao.closeConnection();
-//		}
-//
-//	if(syncedPrices && syncedToppings)
-//	{
-//	updateResultsInUi();
-//	}
-//	else
-//	{
-//		pd = ProgressDialog.show(DealGroup.this, "", "Please wait...", true, false);
-//
-//		Thread t = new Thread() {            
-//			public void run() {                
-//			
-//				try {
-//					
-//					if(syncedToppings==false)
-//						populateToppingsAndSauces(prodId);
-//					
-//					if(syncedPrices==false)
-//					{
-//						populateToppingSizes();
-//						populateToppingPrices();
-//					}
-//					
-//				} catch (Exception ex)
-//				{
-//					System.out.println(ex.getMessage());
-//				}
-//				mHandler.post(mUpdateResults);            
-//			}
-//
-//			
-//		};        
-//		t.start();
-//	}
-//		
-//	}
-	// END
-	
-    
-    
-    
-    
-    
-    
-    
-    
-    
+   
 
     public void addDeals(DealOrder dealOrderVo){
         
@@ -955,40 +816,13 @@ public class DealGroup extends Activity {
         dbInstance.insertDealOrder(dealOrderVo);
         if(dbInstance.getDealOrderCount(dealOrderVo.getCouponID())==AppSharedPreference.getInteger(DealGroup.this,"numDeals",0)){
             AppSharedPreference.putBoolean(DealGroup.this,dealOrderVo.getCouponID(),true);
-            Toast.makeText(DealGroup.this, "complete your deal by tapping GET A DEAL", Toast.LENGTH_LONG).show();
+//            Toast.makeText(DealGroup.this, "complete your deal by tapping GET A DEAL", Toast.LENGTH_LONG).show();
         }else {
             Toast.makeText(DealGroup.this, "Select product from deal groups", Toast.LENGTH_LONG).show();
         }
         dbInstance.close();
         finish();
-        
-        
-//        AppDao dao=null;
-//        try {
-//            dao=AppDao.getSingleton(getApplicationContext());
-//            dao.openConnection();
-//
-//                AppSharedPreference.putBoolean(DealGroup.this, couponGroupID, true);
-//                if(dao.isDealProductAvailable(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID())){
-//                    boolean b= dao.deleteDuplicateDealOrderRec(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID());
-//                    dao.resetDealOrder(dealOrderVo.getCouponID());
-//                }
-//                dao.insertDealOrder(dealOrderVo);
-//                if(dao.getDealOrderCount(dealOrderVo.getCouponID())==AppSharedPreference.getInteger(DealGroup.this,"numDeals",0)){
-//                    AppSharedPreference.putBoolean(DealGroup.this,dealOrderVo.getCouponID(),true);
-//                    Toast.makeText(DealGroup.this, "complete your deal by tapping GET A DEAL", Toast.LENGTH_LONG).show();
-//                }else {
-//                    Toast.makeText(DealGroup.this, "Select product from deal groups", Toast.LENGTH_LONG).show();
-//                }
-//                finish();
-//
-//        } catch (Exception ex)
-//        {
-//            System.out.println(ex.getMessage());
-//        }finally{
-//            if(null!=dao)
-//                dao.closeConnection();
-//        }
+
     }
 
     public void setDeals(DealOrder dealOrderVo){
@@ -1024,41 +858,6 @@ public class DealGroup extends Activity {
             AppSharedPreference.clearDealCoupon(DealGroup.this,couponsId);
             dbInstance.close();
             finish();
-
-            
-            
-//            AppDao dao=null;
-//            try {
-//                dao=AppDao.getSingleton(getApplicationContext());
-//                dao.openConnection();
-//                dao.insertDealOrder(dealOrderVo);
-//                Toast.makeText(DealGroup.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
-//                dao.updateDealOrder();
-//                ArrayList<DealOrder>dealOrderVos1= dao.getDealOrdersList();
-//                int i=dealOrderVos1.size();
-//                double tota=0.00;
-//                for (int x=0;x<dealOrderVos1.size();x++){
-//                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-//                }
-//                TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-//                if (null != dealOrderVos1 && dealOrderVos1.size() > 0) {
-//                    itemsPrice.setText(i+" Items "+"\n$" + tota);
-//                    itemsPrice.setVisibility(View.VISIBLE);
-//                }
-//                else{
-//                    itemsPrice.setVisibility(View.INVISIBLE);
-//
-//                }
-//                AppSharedPreference.clearDealCoupon(DealGroup.this,couponsId);
-//                finish();
-//
-//            } catch (Exception ex)
-//            {
-//                System.out.println(ex.getMessage());
-//            }finally{
-//                if(null!=dao)
-//                    dao.closeConnection();
-//            }
         }else {
             DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
             dbInstance.open();
@@ -1067,338 +866,12 @@ public class DealGroup extends Activity {
             dbInstance.close();
             finish();
 
-            
-            
-//            AppDao dao=null;
-//            try {
-//                dao=AppDao.getSingleton(getApplicationContext());
-//                dao.openConnection();
-//                dao.insertDealOrder(dealOrderVo);
-//                Toast.makeText(DealGroup.this, "Select product from deal groups", Toast.LENGTH_LONG).show();
-//                finish();
-//
-//            } catch (Exception ex)
-//            {
-//                System.out.println(ex.getMessage());
-//            }finally{
-//                if(null!=dao)
-//                    dao.closeConnection();
-//            }
-        }
-    }
-
-    public void populateToppingsAndSauces(String prodId) {
-
-        StringBuilder builder = new StringBuilder();
-        HttpClient client = new DefaultHttpClient();
-        Log.d("--------",prodId);
-        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/GetPizzaToppingsAndSauces.aspx?prodID="+prodId);
-        try {
-            HttpResponse response = client.execute(httpGet);
-            StatusLine statusLine = response.getStatusLine();
-            int statusCode = statusLine.getStatusCode();
-            if (statusCode == 200) {
-                HttpEntity entity = response.getEntity();
-                InputStream content = entity.getContent();
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(content));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    builder.append(line);
-                }
-            } else {
-                System.out.println("Failed to download file");
-            }
-
-
-            serverResponse1 = builder.toString();
-
-            //////////////////////////////////////////////////////////
-            String errorMessage="";
-            GsonBuilder gsonb = new GsonBuilder();
-            Gson gson = gsonb.create();
-            JSONArray results = new JSONArray(serverResponse1);
-            JSONObject respOuter = results.getJSONObject(0);
-            JSONObject resp = respOuter.getJSONObject("Response");
-            String status = resp.getString("Status");
-            JSONArray resultsArray =null;
-            Object data= resp.get("Data");
-            boolean dataExists=false;
-            if(data instanceof JSONArray)
-            {
-                resultsArray =(JSONArray)data;
-                dataExists=true;
-            }
-
-            JSONObject errors = resp.getJSONObject("Errors");
-
-            boolean hasError=errors.has("Message");
-            if(hasError)
-            {
-                errorMessage=errors.getString("Message");
-                System.out.println("Error:"+errorMessage);
-            }
-
-            ArrayList<ToppingsAndSauces> pCatList = new ArrayList<ToppingsAndSauces>();
-
-            if(dataExists==true)
-            {
-                ToppingsAndSauces aBean;
-                for(int i=0; i<resultsArray.length(); i++){
-                    JSONObject jsResult = resultsArray.getJSONObject(i);
-                    if(jsResult!=null){
-                        String jsonString = jsResult.toString();
-                        aBean=new ToppingsAndSauces();
-                        aBean=gson.fromJson(jsonString, ToppingsAndSauces.class);
-                        //                System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
-                        pCatList.add(aBean);
-
-                    }
-                }
-            }
-
-//            AppDao dao=null;
-//            try {
-//                dao=AppDao.getSingleton(getApplicationContext());
-//                dao.openConnection();
-//
-//                dao.insertToppingSauces(pCatList);
-//
-//            } catch (Exception ex)
-//            {
-//                System.out.println(ex.getMessage());
-//            }finally{
-//                if(null!=dao)
-//                    dao.closeConnection();
-//            }
-            
-            DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
-            dbInstance.open();
-            dbInstance.insertToppingSauces(pCatList);
-            dbInstance.close();
-
-            System.out.println("Got Toppings And Sauces: "+pCatList.size());
-            //////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
-            //////////////////////////////////////////////////////////
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }catch (Exception e) {
-
-            e.printStackTrace();
-        }
-    }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public void populateToppingSizes() {
-
-        StringBuilder builder = new StringBuilder();
-        HttpClient client = new DefaultHttpClient();
-
-        HttpGet httpGet = new HttpGet(Constants.ROOT_URL + "/GetToppingSizes.aspx");
-        try {
-            HttpResponse response = client.execute(httpGet);
-            StatusLine statusLine = response.getStatusLine();
-            int statusCode = statusLine.getStatusCode();
-            if (statusCode == 200) {
-                HttpEntity entity = response.getEntity();
-                InputStream content = entity.getContent();
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(content));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    builder.append(line);
-                }
-            } else {
-                System.out.println("Failed to download file");
-            }
-
-            serverResponse = builder.toString();
-
-            // ////////////////////////////////////////////////////////
-            String errorMessage = "";
-            GsonBuilder gsonb = new GsonBuilder();
-            Gson gson = gsonb.create();
-            JSONArray results = new JSONArray(serverResponse);
-            JSONObject respOuter = results.getJSONObject(0);
-            JSONObject resp = respOuter.getJSONObject("Response");
-            String status = resp.getString("Status");
-            JSONArray resultsArray = null;
-            Object data = resp.get("Data");
-            boolean dataExists = false;
-            if (data instanceof JSONArray) {
-                resultsArray = (JSONArray) data;
-                dataExists = true;
-            }
-
-            JSONObject errors = resp.getJSONObject("Errors");
-
-            boolean hasError = errors.has("Message");
-            if (hasError) {
-                errorMessage = errors.getString("Message");
-                System.out.println("Error:" + errorMessage);
-            }
-
-            ArrayList<ToppingSizes> pCatList = new ArrayList<ToppingSizes>();
-
-            if (dataExists == true) {
-                ToppingSizes aBean;
-                for (int i = 0; i < resultsArray.length(); i++) {
-                    JSONObject jsResult = resultsArray.getJSONObject(i);
-                    if (jsResult != null) {
-                        String jsonString = jsResult.toString();
-                        aBean = new ToppingSizes();
-                        aBean = gson
-                                .fromJson(jsonString, ToppingSizes.class);
-                        // System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
-                        pCatList.add(aBean);
-                    }
-                }
-            }
-
-//			AppProperties.subCatList = pCatList;
-            
-            
-            
-//            AppDao dao=null;
-//            try {
-//                dao=AppDao.getSingleton(getApplicationContext());
-//                dao.openConnection();
-//
-//                dao.insertToppingSizes(pCatList);
-//
-//            } catch (Exception ex)
-//            {
-//                System.out.println(ex.getMessage());
-//            }finally{
-//                if(null!=dao)
-//                    dao.closeConnection();
-//            }
-            DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
-            dbInstance.open();
-            dbInstance.insertToppingSizes(pCatList);
-            dbInstance.close();
-
-            System.out.println("Got Topping Sizes : " + pCatList.size());
-            // ////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
-            // ////////////////////////////////////////////////////////
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
-    }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public void populateToppingPrices() {
-
-        StringBuilder builder = new StringBuilder();
-        HttpClient client = new DefaultHttpClient();
-
-        HttpGet httpGet = new HttpGet(Constants.ROOT_URL + "/GetToppingPrices.aspx");
-        try {
-            HttpResponse response = client.execute(httpGet);
-            StatusLine statusLine = response.getStatusLine();
-            int statusCode = statusLine.getStatusCode();
-            if (statusCode == 200) {
-                HttpEntity entity = response.getEntity();
-                InputStream content = entity.getContent();
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(content));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    builder.append(line);
-                }
-            } else {
-                System.out.println("Failed to download file");
-            }
-
-            serverResponse = builder.toString();
-
-            // ////////////////////////////////////////////////////////
-            String errorMessage = "";
-            GsonBuilder gsonb = new GsonBuilder();
-            Gson gson = gsonb.create();
-            JSONArray results = new JSONArray(serverResponse);
-            JSONObject respOuter = results.getJSONObject(0);
-            JSONObject resp = respOuter.getJSONObject("Response");
-            String status = resp.getString("Status");
-            JSONArray resultsArray = null;
-            Object data = resp.get("Data");
-            boolean dataExists = false;
-            if (data instanceof JSONArray) {
-                resultsArray = (JSONArray) data;
-                dataExists = true;
-            }
-
-            JSONObject errors = resp.getJSONObject("Errors");
-
-            boolean hasError = errors.has("Message");
-            if (hasError) {
-                errorMessage = errors.getString("Message");
-                System.out.println("Error:" + errorMessage);
-            }
-
-            ArrayList<ToppingPrices> pCatList = new ArrayList<ToppingPrices>();
-
-            if (dataExists == true) {
-                ToppingPrices aBean;
-                for (int i = 0; i < resultsArray.length(); i++) {
-                    JSONObject jsResult = resultsArray.getJSONObject(i);
-                    if (jsResult != null) {
-                        String jsonString = jsResult.toString();
-                        aBean = new ToppingPrices();
-                        aBean = gson
-                                .fromJson(jsonString, ToppingPrices.class);
-                        // System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
-                        pCatList.add(aBean);
-                    }
-                }
-            }
-
-//			AppProperties.allProductsList = pCatList;
-            
-            DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealGroup.this);
-            dbInstance.open();
-            syncedPrices = dbInstance.insertToppingPrices(pCatList);
-            dbInstance.close();
-            
-            
-//            AppDao dao=null;
-//            try {
-//                dao=AppDao.getSingleton(getApplicationContext());
-//                dao.openConnection();
-//
-//                dao.insertToppingPrices(pCatList);
-//
-//            } catch (Exception ex)
-//            {
-//                System.out.println(ex.getMessage());
-//            }finally{
-//                if(null!=dao)
-//                    dao.closeConnection();
-//            }
-
-            System.out.println("Got product catetgories: " + pCatList.size());
-            // ////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
-            // ////////////////////////////////////////////////////////
-        } catch (ClientProtocolException e) {
-
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-
-            e.printStackTrace();
         }
     }
 
 
-    String serverResponse1;
+
+
+//    String serverResponse1;
 
 }

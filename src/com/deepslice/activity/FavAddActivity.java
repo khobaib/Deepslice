@@ -215,6 +215,7 @@ public class FavAddActivity extends Activity {
             public void onClick(View v) {
 
                 Intent intent=new Intent(FavAddActivity.this,MenuActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
             }

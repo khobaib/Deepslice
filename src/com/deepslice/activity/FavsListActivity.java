@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.deepslice.cache.ImageLoader;
@@ -55,20 +56,6 @@ public class FavsListActivity extends Activity{
         dbInstance.open();
         allProductsList=dbInstance.getFavsList();
         dbInstance.close();
-        //	      AppDao dao=null;
-        //				try {
-        //					dao=AppDao.getSingleton(getApplicationContext());
-        //					dao.openConnection();
-        //				
-        //					allProductsList=dao.getFavsList();
-        //					
-        //				} catch (Exception ex)
-        //				{
-        //					System.out.println(ex.getMessage());
-        //				}finally{
-        //					if(null!=dao)
-        //						dao.closeConnection();
-        //				}
 
         listview = (ListView) findViewById(R.id.listView1);				
         myAdapter = new MyListAdapterFav(this,R.layout.line_item_product, allProductsList);
@@ -111,6 +98,7 @@ public class FavsListActivity extends Activity{
             public void onClick(View v) {
 
                 Intent intent=new Intent(FavsListActivity.this,MenuActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
             }
@@ -126,10 +114,12 @@ public class FavsListActivity extends Activity{
 
             }
         });
-        Button buttonCancel=(Button)findViewById(R.id.buttonCancel);
-        buttonCancel.setVisibility(View.INVISIBLE);
-        Button buttonGetADeal=(Button)findViewById(R.id.buttonGetADeal);
-        buttonGetADeal.setVisibility(View.INVISIBLE);
+//        Button buttonCancel=(Button)findViewById(R.id.buttonCancel);
+//        buttonCancel.setVisibility(View.INVISIBLE);
+        RelativeLayout rlGetDeal=(RelativeLayout)findViewById(R.id.getDeal);
+        rlGetDeal.setVisibility(View.INVISIBLE);
+        //        Button buttonGetADeal=(Button)findViewById(R.id.buttonGetADeal);
+        //        buttonGetADeal.setVisibility(View.INVISIBLE);
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,42 +225,6 @@ public class FavsListActivity extends Activity{
             favCount.setVisibility(View.INVISIBLE);
         }
         dbInstance.close();
-        
-//        AppDao dao = null;
-//        try {
-//            dao = AppDao.getSingleton(getApplicationContext());
-//            dao.openConnection();
-//
-//            ArrayList<String> orderInfo = dao.getOrderInfo();
-//
-//            TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-//            if (null != orderInfo && orderInfo.size() == 2) {
-//                itemsPrice.setText(orderInfo.get(0)+" Items "+"\n$" + orderInfo.get(1));
-//                itemsPrice.setVisibility(View.VISIBLE);
-//            }
-//            else{
-//                itemsPrice.setVisibility(View.INVISIBLE);
-//
-//            }
-//
-//            TextView favCount = (TextView) findViewById(R.id.favCount);
-//            String fvs=dao.getFavCount();
-//            if (null != fvs && !fvs.equals("0")) {
-//                favCount.setText(fvs);
-//                favCount.setVisibility(View.VISIBLE);
-//            }
-//            else{
-//                favCount.setVisibility(View.INVISIBLE);
-//            }
-//
-//
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//        } finally {
-//            if (null != dao)
-//                dao.closeConnection();
-//        }
-        // ///////////////////////////////////////////////////////////////////////
 
         super.onResume();
     }

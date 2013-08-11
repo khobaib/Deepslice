@@ -1,5 +1,6 @@
 package com.deepslice.activity;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,13 +8,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.deepslice.adapter.PizzaTypeMenuAdapter;
+import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.CreateOwnPizzaData;
+import com.deepslice.model.DealOrder;
 import com.deepslice.utilities.DeepsliceApplication;
 
 public class CreateYourOwnPizzaActivity extends Activity {
@@ -41,6 +48,43 @@ public class CreateYourOwnPizzaActivity extends Activity {
 
         appInstance = (DeepsliceApplication) getApplication();
         pizzaArray = appInstance.getCreatePizzaDataList();
+        
+        Button openFavs=(Button)findViewById(R.id.favs);
+        openFavs.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent=new Intent(CreateYourOwnPizzaActivity.this, FavsListActivity.class);
+                startActivity(intent);
+
+            }
+        });        
+        
+        
+        Button mainMenu=(Button)findViewById(R.id.mainMenu);
+        mainMenu.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent=new Intent(CreateYourOwnPizzaActivity.this, MenuActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
+            }
+        });
+        
+        LinearLayout myOrder=(LinearLayout)findViewById(R.id.cartDummy);
+        myOrder.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent=new Intent(CreateYourOwnPizzaActivity.this, MyOrderActivity.class);
+                startActivity(intent);
+
+            }
+        });
+        
+        
 
         int numPizza = pizzaArray.size();
         crustSpecificPizzaArray = new ArrayList<CreateOwnPizzaData>();
@@ -69,6 +113,64 @@ public class CreateYourOwnPizzaActivity extends Activity {
         pizzaTypeMenuAdapter = new PizzaTypeMenuAdapter(CreateYourOwnPizzaActivity.this, crustSpecificPizzaArray);
         pizzaTypeList.setAdapter(pizzaTypeMenuAdapter);
 
+
+    }
+    
+    
+    @Override
+    protected void onResume() {
+
+        doResumeWork();
+
+        super.onResume();
+    }
+    private void doResumeWork() {
+        // //////////////////////////////////////////////////////////////////////////////
+        // here we calculate total pricing of already ordered item(Deal+normal order)
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaActivity.this);
+        dbInstance.open();
+        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
+        ArrayList<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList();
+        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
+        double tota=0.00;
+        int dealCount=0;
+        if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
+            dealCount=dealOrderVos1.size();
+            for (int x=0;x<dealOrderVos1.size();x++){
+                tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice()))*(Integer.parseInt(dealOrderVos1.get(x).getQuantity()));
+            }
+        }
+
+        int orderInfoCount= 0;
+        double  orderInfoTotal=0.0;
+        if ((null != orderInfo && orderInfo.size() == 2) ) {
+            orderInfoCount=Integer.parseInt(orderInfo.get(0));
+            orderInfoTotal=Double.parseDouble(orderInfo.get(1));
+        }
+        int numPro=orderInfoCount+dealCount;
+        double subTotal=orderInfoTotal+tota;
+        DecimalFormat twoDForm = new DecimalFormat("#.##");
+        subTotal= Double.valueOf(twoDForm.format(subTotal));
+        if(numPro>0){
+            itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
+            itemsPrice.setVisibility(View.VISIBLE);
+        }
+
+        else{
+            itemsPrice.setVisibility(View.INVISIBLE);
+
+        }
+
+        TextView favCount = (TextView) findViewById(R.id.favCount);
+        String fvs=dbInstance.getFavCount();
+        if (null != fvs && !fvs.equals("0")) {
+            favCount.setText(fvs);
+            favCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            favCount.setVisibility(View.INVISIBLE);
+        }
+        dbInstance.close();       
 
     }
 

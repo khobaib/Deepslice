@@ -187,34 +187,42 @@ public class PizzaDetailsActivity extends Activity{
             }
         });
 
+        //                RelativeLayout rlCrusts = (RelativeLayout) findViewById(R.id.rl_crust);
+        //        if(isHalf && AppProperties.isFirstPizzaChosen){
+        //                        rlCrusts.setVisibility(View.GONE);
+        //        }
+        //        else{
         LinearLayout ltCrusts= (LinearLayout)findViewById(R.id.ltCrusts);
         final String pId=b.getString("prdID");
         ltCrusts.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if(isDeal){
-                    Intent i=new Intent(PizzaDetailsActivity.this,PizzaCrustActivity.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putBoolean("isDeal", true);
-                    bundle.putString("prdID",pId);
-                    bundle.putString("catId", crustCatId);
-                    bundle.putString("subCatId", crustSubCatId);
-                    bundle.putSerializable("selectedProduct",selectedBean);
-                    i.putExtras(bundle);
-                    startActivityForResult(i, SELECT_CRUST);
-                } else {
-                    Intent i=new Intent(PizzaDetailsActivity.this,PizzaCrustActivity.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putString("catId", crustCatId);
-                    bundle.putString("subCatId", crustSubCatId);
-                    bundle.putSerializable("selectedProduct",selectedBean);
-                    i.putExtras(bundle);
-                    startActivityForResult(i, SELECT_CRUST);
+                if(!(isHalf && AppProperties.isFirstPizzaChosen)){
+                    if(isDeal){
+                        Intent i=new Intent(PizzaDetailsActivity.this,PizzaCrustActivity.class);
+                        Bundle bundle=new Bundle();
+                        bundle.putBoolean("isDeal", true);
+                        bundle.putString("prdID",pId);
+                        bundle.putString("catId", crustCatId);
+                        bundle.putString("subCatId", crustSubCatId);
+                        bundle.putSerializable("selectedProduct",selectedBean);
+                        i.putExtras(bundle);
+                        startActivityForResult(i, SELECT_CRUST);
+                    } else {
+                        Intent i=new Intent(PizzaDetailsActivity.this,PizzaCrustActivity.class);
+                        Bundle bundle=new Bundle();
+                        bundle.putString("catId", crustCatId);
+                        bundle.putString("subCatId", crustSubCatId);
+                        bundle.putSerializable("selectedProduct",selectedBean);
+                        i.putExtras(bundle);
+                        startActivityForResult(i, SELECT_CRUST);
+                    }
                 }
 
             }
         });
+        //        }
 
         spinnerCat=(Spinner)findViewById(R.id.spinner1);
         populateCategoryData();
@@ -262,6 +270,7 @@ public class PizzaDetailsActivity extends Activity{
             public void onClick(View v) {
 
                 Intent intent=new Intent(PizzaDetailsActivity.this,MenuActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
             }
@@ -284,33 +293,6 @@ public class PizzaDetailsActivity extends Activity{
                     Toast.makeText(PizzaDetailsActivity.this, "Successfully added to Favourites", Toast.LENGTH_LONG).show();
                 }
                 dbInstance.close();
-
-
-
-                //                AppDao dao=null;
-                //                try {
-                //                    dao=AppDao.getSingleton(getApplicationContext());
-                //                    dao.openConnection();
-                //                    boolean favAdded=dao.favAlreadyAdded(selectedBean.getProdID(),selectedBean.getDisplayName());
-                //                    if(favAdded)
-                //                    {
-                //                        Toast.makeText(PizzaDetailsActivity.this, "Already added to Favourites", Toast.LENGTH_LONG).show();
-                //                    }
-                //                    else
-                //                    {
-                //                        dao.insertFav(getFavBean());
-                //                        doResumeWork();
-                //                        Toast.makeText(PizzaDetailsActivity.this, "Successfully added to Favourites", Toast.LENGTH_LONG).show();
-                //                    }
-                //
-                //
-                //                } catch (Exception ex)
-                //                {
-                //                    System.out.println(ex.getMessage());
-                //                }finally{
-                //                    if(null!=dao)
-                //                        dao.closeConnection();
-                //                }
             }
 
 
@@ -338,57 +320,32 @@ public class PizzaDetailsActivity extends Activity{
         });
 
         //populating default crust
-        AppDao dao=null;
         if(!isDeal){
 
-            //            try {
-
-            DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaDetailsActivity.this);
-            dbInstance.open();
-            ArrayList<ProductSubCategory> crustList=new ArrayList<ProductSubCategory>();
-            if (isDeal){
-                Products allProductsVo=dbInstance.getProductById(dealOrderVo.getProdID());
-                crustList = dbInstance.getPizzaCrusts(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
-            }else {
-                crustList = dbInstance.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
+            if(isHalf && AppProperties.isFirstPizzaChosen){
+                String halfCrust = appInstance.getHalfCrust();
+                selectedCrusts.setText(halfCrust);
             }
-            if(crustList != null && crustList.size()>0 ) {
-                ProductSubCategory crLocal = crustList.get(0);
-                crustName=crLocal.getSubCatDesc();
-                crustCatId=crLocal.getProdCatID();
-                crustSubCatId=crLocal.getSubCatID();
+            else{
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaDetailsActivity.this);
+                dbInstance.open();
+                ArrayList<ProductSubCategory> crustList=new ArrayList<ProductSubCategory>();
+                if (isDeal){
+                    Products allProductsVo=dbInstance.getProductById(dealOrderVo.getProdID());
+                    crustList = dbInstance.getPizzaCrusts(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
+                }else {
+                    crustList = dbInstance.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
+                }
+                if(crustList != null && crustList.size()>0 ) {
+                    ProductSubCategory crLocal = crustList.get(0);
+                    crustName=crLocal.getSubCatDesc();
+                    crustCatId=crLocal.getProdCatID();
+                    crustSubCatId=crLocal.getSubCatID();
 
-                selectedCrusts.setText(crustName);
+                    selectedCrusts.setText(crustName);
+                }
+                dbInstance.close();
             }
-            dbInstance.close();
-
-
-            //                dao=AppDao.getSingleton(getApplicationContext());
-            //                dao.openConnection();
-            //
-            //                ArrayList<SubCategoryVo> crustList=new ArrayList<SubCategoryVo>();
-            //                if (isDeal){
-            //                    AllProductsVo allProductsVo=dao.getProductById(dealOrderVo.getProdID());
-            //                    crustList = dao.getPizzaCrusts(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
-            //                }else {
-            //                    crustList = dao.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
-            //                }
-            //                if(crustList != null && crustList.size()>0 )
-            //                {
-            //                    SubCategoryVo crLocal = crustList.get(0);
-            //                    crustName=crLocal.getSubCatDesc();
-            //                    crustCatId=crLocal.getProdCatID();
-            //                    crustSubCatId=crLocal.getSubCatID();
-            //
-            //                    selectedCrusts.setText(crustName);
-            //                }
-            //            } catch (Exception ex)
-            //            {
-            //                System.out.println(ex.getMessage());
-            //            }finally{
-            //                if(null!=dao)
-            //                    dao.closeConnection();
-            //            }
         }
         ////////////////////
 
@@ -403,24 +360,6 @@ public class PizzaDetailsActivity extends Activity{
                 toppingsSelected.put(toppingsAndSaucesVo.getToppingID(), getHashBean(toppingsAndSaucesVo,"Single"));
         }
         dbInstance.close();
-
-        //        dao=null;
-        //        try {
-        //            dao=AppDao.getSingleton(getApplicationContext());
-        //            dao.openConnection();
-        //            toppingsSelected=new HashMap<String, ToppingsHashmap>();
-        //            ArrayList<ToppingsAndSauces> toppingsList = dao.getPizzaToppings(productId);
-        //            for (ToppingsAndSauces toppingsAndSaucesVo : toppingsList) {
-        //                if("True".equalsIgnoreCase(toppingsAndSaucesVo.getIsFreeWithPizza()))
-        //                    toppingsSelected.put(toppingsAndSaucesVo.getToppingID(), getHashBean(toppingsAndSaucesVo,"Single"));
-        //            }
-        //        } catch (Exception ex)
-        //        {
-        //            System.out.println(ex.getMessage());
-        //        }finally{
-        //            if(null!=dao)
-        //                dao.closeConnection();
-        //        }
 
         String tempList="";
         Iterator it = toppingsSelected.entrySet().iterator();
@@ -464,14 +403,15 @@ public class PizzaDetailsActivity extends Activity{
                         if(AppProperties.isFirstPizzaChosen){
                             Log.d("HALF PIZZA", "adding orders to cart");
                             Order firstHalfOrder = appInstance.getHalfOder();
-                            dbInstance.insertOrder(firstHalfOrder);
-                            dbInstance.insertOrder(tempOrderBean);
+                            dbInstance.insertOrder(firstHalfOrder);         // first half
+                            dbInstance.insertOrder(tempOrderBean);             // 2nd half
                             AppProperties.isFirstPizzaChosen = false;
                             //                            finish();
                         }
                         else{
                             Log.d("HALF PIZZA", "returning from PizzaDetailsActivity after set half-pizza");
-                            appInstance.setHalfOder(tempOrderBean);
+                            String halfCrust = selectedCrusts.getText().toString();
+                            appInstance.setHalfOder(tempOrderBean, halfCrust);
                             AppProperties.isFirstPizzaChosen = true;
                             //                            finish();
                         }
@@ -568,20 +508,6 @@ public class PizzaDetailsActivity extends Activity{
     }
     private void populateCategoryData(){
         ArrayList<ToppingsAndSauces> saucesList=null;
-        //        AppDao dao=null;
-        //        try {
-        //            dao=AppDao.getSingleton(getApplicationContext());
-        //            dao.openConnection();
-        //
-        //            saucesList=dao.getPizzaSauces(selectedBean.getProdID());
-        //
-        //        } catch (Exception ex)
-        //        {
-        //            System.out.println(ex.getMessage());
-        //        }finally{
-        //            if(null!=dao)
-        //                dao.closeConnection();
-        //        }
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaDetailsActivity.this);
         dbInstance.open();

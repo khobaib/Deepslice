@@ -160,6 +160,12 @@ public class DeepsliceDatabase {
         return ToppingPriceDbManager.isEmptyToppingsPrices(this.db);
     }
 
+    
+    public boolean recordExistsToppings(String prodId) {
+        return SauceAndToppingDbManager.isEmptyToppingsTables(this.db, prodId);
+    }
+    
+    
     public String getToppingPrice(String toppingId,String toppingSize){
         return ToppingPriceDbManager.getToppingPrice(this.db, toppingId, toppingSize);
     }
@@ -224,9 +230,7 @@ public class DeepsliceDatabase {
         return true;
     }
 
-    public boolean recordExistsToppings(String prodId) {
-        return SauceAndToppingDbManager.isEmptyToppingsTables(this.db, prodId);
-    }
+
 
 
     // Favorite

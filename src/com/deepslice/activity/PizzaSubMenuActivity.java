@@ -35,15 +35,15 @@ public class  PizzaSubMenuActivity extends Activity{
     ListView listview;
     MyListAdapterPizza myAdapter;
     ProgressDialog pd;
-    String catType;
+//    String catType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sub_menu_pizza3);
-        Bundle b = this.getIntent().getExtras();
+//        Bundle b = this.getIntent().getExtras();
 
-        catType=b.getString("catType");
-        isHalf = b.getBoolean("isHalf", false);
+//        catType=b.getString("catType");
+        isHalf = getIntent().getExtras().getBoolean("isHalf", false);
         
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaSubMenuActivity.this);
         dbInstance.open();
@@ -85,7 +85,7 @@ public class  PizzaSubMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(PizzaSubMenuActivity.this,FavsListActivity.class);
+                Intent intent=new Intent(PizzaSubMenuActivity.this, FavsListActivity.class);
                 startActivity(intent);
 
             }
@@ -96,7 +96,9 @@ public class  PizzaSubMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(PizzaSubMenuActivity.this,MenuActivity.class);
+                Intent intent=new Intent(PizzaSubMenuActivity.this, MenuActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
             }
@@ -107,19 +109,11 @@ public class  PizzaSubMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(PizzaSubMenuActivity.this,MyOrderActivity.class);
+                Intent intent=new Intent(PizzaSubMenuActivity.this, MyOrderActivity.class);
                 startActivity(intent);
 
             }
         });
-
-        //                ImageButton imageButtonCreateOwn=(ImageButton)findViewById(R.id.imageButtonCreateUown);
-        //                imageButtonCreateOwn.setOnClickListener(new OnClickListener() {
-        //                    @Override
-        //                    public void onClick(View v) {
-        //
-        //                    }
-        //                });
 
         ImageButton imageButtonHalf=(ImageButton)findViewById(R.id.imageButtonHalf);
         if(isHalf)
@@ -127,7 +121,7 @@ public class  PizzaSubMenuActivity extends Activity{
         imageButtonHalf.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(PizzaSubMenuActivity.this,HalfAndHalf.class);
+                Intent intent=new Intent(PizzaSubMenuActivity.this, HalfAndHalf.class);
                 startActivity(intent);
             }
         });
@@ -138,7 +132,7 @@ public class  PizzaSubMenuActivity extends Activity{
         imageButtonCreateYourOwn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(PizzaSubMenuActivity.this,CreateYourOwnCrustActivity.class);
+                Intent intent=new Intent(PizzaSubMenuActivity.this, CreateYourOwnCrustActivity.class);
                 startActivity(intent);
             }
         });
