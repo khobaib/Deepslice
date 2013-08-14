@@ -2,7 +2,7 @@ package com.deepslice.database;
 
 import java.util.ArrayList;
 
-import com.deepslice.model.Favourites;
+import com.deepslice.model.Favourite;
 
 import android.content.ContentValues;
 import android.database.Cursor;

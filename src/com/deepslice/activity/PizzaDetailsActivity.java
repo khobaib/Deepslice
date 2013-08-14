@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
@@ -23,30 +24,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deepslice.cache.ImageLoader;
-import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.Products;
+import com.deepslice.model.CouponDetails.CrustProducts;
 import com.deepslice.model.DealOrder;
-import com.deepslice.model.Favourites;
+import com.deepslice.model.Favourite;
 import com.deepslice.model.LabelValueBean;
 import com.deepslice.model.Order;
-import com.deepslice.model.ProdAndSubCategory;
+import com.deepslice.model.Product;
 import com.deepslice.model.ProductSubCategory;
 import com.deepslice.model.ToppingsAndSauces;
 import com.deepslice.model.ToppingsHashmap;
 import com.deepslice.utilities.AppProperties;
-import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.DeepsliceApplication;
 
 public class PizzaDetailsActivity extends Activity{
 
-    private static final int REQUEST_CODE_IS_PIZZA_HALF = 1001;
+    private static final String TAG = PizzaDetailsActivity.class.getSimpleName();
+//    private static final int REQUEST_CODE_IS_PIZZA_HALF = 1001;
 
     Boolean isHalf = false;
 
     TextView favCountTxt;
     int currentCount=1;
-    Products selectedBean;
+    Product selectedBean;
 
     ImageLoader imageLoader;
 
@@ -58,7 +58,7 @@ public class PizzaDetailsActivity extends Activity{
     String crustName="", crustCatId="", crustSubCatId="",couponGroupID,productId="",curentPId;
     boolean isDeal=false;
     TextView selectedToppings,selectedSauces,selectedCrusts;
-    DealOrder dealOrderVo;
+    DealOrder dealOrder;
     HashMap<String, ToppingsHashmap> toppingsSelected;
     DeepsliceApplication appInstance;
     @Override
@@ -91,7 +91,7 @@ public class PizzaDetailsActivity extends Activity{
         TextView headerTextView=(TextView)findViewById(R.id.headerTextView);
         selectedCrusts=(TextView)findViewById(R.id.selectedCrust);
         if(b.containsKey("selectedProduct")){
-            selectedBean=(Products)b.getSerializable("selectedProduct");
+            selectedBean=(Product)b.getSerializable("selectedProduct");
             productId=selectedBean.getProdID();
             pDesc.setText(selectedBean.getProdDesc());
             imageLoader.DisplayImage(selectedBean.getFullImage(), pImage);
@@ -102,15 +102,15 @@ public class PizzaDetailsActivity extends Activity{
         if (isDeal){
             RelativeLayout rlCount = (RelativeLayout) findViewById(R.id.rl_count);
             rlCount.setVisibility(View.GONE);
-            dealOrderVo=appInstance.getDealOrderVo();
+            dealOrder=appInstance.getDealOrder();
             couponGroupID=b.getString("couponGroupID");
-            productId=dealOrderVo.getProdID();
+            productId=dealOrder.getProdID();
             buttonAddOrders.setText("Add to Deal");
             headerTextView.setText("Add to Deal");
             String defCrusts="";
-            for(ProdAndSubCategory subCategory:appInstance.getCouponData().getProdAndSubCategories()){
-                if(b.getString("prdID").equalsIgnoreCase(subCategory.getProdID())){
-                    defCrusts=subCategory.getSubCat2Code();
+            for(CrustProducts crustProducts : appInstance.getCouponDetails().getProdAndSubCatID()){
+                if(b.getString("prdID").equalsIgnoreCase(crustProducts.getProdID())){
+                    defCrusts = crustProducts.getSubCat2Code();
                     break;
                 }
             }
@@ -174,7 +174,7 @@ public class PizzaDetailsActivity extends Activity{
                 Bundle bundle=new Bundle();
                 AppProperties.selectedToppings=toppingsSelected;
                 if (isDeal){
-                    bundle.putSerializable("selectedProduct",appInstance.getDealOrderVo());
+                    bundle.putSerializable("selectedProduct",appInstance.getDealOrder());
                     bundle.putBoolean("isDeal",isDeal);
                 }  else {
                     bundle.putSerializable("selectedProduct",selectedBean);
@@ -296,9 +296,9 @@ public class PizzaDetailsActivity extends Activity{
             }
 
 
-            private Favourites getFavBean() {
+            private Favourite getFavBean() {
 
-                Favourites f = new Favourites();
+                Favourite f = new Favourite();
                 f.setProdCatID(selectedBean.getProdCatID());
                 f.setSubCatID1(selectedBean.getSubCatID1());
                 f.setSubCatID2(selectedBean.getSubCatID2());
@@ -331,7 +331,7 @@ public class PizzaDetailsActivity extends Activity{
                 dbInstance.open();
                 ArrayList<ProductSubCategory> crustList=new ArrayList<ProductSubCategory>();
                 if (isDeal){
-                    Products allProductsVo=dbInstance.getProductById(dealOrderVo.getProdID());
+                    Product allProductsVo=dbInstance.getProductById(dealOrder.getProdID());
                     crustList = dbInstance.getPizzaCrusts(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
                 }else {
                     crustList = dbInstance.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
@@ -377,26 +377,20 @@ public class PizzaDetailsActivity extends Activity{
 
         buttonAddOrders.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                Order tempOrderBean = getOrderBean();
+                Order tempOrderBean = getOrder();
 
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaDetailsActivity.this);
                 dbInstance.open();
                 if (isDeal){
-                    dealOrderVo.setQuantity(String.valueOf(currentCount));
-                    dealOrderVo.setProdID(crustCatId);
-                    AppSharedPreference.putBoolean(PizzaDetailsActivity.this, couponGroupID, true);
-                    if(dbInstance.isDealProductAvailable(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID())){
-                        boolean b= dbInstance.deleteDuplicateDealOrderRec(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID());
-                        dbInstance.resetDealOrder(dealOrderVo.getCouponID());
+                    dealOrder.setQuantity(String.valueOf(currentCount));
+                    dealOrder.setProdID(crustCatId);
+                    
+                    if(dbInstance.isDealGroupAlreadySelected(dealOrder.getCouponID(), dealOrder.getCouponGroupID())){
+                        Log.d(TAG, "YES");
+                        boolean b = dbInstance.deleteAlreadySelectedDealGroup(dealOrder.getCouponID(), dealOrder.getCouponGroupID());
+                        Log.d(TAG, "delete already selected deal? = " + b);
                     }
-                    dbInstance.insertDealOrder(dealOrderVo);
-                    if(dbInstance.getDealOrderCount(dealOrderVo.getCouponID())==AppSharedPreference.getInteger(PizzaDetailsActivity.this,"numDeals",0)){
-                        AppSharedPreference.putBoolean(PizzaDetailsActivity.this,dealOrderVo.getCouponID(),true);
-                        Toast.makeText(PizzaDetailsActivity.this, "complete your deal by tapping GET A DEAL", Toast.LENGTH_LONG).show();
-                    }else {
-                        Toast.makeText(PizzaDetailsActivity.this, "Select product from deal groups", Toast.LENGTH_LONG).show();
-                    }
-                    //                    finish();
+                    dbInstance.insertDealOrder(dealOrder);
                 }
                 else {
                     if(isHalf){
@@ -425,61 +419,6 @@ public class PizzaDetailsActivity extends Activity{
                 }
                 dbInstance.close();
                 finish();
-
-
-                //                AppDao dao=null;
-                //                try {
-                //                    dao=AppDao.getSingleton(getApplicationContext());
-                //                    dao.openConnection();
-                //                    if (isDeal){
-                //                        dealOrderVo.setQuantity(String.valueOf(currentCount));
-                //                        dealOrderVo.setProdID(crustCatId);
-                //                        AppSharedPreference.putBoolean(PizzaDetailsActivity.this, couponGroupID, true);
-                //                        if(dao.isDealProductAvailable(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID())){
-                //                            boolean b= dao.deleteDuplicateDealOrderRec(dealOrderVo.getCouponGroupID(),dealOrderVo.getCouponID());
-                //                            dao.resetDealOrder(dealOrderVo.getCouponID());
-                //                        }
-                //                        dao.insertDealOrder(dealOrderVo);
-                //                        if(dao.getDealOrderCount(dealOrderVo.getCouponID())==AppSharedPreference.getInteger(PizzaDetailsActivity.this,"numDeals",0)){
-                //                            AppSharedPreference.putBoolean(PizzaDetailsActivity.this,dealOrderVo.getCouponID(),true);
-                //                            Toast.makeText(PizzaDetailsActivity.this, "complete your deal by tapping GET A DEAL", Toast.LENGTH_LONG).show();
-                //                        }else {
-                //                            Toast.makeText(PizzaDetailsActivity.this, "Select product from deal groups", Toast.LENGTH_LONG).show();
-                //                        }
-                //                        finish();
-                //                    }
-                //                    else {
-                //                        if(isHalf){
-                //                            if(AppProperties.isFirstPizzaChosen){
-                //                                Log.d("HALF PIZZA", "adding orders to cart");
-                //                                Order firstHalfOrder = appInstance.getHalfOder();
-                //                                dao.insertOrder(firstHalfOrder);
-                //                                dao.insertOrder(tempOrderBean);
-                //                                AppProperties.isFirstPizzaChosen = false;
-                //                                finish();
-                //                            }
-                //                            else{
-                //                                Log.d("HALF PIZZA", "returning from PizzaDetailsActivity after set half-pizza");
-                //                                appInstance.setHalfOder(tempOrderBean);
-                //                                AppProperties.isFirstPizzaChosen = true;
-                //                                finish();
-                //                            }
-                //                        }
-                //                        else{
-                //                            dao.insertOrder(tempOrderBean);
-                //                            Toast.makeText(PizzaDetailsActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
-                //                            finish();
-                //                        }
-                //
-                //                    }
-                //
-                //                } catch (Exception ex)
-                //                {
-                //                    System.out.println(ex.getMessage());
-                //                }finally{
-                //                    if(null!=dao)
-                //                        dao.closeConnection();
-                //                }
             }
         });
         LinearLayout myOrder=(LinearLayout)findViewById(R.id.cartDummy);
@@ -563,7 +502,7 @@ public class PizzaDetailsActivity extends Activity{
         }
     }
 
-    private Order getOrderBean() {
+    private Order getOrder() {
 
         Order f = new Order();
         f.setProdCatID(selectedBean.getProdCatID());
@@ -622,50 +561,21 @@ public class PizzaDetailsActivity extends Activity{
             totalPrice=totalPrice+tempDoublePrice;
         }
         dbInstance.close();
-
-
-        //        AppDao dao=null;
-        //        try {
-        //            dao=AppDao.getSingleton(getApplicationContext());
-        //            dao.openConnection();
-        //
-        //            String tempPrice="0.00";
-        //            Iterator it = toppingsSelected.entrySet().iterator();
-        //            while (it.hasNext()) {
-        //                Map.Entry pairs = (Map.Entry)it.next();
-        //                ToppingsHashmapVo gm=(ToppingsHashmapVo)pairs.getValue();
-        //
-        //                if("False".equalsIgnoreCase(gm.getIsFreeWithPizza())){
-        //                    tempPrice=dao.getToppingPrice(gm.getToppingID(),gm.getToppingSize());
-        //                }
-        //                tempDoublePrice=Double.parseDouble(tempPrice);
-        //                totalPrice=totalPrice+tempDoublePrice;
-        //            }
-        //
-        //        } catch (Exception ex)
-        //        {
-        //            System.out.println(ex.getMessage());
-        //        }finally{
-        //            if(null!=dao)
-        //                dao.closeConnection();
-        //        }
-
         return totalPrice;
     }
     @Override
     protected void onResume() {
-
-        doResumeWork();
-
         super.onResume();
+        doResumeWork();
     }
+    
+    
     private void doResumeWork() {
-        // //////////////////////////////////////////////////////////////////////////////
         // here we calculate total pricing of already ordered item(Deal+normal order)
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaDetailsActivity.this);
         dbInstance.open();
         ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        ArrayList<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList();
+        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
         TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
         double tota=0.00;
         int dealCount=0;
@@ -706,66 +616,5 @@ public class PizzaDetailsActivity extends Activity{
             favCount.setVisibility(View.INVISIBLE);
         }
         dbInstance.close();
-
-
-
-        //        AppDao dao = null;
-        //        try {
-        //            dao = AppDao.getSingleton(getApplicationContext());
-        //            dao.openConnection();
-        //            // dao.updateDealOrder();
-        //            ArrayList<String> orderInfo = dao.getOrderInfo();
-        //            ArrayList<DealOrder>dealOrderVos1= dao.getDealOrdersList();
-        //            TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-        //            double tota=0.00;
-        //            int dealCount=0;
-        //            if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
-        //                dealCount=dealOrderVos1.size();
-        //                for (int x=0;x<dealOrderVos1.size();x++){
-        //                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice()))*(Integer.parseInt(dealOrderVos1.get(x).getQuantity()));
-        //                }
-        //            }
-        //
-        //            int orderInfoCount= 0;
-        //            double  orderInfoTotal=0.0;
-        //            if ((null != orderInfo && orderInfo.size() == 2) ) {
-        //                orderInfoCount=Integer.parseInt(orderInfo.get(0));
-        //                orderInfoTotal=Double.parseDouble(orderInfo.get(1));
-        //            }
-        //            int numPro=orderInfoCount+dealCount;
-        //            double subTotal=orderInfoTotal+tota;
-        //            DecimalFormat twoDForm = new DecimalFormat("#.##");
-        //            subTotal= Double.valueOf(twoDForm.format(subTotal));
-        //            if(numPro>0){
-        //                itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
-        //                itemsPrice.setVisibility(View.VISIBLE);
-        //            }
-        //
-        //            else{
-        //                itemsPrice.setVisibility(View.INVISIBLE);
-        //
-        //            }
-        //
-        //            TextView favCount = (TextView) findViewById(R.id.favCount);
-        //            String fvs=dao.getFavCount();
-        //            if (null != fvs && !fvs.equals("0")) {
-        //                favCount.setText(fvs);
-        //                favCount.setVisibility(View.VISIBLE);
-        //            }
-        //            else{
-        //                favCount.setVisibility(View.INVISIBLE);
-        //            }
-        //
-        //
-        //
-        //        } catch (Exception ex) {
-        //            System.out.println(ex.getMessage());
-        //        } finally {
-        //            if (null != dao)
-        //                dao.closeConnection();
-        //        }
-        // ///////////////////////////////////////////////////////////////////////
-
-
     }
 }

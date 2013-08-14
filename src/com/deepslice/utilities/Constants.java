@@ -1,5 +1,7 @@
 package com.deepslice.utilities;
 
+import java.text.DecimalFormat;
+
 public class Constants {
     public static final String CUSTOMER_DETAILS = "customerDetails";
     public static final String TAG = "Deepslice";
@@ -9,11 +11,15 @@ public class Constants {
 
     public static String ROOT_URL="http://apps.deepslice.com.au/";
     public static String DEFAULT_IMAGE_URL = "noimage.png";
-    public static String IMAGES_LOCATION="http://apps.deepslice.com.au/images/products/";
+    public static String IMAGES_LOCATION_PRODUCTS = "http://apps.deepslice.com.au/images/products/";
+    public static String IMAGES_LOCATION_DEALS = "http://apps.deepslice.com.au/images/products/deals/";
+    public static String IMAGES_LOCATION_CRUSTS = "http://apps.deepslice.com.au/images/products/crust";
 
     public static final String METHOD_CREATE_OWN_PIZZA = "CreateOwnPizzaData.aspx";
 
     public static final int RESPONSE_STATUS_CODE_SUCCESS = 200;
 
     public static final String TAG_PARSE_ERROR = "PARSE ERROR";
+    
+    public static final DecimalFormat twoDForm = new DecimalFormat("#.##");
 }

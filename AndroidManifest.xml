@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.deepslice.activity"
-    android:versionCode="38"
-    android:versionName="0.38" >
+    android:versionCode="39"
+    android:versionName="0.39" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -234,20 +234,20 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name=".DealsActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-        <activity
             android:name=".DealsListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="adjustPan" >
         </activity>
-        <activity android:name=".DealGroup"
+        <activity
+            android:name=".DealsGroupListActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity android:name=".DealsProductListActivity"
                   android:configChanges="orientation|keyboardHidden"
                   android:screenOrientation="portrait"
                   android:theme="@android:style/Theme.Translucent.NoTitleBar"

@@ -9,16 +9,13 @@ import java.io.Serializable;
  * Time: 10:03 PM
  * To change this template use File | Settings | File Templates.
  */
- public class  DealOrder implements Serializable {
-    public int getSerialId() {
-        return SerialId;
-    }
+public class  DealOrder implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-    public void setSerialId(int serialId) {
-        SerialId = serialId;
-    }
-
-    private int SerialId;
+    private int  SerialId;
     private String  CouponID;
     private String  CouponTypeID;
     private String CouponCode;
@@ -27,6 +24,21 @@ import java.io.Serializable;
     private String ProdID;
     private String DisplayName;
     private String Quantity;
+    private String Image;
+    private String update;
+    
+    public DealOrder() {
+        // TODO Auto-generated constructor stub
+    }   
+    
+
+    public int getSerialId() {
+        return SerialId;
+    }
+
+    public void setSerialId(int serialId) {
+        SerialId = serialId;
+    }
 
     public String getImage() {
         return Image;
@@ -36,8 +48,6 @@ import java.io.Serializable;
         Image = image;
     }
 
-    private String Image;
-
     public String getUpdate() {
         return update;
     }
@@ -46,7 +56,6 @@ import java.io.Serializable;
         this.update = update;
     }
 
-    private String update;
     public String getQuantity() {
         return Quantity;
     }
@@ -110,6 +119,6 @@ import java.io.Serializable;
     public void setDisplayName(String displayName) {
         DisplayName = displayName;
     }
-
-
 }
+
+

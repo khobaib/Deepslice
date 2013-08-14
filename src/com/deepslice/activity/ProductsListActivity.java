@@ -35,7 +35,7 @@ import android.widget.TextView;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DealOrder;
-import com.deepslice.model.Products;
+import com.deepslice.model.Product;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.model.ToppingPrices;
 import com.deepslice.model.ToppingSizes;
@@ -48,7 +48,7 @@ public class ProductsListActivity extends Activity{
 
     private static final int REQUEST_CODE_IS_PIZZA_HALF = 1001;
 
-    List<Products> allProductsList;
+    List<Product> allProductsList;
     List<ToppingPrices> toppingsPriceList;
     List<ToppingSizes> toppingsSizeList;
     List<ToppingsAndSauces> toppingsAndSaucesList;
@@ -70,7 +70,7 @@ public class ProductsListActivity extends Activity{
     boolean syncedToppings =false;
 
     public ImageLoader imageLoader;
-    Products selectedBean;	
+    Product selectedBean;	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +103,7 @@ public class ProductsListActivity extends Activity{
         dbInstance.open();
         if("Pizza".equals(catType)){
             //allProductsList=dao.getProductsPizza(catId,subCatId);
-            allProductsList=new ArrayList<Products>();
+            allProductsList=new ArrayList<Product>();
             new GetDistinctPizzaList().execute();
         }
         else {
@@ -121,7 +121,7 @@ public class ProductsListActivity extends Activity{
         listview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position,
                     long id) {
-                Products eBean = (Products) v.getTag();
+                Product eBean = (Product) v.getTag();
                 if (eBean != null) {
                     selectedBean = eBean;
 
@@ -178,11 +178,11 @@ public class ProductsListActivity extends Activity{
     }
 
 
-    private class MyListAdapterProd extends ArrayAdapter<Products> {
+    private class MyListAdapterProd extends ArrayAdapter<Product> {
 
-        private List<Products> items;
+        private List<Product> items;
 
-        public MyListAdapterProd(Context context, int viewResourceId, List<Products> items) {
+        public MyListAdapterProd(Context context, int viewResourceId, List<Product> items) {
             super(context, viewResourceId, items);
             this.items = items;
 
@@ -194,7 +194,7 @@ public class ProductsListActivity extends Activity{
                 LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = mInflater.inflate(R.layout.line_item_product, null);
             }
-            Products event = items.get(position);
+            Product event = items.get(position);
             if (event != null) {
 
                 TextView title = (TextView) convertView.findViewById(R.id.textView1);
@@ -207,7 +207,7 @@ public class ProductsListActivity extends Activity{
 
 
                 ImageView icon = (ImageView) convertView.findViewById(R.id.imageView1);
-                String imgPath=Constants.IMAGES_LOCATION;
+                String imgPath=Constants.IMAGES_LOCATION_PRODUCTS;
                 if(AppProperties.isNull(event.getThumbnail())){
                     imgPath=imgPath+"noimage.png";
                 }
@@ -456,7 +456,7 @@ public class ProductsListActivity extends Activity{
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(ProductsListActivity.this);
         dbInstance.open();
         ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        ArrayList<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList();
+        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
         TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
         double tota=0.00;
         int dealCount=0;
@@ -531,7 +531,7 @@ public class ProductsListActivity extends Activity{
                     JSONArray data = responseObj.getJSONArray("Data");
                     JSONObject errors = responseObj.getJSONObject("Errors");
 
-                    allProductsList = Products.parseDistinctPizza(data, subCatId);
+                    allProductsList = Product.parseDistinctPizza(data, subCatId);
 
                     long productParseEndTime = System.currentTimeMillis();
                     Log.d("TIME", "time to parse distinct pizza = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");

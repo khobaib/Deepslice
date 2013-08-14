@@ -57,7 +57,7 @@ public class PickupDeliverActivity extends Activity implements OnClickListener {
                 AppSharedPreference.putData(PickupDeliverActivity.this,"customerName","");
                 AppSharedPreference.putData(PickupDeliverActivity.this,"customerPhone","");
                 AppSharedPreference.putData(PickupDeliverActivity.this,"customerEmail","");
-                AppProperties.removeUserSession(getApplicationContext());
+                AppSharedPreference.removeUserSession(getApplicationContext());
                 AppProperties.isLoogedIn=false;
                 loginButton.setBackgroundResource(R.drawable.btn_login);
                 loginButton.setTag("0");

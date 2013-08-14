@@ -101,7 +101,7 @@ public class PayByCashActivity extends Activity{
 		DeepsliceDatabase dbInstance = new DeepsliceDatabase(PayByCashActivity.this);
 		dbInstance.open();
 		ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        ArrayList<DealOrder> dealOrderVos=dbInstance.getDealOrdersList();
+        List<DealOrder> dealOrderVos=dbInstance.getDealOrdersList(true);
         Double orderTotal=0.0;
         if(null!=orderInfo && orderInfo.size()==2)
         {

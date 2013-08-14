@@ -13,7 +13,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.Products;
+import com.deepslice.model.Product;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.ToppingsAndSauces;
 import com.deepslice.model.ToppingsHashmap;
@@ -28,7 +28,7 @@ public class PizzaToppingsActivity extends Activity{
     TextView favCountTxt;
     int currentCount=1;
 
-    Products selectedBean;
+    Product selectedBean;
     DealOrder dealOrderVo;
     ListView listview;
     MyListAdapterSides myAdapter;
@@ -48,7 +48,7 @@ public class PizzaToppingsActivity extends Activity{
             dealOrderVo=(DealOrder)b.getSerializable("selectedProduct");
             productId=dealOrderVo.getProdID();
         }else {
-            selectedBean=(Products)b.getSerializable("selectedProduct");
+            selectedBean=(Product)b.getSerializable("selectedProduct");
             productId=selectedBean.getProdID();
         }
 

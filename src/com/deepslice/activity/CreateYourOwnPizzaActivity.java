@@ -10,12 +10,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.deepslice.adapter.PizzaTypeMenuAdapter;
 import com.deepslice.database.DeepsliceDatabase;
@@ -130,7 +129,7 @@ public class CreateYourOwnPizzaActivity extends Activity {
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaActivity.this);
         dbInstance.open();
         ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        ArrayList<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList();
+        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
         TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
         double tota=0.00;
         int dealCount=0;

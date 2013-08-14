@@ -24,14 +24,14 @@ import android.widget.TextView;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.Products;
-import com.deepslice.model.Favourites;
+import com.deepslice.model.Product;
+import com.deepslice.model.Favourite;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
 
 public class FavsListActivity extends Activity{
 
-    ArrayList<Favourites> allProductsList;
+    ArrayList<Favourite> allProductsList;
 
     ListView listview;
     MyListAdapterFav myAdapter;
@@ -39,7 +39,7 @@ public class FavsListActivity extends Activity{
     ProgressDialog pd;
 
     public ImageLoader imageLoader;
-    Favourites selectedBean;	
+    Favourite selectedBean;	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +64,7 @@ public class FavsListActivity extends Activity{
         listview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position,
                     long id) {
-                Favourites eBean = (Favourites) v.getTag();
+                Favourite eBean = (Favourite) v.getTag();
                 if (eBean != null) {
                     selectedBean = eBean;
                     Intent i;
@@ -127,12 +127,12 @@ public class FavsListActivity extends Activity{
     // ////////////////////////////////////////////////////////////////////////////////////////////
     // ////////////////////////////////////////////////////////////////////////////////////////////
 
-    private class MyListAdapterFav extends ArrayAdapter<Favourites> {
+    private class MyListAdapterFav extends ArrayAdapter<Favourite> {
 
-        private ArrayList<Favourites> items;
+        private ArrayList<Favourite> items;
 
         public MyListAdapterFav(Context context, int viewResourceId,
-                ArrayList<Favourites> items) {
+                ArrayList<Favourite> items) {
             super(context, viewResourceId, items);
             this.items = items;
 
@@ -144,7 +144,7 @@ public class FavsListActivity extends Activity{
                 LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = mInflater.inflate(R.layout.line_item_product, null);
             }
-            Favourites event = items.get(position);
+            Favourite event = items.get(position);
             if (event != null) {
 
                 TextView title = (TextView) convertView.findViewById(R.id.textView1);
@@ -157,7 +157,7 @@ public class FavsListActivity extends Activity{
 
 
                 ImageView icon = (ImageView) convertView.findViewById(R.id.imageView1);
-                String imgPath=Constants.IMAGES_LOCATION;
+                String imgPath=Constants.IMAGES_LOCATION_PRODUCTS;
                 if(AppProperties.isNull(event.getThumbnail())){
                     imgPath=imgPath+"noimage.png";
                 }
@@ -177,9 +177,9 @@ public class FavsListActivity extends Activity{
     //===========================================================================================
     //===========================================================================================
 
-    private Products getProdBean(Favourites favBean) {
+    private Product getProdBean(Favourite favBean) {
 
-        Products prod = new Products();
+        Product prod = new Product();
         prod.setProdCatID(favBean.getProdCatID());
         prod.setSubCatID1(favBean.getSubCatID1());
         prod.setSubCatID2(favBean.getSubCatID2());

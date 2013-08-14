@@ -40,7 +40,7 @@ import android.widget.TextView;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.CouponDetails;
-import com.deepslice.model.Coupons;
+import com.deepslice.model.Coupon;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
@@ -53,7 +53,7 @@ public class CouponsActivity extends Activity {
     EditText input_text ;
     ProgressDialog pd;
     ImageView searchIcon;
-    Coupons couponsVo;
+    Coupon couponsVo;
     String locationId="0";
     TextView resultShow;
     Button applyNow;
@@ -265,8 +265,8 @@ public class CouponsActivity extends Activity {
             if (dataExists == true) {
                 JSONObject jsResult = resultsArray.getJSONObject(0);
                 String jsonString = jsResult.toString();
-                couponsVo = new Coupons();
-                couponsVo = gson.fromJson(jsonString, Coupons.class);
+                couponsVo = new Coupon();
+                couponsVo = gson.fromJson(jsonString, Coupon.class);
                 resultShow.setText(couponsVo.getDisplayText());
                 applyNow.setVisibility(View.VISIBLE);
             }

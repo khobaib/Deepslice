@@ -44,10 +44,10 @@ public class ImageLoader {
     public void DisplayImage(String url, ImageView imageView) {
         if(url == null || url.equals("")){
             Log.d("in ImageLoader", "image url blank");
-            url = Constants.IMAGES_LOCATION + Constants.DEFAULT_IMAGE_URL;
+            url = Constants.IMAGES_LOCATION_PRODUCTS + Constants.DEFAULT_IMAGE_URL;
         }
         else if(!url.startsWith("http://")){
-            url = Constants.IMAGES_LOCATION + url;
+            url = Constants.IMAGES_LOCATION_PRODUCTS + url;
         }
         imageViews.put(imageView, url);
         Bitmap bitmap=memoryCache.get(url);

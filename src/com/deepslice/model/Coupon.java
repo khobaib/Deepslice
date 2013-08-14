@@ -1,35 +1,83 @@
 package com.deepslice.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Coupons implements Serializable {
-	String CouponID = "";
-	String CouponTypeID = "";
-	String CouponTypeCode = "";
-	String CouponCode = "";
-	String CouponAbbr = "";
-	String CouponDesc = "";
-	String DisplayText = "";
-	String IsPercentage = "";
-	String IsFixed = "";
-	String IsDiscountedProduct = "";
-	String Amount = "";
-	String MaxUsage = "";
-	String IsLimitedTimeOffer = "";
-	String EffectiveStartDate = "";
-	String EffectiveEndDate = "";
-	String EffectiveTimeStart = "";
-	String EffectiveTimeEnd = "";
-	String IsOnDelivery = "";
-	String IsOnPickup = "";
-	String IsOnSunday = "";
-	String IsOnMonday = "";
-	String IsOnTuesday = "";
-	String IsOnWednesday = "";
-	String IsOnThursday = "";
-	String IsOnFriday = "";
-	String IsOnSaturday = "";
-	String IsOnInternet = "";
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+public class Coupon implements Serializable {
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private String CouponID;
+	private String CouponTypeID;
+	private String CouponTypeCode;
+	private String CouponCode;
+	private String CouponAbbr;
+	private String CouponDesc;
+	private String DisplayText;
+	private String IsPercentage;
+	private String IsFixed;
+	private String IsDiscountedProduct;
+	private String Amount;
+	private String MaxUsage;
+	private String IsLimitedTimeOffer;
+	private String EffectiveStartDate;
+	private String EffectiveEndDate;
+	private String EffectiveTimeStart;
+	private String EffectiveTimeEnd;
+	private String IsOnDelivery;
+	private String IsOnPickup;
+	private String IsOnSunday;
+	private String IsOnMonday;
+	private String IsOnTuesday;
+	private String IsOnWednesday;
+	private String IsOnThursday;
+	private String IsOnFriday;
+	private String IsOnSaturday;
+	private String IsOnInternet;
+	private String IsOnlyOnInternet;
+	private String IsTaxable;
+	private String IsPrerequisite;
+	private String IsLocationBased;
+	private String IsGreetingSpecials;
+	private String Pic;
+	
+	
+	public Coupon() {
+        // TODO Auto-generated constructor stub
+    }
+	
+	
+    public static List<Coupon> parseCoupons(JSONArray couponArray){
+        List<Coupon> couponList = new ArrayList<Coupon>();
+        GsonBuilder gsonb = new GsonBuilder();
+        Gson gson = gsonb.create();
+
+        try {
+            for(int i=0; i<couponArray.length(); i++){
+
+                JSONObject thisCoupon = couponArray.getJSONObject(i);
+                if(thisCoupon!=null){
+                    String jsonString = thisCoupon.toString();
+                    Coupon coupon =gson.fromJson(jsonString, Coupon.class);
+                    couponList.add(coupon);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return couponList;
+    }
+	
+	
 
     public String getIsOnlyOnInternet() {
         return IsOnlyOnInternet;
@@ -79,12 +127,6 @@ public class Coupons implements Serializable {
         IsTaxable = isTaxable;
     }
 
-    String IsOnlyOnInternet = "";
-    String IsTaxable = "";
-    String IsPrerequisite = "";
-    String IsLocationBased = "";
-    String IsGreetingSpecials = "";
-    String Pic = "";
 	public String getCouponID() {
 		return CouponID;
 	}
@@ -246,7 +288,5 @@ public class Coupons implements Serializable {
 	}
 	public void setIsOnInternet(String isOnInternet) {
 		IsOnInternet = isOnInternet;
-	}
-
-	
+	}	
 }

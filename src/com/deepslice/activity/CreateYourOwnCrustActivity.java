@@ -20,7 +20,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.deepslice.adapter.CrustAdapter;
+import com.deepslice.adapter.CreateYourOwnCrustAdapter;
 import com.deepslice.model.CreateOwnPizzaData;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.parser.JsonParser;
@@ -33,7 +33,7 @@ public class CreateYourOwnCrustActivity extends Activity {
     JsonParser jsonParser = new JsonParser();
 
     ListView crustList;
-    CrustAdapter crustAdapter;
+    CreateYourOwnCrustAdapter crustAdapter;
     List<CreateOwnPizzaData> pizzaArray;
 
     @Override
@@ -75,7 +75,7 @@ public class CreateYourOwnCrustActivity extends Activity {
             pizzaArray.addAll(s);  
             Log.d("Updating UI", "crust array size after removing duplicate = " + pizzaArray.size());
 
-            crustAdapter = new CrustAdapter(CreateYourOwnCrustActivity.this, pizzaArray);
+            crustAdapter = new CreateYourOwnCrustAdapter(CreateYourOwnCrustActivity.this, pizzaArray);
             crustList.setAdapter(crustAdapter);
         }
     }

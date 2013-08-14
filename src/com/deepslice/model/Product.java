@@ -1,12 +1,19 @@
 package com.deepslice.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Favourites implements Serializable {
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+public class Product implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private String customName;
-	
 	private String ProdCatID;
 	private String SubCatID1;
 	private String SubCatID2;
@@ -22,13 +29,53 @@ public class Favourites implements Serializable {
 	
 	private String Thumbnail;
 	private String FullImage;
-	private String ProdCatName;
-	public String getCustomName() {
-		return customName;
-	}
-	public void setCustomName(String customName) {
-		this.customName = customName;
-	}
+	
+	public Product() {
+        // TODO Auto-generated constructor stub
+    }
+	
+    public static List<Product> parseAllProducts(JSONArray productArray){
+        List<Product> productList = new ArrayList<Product>();
+        GsonBuilder gsonb = new GsonBuilder();
+        Gson gson = gsonb.create();
+
+        try {
+            for(int i=0; i<productArray.length(); i++){
+
+                JSONObject thisProduct = productArray.getJSONObject(i);
+                if(thisProduct!=null){
+                    String jsonString = thisProduct.toString();
+                    Product product = gson.fromJson(jsonString, Product.class);
+                    productList.add(product);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return productList;
+    }
+    
+    public static List<Product> parseDistinctPizza(JSONArray productArray, String subCatId){
+        List<Product> productList = new ArrayList<Product>();
+        GsonBuilder gsonb = new GsonBuilder();
+        Gson gson = gsonb.create();
+
+        try {
+            for(int i=0; i<productArray.length(); i++){
+
+                JSONObject thisProduct = productArray.getJSONObject(i);
+                if(thisProduct!=null && thisProduct.getString("SubCatID1").equalsIgnoreCase(subCatId)){
+                    String jsonString = thisProduct.toString();
+                    Product product = gson.fromJson(jsonString, Product.class);
+                    productList.add(product);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return productList;
+    }
+	
 	
 	public String getThumbnail() {
 		return Thumbnail;
@@ -114,11 +161,4 @@ public class Favourites implements Serializable {
 	public void setSubCatID2(String subCatID2) {
 		SubCatID2 = subCatID2;
 	}
-	public String getProdCatName() {
-		return ProdCatName;
-	}
-	public void setProdCatName(String prodCatName) {
-		ProdCatName = prodCatName;
-	}
-	
 }

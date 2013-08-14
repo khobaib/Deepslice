@@ -11,12 +11,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.deepslice.model.Products;
+import com.deepslice.model.Product;
 import com.deepslice.model.CouponDetails;
-import com.deepslice.model.Coupons;
+import com.deepslice.model.Coupon;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.DelLocations;
-import com.deepslice.model.Favourites;
+import com.deepslice.model.Favourite;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.model.Order;
 import com.deepslice.model.ProductCategory;
@@ -235,7 +235,7 @@ public class DeepsliceDatabase {
 
     // Favorite
 
-    public boolean insertFav(Favourites f) {
+    public boolean insertFav(Favourite f) {
 
         FavoriteDbManager.insert(this.db,
                 f.getProdCatID(),
@@ -259,11 +259,11 @@ public class DeepsliceDatabase {
     }
 
 
-    public ArrayList<Favourites> cursorToFavs(Cursor cursor) {
-        ArrayList<Favourites> list = new ArrayList<Favourites>();
+    public ArrayList<Favourite> cursorToFavs(Cursor cursor) {
+        ArrayList<Favourite> list = new ArrayList<Favourite>();
         if (cursor.moveToFirst()) {
             do {
-                Favourites f = new Favourites();
+                Favourite f = new Favourite();
                 f.setProdCatID(cursor.getString(1));
                 f.setSubCatID1(cursor.getString(2));
                 f.setSubCatID2(cursor.getString(3));
@@ -294,7 +294,7 @@ public class DeepsliceDatabase {
         return FavoriteDbManager.isFavAdded(this.db, ProdID,customName);
     }
 
-    public ArrayList<Favourites> getFavsList() {
+    public ArrayList<Favourite> getFavsList() {
 
         Cursor cursor= FavoriteDbManager.getFavsList(this.db);
         try{      
@@ -307,7 +307,7 @@ public class DeepsliceDatabase {
 
 
     public String getFavCount(){
-        ArrayList<Favourites> fs = getFavsList();
+        ArrayList<Favourite> fs = getFavsList();
 
         if(fs==null)
             return "0";
@@ -473,18 +473,22 @@ public class DeepsliceDatabase {
     
     // Deals
     
-    public void updateDealOrder(){
-        DealsDbManager.updateDealOrder(this.db);
+    public void finalizedDealOrder(){
+        DealsDbManager.finalizedDealOrder(this.db);
     }
 
+    // checked
     public int getDealOrderCount(String coupnID){
         return DealsDbManager.getDealOrderCount(this.db, coupnID);
     }
 
-    public void resetDealOrder(String coupnID){
-        DealsDbManager.resetDealOrder(this.db, coupnID);
-    }
-    public boolean insertDealOrder(DealOrder f) {
+    // checked
+//    public void resetDealOrder(String coupnID){
+//        DealsDbManager.resetDealOrder(this.db, coupnID);
+//    }
+    
+    // checked
+    public void insertDealOrder(DealOrder f) {
 
         DealsDbManager.insertDealOrder(this.db,
                 f.getCouponID(),
@@ -497,9 +501,8 @@ public class DeepsliceDatabase {
                 f.getQuantity(),
                 f.getUpdate(),
                 f.getImage()
-
                 );
-        return true;
+//        return true;
     }
 
 
@@ -508,11 +511,12 @@ public class DeepsliceDatabase {
         return true;
     }
 
-    public boolean insertDeals(Coupons deal){
-        Log.d("inserting: ", "Reading all contacts..");
+    public boolean insertDeals(Coupon deal){
+//        Log.d("DeepsliceDatabase", "inseting deals to DB..");
         DealsDbManager.insertDeal(this.db,
                 deal.getCouponID(),
                 deal.getCouponTypeID(),
+                deal.getCouponTypeCode(),
                 deal.getCouponCode(),
                 deal.getCouponAbbr(),
                 deal.getCouponDesc(),
@@ -535,6 +539,7 @@ public class DeepsliceDatabase {
                 deal.getIsOnWednesday(),
                 deal.getIsOnThursday(),
                 deal.getIsOnFriday(),
+                deal.getIsOnSaturday(),
                 deal.getIsOnInternet(),
                 deal.getIsOnlyOnInternet(),
                 deal.getIsTaxable(),
@@ -542,39 +547,64 @@ public class DeepsliceDatabase {
                 deal.getIsLocationBased(),
                 deal.getIsGreetingSpecials(),
                 deal.getPic()
-
                 );
 
-        Log.d("Reading: ", "Reading all contacts..");
-        List<Coupons> contacts = getDealList();
-
-        for (Coupons cn : contacts) {
-            String log = "Id: "+cn.getAmount()+" ,Name: " + cn.getCouponCode() + " ,Phone: " + cn.getDisplayText();
-            // Writing Contacts to log
-            Log.d("Name: ", log);
-        }
+//        Log.d("DeepsliceDatabase", "Reading all coupons..");
+//        List<Coupons> couponList = getDealList();
+//
+//        for (Coupons cn : couponList) {
+//            String log = "amount: "+cn.getAmount()+" ,coupon code: " + cn.getCouponCode() + " ,displayText: " + cn.getDisplayText();
+//            // Writing Contacts to log
+//            Log.d("this coupon: ", log);
+//        }
         return true;
     }
 
-    public ArrayList<Coupons> getDealList(){
+    public List<Coupon> getDealList(){
         Cursor cursor=DealsDbManager.getDealList(this.db);
         return cursorToCoupons(cursor);
     }
 
-    private ArrayList<Coupons> cursorToCoupons(Cursor cursor) {
+    private List<Coupon> cursorToCoupons(Cursor cursor) {
         if (cursor==null)return null;
-        ArrayList<Coupons> voArrayList=new ArrayList<Coupons>();
+        List<Coupon> voArrayList=new ArrayList<Coupon>();
         if(cursor.moveToFirst()) {
             do {
-                Coupons f = new Coupons();
+                Coupon f = new Coupon();
                 int counter=1;
                 f.setCouponID(cursor.getString(counter++));
                 f.setCouponTypeID(cursor.getString(counter++));
-                f.setCouponTypeCode(cursor.getString(counter++));f.setCouponCode(cursor.getString(counter++));f.setCouponDesc(cursor.getString(counter++));f.setCouponAbbr(cursor.getString(counter++)); f.setDisplayText(cursor.getString(counter++));f.setIsPercentage(cursor.getString(counter++));f.setIsFixed(cursor.getString(counter++));
-                f.setIsDiscountedProduct(cursor.getString(counter++));f.setAmount(cursor.getString(counter++));f.setMaxUsage(cursor.getString(counter++));f.setIsLimitedTimeOffer(cursor.getString(counter++));
-                f.setEffectiveStartDate(cursor.getString(counter++));f.setEffectiveEndDate(cursor.getString(counter++)); f.setEffectiveTimeStart(cursor.getString(counter++));f.setEffectiveTimeEnd(cursor.getString(counter++));
-                f.setIsOnDelivery(cursor.getString(counter++));f.setIsOnPickup(cursor.getString(counter++));f.setIsOnSunday(cursor.getString(counter++));f.setIsOnMonday(cursor.getString(counter++));f.setIsOnTuesday(cursor.getString(counter++));
-                f.setIsOnWednesday(cursor.getString(counter++));f.setIsOnThursday(cursor.getString(counter++));f.setIsOnFriday(cursor.getString(counter++));f.setIsOnSaturday(cursor.getString(counter++));f.setIsOnInternet(cursor.getString(counter++));
+                f.setCouponTypeCode(cursor.getString(counter++));
+                f.setCouponCode(cursor.getString(counter++));
+                f.setCouponAbbr(cursor.getString(counter++));
+                f.setCouponDesc(cursor.getString(counter++));
+                f.setDisplayText(cursor.getString(counter++));
+                f.setIsPercentage(cursor.getString(counter++));
+                f.setIsFixed(cursor.getString(counter++));
+                f.setIsDiscountedProduct(cursor.getString(counter++));
+                f.setAmount(cursor.getString(counter++));
+                f.setMaxUsage(cursor.getString(counter++));
+                f.setIsLimitedTimeOffer(cursor.getString(counter++));
+                f.setEffectiveStartDate(cursor.getString(counter++));
+                f.setEffectiveEndDate(cursor.getString(counter++));
+                f.setEffectiveTimeStart(cursor.getString(counter++));
+                f.setEffectiveTimeEnd(cursor.getString(counter++));
+                f.setIsOnDelivery(cursor.getString(counter++));
+                f.setIsOnPickup(cursor.getString(counter++));
+                f.setIsOnSunday(cursor.getString(counter++));
+                f.setIsOnMonday(cursor.getString(counter++));
+                f.setIsOnTuesday(cursor.getString(counter++));
+                f.setIsOnWednesday(cursor.getString(counter++));
+                f.setIsOnThursday(cursor.getString(counter++));
+                f.setIsOnFriday(cursor.getString(counter++));
+                f.setIsOnSaturday(cursor.getString(counter++));
+                f.setIsOnInternet(cursor.getString(counter++));
+                f.setIsOnlyOnInternet(cursor.getString(counter++));
+                f.setIsTaxable(cursor.getString(counter++));
+                f.setIsPrerequisite(cursor.getString(counter++));
+                f.setIsLocationBased(cursor.getString(counter++));
+                f.setIsGreetingSpecials(cursor.getString(counter++));
+                f.setPic(cursor.getString(counter++));
                 voArrayList.add(f);
             } while (cursor.moveToNext());
         }
@@ -586,19 +616,29 @@ public class DeepsliceDatabase {
 
 
 
-    public ArrayList<DealOrder> getDealOrdersList() {
+    public List<DealOrder> getDealOrdersList(boolean updateFlag) {
 
-        Cursor cursor= DealsDbManager.getDealOrdersList(this.db);
+        Cursor cursor= DealsDbManager.getDealOrdersList(this.db, updateFlag);
         try{
-            return cursorToDealOrderBean(cursor);
+            return cursorToDealOrder(cursor);
         }finally{
             cursor.close();
         }
-
+    }
+    
+    // NEW - 20130814 1300, i think it wont needed, can be sub by getDealOrdersList() method
+    public List<DealOrder> getUnfinishedDealOrdersList(String couponID){
+        Cursor cursor = DealsDbManager.getUnfinishedDealOrdersList(this.db, couponID);
+        try{
+            return cursorToDealOrder(cursor);
+        }finally{
+            cursor.close();
+        }
     }
 
-    public ArrayList<String> getDealData(String DealGId,String CouponID){
-        Cursor cursor=DealsDbManager.getDealOrderData(this.db, DealGId,CouponID);
+    // will be deprecated
+    public ArrayList<String> getDealData(String couponID, String couponGroupId){
+        Cursor cursor=DealsDbManager.getDealOrderData(this.db, couponID, couponGroupId);
         ArrayList<String> list = new ArrayList<String>();
         if (cursor.moveToFirst()) {
             do {
@@ -614,32 +654,38 @@ public class DeepsliceDatabase {
         }
         return list;
     }
+    
+    
 
     public boolean deleteDealOrderRec(int serialKey) {
         return DealsDbManager.deleteRecordDealOrder(this.db, "sr_no="+serialKey);
     }
-    public boolean deleteUnfinishedDealOrderRec( ) {
-        return DealsDbManager.deleteUnfinishedRecordDealOrder(this.db, "isUpdate=0");
+    
+    // checked
+    public boolean deleteUnfinishedDealOrder( ) {
+        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "isUpdate = 0");
     }
 
-    public boolean deleteDuplicateDealOrderRec(String productId,String couponId){
-        return DealsDbManager.deleteRecordDealOrder(this.db, "CouponGroupID="+productId+" AND CouponID="+couponId);
+    // modified, now only delete unfinished deals
+    public boolean deleteAlreadySelectedDealGroup(String couponId, String couponGroupId){
+        return DealsDbManager.deleteAlreadySelectedDealGroup(this.db, couponId, couponGroupId);
     }
 
-    public boolean isDealProductAvailable(String CouponGroupID,String couponID){
-        return DealsDbManager.isDealProductAvailable(this.db, CouponGroupID,couponID);
+    // modified, now only check on unfinished deals
+    public boolean isDealGroupAlreadySelected(String couponID, String CouponGroupID){
+        return DealsDbManager.isDealGroupAlreadySelected(this.db, couponID, CouponGroupID);
     }
 
     public boolean deleteDealOrderRec(String CouponID ) {
-        return DealsDbManager.deleteUnfinishedRecordDealOrder(this.db, "CouponID="+CouponID);
+        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "CouponID = "+CouponID);
     }
     public boolean deleteDealOrderRecByGroupID(String CouponGroupID ) {
-        return DealsDbManager.deleteUnfinishedRecordDealOrder(this.db, "CouponGroupID="+CouponGroupID);
+        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "CouponGroupID = " + CouponGroupID);
     }
 
 
-    private ArrayList<DealOrder> cursorToDealOrderBean(Cursor cursor) {
-        ArrayList<DealOrder> list = new ArrayList<DealOrder>();
+    private List<DealOrder> cursorToDealOrder(Cursor cursor) {
+        List<DealOrder> list = new ArrayList<DealOrder>();
         if (cursor.moveToFirst()) {
             do {
                 DealOrder  f = new DealOrder();
@@ -653,22 +699,23 @@ public class DeepsliceDatabase {
                 f.setDisplayName(cursor.getString(7));
                 f.setQuantity(cursor.getString(8));
                 f.setUpdate(cursor.getString(9));
+                f.setImage(cursor.getString(10));
                 list.add(f);
             } while (cursor.moveToNext());
         }
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
-        return list;  //To change body of created methods use File | Settings | File Templates.
+        return list;
     }
 
 
 
     // Products
 
-    public boolean insertAllProducts(List<Products> aList ) {
-        for (Iterator<Products> iterator = aList.iterator(); iterator.hasNext();) {
-            Products f = (Products) iterator.next();
+    public boolean insertAllProducts(List<Product> aList ) {
+        for (Iterator<Product> iterator = aList.iterator(); iterator.hasNext();) {
+            Product f = (Product) iterator.next();
             ProductDbManager.insert(this.db,
                     f.getProdCatID(),
                     f.getSubCatID1(),
@@ -690,7 +737,7 @@ public class DeepsliceDatabase {
     }
 
 
-    public List<Products> getProductsSelected(String catId, String subCatId) {
+    public List<Product> getProductsSelected(String catId, String subCatId) {
 
         Cursor cursor= ProductDbManager.getProductsSelected(this.db, catId, subCatId);
         try{        
@@ -702,7 +749,7 @@ public class DeepsliceDatabase {
     }
 
 
-    public List<Products> getProductsPizza(String catId, String subCatId) {
+    public List<Product> getProductsPizza(String catId, String subCatId) {
 
         Cursor cursor= ProductDbManager.getProductsPizza(this.db, catId, subCatId);
         try{        
@@ -713,7 +760,7 @@ public class DeepsliceDatabase {
 
     }
 
-    public List<Products> getProductsListByIds(String prodIds) {
+    public List<Product> getProductsListByIds(String prodIds) {
 
         Cursor cursor= ProductDbManager.getProductsListById(this.db, prodIds);
         try{        
@@ -724,11 +771,11 @@ public class DeepsliceDatabase {
 
     }
 
-    public Products getProductById(String prodId) {
+    public Product getProductById(String prodId) {
 
         Cursor cursor= ProductDbManager.getProductById(this.db, prodId);
         try{    
-            List<Products> lst = cursorToAllProducts(cursor);
+            List<Product> lst = cursorToAllProducts(cursor);
             if(lst!=null && lst.size()>0)
             {
                 return lst.get(0);
@@ -743,11 +790,11 @@ public class DeepsliceDatabase {
     }
 
 
-    public List<Products> cursorToAllProducts(Cursor cursor) {
-        List<Products> list = new ArrayList<Products>();
+    public List<Product> cursorToAllProducts(Cursor cursor) {
+        List<Product> list = new ArrayList<Product>();
         if (cursor.moveToFirst()) {
             do {
-                Products f = new Products();
+                Product f = new Product();
                 f.setProdCatID(cursor.getString(1));
                 f.setSubCatID1(cursor.getString(2));
                 f.setSubCatID2(cursor.getString(3));

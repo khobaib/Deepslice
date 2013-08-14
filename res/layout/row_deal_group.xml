@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rede_box1" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="90dip"
+        android:layout_height="60dip"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="5dip"
+        android:scaleType="fitXY"
+        android:src="@drawable/sides_icon" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/b_customize"
+        android:layout_toRightOf="@+id/imageView1"
+        android:maxLines="3"
+        android:text="TextView"
+        android:textColor="@color/white"
+        android:textSize="15dp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/b_customize"
+        android:layout_width="90dp"
+        android:layout_height="35dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:text="Customize"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:background="@drawable/box_red" />
+
+</RelativeLayout>

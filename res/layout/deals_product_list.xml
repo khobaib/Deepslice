@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/backGroundDeal" >
+
+    <RelativeLayout
+        android:id="@+id/headerRelativeLayout"
+        style="@style/header" >
+
+        <ImageView
+            android:id="@+id/farwordImageView"
+            style="@style/farwordButton" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/headerText"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        style="@style/logoImageDeal" />
+
+    <LinearLayout
+        android:id="@+id/zouterLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/navBar"
+        android:layout_below="@+id/headerRelativeLayout"
+        android:layout_marginTop="100dp"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/rl_subtitle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:visibility="visible" >
+
+            <ImageView
+                android:id="@+id/iv_subtitle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/sides_yellow" />
+
+            <TextView
+                android:id="@+id/tv_subtitle"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignBottom="@+id/iv_subtitle"
+                android:layout_alignLeft="@+id/iv_subtitle"
+                android:gravity="center_vertical"
+                android:paddingLeft="15dp"
+                android:textColor="#010101"
+                android:textIsSelectable="false"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/listView1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/transparent"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="1dp"
+            android:fastScrollEnabled="true"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:visibility="visible" >
+        </ListView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/youterLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/headerRelativeLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="150dp"
+        android:orientation="vertical"
+        android:padding="20dip"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/headerTextView"
+            style="@style/headerText"
+            android:background="@drawable/red_box2"
+            android:text="You haven’t added any item into Favourite"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+    <TableLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/navBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dip"
+        android:gravity="center" >
+
+        <TableRow
+            android:background="@drawable/m_nav_bg"
+            android:weightSum="3" >
+
+            <LinearLayout
+                android:id="@+id/search_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal" >
+
+                <Button
+                    android:id="@+id/mainMenu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/m_nav1" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/setting_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal" >
+
+                <Button
+                    android:id="@+id/callfriends"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/m_nav2"
+                    android:focusable="false" />
+
+                <TextView
+                    android:id="@+id/itemPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/total_bg2"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:paddingLeft="4dip"
+                    android:paddingRight="4dip"
+                    android:text="$100.23"
+                    android:textColor="#ffffff"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/cartDummy"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dip"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:orientation="vertical" >
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/cal_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal" >
+
+                <Button
+                    android:id="@+id/favs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/m_nav3" />
+
+                <TextView
+                    android:id="@+id/favCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/total_bg2"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:paddingLeft="4dip"
+                    android:paddingRight="4dip"
+                    android:text=""
+                    android:textColor="#ffffff"
+                    android:textSize="14dip"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+        </TableRow>
+    </TableLayout>
+
+</RelativeLayout>

@@ -24,9 +24,9 @@ import android.widget.TextView;
 
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DealOrder;
+import com.deepslice.model.Product;
 import com.deepslice.model.ProductCategory;
 import com.deepslice.model.ProductSubCategory;
-import com.deepslice.model.Products;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.Constants;
@@ -38,7 +38,7 @@ public class MenuActivity extends Activity {
 
     List<ProductCategory> categoryList;
     List<ProductSubCategory> subcategoryList;
-    List<Products> productList;
+    List<Product> productList;
 
     long dataRetrieveStartTime, dataRetrieveEndTime;
 
@@ -129,7 +129,7 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String pastaId=getProdCatId("Deals");
-                Intent intent=new Intent(MenuActivity.this, DealsActivity.class);
+                Intent intent=new Intent(MenuActivity.this, DealsListActivity.class);
                 Bundle bundle=new Bundle();
                 bundle.putString("catId",pastaId);
                 bundle.putString("subCatId","0");
@@ -293,7 +293,7 @@ public class MenuActivity extends Activity {
                     JSONArray data = responseObj.getJSONArray("Data");
                     JSONObject errors = responseObj.getJSONObject("Errors");
 
-                    productList = Products.parseAllProducts(data);
+                    productList = Product.parseAllProducts(data);
 
                     long productParseEndTime = System.currentTimeMillis();
                     Log.d("TIME", "time to parse product = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
@@ -371,7 +371,7 @@ public class MenuActivity extends Activity {
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
         dbInstance.open();
         ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        ArrayList<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList();
+        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
         TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
         double tota=0.00;
         int dealCount=0;

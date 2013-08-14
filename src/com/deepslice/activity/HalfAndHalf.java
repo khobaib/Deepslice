@@ -2,6 +2,7 @@ package com.deepslice.activity;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -114,7 +115,7 @@ public class HalfAndHalf extends Activity {
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(HalfAndHalf.this);
         dbInstance.open();
         ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        ArrayList<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList();
+        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
         TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
         double tota=0.00;
         int dealCount=0;

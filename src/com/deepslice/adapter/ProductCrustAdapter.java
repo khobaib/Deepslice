@@ -13,23 +13,29 @@ import android.widget.TextView;
 
 import com.deepslice.activity.R;
 import com.deepslice.cache.ImageLoader;
-import com.deepslice.model.CreateOwnPizzaData;
+import com.deepslice.model.ProductSubCategory;
+import com.deepslice.utilities.AppProperties;
+import com.deepslice.utilities.Constants;
 
-public class CrustAdapter extends ArrayAdapter<CreateOwnPizzaData> {
+public class ProductCrustAdapter extends ArrayAdapter<ProductSubCategory> {
     
     private Context mContext;
     private ImageLoader imageLoader;
     private LayoutInflater mInflater;
+    private String crustCatId;
+    private String crustSubCatId;
 
-    public CrustAdapter(Context context, List<CreateOwnPizzaData> mCrusts) {
+    public ProductCrustAdapter(Context context, List<ProductSubCategory> mCrusts, String crustCatId, String crustSubCatId) {
         super(context, R.layout.line_item_crust, mCrusts);
         this.mContext = context;
         imageLoader = new ImageLoader((Activity) mContext);
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.crustCatId = crustCatId;
+        this.crustSubCatId = crustSubCatId;
     }
     
     
-    public static class ViewHolder {
+    private static class ViewHolder {
         ImageView crustImage;
         TextView crustName;
         ImageView Tick;
@@ -38,9 +44,9 @@ public class CrustAdapter extends ArrayAdapter<CreateOwnPizzaData> {
     
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
 
         ViewHolder holder;
+        
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.line_item_crust, null);
 
@@ -54,11 +60,23 @@ public class CrustAdapter extends ArrayAdapter<CreateOwnPizzaData> {
             holder = (ViewHolder) convertView.getTag();
         }
         
-        CreateOwnPizzaData item = getItem(position);
+        ProductSubCategory item = getItem(position);
 
-        holder.crustName.setText(item.getSubCatCode());
-        imageLoader.DisplayImage(item.getThumbImage(), holder.crustImage);
-        holder.Tick.setVisibility(View.GONE);
+        holder.crustName.setText(item.getSubCatDesc());
+        
+        String imgPath = Constants.IMAGES_LOCATION_CRUSTS;
+        if(AppProperties.isNull(item.getThumbnail())){
+            imgPath = imgPath + "noimage.png";
+        }
+        else{
+            imgPath = imgPath + item.getThumbnail();
+        }
+        imageLoader.DisplayImage(item.getThumbnail(), holder.crustImage);
+        
+        if(item.getProdCatID().equals(crustCatId) && item.getSubCatID().equals(crustSubCatId))
+            holder.Tick.setVisibility(View.VISIBLE);
+        else
+            holder.Tick.setVisibility(View.INVISIBLE);
         
         return convertView;
     }

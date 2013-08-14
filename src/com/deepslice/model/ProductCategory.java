@@ -41,7 +41,6 @@ public class ProductCategory {
         List<ProductCategory> categoryList = new ArrayList<ProductCategory>();
         GsonBuilder gsonb = new GsonBuilder();
         Gson gson = gsonb.create();
-        //        DelLocations aBean;
 
         try {
             for(int i=0; i<catArray.length(); i++){
@@ -49,9 +48,7 @@ public class ProductCategory {
                 JSONObject thisCategory = catArray.getJSONObject(i);
                 if(thisCategory!=null){
                     String jsonString = thisCategory.toString();
-                    //                aBean=new DelLocations();
                     ProductCategory category =gson.fromJson(jsonString, ProductCategory.class);
-                    //                System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
                     categoryList.add(category);
                 }
 

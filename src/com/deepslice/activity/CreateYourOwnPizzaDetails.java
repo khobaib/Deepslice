@@ -1,9 +1,5 @@
 package com.deepslice.activity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,13 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,14 +30,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deepslice.cache.ImageLoader;
-import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.Products;
 import com.deepslice.model.CreateOwnPizzaData;
 import com.deepslice.model.DealOrder;
-import com.deepslice.model.Favourites;
+import com.deepslice.model.Favourite;
 import com.deepslice.model.LabelValueBean;
 import com.deepslice.model.Order;
+import com.deepslice.model.Product;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.model.ToppingPrices;
 import com.deepslice.model.ToppingSizes;
@@ -57,8 +45,6 @@ import com.deepslice.model.ToppingsHashmap;
 import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  * Created with IntelliJ IDEA.
@@ -88,7 +74,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
 
     CreateOwnPizzaData selectedPizzaData;
     List<String> prodIds;
-    ArrayList<Products> productList;
+    ArrayList<Product> productList;
 
     //    private ProgressDialog pDialog;
     JsonParser jsonParser = new JsonParser();
@@ -116,7 +102,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
         currentCount = 1;
         imageLoader = new ImageLoader(CreateYourOwnPizzaDetails.this);
 
-        productList = new ArrayList<Products>();
+        productList = new ArrayList<Product>();
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
         dbInstance.open();
         for (int i=0;i<prodIds.size();i++){
@@ -323,9 +309,9 @@ public class CreateYourOwnPizzaDetails extends Activity {
             }
 
 
-            private Favourites getFavBean() {
+            private Favourite getFavBean() {
 
-                Favourites f = new Favourites();
+                Favourite f = new Favourite();
                 f.setProdCatID(productList.get(currentIndex).getProdCatID());
                 f.setSubCatID1(productList.get(currentIndex).getSubCatID1());
                 f.setSubCatID2(productList.get(currentIndex).getSubCatID2());
@@ -722,7 +708,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
         dbInstance.open();
         ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        ArrayList<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList();
+        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
         TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
         double tota=0.00;
         int dealCount=0;

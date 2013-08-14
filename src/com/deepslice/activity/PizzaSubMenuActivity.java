@@ -1,5 +1,9 @@
 package com.deepslice.activity;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,17 +14,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import com.deepslice.database.AppDao;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.Products;
 import com.deepslice.model.DealOrder;
+import com.deepslice.model.Product;
 import com.deepslice.model.ProductCategory;
 import com.deepslice.model.ProductSubCategory;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 public class  PizzaSubMenuActivity extends Activity{
 
@@ -28,7 +35,7 @@ public class  PizzaSubMenuActivity extends Activity{
 
     ArrayList<ProductCategory> productCatList;
     ArrayList<ProductSubCategory> subCatList;
-    ArrayList<Products> allProductsList;
+    ArrayList<Product> allProductsList;
 
     Boolean isHalf = false;
 
@@ -197,7 +204,7 @@ public class  PizzaSubMenuActivity extends Activity{
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaSubMenuActivity.this);
         dbInstance.open();
         ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        ArrayList<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList();
+        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
         TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
         double tota=0.00;
         int dealCount=0;

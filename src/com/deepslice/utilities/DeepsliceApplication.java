@@ -5,6 +5,7 @@ import java.util.List;
 import android.app.Application;
 
 import com.deepslice.model.CouponData;
+import com.deepslice.model.CouponDetails;
 import com.deepslice.model.CreateOwnPizzaData;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.Order;
@@ -18,7 +19,8 @@ import com.deepslice.model.Order;
  */
 public class DeepsliceApplication extends Application {
     private CouponData couponData;
-    private DealOrder dealOrderVo;
+    private CouponDetails couponDetails;
+    private DealOrder dealOrder;
     private Order halfOder;
     private String halfCrust;               // for demo
     private List<CreateOwnPizzaData> createPizzaDataList;
@@ -45,12 +47,12 @@ public class DeepsliceApplication extends Application {
         this.halfCrust = crust;
     }
 
-    public DealOrder getDealOrderVo() {
-        return dealOrderVo;
+    public DealOrder getDealOrder() {
+        return dealOrder;
     }
 
-    public void setDealOrderVo(DealOrder dealOrderVo) {
-        this.dealOrderVo = dealOrderVo;
+    public void setDealOrder(DealOrder dealOrder) {
+        this.dealOrder = dealOrder;
     }
 
 
@@ -61,4 +63,13 @@ public class DeepsliceApplication extends Application {
     public void setCouponData(CouponData couponData) {
         this.couponData = couponData;
     }
+
+    public CouponDetails getCouponDetails() {
+        return couponDetails;
+    }
+
+    public void setCouponDetails(CouponDetails couponDetails) {
+        this.couponDetails = couponDetails;
+    }
+ 
 }

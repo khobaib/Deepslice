@@ -46,23 +46,6 @@ public class AppProperties {
 		dbInstance.open();
 		catName=dbInstance.getCatCodeByCatId(catId);
 		dbInstance.close();
-		
-//		AppDao dao=null;
-//		try {
-//			dao=AppDao.getSingleton(ctx);
-//			dao.openConnection();
-//			
-//			catName=dao.getCatCodeByCatId(catId);
-//	
-//		} catch (Exception ex)
-//		{
-//			System.out.println(ex.getMessage());
-//		}finally{
-//			if(null!=dao)
-//				dao.closeConnection();
-//		}
-
-		
 		return catName;
 	}
 
@@ -76,8 +59,8 @@ public class AppProperties {
 		return mInstance;
 	}
 
-	public static boolean isNull(String a) {
-		if (null == a || a.equals("")) {
+	public static boolean isNull(String str) {
+		if (str == null || str.equals("")) {
 			return true;
 		} else {
 			return false;
@@ -85,7 +68,7 @@ public class AppProperties {
 	}
 
 	public static String NVL(String str) {
-		if (null == str || str.trim().equals("")) {
+		if (str == null || str.trim().equals("")) {
 			return "";
 		} else {
 			return str;
@@ -116,19 +99,6 @@ public class AppProperties {
 		user.setPhoneNo(AppSharedPreference.getData(ct, "m_phone", null));
 		
 		return user;
-	}
-
-	public static void removeUserSession(Context ct) {
-
-		SharedPreferences myPrefs = ct.getSharedPreferences(AppSharedPreference.PREF_NAME, 1);
-        SharedPreferences.Editor prefsEditor = myPrefs.edit();
-        prefsEditor.remove("m_id");
-        prefsEditor.remove("m_username");
-        prefsEditor.remove("m_password");
-        prefsEditor.remove("m_name");
-        prefsEditor.remove("m_phone");
-        prefsEditor.commit();
-        
 	}
 	
     public static String trimLastComma(String a) {

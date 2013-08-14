@@ -1,14 +1,23 @@
 package com.deepslice.activity;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.deepslice.activity.R.id;
-import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.database.HelperSharedPreferences;
 import com.deepslice.model.DealOrder;
@@ -17,16 +26,13 @@ import com.deepslice.model.Order;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-
 public class MyOrderActivity extends Activity{
 
     ArrayList<Order> pizzaList;
     ArrayList<Order> drinksList;
     ArrayList<Order> sidesList;
     ArrayList<Order> pastaList;
-    ArrayList<DealOrder> dealOrderVos;
+    List<DealOrder> dealOrderVos;
 
 
     TextView totalPrice;
@@ -211,7 +217,7 @@ public class MyOrderActivity extends Activity{
         drinksList = dbInstance.getOrdersListWithType("Drinks");
         sidesList = dbInstance.getOrdersListWithType("Sides");
         pastaList = dbInstance.getOrdersListWithType("Pasta");
-        dealOrderVos=dbInstance.getDealOrdersList();
+        dealOrderVos=dbInstance.getDealOrdersList(true);
         ArrayList<String> orderInfo = dbInstance.getOrderInfo();
         Double orderTotal=0.0;
         if(null!=orderInfo && orderInfo.size()==2)
@@ -744,7 +750,7 @@ public class MyOrderActivity extends Activity{
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(MyOrderActivity.this);
         dbInstance.open();
         dbInstance.deleteOrderRec(serialId);
-        ArrayList<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList();
+        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
         double tota=0.00;
         for (int x=0;x<dealOrderVos1.size();x++){
             tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
@@ -802,7 +808,7 @@ public class MyOrderActivity extends Activity{
         dbInstance.deleteDealOrderRec(serialId);
         ArrayList<String> orderInfo = dbInstance.getOrderInfo();
         double temp=AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
-        ArrayList<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList();
+        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
         double tota=0.00;
         for (int x=0;x<dealOrderVos1.size();x++){
             tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));

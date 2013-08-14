@@ -2,18 +2,14 @@ package com.deepslice.adapter;
 
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.deepslice.activity.R;
-import com.deepslice.adapter.CrustAdapter.ViewHolder;
-import com.deepslice.cache.ImageLoader;
 import com.deepslice.model.CreateOwnPizzaData;
 
 public class PizzaTypeMenuAdapter extends ArrayAdapter<CreateOwnPizzaData> {
@@ -35,7 +31,6 @@ public class PizzaTypeMenuAdapter extends ArrayAdapter<CreateOwnPizzaData> {
     
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
 
         ViewHolder holder;
         if (convertView == null) {
