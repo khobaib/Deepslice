@@ -28,6 +28,8 @@ import com.deepslice.model.DealOrder;
 import com.deepslice.model.Product;
 import com.deepslice.model.ProductCategory;
 import com.deepslice.model.ProductSubCategory;
+import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.Utils;
 
 public class  PizzaSubMenuActivity extends Activity{
 
@@ -40,6 +42,8 @@ public class  PizzaSubMenuActivity extends Activity{
     Boolean isHalf = false;
 
     ListView listview;
+    TextView tvItemsPrice, tvFavCount;
+    
     MyListAdapterPizza myAdapter;
     ProgressDialog pd;
 //    String catType;
@@ -51,6 +55,9 @@ public class  PizzaSubMenuActivity extends Activity{
 
 //        catType=b.getString("catType");
         isHalf = getIntent().getExtras().getBoolean("isHalf", false);
+        
+        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
+        tvFavCount = (TextView) findViewById(R.id.favCount);
         
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaSubMenuActivity.this);
         dbInstance.open();
@@ -199,52 +206,28 @@ public class  PizzaSubMenuActivity extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
-        // //////////////////////////////////////////////////////////////////////////////
+
+        List<String> orderInfo = Utils.OrderInfo(PizzaSubMenuActivity.this);
+        int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+        String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
         
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaSubMenuActivity.this);
-        dbInstance.open();
-        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
-        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-        double tota=0.00;
-        int dealCount=0;
-        if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
-            dealCount=dealOrderVos1.size();
-            for (int x=0;x<dealOrderVos1.size();x++){
-                tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-            }
-        }
-
-        int orderInfoCount= 0;
-        double  orderInfoTotal=0.0;
-        if ((null != orderInfo && orderInfo.size() == 2) ) {
-            orderInfoCount=Integer.parseInt(orderInfo.get(0));
-            orderInfoTotal=Double.parseDouble(orderInfo.get(1));
-        }
-        int numPro=orderInfoCount+dealCount;
-        double subTotal=orderInfoTotal+tota;
-        DecimalFormat twoDForm = new DecimalFormat("#.##");
-        subTotal= Double.valueOf(twoDForm.format(subTotal));
-        if(numPro>0){
-            itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
-            itemsPrice.setVisibility(View.VISIBLE);
-        }
-
-        else{
-            itemsPrice.setVisibility(View.INVISIBLE);
-
-        }
-
-        TextView favCount = (TextView) findViewById(R.id.favCount);
-        String fvs=dbInstance.getFavCount();
-        if (null != fvs && !fvs.equals("0")) {
-            favCount.setText(fvs);
-            favCount.setVisibility(View.VISIBLE);
+        if(itemCount > 0){
+            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
+            tvItemsPrice.setVisibility(View.VISIBLE);
         }
         else{
-            favCount.setVisibility(View.INVISIBLE);
+            tvItemsPrice.setVisibility(View.INVISIBLE);
         }
-        dbInstance.close();        
+
+        
+        String favCount = Utils.FavCount(PizzaSubMenuActivity.this);
+        if (favCount != null && !favCount.equals("0")) {
+            tvFavCount.setText(favCount);
+            tvFavCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvFavCount.setVisibility(View.INVISIBLE);
+        }      
 
     }
 

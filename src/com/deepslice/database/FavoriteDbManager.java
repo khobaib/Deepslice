@@ -13,7 +13,9 @@ public class FavoriteDbManager {
 
     private static final String TAG = FavoriteDbManager.class.getSimpleName();
 
-    static String[] table_favorites_columns = new String[] { "sr_no","ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage", "customName","ProdCatName"};
+    static String[] table_favorites_columns = new String[] { "sr_no", "ProdCatID", "SubCatID1", "SubCatID2", "ProdID",
+        "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty",
+        "Price", "Thumbnail", "FullImage", "customName","ProdCatName"};
 
     public static final String TABLE_FAVORITES = "table_favorites";
 
@@ -67,10 +69,11 @@ public class FavoriteDbManager {
     }
 
 
+    // checked
     public static Cursor getFavsList(SQLiteDatabase db){
-        Log.d("<<<>>>", "in FavoriteDbManager, getting cursor of favorite list");
+        Log.d(TAG, "retrieving all favList cursor");
         try {
-            return db.rawQuery("SELECT * FROM "+TABLE_FAVORITES, null);
+            return db.rawQuery("SELECT * FROM "+ TABLE_FAVORITES, null);
         } catch (Exception e) {
             return null;
         }

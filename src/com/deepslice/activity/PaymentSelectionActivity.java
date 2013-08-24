@@ -1,6 +1,7 @@
 package com.deepslice.activity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,16 +14,23 @@ import android.widget.TextView;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.utilities.AppProperties;
+import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.Utils;
 
 public class PaymentSelectionActivity extends Activity{
 	
 	TextView totalPrice;
+    TextView tvItemsPrice, tvFavCount;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.payment_options);
 		
 		totalPrice=(TextView)findViewById(R.id.totalPrice);
+		
+        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
+        tvFavCount = (TextView) findViewById(R.id.favCount);
 /////////////////		
 		
 		Button addCoupon=(Button)findViewById(R.id.btnPayByCash);
@@ -47,48 +55,35 @@ public class PaymentSelectionActivity extends Activity{
 				
 				
 				startActivity(intent);
-				
-				
-				
-				
-				
-				
-//				finish();
 			}
 		});
-		///////////////////////////////
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(PaymentSelectionActivity.this);
-        dbInstance.open();
-        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        
-        if(null!=orderInfo && orderInfo.size()==2)
-        {
-            totalPrice.setText("$"+AppProperties.getRoundTwoDecimalString(orderInfo.get(1)));
-        }
-        dbInstance.close();
-        
-//		AppDao dao=null;
-//		try {
-//			dao=AppDao.getSingleton(getApplicationContext());
-//			dao.openConnection();
-//		
-//			ArrayList<String> orderInfo = dao.getOrderInfo();
-//			
-//			if(null!=orderInfo && orderInfo.size()==2)
-//			{
-//				totalPrice.setText("$"+AppProperties.getRoundTwoDecimalString(orderInfo.get(1)));
-//			}
-//
-//		} catch (Exception ex)
-//		{
-//			System.out.println(ex.getMessage());
-//		}finally{
-//			if(null!=dao)
-//				dao.closeConnection();
-//		}
-		
-		////////////////////////////////////////////////////////////////
-
 	}
+	
+	
+    @Override
+    protected void onResume() {
+        super.onResume();
+        List<String> orderInfo = Utils.OrderInfo(PaymentSelectionActivity.this);
+        int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+        String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+        
+        if(itemCount > 0){
+            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
+            tvItemsPrice.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvItemsPrice.setVisibility(View.INVISIBLE);
+        }
+
+        
+        String favCount = Utils.FavCount(PaymentSelectionActivity.this);
+        if (favCount != null && !favCount.equals("0")) {
+            tvFavCount.setText(favCount);
+            tvFavCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvFavCount.setVisibility(View.INVISIBLE);
+        }
+    }
 
 }

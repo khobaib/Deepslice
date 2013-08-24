@@ -15,20 +15,20 @@ import java.util.List;
 public class AppDao {
 
     private static AppDao singleton = null;
-    private DataHelper dbHelper;
+//    private DataHelper dbHelper;
     private Context appContext;
 
     private AppDao(Context ctx) {
-        dbHelper = new DataHelper(ctx);
+//        dbHelper = new DataHelper(ctx);
         appContext=ctx;
     }
 
     public void closeConnection(){
-        if (dbHelper != null)
-            dbHelper.close();
+//        if (dbHelper != null)
+//            dbHelper.close();
     }
     public void openConnection(){
-        dbHelper.open();
+//        dbHelper.open();
     }
 
     public static AppDao getSingleton(Context ctx) {

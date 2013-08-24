@@ -162,7 +162,7 @@ public class WelcomeActivity extends Activity {
                     locPoints = LocationPoints.parseLocationPoints(data);
 
                     // Here we store in static data field but we have to create a db table for it
-                    AppProperties.locationPointsList=locPoints;
+                    AppProperties.locationPointsList = locPoints;
                     System.out.println("Got location points: "+locPoints.size());
 
                     return true;
@@ -177,8 +177,6 @@ public class WelcomeActivity extends Activity {
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-//            if(pDialog.isShowing())
-//                pDialog.dismiss();
             if(result){
                 if(isDeliveryLocationsExist == false)
                     new GetDeliveryLocation().execute();
@@ -189,17 +187,8 @@ public class WelcomeActivity extends Activity {
     }
 
 
-    //    String serverResponseDLocs;
-    //    protected void getDeliveryLocations() {     
-    //
-    //        new GetLocationPoints().execute();
-    //
-    //    }
-
-
     private void updateResultsInUi() { 
         Intent intent = new Intent(WelcomeActivity.this, PickupDeliverActivity.class);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         WelcomeActivity.this.finish();
 

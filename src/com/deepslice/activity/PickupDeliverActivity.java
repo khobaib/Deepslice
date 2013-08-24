@@ -31,8 +31,7 @@ public class PickupDeliverActivity extends Activity implements OnClickListener {
 		RelativeLayout footerRelative = (RelativeLayout)findViewById(R.id.footerRelativeLayout);
         footerText=(TextView)findViewById(R.id.footerText);
   //comment = add new image for button logout
-		if(!HelperSharedPreferences.getSharedPreferencesString(PickupDeliverActivity.this,"emailName","").equals("")||!HelperSharedPreferences.getSharedPreferencesString(PickupDeliverActivity.this,"userName","").equals(""))
-		{
+		if(!HelperSharedPreferences.getSharedPreferencesString(PickupDeliverActivity.this,"emailName","").equals("")||!HelperSharedPreferences.getSharedPreferencesString(PickupDeliverActivity.this,"userName","").equals("")) {
 			footerRelative.setVisibility(View.VISIBLE);
               footerText.setVisibility(View.INVISIBLE);
             loginButton.setBackgroundResource(R.drawable.logout);

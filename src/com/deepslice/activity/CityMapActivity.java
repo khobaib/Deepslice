@@ -42,7 +42,6 @@ public class CityMapActivity extends FragmentActivity implements
 		LocationListener, OnMarkerClickListener, OnInfoWindowClickListener {
 	Geocoder geoCoder;
 	MapController mc;
-	// MapView mapView;
 	GoogleMap mMap;
 	MyLocation myLocation = null;
 	ProgressDialog pd;

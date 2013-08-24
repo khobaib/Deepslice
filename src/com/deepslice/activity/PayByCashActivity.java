@@ -14,6 +14,9 @@ import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DealOrder;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
+import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.Utils;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -37,7 +40,10 @@ import java.util.List;
 public class PayByCashActivity extends Activity{
 	
 	TextView totalPrice,descriptionText;
+    TextView tvItemsPrice, tvFavCount;
+    
 	String myIp;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,6 +52,9 @@ public class PayByCashActivity extends Activity{
 		totalPrice=(TextView)findViewById(R.id.totalPrice);
 		descriptionText=(TextView)findViewById(R.id.textView1);
         TextView txtUserName=(TextView)findViewById(R.id.textUserName);
+        
+        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
+        tvFavCount = (TextView) findViewById(R.id.favCount);
 		
 /////////////////		
 		
@@ -96,63 +105,7 @@ public class PayByCashActivity extends Activity{
 				 
 			}
 		});
-		///////////////////////////////
 		
-		DeepsliceDatabase dbInstance = new DeepsliceDatabase(PayByCashActivity.this);
-		dbInstance.open();
-		ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        List<DealOrder> dealOrderVos=dbInstance.getDealOrdersList(true);
-        Double orderTotal=0.0;
-        if(null!=orderInfo && orderInfo.size()==2)
-        {
-            orderTotal=AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
-
-        }
-        Double dealTotal=0.0;
-        if(dealOrderVos!=null && dealOrderVos.size()>0){
-
-            for (int x=0;x<dealOrderVos.size();x++){
-                dealTotal+=(Double.parseDouble(dealOrderVos.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos.get(x).getQuantity())));
-            }
-        }
-        double subT=dealTotal+orderTotal;
-        DecimalFormat twoDForm = new DecimalFormat("#.##");
-        subT= Double.valueOf(twoDForm.format(subT));
-        totalPrice.setText("TOTAL: $"+subT);
-		dbInstance.close();
-		
-//		AppDao dao=null;
-//		try {
-//			dao=AppDao.getSingleton(getApplicationContext());
-//			dao.openConnection();
-//
-//            ArrayList<String> orderInfo = dao.getOrderInfo();
-//            ArrayList<DealOrder> dealOrderVos=dao.getDealOrdersList();
-//            Double orderTotal=0.0;
-//            if(null!=orderInfo && orderInfo.size()==2)
-//            {
-//                orderTotal=AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
-//
-//            }
-//            Double dealTotal=0.0;
-//            if(dealOrderVos!=null && dealOrderVos.size()>0){
-//
-//                for (int x=0;x<dealOrderVos.size();x++){
-//                    dealTotal+=(Double.parseDouble(dealOrderVos.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos.get(x).getQuantity())));
-//                }
-//            }
-//            double subT=dealTotal+orderTotal;
-//            DecimalFormat twoDForm = new DecimalFormat("#.##");
-//            subT= Double.valueOf(twoDForm.format(subT));
-//            totalPrice.setText("TOTAL: $"+subT);
-//
-//		} catch (Exception ex)
-//		{
-//			System.out.println(ex.getMessage());
-//		}finally{
-//			if(null!=dao)
-//				dao.closeConnection();
-//		}
 		
 		////////////////////////////////////////////////////////////////
 		myIp = getIPAddress(true);
@@ -173,6 +126,35 @@ public class PayByCashActivity extends Activity{
             txtUserName.setText("Dear "+AppSharedPreference.getData(PayByCashActivity.this, "customerName", ""));
          }
 	}
+	
+	
+    @Override
+    protected void onResume() {
+        super.onResume();
+        List<String> orderInfo = Utils.OrderInfo(PayByCashActivity.this);
+        int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+        String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+        
+        if(itemCount > 0){
+            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
+            tvItemsPrice.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvItemsPrice.setVisibility(View.INVISIBLE);
+        }
+
+        
+        String favCount = Utils.FavCount(PayByCashActivity.this);
+        if (favCount != null && !favCount.equals("0")) {
+            tvFavCount.setText(favCount);
+            tvFavCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvFavCount.setVisibility(View.INVISIBLE);
+        }
+    }
+    
+    
 
 	
 	public static String getIPAddress(boolean useIPv4) {
@@ -295,4 +277,7 @@ public class PayByCashActivity extends Activity{
 		}
 
 	}
+	
+	
+
 }

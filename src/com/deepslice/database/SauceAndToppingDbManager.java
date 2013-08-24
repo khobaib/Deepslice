@@ -35,29 +35,16 @@ public class SauceAndToppingDbManager {
     }
     
     
-    public static boolean isEmptyToppingsTables(SQLiteDatabase db, String prodId) {
-        Log.d("<<<>>>", "in SauceAndToppingDbManager, checking if empty table");
+    public static boolean isProductToppingsExist(SQLiteDatabase db, String prodId) {
+        Log.d(TAG, "checking if product toppings exist for prodId = " + prodId);
         
-        boolean recExists=false;
-        int count=-1;
-        try {
-            Cursor cursor= db.rawQuery("SELECT COUNT(*) AS num_rows FROM "+TABLE_SAUCES_AND_TOPPINGS+" WHERE ProdID="+prodId, null);
-            
-            if (cursor.moveToFirst()) {
-                count=cursor.getInt(0);             
-            }
-            
-            if(count > 0)
-                recExists=true;
-            
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-            return recExists;
-            
-        } catch (Exception e) {
-            return recExists;
+        Cursor cursor = db.query(TABLE_SAUCES_AND_TOPPINGS, null, "ProdID = ?", new String[] {prodId}, null, null, null);
+
+        if(cursor != null && cursor.getCount() > 0){
+            cursor.close();
+            return true;
         }
+        return false;
     }
     
     

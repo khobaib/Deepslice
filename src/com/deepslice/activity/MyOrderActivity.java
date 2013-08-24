@@ -1,7 +1,6 @@
 package com.deepslice.activity;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -25,21 +24,23 @@ import com.deepslice.model.LocationDetails;
 import com.deepslice.model.Order;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
+import com.deepslice.utilities.Constants;
 
 public class MyOrderActivity extends Activity{
 
-    ArrayList<Order> pizzaList;
-    ArrayList<Order> drinksList;
-    ArrayList<Order> sidesList;
-    ArrayList<Order> pastaList;
-    List<DealOrder> dealOrderVos;
-
+    List<Order> pizzaList;
+    List<Order> drinksList;
+    List<Order> sidesList;
+    List<Order> pastaList;
+    List<DealOrder> dealOrderList;
 
     TextView totalPrice;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_order);
+        
         totalPrice=(TextView)findViewById(R.id.textTextView12);
 
         /////////////////
@@ -213,24 +214,24 @@ public class MyOrderActivity extends Activity{
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(MyOrderActivity.this);
         dbInstance.open();
-        pizzaList = dbInstance.getOrdersListWithType("Pizza");
-        drinksList = dbInstance.getOrdersListWithType("Drinks");
-        sidesList = dbInstance.getOrdersListWithType("Sides");
-        pastaList = dbInstance.getOrdersListWithType("Pasta");
-        dealOrderVos=dbInstance.getDealOrdersList(true);
-        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        Double orderTotal=0.0;
+        pizzaList = dbInstance.getOrdersListWithType(Constants.PRODUCT_CATEGORY_PIZZA);
+        drinksList = dbInstance.getOrdersListWithType(Constants.PRODUCT_CATEGORY_DRINKS);
+        sidesList = dbInstance.getOrdersListWithType(Constants.PRODUCT_CATEGORY_SIDES);
+        pastaList = dbInstance.getOrdersListWithType(Constants.PRODUCT_CATEGORY_PASTA);
+        dealOrderList=dbInstance.getDealOrdersList(true);
+        List<String> orderInfo = dbInstance.getOrderInfo();
+        Double orderTotal = 0.0;
         if(null!=orderInfo && orderInfo.size()==2)
         {
-            orderTotal=AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
+            orderTotal = AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
 
         }
-        Double dealTotal=0.0;
-        if(dealOrderVos!=null && dealOrderVos.size()>0){
+        Double dealTotal = 0.0;
+        if(dealOrderList!=null && dealOrderList.size()>0){
 
-            for (int x=0;x<dealOrderVos.size();x++){
+            for (int x=0;x<dealOrderList.size();x++){
 
-                dealTotal+=Double.parseDouble(dealOrderVos.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos.get(x).getQuantity()));
+                dealTotal+=Double.parseDouble(dealOrderList.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderList.get(x).getQuantity()));
             }
         }
         double subT=dealTotal+orderTotal;
@@ -238,43 +239,6 @@ public class MyOrderActivity extends Activity{
         subT= Double.valueOf(twoDForm.format(subT));
         totalPrice.setText("TOTAL: $"+subT);
         dbInstance.close();
-
-        //		AppDao dao=null;
-        //		try {
-        //			dao=AppDao.getSingleton(getApplicationContext());
-        //			dao.openConnection();
-        //
-        //			pizzaList = dao.getOrdersListWithType("Pizza");
-        //			drinksList = dao.getOrdersListWithType("Drinks");
-        //			sidesList = dao.getOrdersListWithType("Sides");
-        //			pastaList = dao.getOrdersListWithType("Pasta");
-        //			dealOrderVos=dao.getDealOrdersList();
-        //			ArrayList<String> orderInfo = dao.getOrderInfo();
-        //            Double orderTotal=0.0;
-        //			if(null!=orderInfo && orderInfo.size()==2)
-        //			{
-        //                orderTotal=AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
-        //
-        //			}
-        //            Double dealTotal=0.0;
-        //            if(dealOrderVos!=null && dealOrderVos.size()>0){
-        //
-        //                for (int x=0;x<dealOrderVos.size();x++){
-        //
-        //                    dealTotal+=Double.parseDouble(dealOrderVos.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos.get(x).getQuantity()));
-        //                }
-        //            }
-        //            double subT=dealTotal+orderTotal;
-        //            DecimalFormat twoDForm = new DecimalFormat("#.##");
-        //            subT= Double.valueOf(twoDForm.format(subT));
-        //            totalPrice.setText("TOTAL: $"+subT);
-        //		} catch (Exception ex)
-        //		{
-        //			System.out.println(ex.getMessage());
-        //		}finally{
-        //			if(null!=dao)
-        //				dao.closeConnection();
-        //		}
 
         ////////////////////////////////////////////////////////////////
         ////// PIZZA
@@ -642,7 +606,7 @@ public class MyOrderActivity extends Activity{
         }// /////////////// END Sides
 
         //deal ...........................................................
-        if(dealOrderVos!=null && dealOrderVos.size()>0)
+        if(dealOrderList!=null && dealOrderList.size()>0)
         {
             LinearLayout lout=(LinearLayout)findViewById(R.id.wraperLayout);
 
@@ -662,7 +626,7 @@ public class MyOrderActivity extends Activity{
             lout.addView(tv);
 
             //for
-            for (DealOrder orderObj : dealOrderVos) {
+            for (DealOrder orderObj : dealOrderList) {
 
                 String itemName=orderObj.getDisplayName();
                 String itemPrice="$"+orderObj.getDiscountedPrice();
@@ -755,7 +719,7 @@ public class MyOrderActivity extends Activity{
         for (int x=0;x<dealOrderVos1.size();x++){
             tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
         }
-        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
+        List<String> orderInfo = dbInstance.getOrderInfo();
         if(null!=orderInfo && orderInfo.size()==2)
         {
             double temp=AppProperties.getRoundTwoDecimalString(orderInfo.get(1)) ;
@@ -768,93 +732,32 @@ public class MyOrderActivity extends Activity{
         RelativeLayout ll = (RelativeLayout)findViewById(serialId + 99);
         ll.setVisibility(View.GONE);
         dbInstance.close();
-
-//        AppDao dao=null;
-//        try {
-//            dao=AppDao.getSingleton(getApplicationContext());
-//            dao.openConnection();
-//
-//            dao.deleteOrderRec(serialId);
-//            ArrayList<DealOrder>dealOrderVos1= dao.getDealOrdersList();
-//            double tota=0.00;
-//            for (int x=0;x<dealOrderVos1.size();x++){
-//                tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-//            }
-//            ArrayList<String> orderInfo = dao.getOrderInfo();
-//            if(null!=orderInfo && orderInfo.size()==2)
-//            {
-//                double temp=AppProperties.getRoundTwoDecimalString(orderInfo.get(1)) ;
-//                temp=temp+tota;
-//                DecimalFormat twoDForm = new DecimalFormat("#.##");
-//                temp= Double.valueOf(twoDForm.format(temp));
-//                totalPrice.setText("TOTAL: $"+temp);
-//            }
-//
-//            RelativeLayout ll = (RelativeLayout)findViewById(serialId + 99);
-//            ll.setVisibility(View.GONE);
-//
-//        } catch (Exception ex)
-//        {
-//            System.out.println(ex.getMessage());
-//        }finally{
-//            if(null!=dao)
-//                dao.closeConnection();
-//        }
     }
-    private void deleteFromDealOrder(int serialId){
-        
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(MyOrderActivity.this);
-        dbInstance.open();
-        dbInstance.deleteDealOrderRec(serialId);
-        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        double temp=AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
-        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
-        double tota=0.00;
-        for (int x=0;x<dealOrderVos1.size();x++){
-            tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-        }
-        if(null!=dealOrderVos1 && dealOrderVos1.size()==2)
-        {
-
-            temp=temp+tota;
-
-            totalPrice.setText("TOTAL: $"+temp);
-        }
-
-        RelativeLayout ll = (RelativeLayout)findViewById(serialId + 99);
-        ll.setVisibility(View.GONE);
-        dbInstance.close();
-
-//        AppDao dao=null;
-//        try {
-//            dao=AppDao.getSingleton(getApplicationContext());
-//            dao.openConnection();
-//
-//            dao.deleteDealOrderRec(serialId);
-//            ArrayList<String> orderInfo = dao.getOrderInfo();
-//            double temp=AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
-//            ArrayList<DealOrder>dealOrderVos1= dao.getDealOrdersList();
-//            double tota=0.00;
-//            for (int x=0;x<dealOrderVos1.size();x++){
-//                tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-//            }
-//            if(null!=dealOrderVos1 && dealOrderVos1.size()==2)
-//            {
-//
-//                temp=temp+tota;
-//
-//                totalPrice.setText("TOTAL: $"+temp);
-//            }
-//
-//            RelativeLayout ll = (RelativeLayout)findViewById(serialId + 99);
-//            ll.setVisibility(View.GONE);
-//
-//        } catch (Exception ex)
-//        {
-//            System.out.println(ex.getMessage());
-//        }finally{
-//            if(null!=dao)
-//                dao.closeConnection();
+    
+    
+//    private void deleteFromDealOrder(int serialId){
+//        
+//        DeepsliceDatabase dbInstance = new DeepsliceDatabase(MyOrderActivity.this);
+//        dbInstance.open();
+//        dbInstance.deleteDealOrderRec(serialId);
+//        List<String> orderInfo = dbInstance.getOrderInfo();
+//        double temp=AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
+//        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
+//        double tota=0.00;
+//        for (int x=0;x<dealOrderVos1.size();x++){
+//            tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
 //        }
-    }
+//        if(null!=dealOrderVos1 && dealOrderVos1.size()==2)
+//        {
+//
+//            temp=temp+tota;
+//
+//            totalPrice.setText("TOTAL: $"+temp);
+//        }
+//
+//        RelativeLayout ll = (RelativeLayout)findViewById(serialId + 99);
+//        ll.setVisibility(View.GONE);
+//        dbInstance.close();
+//
+//    }
 }

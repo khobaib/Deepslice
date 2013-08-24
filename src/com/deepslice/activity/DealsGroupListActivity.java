@@ -36,6 +36,7 @@ import com.deepslice.model.ServerResponse;
 import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.Utils;
 
 public class DealsGroupListActivity extends Activity{
 
@@ -50,6 +51,7 @@ public class DealsGroupListActivity extends Activity{
 
     ListView lvDealGroup;
     TextView DealPrice;
+    TextView tvItemsPrice, tvFavCount;
 
     DealGroupListAdapter dealGroupListAdapter;
 
@@ -64,6 +66,12 @@ public class DealsGroupListActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.deals_group_list);
+        
+        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
+        tvFavCount = (TextView) findViewById(R.id.favCount);
+        
+        TextView title = (TextView) findViewById(R.id.headerTextView);
+        title.setText(selectedCouponDesc);
 
         pDialog = new ProgressDialog(DealsGroupListActivity.this);
 
@@ -72,9 +80,6 @@ public class DealsGroupListActivity extends Activity{
 
         selectedCouponID = selectedCoupon.getCouponID();
         selectedCouponDesc = selectedCoupon.getCouponDesc();
-
-        TextView title = (TextView) findViewById(R.id.headerTextView);
-        title.setText(selectedCouponDesc);
 
         couponGroupIds = new ArrayList<String>();
         couponGroupList = new ArrayList<CouponGroup>();
@@ -121,8 +126,6 @@ public class DealsGroupListActivity extends Activity{
         });
 
 
-        // NEED TO UNDERSTAND THIS PART
-        //comment = add new image for GET A DEAL
         RelativeLayout buttonGetADeal=(RelativeLayout)findViewById(R.id.getDeal);
         buttonGetADeal.setOnClickListener(new OnClickListener() {
             @Override
@@ -215,7 +218,6 @@ public class DealsGroupListActivity extends Activity{
     }  
 
 
-
     public class GetCouponDetails extends AsyncTask<Void, Void, Boolean>{
 
         @Override
@@ -242,7 +244,6 @@ public class DealsGroupListActivity extends Activity{
                     long productParseEndTime = System.currentTimeMillis();
                     Log.d("TIME", "time to parse coupon-details = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
 
-                    // prepare initial dealOrder for every couponGroup & save it to the DB
                     dealOrderList = new ArrayList<DealOrder>();
                     unfinishedDealPrice = 0;
 
@@ -360,19 +361,12 @@ public class DealsGroupListActivity extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
-        doResumeWork();
-    }
-
-    private void doResumeWork() {
-
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
         dbInstance.open();
-        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        List<DealOrder> finishedDealOrderList= dbInstance.getDealOrdersList(true);
+        List<DealOrder> unfinishedDealOrderList = dbInstance.getDealOrdersList(false);
+        dbInstance.close();
 
         unfinishedDealPrice = 0;
-
-        List<DealOrder> unfinishedDealOrderList = dbInstance.getDealOrdersList(false);
         dealOrderList = new ArrayList<DealOrder>();
         for(int couponGrpIndex = 0; couponGrpIndex < couponGroupIds.size(); couponGrpIndex++){
             String couponGrpId = couponGroupIds.get(couponGrpIndex);
@@ -386,48 +380,29 @@ public class DealsGroupListActivity extends Activity{
                 }
             }
         }
-
         updateDealsGroupList();
 
-        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-        double tota=0.00;
-        int dealCount=0;
-        if((finishedDealOrderList!=null && finishedDealOrderList.size()>0)){
-            dealCount=finishedDealOrderList.size();
-            for (int x=0;x<finishedDealOrderList.size();x++){
-                tota+=(Double.parseDouble(finishedDealOrderList.get(x).getDiscountedPrice())*(Integer.parseInt(finishedDealOrderList.get(x).getQuantity())));
-            }
-        }
-
-        int orderInfoCount= 0;
-        double  orderInfoTotal=0.0;
-        if ((null != orderInfo && orderInfo.size() == 2) ) {
-            orderInfoCount=Integer.parseInt(orderInfo.get(0));
-            orderInfoTotal=Double.parseDouble(orderInfo.get(1));
-        }
-        int numPro=orderInfoCount+dealCount;
-        double subTotal=orderInfoTotal+tota;
-
-        subTotal= Double.valueOf(Constants.twoDForm.format(subTotal));
-        if(numPro>0){
-            itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
-            itemsPrice.setVisibility(View.VISIBLE);
-        }
-
-        else{
-            itemsPrice.setVisibility(View.INVISIBLE);
-        }
-
-        TextView favCount = (TextView) findViewById(R.id.favCount);
-        String fvs=dbInstance.getFavCount();
-        if (null != fvs && !fvs.equals("0")) {
-            favCount.setText(fvs);
-            favCount.setVisibility(View.VISIBLE);
+        List<String> orderInfo = Utils.OrderInfo(DealsGroupListActivity.this);
+        int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+        String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+        
+        if(itemCount > 0){
+            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
+            tvItemsPrice.setVisibility(View.VISIBLE);
         }
         else{
-            favCount.setVisibility(View.INVISIBLE);
+            tvItemsPrice.setVisibility(View.INVISIBLE);
         }
-        dbInstance.close();
+
+        
+        String favCount = Utils.FavCount(DealsGroupListActivity.this);
+        if (favCount != null && !favCount.equals("0")) {
+            tvFavCount.setText(favCount);
+            tvFavCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvFavCount.setVisibility(View.INVISIBLE);
+        }
     }
 }
 

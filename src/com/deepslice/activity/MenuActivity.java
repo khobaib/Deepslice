@@ -9,10 +9,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,8 +31,11 @@ import com.deepslice.model.Product;
 import com.deepslice.model.ProductCategory;
 import com.deepslice.model.ProductSubCategory;
 import com.deepslice.model.ServerResponse;
+import com.deepslice.model.ToppingPrices;
+import com.deepslice.model.ToppingSizes;
 import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.Utils;
 
 public class MenuActivity extends Activity {
 
@@ -39,10 +45,14 @@ public class MenuActivity extends Activity {
     List<ProductCategory> categoryList;
     List<ProductSubCategory> subcategoryList;
     List<Product> productList;
+    List<ToppingPrices> toppingsPriceList;
+    List<ToppingSizes> toppingsSizeList;
 
     long dataRetrieveStartTime, dataRetrieveEndTime;
 
-
+    TextView tvItemsPrice, tvFavCount;
+    
+    final Handler mHandler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,15 +61,15 @@ public class MenuActivity extends Activity {
 
         pDialog = ProgressDialog.show(MenuActivity.this, "", "Please wait...", true, false);
 
-        boolean synced = false;
+        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
+        tvFavCount = (TextView) findViewById(R.id.favCount);
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
         dbInstance.open();
-        synced=dbInstance.recordExists();
+        boolean isCatSynced = dbInstance.isProductCategoriesExist();
         dbInstance.close();
 
-        //        synced = false;          // test
-        if(synced) {
+        if(isCatSynced) {
             if(pDialog.isShowing())
                 pDialog.dismiss();
         }
@@ -79,9 +89,9 @@ public class MenuActivity extends Activity {
 
                 Intent intent=new Intent(MenuActivity.this,PizzaSubMenuActivity.class);
                 intent.putExtra("isHalf", false);
-//                Bundle bundle=new Bundle();
-//                bundle.putString("catType","Pizza");
-//                intent.putExtras(bundle);
+                //                Bundle bundle=new Bundle();
+                //                bundle.putString("catType","Pizza");
+                //                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -173,9 +183,6 @@ public class MenuActivity extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //            pDialog.setMessage("Please wait...");
-            //            if(!pDialog.isShowing())
-            //                pDialog.show();
         }
 
         @Override
@@ -264,7 +271,8 @@ public class MenuActivity extends Activity {
         }
     }
 
-
+    
+    
     public class GetAllProducts extends AsyncTask<Void, Void, Boolean>{
 
         @Override
@@ -311,16 +319,135 @@ public class MenuActivity extends Activity {
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
-            if(pDialog.isShowing())
-                pDialog.dismiss();
-            if(result){
+
+            if(result){                
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+                dbInstance.open();
+                boolean isToppingsSynced = dbInstance.isToppingsExist();
+                dbInstance.close();
+
+                if(isToppingsSynced){
+                    if(pDialog.isShowing())
+                        pDialog.dismiss();
+                }
+                else{
+                    Thread t = new Thread() {            
+                        public void run() {                
+                            try {
+                                GetPizzaToppingsSizes();
+                                GetPizzaToppingsPrices();
+
+                            } catch (Exception ex){
+                                System.out.println(ex.getMessage());
+                            }
+                            mHandler.post(dismissProgressBar);            
+                        }
+                    };        
+                    t.start();
+                }
+            }
+            else{
+                if(pDialog.isShowing())
+                    pDialog.dismiss();
+
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MenuActivity.this);
+                alertDialog.setTitle("Deepslice");
+                alertDialog.setMessage("Failed to retrieve data. Try again later");
+                alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        MenuActivity.this.finish();
+                        return;
+                    } });
+                alertDialog.create().show();
             }
         }
     }
+    
+    final Runnable dismissProgressBar = new Runnable() {        
+        public void run() {            
+            if(pDialog.isShowing())
+                pDialog.dismiss();        
+        }    
+    };
+        
+
+
+    private void GetPizzaToppingsSizes(){
+
+        String url = Constants.ROOT_URL + "GetToppingSizes.aspx";
+        long dataRetrieveStartTime = System.currentTimeMillis();
+        ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+
+        long dataRetrieveEndTime = System.currentTimeMillis();
+        Log.d("TIME", "time to retrieve topping SIZE data = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");
+
+
+        if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
+            JSONObject jsonObj = response.getjObj();
+            try {
+                JSONObject responseObj = jsonObj.getJSONObject("Response");
+                int status = responseObj.getInt("Status");
+                JSONArray data = responseObj.getJSONArray("Data");
+                JSONObject errors = responseObj.getJSONObject("Errors");
+
+                toppingsSizeList = ToppingSizes.parseToppingsSizes(data);
+
+                long productParseEndTime = System.currentTimeMillis();
+                Log.d("TIME", "time to parse topping Size list of item " + toppingsSizeList.size() + " = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
+                long dbInsertionStart = System.currentTimeMillis();
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+                dbInstance.open();
+                dbInstance.insertToppingSizes(toppingsSizeList);
+                dbInstance.close();
+                long dbInsertionEnd = System.currentTimeMillis();
+                Log.d("TIME", "time to insert topping-size data " + " = " + (dbInsertionEnd - dbInsertionStart)/1000 + " second");
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    } 
+
+
+    private void GetPizzaToppingsPrices(){
+        String url = Constants.ROOT_URL + "GetToppingPrices.aspx";
+        long dataRetrieveStartTime = System.currentTimeMillis();
+        ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+
+        long dataRetrieveEndTime = System.currentTimeMillis();
+        Log.d("TIME", "time to retrieve topping PRICE data = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");
+
+
+        if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
+            JSONObject jsonObj = response.getjObj();
+            try {
+                JSONObject responseObj = jsonObj.getJSONObject("Response");
+                int status = responseObj.getInt("Status");
+                JSONArray data = responseObj.getJSONArray("Data");
+                JSONObject errors = responseObj.getJSONObject("Errors");
+
+                toppingsPriceList = ToppingPrices.parseToppingsPriceList(data);
+
+                long productParseEndTime = System.currentTimeMillis();
+                Log.d("TIME", "time to parse topping PRICE list of item " + toppingsPriceList.size() + " = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
+                long dbInsertionStart = System.currentTimeMillis();
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+                dbInstance.open();
+                dbInstance.insertToppingPrices(toppingsPriceList);
+                dbInstance.close();
+                long dbInsertionEnd = System.currentTimeMillis();
+                Log.d("TIME", "time to insert topping-price data " + " = " + (dbInsertionEnd - dbInsertionStart)/1000 + " second");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    } 
 
 
     private void insertProductIntoDb(){
-
 
         long productDBInsertstartTime = System.currentTimeMillis();
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
@@ -335,14 +462,6 @@ public class MenuActivity extends Activity {
 
     }
 
-    //
-    //
-    //
-    //    protected void getProductCategories() {
-    //
-    //
-    //
-    //    }
 
     private String getProdCatId(String abbr) {
         String pCatId="0";
@@ -354,294 +473,33 @@ public class MenuActivity extends Activity {
 
         return pCatId;
     }
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-    //    private void updateResultsInUi() { 
-    //
-    //        if(pDialog.isShowing())
-    //            pDialog.dismiss();
-    //
-    //    }
 
     @Override
     protected void onResume() {
-        // //////////////////////////////////////////////////////////////////////////////
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
-        dbInstance.open();
-        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
-        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-        double tota=0.00;
-        int dealCount=0;
-        if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
-            dealCount=dealOrderVos1.size();
-            for (int x=0;x<dealOrderVos1.size();x++){
-                tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-            }
-        }
-
-        int orderInfoCount= 0;
-        double  orderInfoTotal=0.0;
-        if ((null != orderInfo && orderInfo.size() == 2) ) {
-            orderInfoCount=Integer.parseInt(orderInfo.get(0));
-            orderInfoTotal=Double.parseDouble(orderInfo.get(1));
-        }
-        int numPro=orderInfoCount+dealCount;
-        double subTotal=orderInfoTotal+tota;
-        DecimalFormat twoDForm = new DecimalFormat("#.##");
-        subTotal= Double.valueOf(twoDForm.format(subTotal));
-        if(numPro>0){
-            itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
-            itemsPrice.setVisibility(View.VISIBLE);
-        }
-
-        else{
-            itemsPrice.setVisibility(View.INVISIBLE);
-
-        }
-
-        TextView favCount = (TextView) findViewById(R.id.favCount);
-        String fvs=dbInstance.getFavCount();
-        if (null != fvs && !fvs.equals("0")) {
-            favCount.setText(fvs);
-            favCount.setVisibility(View.VISIBLE);
-        }
-        else{
-            favCount.setVisibility(View.INVISIBLE);
-        }
-        dbInstance.close();
         super.onResume();
+        List<String> orderInfo = Utils.OrderInfo(MenuActivity.this);
+        int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+        String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+
+        if(itemCount > 0){
+            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
+            tvItemsPrice.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvItemsPrice.setVisibility(View.INVISIBLE);
+        }
+
+
+        String favCount = Utils.FavCount(MenuActivity.this);
+        if (favCount != null && !favCount.equals("0")) {
+            tvFavCount.setText(favCount);
+            tvFavCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvFavCount.setVisibility(View.INVISIBLE);
+        }
     }
-
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////
-
-    //    private static class UpdateMenuTask extends ResumableTask implements ProgressListener {
-    //
-    //        private Context ctx;
-    //        private int petid = -1;
-    //        private ProgressDialog pd;
-    //        private long uploadingFileSize;
-    //        private File uploadableFile;
-    //
-    //        private String isDefault;
-    //        private String rotateable;
-    //        private String commentable;
-    //        private String profilePet;
-    //        private String comments;
-    //        private String tags;
-    //        private String albumId;
-    //        private String watermarkLocation;
-    //
-    //        HttpClient httpclient;
-    //
-    //        public UpdateMenuTask(ResumableTaskStarter starter, int id, int _petid, File _uploadableFile,
-    //                String isDefault,String rotateable,String commentable,String profilePet,String comments,String tags,String albumId,String watermarkLocation) {
-    //            super(starter, id);
-    //            this.ctx = ((Context) starter);
-    //            this.petid = _petid;
-    //            this.uploadableFile = _uploadableFile;
-    //
-    //            this.isDefault=isDefault;
-    //            this.rotateable=rotateable;
-    //            this.commentable=commentable;
-    //            this.profilePet=profilePet;
-    //            this.comments=comments;
-    //            this.tags=tags;
-    //            this.albumId=albumId;
-    //            this.watermarkLocation=watermarkLocation;
-    //
-    //
-    //        }
-    //
-    //        @Override
-    //        public void resume(ResumableTaskStarter starter) {
-    //            super.resume(starter);
-    //            if (!isFinished()) {
-    //                pd = new ProgressDialog(ctx);
-    //                pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-    //                pd.setMessage("Uploading...");
-    //                pd.setCancelable(false);
-    //                pd.setMax(100);
-    //                pd.setButton(DialogInterface.BUTTON_NEGATIVE,
-    //                        "Cancel", new DialogInterface.OnClickListener() {
-    //                    public void onClick(DialogInterface dialog, int whichButton) {
-    //
-    //                        ClientConnectionManager cm = httpclient.getConnectionManager();
-    //                        cm.shutdown();
-    //                        //	                	photoTask.pause();
-    //
-    //                    }
-    //                });
-    //                pd.show();
-    //            }
-    //        }
-    //
-    //        @Override
-    //        public void pause() {
-    //            super.pause();
-    //            pd.dismiss();
-    //        }
-    //
-    //        @Override
-    //        public void doStuff() {
-    //            data = false;
-    //            StringBuilder builder = new StringBuilder();
-    //            try {
-    //
-    //                uploadingFileSize = uploadableFile.length();
-    //
-    //                httpclient = new DefaultHttpClient();
-    //
-    //                try {
-    //                    HttpGet httpgets = new HttpGet(Constants.ROOT_URL + "/GetAllProducts.aspx");
-    //
-    //                    System.out.println("executing request " + httpgets.getRequestLine());
-    //
-    //                    HttpResponse response = null;
-    //                    try {
-    //                        response = httpclient.execute(httpgets);
-    //                    } catch (ClientProtocolException e) {
-    //                        e.printStackTrace();
-    //
-    //                        AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
-    //                        alertDialog.setTitle("Error Uploading");
-    //                        alertDialog.setMessage(e.getMessage());
-    //                        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-    //                            public void onClick(DialogInterface dialog, int which) {
-    //                                return;
-    //                            } }); 
-    //                        alertDialog.show();
-    //
-    //                        return;
-    //                    } catch (IOException e) {
-    //                        e.printStackTrace();
-    //
-    //                        final String msg=e.getMessage();
-    //                        ((Activity) ctx).runOnUiThread(new Runnable() {
-    //                            public void run() {
-    //                                AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
-    //                                alertDialog.setTitle("Error Uploading");
-    //                                alertDialog.setMessage(msg);
-    //                                alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-    //                                    public void onClick(DialogInterface dialog, int which) {
-    //                                        return;
-    //                                    } }); 
-    //                                alertDialog.show();
-    //                            }
-    //                        });
-    //
-    //                        return;
-    //                    } catch (Exception e) {
-    //                        e.printStackTrace();
-    //
-    //                        final String msg=e.getMessage();
-    //
-    //                        if(msg.contains("Adapter is detached"))
-    //                        {
-    //                            ((Activity) ctx).runOnUiThread(new Runnable() {
-    //                                public void run() {
-    //                                    AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
-    //                                    alertDialog.setTitle("Upload Canceled");
-    //                                    alertDialog.setMessage("You have canceled upload request!");
-    //                                    alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-    //                                        public void onClick(DialogInterface dialog, int which) {
-    //                                            return;
-    //                                        } }); 
-    //                                    alertDialog.show();
-    //                                }
-    //                            });
-    //
-    //                        }else{
-    //                            ((Activity) ctx).runOnUiThread(new Runnable() {
-    //                                public void run() {
-    //                                    AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
-    //                                    alertDialog.setTitle("Error Uploading");
-    //                                    alertDialog.setMessage(msg);
-    //                                    alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-    //                                        public void onClick(DialogInterface dialog, int which) {
-    //                                            return;
-    //                                        } }); 
-    //                                    alertDialog.show();
-    //                                }
-    //                            });
-    //                        }
-    //                        return;
-    //                    }
-    //
-    //                    HttpEntity resEntity = response.getEntity();
-    //
-    //                    System.out.println("----------------------------------------");
-    //                    System.out.println(response.getStatusLine());
-    //                    System.out.println(response.getAllHeaders());
-    //
-    //                    if (resEntity != null) {
-    //                        System.out.println("Response content length: " + resEntity.getContentLength());
-    //
-    //
-    //                        InputStream content = resEntity.getContent();
-    //                        BufferedReader reader = new BufferedReader(
-    //                                new InputStreamReader(content));
-    //                        String line;
-    //                        while ((line = reader.readLine()) != null) {
-    //                            builder.append(line);
-    //                        }
-    //
-    //
-    //                    }
-    //                    String readFeed = builder.toString();
-    //                    System.out.println(">>>>>>>>>>"+readFeed);
-    //                    JSONObject jsOb = new JSONObject(readFeed);
-    //
-    //                    String status=jsOb.getString("success");
-    //                    String errorMsg=null;
-    //                    if(status != null && status.equals("false") ){
-    //                        errorMsg=jsOb.getString("message");							
-    //                    }
-    //                    System.out.println("status::"+status);
-    //                    System.out.println("errorMsg::"+errorMsg);
-    //
-    //                    if (pd!=null && pd.isShowing()) {
-    //                        pd.dismiss();
-    //                    }
-    //
-    //                    data = true;
-    //
-    //                } finally {
-    //                }
-    //            } catch (Exception e) {
-    //                e.printStackTrace();
-    //
-    //                final String msg=e.getMessage();
-    //                ((Activity) ctx).runOnUiThread(new Runnable() {
-    //                    public void run() {
-    //                        AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
-    //                        alertDialog.setTitle("Error Uploading");
-    //                        alertDialog.setMessage(msg);
-    //                        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-    //                            public void onClick(DialogInterface dialog, int which) {
-    //                                return;
-    //                            } }); 
-    //                        alertDialog.show();
-    //                    }
-    //                });
-    //
-    //                return;
-    //            }
-    //        }
-    //
-    //        @Override
-    //        public void onProgress(int num) {
-    //            if (pd != null) {
-    //                int progress = (int) (num * 100 / uploadingFileSize);
-    //                Log.d("Petsie", "Data transferred:" + num + "/" + uploadingFileSize + ", setting progress to : " + progress);
-    //                pd.setProgress(progress);
-    //            }
-    //        }
-    //
-    //    }		
 
 
 }

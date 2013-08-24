@@ -36,28 +36,16 @@ public class ToppingPriceDbManager {
     }
 
 
-    public static boolean isEmptyToppingsPrices(SQLiteDatabase db) {
-        Log.d("<<<>>>", "in ToppingPriceDbManager, checking if empty table");
-        boolean recExists=false;
-        int count=-1;
-        try {
-            Cursor cursor=db.rawQuery("SELECT COUNT(*) AS num_rows FROM " + TABLE_TOPPING_PRICES + " " , null);
+    // modified
+    public static boolean isToppingsExist(SQLiteDatabase db) {
+        Log.d(TAG, "isEmptyDB?");
+        Cursor cursor = db.query(TABLE_TOPPING_PRICES, null, null, null, null, null, null);
 
-            if (cursor.moveToFirst()) {
-                count=cursor.getInt(0);             
-            }
-
-            if(count > 0)
-                recExists=true;
-
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-            return recExists;
-
-        } catch (Exception e) {
-            return recExists;
+        if(cursor != null && cursor.getCount() > 0){
+            cursor.close();
+            return true;
         }
+        return false;
     }
 
 

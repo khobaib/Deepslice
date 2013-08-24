@@ -25,6 +25,8 @@ import com.deepslice.model.DealOrder;
 import com.deepslice.model.Product;
 import com.deepslice.model.ProductCategory;
 import com.deepslice.model.ProductSubCategory;
+import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.Utils;
 
 public class DrinksSubMenuActivity extends Activity{
 
@@ -33,6 +35,8 @@ public class DrinksSubMenuActivity extends Activity{
     ArrayList<Product> allProductsList;
 
     ListView listview;
+    TextView tvItemsPrice, tvFavCount;
+
     MyListAdapterDrinks myAdapter;
 
     //	String catIds;
@@ -48,25 +52,28 @@ public class DrinksSubMenuActivity extends Activity{
         TextView title = (TextView) findViewById(R.id.headerTextView);
         title.setText(catType);
 
+        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
+        tvFavCount = (TextView) findViewById(R.id.favCount);
+
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DrinksSubMenuActivity.this);
         dbInstance.open();
         subCatList=dbInstance.getSubCategoriesDrinks();
         dbInstance.close();
-        
-//        AppDao dao=null;
-//        try {
-//            dao=AppDao.getSingleton(getApplicationContext());
-//            dao.openConnection();
-//
-//            subCatList=dao.getSubCategoriesDrinks();
-//
-//        } catch (Exception ex)
-//        {
-//            System.out.println(ex.getMessage());
-//        }finally{
-//            if(null!=dao)
-//                dao.closeConnection();
-//        }
+
+        //        AppDao dao=null;
+        //        try {
+        //            dao=AppDao.getSingleton(getApplicationContext());
+        //            dao.openConnection();
+        //
+        //            subCatList=dao.getSubCategoriesDrinks();
+        //
+        //        } catch (Exception ex)
+        //        {
+        //            System.out.println(ex.getMessage());
+        //        }finally{
+        //            if(null!=dao)
+        //                dao.closeConnection();
+        //        }
 
         listview = (ListView) findViewById(R.id.listView1);				
         myAdapter = new MyListAdapterDrinks(this,R.layout.line_item_yello, subCatList);
@@ -159,112 +166,32 @@ public class DrinksSubMenuActivity extends Activity{
 
     }
     // /////////////////////// END LIST ADAPTER
+
+
     @Override
     protected void onResume() {
-        // //////////////////////////////////////////////////////////////////////////////
-
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DrinksSubMenuActivity.this);
-        dbInstance.open();
-        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
-        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-        double tota=0.00;
-        int dealCount=0;
-        if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
-            dealCount=dealOrderVos1.size();
-            for (int x=0;x<dealOrderVos1.size();x++){
-                tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-            }
-        }
-
-        int orderInfoCount= 0;
-        double  orderInfoTotal=0.0;
-        if ((null != orderInfo && orderInfo.size() == 2) ) {
-            orderInfoCount=Integer.parseInt(orderInfo.get(0));
-            orderInfoTotal=Double.parseDouble(orderInfo.get(1));
-        }
-        int numPro=orderInfoCount+dealCount;
-        double subTotal=orderInfoTotal+tota;
-        DecimalFormat twoDForm = new DecimalFormat("#.##");
-        subTotal= Double.valueOf(twoDForm.format(subTotal));
-        if(numPro>0){
-            itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
-            itemsPrice.setVisibility(View.VISIBLE);
-        }
-
-        else{
-            itemsPrice.setVisibility(View.INVISIBLE);
-
-        }
-
-        TextView favCount = (TextView) findViewById(R.id.favCount);
-        String fvs=dbInstance.getFavCount();
-        if (null != fvs && !fvs.equals("0")) {
-            favCount.setText(fvs);
-            favCount.setVisibility(View.VISIBLE);
-        }
-        else{
-            favCount.setVisibility(View.INVISIBLE);
-        }
-        dbInstance.close();
-
-
-        //        AppDao dao = null;
-        //        try {
-        //            dao = AppDao.getSingleton(getApplicationContext());
-        //            dao.openConnection();
-        //            ArrayList<String> orderInfo = dao.getOrderInfo();
-        //            ArrayList<DealOrder>dealOrderVos1= dao.getDealOrdersList();
-        //            TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-        //            double tota=0.00;
-        //            int dealCount=0;
-        //            if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
-        //                dealCount=dealOrderVos1.size();
-        //                for (int x=0;x<dealOrderVos1.size();x++){
-        //                    tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-        //                }
-        //            }
-        //
-        //            int orderInfoCount= 0;
-        //            double  orderInfoTotal=0.0;
-        //            if ((null != orderInfo && orderInfo.size() == 2) ) {
-        //                orderInfoCount=Integer.parseInt(orderInfo.get(0));
-        //                orderInfoTotal=Double.parseDouble(orderInfo.get(1));
-        //            }
-        //            int numPro=orderInfoCount+dealCount;
-        //            double subTotal=orderInfoTotal+tota;
-        //            DecimalFormat twoDForm = new DecimalFormat("#.##");
-        //            subTotal= Double.valueOf(twoDForm.format(subTotal));
-        //            if(numPro>0){
-        //                itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
-        //                itemsPrice.setVisibility(View.VISIBLE);
-        //            }
-        //
-        //            else{
-        //                itemsPrice.setVisibility(View.INVISIBLE);
-        //
-        //            }
-        //
-        //            TextView favCount = (TextView) findViewById(R.id.favCount);
-        //            String fvs=dao.getFavCount();
-        //            if (null != fvs && !fvs.equals("0")) {
-        //                favCount.setText(fvs);
-        //                favCount.setVisibility(View.VISIBLE);
-        //            }
-        //            else{
-        //                favCount.setVisibility(View.INVISIBLE);
-        //            }
-        //
-        //
-        //
-        //        } catch (Exception ex) {
-        //            System.out.println(ex.getMessage());
-        //        } finally {
-        //            if (null != dao)
-        //                dao.closeConnection();
-        //        }
-        // ///////////////////////////////////////////////////////////////////////
-
         super.onResume();
+
+        List<String> orderInfo = Utils.OrderInfo(DrinksSubMenuActivity.this);
+        int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+        String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+
+        if(itemCount > 0){
+            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
+            tvItemsPrice.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvItemsPrice.setVisibility(View.INVISIBLE);
+        }
+
+
+        String favCount = Utils.FavCount(DrinksSubMenuActivity.this);
+        if (favCount != null && !favCount.equals("0")) {
+            tvFavCount.setText(favCount);
+            tvFavCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvFavCount.setVisibility(View.INVISIBLE);
+        }
     }
 }

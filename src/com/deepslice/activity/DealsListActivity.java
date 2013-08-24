@@ -34,6 +34,7 @@ import com.deepslice.model.DealOrder;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.Utils;
 
 public class DealsListActivity extends Activity {
 
@@ -45,6 +46,8 @@ public class DealsListActivity extends Activity {
     List<Coupon> couponsList;
 
     ListView lvCpuponList;
+    TextView tvItemsPrice, tvFavCount;
+    
     DealListAdapter dealListAdapter;
 
 
@@ -56,6 +59,9 @@ public class DealsListActivity extends Activity {
         pDialog = new ProgressDialog(DealsListActivity.this);
 
         lvCpuponList = (ListView) findViewById(R.id.listView1);
+        
+        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
+        tvFavCount = (TextView) findViewById(R.id.favCount);
 
         new GetDealsCoupon().execute();
 
@@ -195,49 +201,26 @@ public class DealsListActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsListActivity.this);
-        dbInstance.open();
-        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
-        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-        double tota=0.00;
-        int dealCount=0;
-        if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
-            dealCount=dealOrderVos1.size();
-            for (int x=0;x<dealOrderVos1.size();x++){
-                tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-            }
-        }
-
-        int orderInfoCount= 0;
-        double  orderInfoTotal=0.0;
-        if ((null != orderInfo && orderInfo.size() == 2) ) {
-            orderInfoCount=Integer.parseInt(orderInfo.get(0));
-            orderInfoTotal=Double.parseDouble(orderInfo.get(1));
-        }
-        int numPro=orderInfoCount+dealCount;
-        double subTotal=orderInfoTotal+tota;
-        DecimalFormat twoDForm = new DecimalFormat("#.##");
-        subTotal= Double.valueOf(twoDForm.format(subTotal));
-        if(numPro>0){
-            itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
-            itemsPrice.setVisibility(View.VISIBLE);
-        }
-
-        else{
-            itemsPrice.setVisibility(View.INVISIBLE);
-
-        }
-
-        TextView favCount = (TextView) findViewById(R.id.favCount);
-        String fvs=dbInstance.getFavCount();
-        if (null != fvs && !fvs.equals("0")) {
-            favCount.setText(fvs);
-            favCount.setVisibility(View.VISIBLE);
+        List<String> orderInfo = Utils.OrderInfo(DealsListActivity.this);
+        int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+        String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+        
+        if(itemCount > 0){
+            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
+            tvItemsPrice.setVisibility(View.VISIBLE);
         }
         else{
-            favCount.setVisibility(View.INVISIBLE);
+            tvItemsPrice.setVisibility(View.INVISIBLE);
         }
-        dbInstance.close();
+
+        
+        String favCount = Utils.FavCount(DealsListActivity.this);
+        if (favCount != null && !favCount.equals("0")) {
+            tvFavCount.setText(favCount);
+            tvFavCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvFavCount.setVisibility(View.INVISIBLE);
+        }
     }
 }

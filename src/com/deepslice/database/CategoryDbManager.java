@@ -105,31 +105,19 @@ public class CategoryDbManager {
     }
 
 
-    public static boolean isEmptyDB(SQLiteDatabase db) {
-        Log.d(TAG, "in CategoryDbManager, isEmptyDB?");
+    // modified
+    public static boolean isCategoriesExist(SQLiteDatabase db) {
+        Log.d(TAG, "isEmptyDB?");
+        Cursor cursor = db.query(TABLE_CATEGORIES, null, null, null, null, null, null);
 
-        boolean recExists=false;
-        int count=-1;
-        try {
-            Cursor cursor=db.rawQuery("SELECT COUNT(*) AS num_rows FROM "+TABLE_CATEGORIES+" ", null);
-
-            if (cursor.moveToFirst()) {
-                count=cursor.getInt(0);             
-            }
-
-            if(count > 0)
-                recExists=true;
-
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-            return recExists;
-
-        } catch (Exception e) {
-            return recExists;
+        if(cursor != null && cursor.getCount() > 0){
+            cursor.close();
+            return true;
         }
+        return false;
     }
 
+    
     public static String getCatIdByCatCode(SQLiteDatabase db, String catCode) {
         Log.d(TAG, "in CategoryDbManager, getCatIdByCatCode catCode = " + catCode);
 

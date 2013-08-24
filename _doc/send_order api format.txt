@@ -1,0 +1,154 @@
+{
+	"OrderInfo":{
+		"LocationID":2,
+		"CustomerID":4,											// if new customer, this field = 0, CustomerInfo will have all the data of the new customer
+		"ServiceMethod":2,										//Pickup: 2, Delivery: 1.
+		"IsTimedOrder":true,									// if ASAP then false, otherwise true
+		"TimedOrder_Date":"22-04-2013",
+		"TimedOrder_Time":"19:20",
+		"PaymentStatus":"PENDING",		 						//["PAID"=IF PAID, "PENDING"=IF PENDING]
+		"TotalPrice":70.05,										//[TOTAL AMOUNT OF THE ORDER]
+		"NoOfItems":8,											// [No. of Items in the Order. e.g. if 2 pizzas and 3 drinks then VALUE=5].			
+	}
+	"PaymentInfo":{
+		"PaymentNo":12,	
+		"PaymentType":"Cash",									// [Cash/CreditCard]
+		"PaymentSubType":"Later",								// [Now/Later]
+		"Amount":70.05
+		"CardType":"Visa"										// need to fix some static value
+		"NameOnCard":"Khobaib C"
+		"CardNo":"123456789012"
+		"CardSecurityCode":"123"
+		"ExpiryMonth":7											// [1 - 12]
+		"ExpiryYear":2013											
+	}
+	"CustomerInfo":{											// all fields might not be present in every order, so better check for a field's existence before parsing it
+		"CustomerID":0,											// if new, then 0, otherwise > 0
+		"CustomerPhone":"123456789",
+		"CustomerPhoneExt":"123",								// currently no option to set it in the app
+		"CustomerName":"Khobaib",
+		"CustomerPassword":"asd",									// STRING [only applied if user first time login or changed any password info ELSE BLANK]
+		"SuburbID":234,
+		"PostalCode":"12345",
+		"UNIT":"asd",	
+		"StreetId":10087,			
+		"CrossStreet":"cross street name",			
+		"DeliveryInstructions":"how to deliver",		
+		"MailingAddress":"address"
+	}
+	"ProductList":[
+		{
+			"prodID":"117",
+			"IsWhole":true,
+			"IsLeft":false,
+			"IsRight":false,
+			"IsCreateByOwn":false,
+			"CaloriesQty":1.225,
+			"Qty":3,
+			"Price":12.750,
+			"Toppings":[										// list of toppings/sauce for this product.
+				{
+					"ToppingId":"12",
+					"ToppingSizeId":"11",
+					"IsSauce":true,
+					"ToppingPrice":0.000,
+					"IsFreeWithPizza":true
+				},
+				{
+					"ToppingId":"16",
+					"ToppingSizeId":"12",
+					"IsSauce":false,
+					"ToppingPrice":1.150,
+					"IsFreeWithPizza":false
+				}
+			]
+		},
+		{
+		
+			"prodID":"16",
+			"IsWhole":true,
+			"IsLeft":false,
+			"IsRight":false,
+			"IsCreateByOwn":false,
+			"CaloriesQty":1.225,
+			"Qty":1,
+			"Price":2.750,
+			"Toppings":[]										// this might be pasta/sides/drinks which has no toppings.
+		}
+	]
+	"DealsList":[
+		{
+			"CouponID":"19",
+			"DealPrice":7.000,									// deals actual price.
+			"TotalPrice":8.950,									// if extra toppings/sauce added, price may differ from DealPrice.
+			"Qty":1,											// quantity = 1 always as deals-item may have anotehr combination & we will consider it as another deal.
+			"DealItem":3,										// number of CouponGroup in this Deal.
+			"DealProduct":[
+				{
+					"prodID":"117",
+					"CouponGroupID":"2",
+					"Toppings":[
+						{
+							"ToppingId":"12",
+							"ToppingSizeId":"11",
+							"IsSauce":true,
+							"ToppingPrice":0.000,
+							"IsFreeWithPizza":true
+						},
+						{
+							"ToppingId":"16",
+							"ToppingSizeId":"12",
+							"IsSauce":false,
+							"ToppingPrice":1.150,
+							"IsFreeWithPizza":false
+						}
+					]
+				},
+				{
+					"prodID":"16",
+					"CouponGroupID":"5",
+					"Toppings":[]
+				},
+				{
+					"prodID":"14",
+					"CouponGroupID":"4",
+					"Toppings":[]
+				}
+			]		
+		},
+		{
+			"CouponID":"111",
+			"DealPrice":7.000,
+			"TotalPrice":8.950,
+			"Qty":3,
+			"DealItem":2,
+			"Product":[
+				{
+					"prodID":"117",
+					"CouponGroupID":"2",
+					"Toppings":[
+						{
+							"ToppingId":"12",
+							"ToppingSizeId":"11",
+							"IsSauce":true,
+							"ToppingPrice":0.000,
+							"IsFreeWithPizza":true
+						},
+						{
+							"ToppingId":"16",
+							"ToppingSizeId":"12",
+							"IsSauce":false,
+							"ToppingPrice":1.150,
+							"IsFreeWithPizza":false
+						}
+					]
+				},
+				{
+					"prodID":"16",
+					"CouponGroupID":"5",
+					"Toppings":[]
+				}
+			]
+		}
+	]
+}

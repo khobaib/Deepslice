@@ -39,6 +39,7 @@ import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.DeepsliceApplication;
+import com.deepslice.utilities.Utils;
 
 
 public class DealsProductListActivity extends Activity {
@@ -51,8 +52,8 @@ public class DealsProductListActivity extends Activity {
     String selectedCouponGroupID;
     Coupon selectedCoupon;
     int Qty;
-    boolean syncedPrices = false;
-    boolean syncedToppings = false;
+//    boolean syncedPrices = false;
+//    boolean syncedToppings = false;
         
     DealOrder dealOrder;
     Product selectedProduct;
@@ -71,7 +72,7 @@ public class DealsProductListActivity extends Activity {
     DeepsliceApplication appInstance;
 
     ListView lvProductList;
-    TextView tvTitle,tvSubtitle;
+    TextView tvTitle, tvSubtitle, tvItemsPrice, tvFavCount;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,9 +92,10 @@ public class DealsProductListActivity extends Activity {
         pList = new ArrayList<Product>();
         dealOrderList=new ArrayList<DealOrder>();
 
-
         tvTitle = (TextView)findViewById(R.id.tv_title);
         tvSubtitle = (TextView)findViewById(R.id.tv_subtitle);
+        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
+        tvFavCount = (TextView) findViewById(R.id.favCount);
 
         lvProductList=(ListView)findViewById(R.id.listView1);
         lvProductList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -219,11 +221,7 @@ public class DealsProductListActivity extends Activity {
                         }
 
                     }
-
                     dbInstance.close();
-
-
-
                     return true;
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -319,50 +317,28 @@ public class DealsProductListActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsProductListActivity.this);
-        dbInstance.open();
-        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
-        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-        double tota=0.00;
-        int dealCount=0;
-        if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
-            dealCount=dealOrderVos1.size();
-            for (int x=0;x<dealOrderVos1.size();x++){
-                tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice()))*(Integer.parseInt(dealOrderVos1.get(x).getQuantity()));
-            }
-        }
 
-        int orderInfoCount= 0;
-        double  orderInfoTotal=0.0;
-        if ((null != orderInfo && orderInfo.size() == 2) ) {
-            orderInfoCount=Integer.parseInt(orderInfo.get(0));
-            orderInfoTotal=Double.parseDouble(orderInfo.get(1));
-        }
-        int numPro=orderInfoCount+dealCount;
-        double subTotal=orderInfoTotal+tota;
-        DecimalFormat twoDForm = new DecimalFormat("#.##");
-        subTotal= Double.valueOf(twoDForm.format(subTotal));
-        if(numPro>0){
-            itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
-            itemsPrice.setVisibility(View.VISIBLE);
-        }
-
-        else{
-            itemsPrice.setVisibility(View.INVISIBLE);
-
-        }
-
-        TextView favCount = (TextView) findViewById(R.id.favCount);
-        String fvs=dbInstance.getFavCount();
-        if (null != fvs && !fvs.equals("0")) {
-            favCount.setText(fvs);
-            favCount.setVisibility(View.VISIBLE);
+        List<String> orderInfo = Utils.OrderInfo(DealsProductListActivity.this);
+        int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+        String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+        
+        if(itemCount > 0){
+            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
+            tvItemsPrice.setVisibility(View.VISIBLE);
         }
         else{
-            favCount.setVisibility(View.INVISIBLE);
+            tvItemsPrice.setVisibility(View.INVISIBLE);
         }
-        dbInstance.close();
+
+        
+        String favCount = Utils.FavCount(DealsProductListActivity.this);
+        if (favCount != null && !favCount.equals("0")) {
+            tvFavCount.setText(favCount);
+            tvFavCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvFavCount.setVisibility(View.INVISIBLE);
+        }
     }
 
 
@@ -407,7 +383,7 @@ public class DealsProductListActivity extends Activity {
         Intent intent=new Intent(DealsProductListActivity.this,PizzaDetailsActivity.class);
         Bundle bundle=new Bundle();
         bundle.putSerializable("selectedProduct", selectedProduct);
-        bundle.putString("prdID", selectedProduct.getProdID());
+        bundle.putString("prdID", selectedProduct.getProdID());             // it isnt necessary
         bundle.putBoolean("isDeal",true);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -420,40 +396,27 @@ public class DealsProductListActivity extends Activity {
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsProductListActivity.this);
         dbInstance.open();
-        syncedPrices = dbInstance.recordExistsToppingPrices();
-        syncedToppings=dbInstance.recordExistsToppings(prodId);
+        boolean isToppingsSynced = dbInstance.isProductToppingsExist(prodId);
         dbInstance.close();
-
-        if(syncedPrices && syncedToppings){
+        
+        if(isToppingsSynced) {
             runPizzaDetailsActivity();
         }
-        else
-        {
+        else {
             pDialog = ProgressDialog.show(DealsProductListActivity.this, "", "Please wait...", true, false);
 
-            Thread t = new Thread() {
-                public void run() {
+            Thread t = new Thread() {            
+                public void run() {                
 
                     try {
+                        GetPizzaToppingAndSauces(prodId);
 
-                        if(syncedToppings==false)
-                            GetPizzaToppingAndSauces(prodId);
-
-                        if(syncedPrices==false)
-                        {
-                            GetPizzaToppingsSizes();
-                            GetPizzaToppingsPrices();
-                        }
-
-                    } catch (Exception ex)
-                    {
+                    } catch (Exception ex){
                         System.out.println(ex.getMessage());
                     }
-                    mHandler1.post(mUpdateResults1);
+                    mHandler1.post(mUpdateResults1);            
                 }
-
-
-            };
+            };        
             t.start();
         }
 
@@ -496,80 +459,6 @@ public class DealsProductListActivity extends Activity {
             }
         } 
     }
-
-
-    private void GetPizzaToppingsSizes(){
-
-        String url = Constants.ROOT_URL + "GetToppingSizes.aspx";
-        long dataRetrieveStartTime = System.currentTimeMillis();
-        ServerResponse response = jsonParser.retrieveGETResponse(url, null);
-
-        long dataRetrieveEndTime = System.currentTimeMillis();
-        Log.d("TIME", "time to retrieve topping SIZE data = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");
-
-
-        if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
-            JSONObject jsonObj = response.getjObj();
-            try {
-                JSONObject responseObj = jsonObj.getJSONObject("Response");
-                int status = responseObj.getInt("Status");
-                JSONArray data = responseObj.getJSONArray("Data");
-                JSONObject errors = responseObj.getJSONObject("Errors");
-
-                toppingsSizeList = ToppingSizes.parseToppingsSizes(data);
-
-                long productParseEndTime = System.currentTimeMillis();
-                Log.d("TIME", "time to parse topping Size list of item " + toppingsSizeList.size() + " = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
-                long dbInsertionStart = System.currentTimeMillis();
-                DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsProductListActivity.this);
-                dbInstance.open();
-                dbInstance.insertToppingSizes(toppingsSizeList);
-                dbInstance.close();
-                long dbInsertionEnd = System.currentTimeMillis();
-                Log.d("TIME", "time to insert topping-size data " + " = " + (dbInsertionEnd - dbInsertionStart)/1000 + " second");
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    } 
-
-
-    private void GetPizzaToppingsPrices(){
-        String url = Constants.ROOT_URL + "GetToppingPrices.aspx";
-        long dataRetrieveStartTime = System.currentTimeMillis();
-        ServerResponse response = jsonParser.retrieveGETResponse(url, null);
-
-        long dataRetrieveEndTime = System.currentTimeMillis();
-        Log.d("TIME", "time to retrieve topping PRICE data = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");
-
-
-        if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
-            JSONObject jsonObj = response.getjObj();
-            try {
-                JSONObject responseObj = jsonObj.getJSONObject("Response");
-                int status = responseObj.getInt("Status");
-                JSONArray data = responseObj.getJSONArray("Data");
-                JSONObject errors = responseObj.getJSONObject("Errors");
-
-                toppingsPriceList = ToppingPrices.parseToppingsPriceList(data);
-
-                long productParseEndTime = System.currentTimeMillis();
-                Log.d("TIME", "time to parse topping PRICE list of item " + toppingsPriceList.size() + " = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
-                long dbInsertionStart = System.currentTimeMillis();
-                DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsProductListActivity.this);
-                dbInstance.open();
-                syncedPrices = dbInstance.insertToppingPrices(toppingsPriceList);
-                dbInstance.close();
-                long dbInsertionEnd = System.currentTimeMillis();
-                Log.d("TIME", "time to insert topping-price data " + " = " + (dbInsertionEnd - dbInsertionStart)/1000 + " second");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    } 
 
     
     public void addDeal(DealOrder dealOrder){

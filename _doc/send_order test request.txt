@@ -1,0 +1,234 @@
+{
+    "OrderInfo": {
+        "LocationID": 2,
+        "CustomerID": 0,
+        "ServiceMethod": 2,
+        "IsTimedOrder": false,
+        "TimedOrder_Date": "23-08-2013",
+        "TimedOrder_Time": "23:42",
+        "PaymentStatus": "PENDING",
+        "TotalPrice": 92.00,
+        "NoOfItems": 10
+    },
+    "PaymentInfo": {
+        "PaymentNo": 12,
+        "PaymentType": "Card",
+        "PaymentSubType": "Later",
+        "Amount": 92.00,
+        "CardType": "Visa",
+        "NameOnCard": "Khobaib C",
+        "CardNo": "123456789012",
+        "CardSecurityCode": "123",
+        "ExpiryMonth": 7,
+        "ExpiryYear": 2015
+    },
+    "CustomerInfo": {
+        "CustomerID": 0,
+        "CustomerPhone": "1234567890",
+        "CustomerPhoneExt": "123",
+        "CustomerName": "Khobaib C",
+        "CustomerPassword": "asdfgh",
+        "SuburbID": 234,
+        "PostalCode": "2570 ",
+        "UNIT": "asd",
+        "StreetId": 10087,
+        "CrossStreet": "Cheviot Dr",
+        "DeliveryInstructions": "how to deliver?",
+        "MailingAddress": "address"
+    },
+    "ProductList": [
+        {
+            "prodID": 117,
+            "IsWhole": true,
+            "IsLeft": false,
+            "IsRight": false,
+            "IsCreateByOwn": false,
+            "CaloriesQty": 0,
+            "Qty": 3,
+            "Price": 23.85,
+            "TotalPrice": 35.85,
+            "Toppings": [
+                {
+                    "ToppingId": 12,
+                    "ToppingSizeId": 13,
+                    "IsSauce": true,
+                    "ToppingPrice": 0.00,
+                    "IsFreeWithPizza": true
+                },
+                {
+                    "ToppingId": 14,
+                    "ToppingSizeId": 15,
+                    "IsSauce": false,
+                    "ToppingPrice": 3.00,
+                    "IsFreeWithPizza": true
+                },
+                {
+                    "ToppingId": 16,
+                    "ToppingSizeId": 12,
+                    "IsSauce": false,
+                    "ToppingPrice": 1.00,
+                    "IsFreeWithPizza": false
+                }
+            ]
+        },
+        {
+            "prodID": 16,
+            "IsWhole": true,
+            "IsLeft": false,
+            "IsRight": false,
+            "IsCreateByOwn": false,
+            "CaloriesQty": 0,
+            "Qty": 1,
+            "Price": 3.95,
+            "TotalPrice": 3.95,
+            "Toppings": []
+        },
+        {
+            "prodID": 17,
+            "IsWhole": true,
+            "IsLeft": false,
+            "IsRight": false,
+            "IsCreateByOwn": false,
+            "CaloriesQty": 0,
+            "Qty": 1,
+            "Price": 5.95,
+            "TotalPrice": 5.95,
+            "Toppings": []
+        },
+        {
+            "prodID": 195,
+            "IsWhole": true,
+            "IsLeft": false,
+            "IsRight": false,
+            "IsCreateByOwn": true,
+            "CaloriesQty": 0,
+            "Qty": 1,
+            "Price": 14.95,
+            "TotalPrice": 19.95,
+            "Toppings": [
+                {
+                    "ToppingId": 12,
+                    "ToppingSizeId": 13,
+                    "IsSauce": true,
+                    "ToppingPrice": 1.00,
+                    "IsFreeWithPizza": false
+                },
+                {
+                    "ToppingId": 15,
+                    "ToppingSizeId": 16,
+                    "IsSauce": false,
+                    "ToppingPrice": 4.00,
+                    "IsFreeWithPizza": true
+                }
+            ]
+        },
+        {
+            "prodID": 1148,
+            "IsWhole": false,
+            "IsLeft": true,
+            "IsRight": false,
+            "IsCreateByOwn": false,
+            "CaloriesQty": 0,
+            "Qty": 1,
+            "Price": 7.475,
+            "TotalPrice": 9.425,
+            "Toppings": [
+                {
+                    "ToppingId": 12,
+                    "ToppingSizeId": 13,
+                    "IsSauce": true,
+                    "ToppingPrice": 0.00,
+                    "IsFreeWithPizza": true
+                },
+                {
+                    "ToppingId": 15,
+                    "ToppingSizeId": 16,
+                    "IsSauce": false,
+                    "ToppingPrice": 1.00,
+                    "IsFreeWithPizza": false
+                }
+            ]
+        },
+        {
+            "prodID": 161,
+            "IsWhole": false,
+            "IsLeft": false,
+            "IsRight": true,
+            "IsCreateByOwn": false,
+            "CaloriesQty": 0,
+            "Qty": 1,
+            "Price": 3.975,
+            "TotalPrice": 5.925,
+            "Toppings": [
+                {
+                    "ToppingId": 12,
+                    "ToppingSizeId": 13,
+                    "IsSauce": true,
+                    "ToppingPrice": 0.00,
+                    "IsFreeWithPizza": true
+                },
+                {
+                    "ToppingId": 110,
+                    "ToppingSizeId": 16,
+                    "IsSauce": false,
+                    "ToppingPrice": 1.00,
+                    "IsFreeWithPizza": false
+                }
+            ]
+        }
+    ],
+    "DealsList": [
+        {
+            "CouponID": 19,
+            "DealPrice": 8.95,
+            "TotalPrice": 10.95,
+            "Qty": 1,
+            "DealItem": 3,
+            "DealProduct": [
+                {
+                    "prodID": 152,
+                    "CouponGroupID": 2,
+                    "Qty":1,
+                    "Price":2.50,
+                    "Toppings": [
+                        {
+                            "ToppingId": 17,
+                            "ToppingSizeId": 14,
+                            "IsSauce": false,
+                            "ToppingPrice": 1.00,
+                            "IsFreeWithPizza": false
+                        },
+                        {
+                            "ToppingId": 19,
+                            "ToppingSizeId": 14,
+                            "IsSauce": true,
+                            "ToppingPrice": 1.00,
+                            "IsFreeWithPizza": false
+                        },
+                        {
+                            "ToppingId": 113,
+                            "ToppingSizeId": 13,
+                            "IsSauce": false,
+                            "ToppingPrice": 0.00,
+                            "IsFreeWithPizza": true
+                        }
+                    ]
+                },
+                {
+                    "prodID": 16,
+                    "CouponGroupID": 5,
+                    "Qty":1,
+                    "Price":2.50,                    
+                    "Toppings": []
+                },
+                {
+                    "prodID": 17,
+                    "CouponGroupID": 4,
+                    "Qty":1,
+                    "Price":2.70, 
+                    "Toppings": []
+                }
+            ]
+        }
+    ]
+}

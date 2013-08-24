@@ -18,6 +18,8 @@ import android.widget.Toast;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DealOrder;
 import com.deepslice.utilities.AppProperties;
+import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.Utils;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,12 +31,16 @@ import com.deepslice.utilities.AppProperties;
 public class HalfAndHalf extends Activity {
 
     ImageView TickFirstHalf;
+    TextView tvItemsPrice, tvFavCount;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.half_and_half);
 
         AppProperties.isFirstPizzaChosen = false;
+        
+        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
+        tvFavCount = (TextView) findViewById(R.id.favCount);
         
         TickFirstHalf = (ImageView) findViewById(R.id.iv_tick_1st_half);
 
@@ -112,50 +118,27 @@ public class HalfAndHalf extends Activity {
         if(AppProperties.isFirstPizzaChosen)
             TickFirstHalf.setVisibility(View.VISIBLE);
         
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(HalfAndHalf.this);
-        dbInstance.open();
-        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
-        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-        double tota=0.00;
-        int dealCount=0;
-        if((dealOrderVos1!=null && dealOrderVos1.size()>0)){
-            dealCount=dealOrderVos1.size();
-            for (int x=0;x<dealOrderVos1.size();x++){
-                tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-            }
-        }
-
-        int orderInfoCount= 0;
-        double  orderInfoTotal=0.0;
-        if ((null != orderInfo && orderInfo.size() == 2) ) {
-            orderInfoCount=Integer.parseInt(orderInfo.get(0));
-            orderInfoTotal=Double.parseDouble(orderInfo.get(1));
-        }
-        int numPro=orderInfoCount+dealCount;
-        double subTotal=orderInfoTotal+tota;
-        DecimalFormat twoDForm = new DecimalFormat("#.##");
-        subTotal= Double.valueOf(twoDForm.format(subTotal));
-        if(numPro>0){
-            itemsPrice.setText(numPro+" Items "+"\n$" +subTotal );
-            itemsPrice.setVisibility(View.VISIBLE);
-        }
-
-        else{
-            itemsPrice.setVisibility(View.INVISIBLE);
-
-        }
-
-        TextView favCount = (TextView) findViewById(R.id.favCount);
-        String fvs=dbInstance.getFavCount();
-        if (null != fvs && !fvs.equals("0")) {
-            favCount.setText(fvs);
-            favCount.setVisibility(View.VISIBLE);
+        List<String> orderInfo = Utils.OrderInfo(HalfAndHalf.this);
+        int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+        String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+        
+        if(itemCount > 0){
+            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
+            tvItemsPrice.setVisibility(View.VISIBLE);
         }
         else{
-            favCount.setVisibility(View.INVISIBLE);
+            tvItemsPrice.setVisibility(View.INVISIBLE);
         }
-        dbInstance.close();
+
+        
+        String favCount = Utils.FavCount(HalfAndHalf.this);
+        if (favCount != null && !favCount.equals("0")) {
+            tvFavCount.setText(favCount);
+            tvFavCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvFavCount.setVisibility(View.INVISIBLE);
+        }
 
 
     }

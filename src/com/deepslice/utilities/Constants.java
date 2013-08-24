@@ -22,4 +22,14 @@ public class Constants {
     public static final String TAG_PARSE_ERROR = "PARSE ERROR";
     
     public static final DecimalFormat twoDForm = new DecimalFormat("#.##");
+    
+    public static final int INDEX_ORDER_ITEM_COUNT = 0; 
+    public static final int INDEX_ORDER_PRICE = 1; 
+    
+    public static final String PRODUCT_CATEGORY_PIZZA = "Pizza";
+    public static final String PRODUCT_CATEGORY_PASTA = "Pasta";
+    public static final String PRODUCT_CATEGORY_SIDES = "Sides";
+    public static final String PRODUCT_CATEGORY_DRINKS = "Drinks";
+    public static final String PRODUCT_CATEGORY_CREATE_YOUR_OWN = "create_your_own";
+    public static final String PRODUCT_CATEGORY_HALF_N_HALF = "half_n_half";
 }

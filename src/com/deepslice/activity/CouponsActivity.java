@@ -391,25 +391,9 @@ public class CouponsActivity extends Activity {
 
             DeepsliceDatabase dbInstance = new DeepsliceDatabase(CouponsActivity.this);
             dbInstance.open();
-            dbInstance.updateOrderDetails(couponDetails);
+//            dbInstance.updateOrderDetails(couponDetails);
             dbInstance.close();
 
-            //	      AppDao dao=null;
-            //			try {
-            //				dao=AppDao.getSingleton(getApplicationContext());
-            //				dao.openConnection();
-            //				
-            //				dao.updateOrderDetails(couponDetails);
-            //				
-            //			} catch (Exception ex)
-            //			{
-            //				System.out.println(ex.getMessage());
-            //			}finally{
-            //				if(null!=dao)
-            //					dao.closeConnection();
-            //			}
-
-            //////////////////////////////////////////////////////////
         } catch (ClientProtocolException e) {
             e.printStackTrace();
             delLocError=e.getMessage();

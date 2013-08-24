@@ -4,8 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+
+import com.deepslice.activity.DealsProductListActivity;
+import com.deepslice.database.DeepsliceDatabase;
+import com.deepslice.model.DealOrder;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -16,6 +22,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.EditText;
 
 public class Utils
@@ -183,5 +190,50 @@ public class Utils
         
         dialog.show();
     }  
+    
+    
+    public static List<String> OrderInfo(Context mContext){
+        
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(mContext);
+        dbInstance.open();
+        List<String> finishedOrderInfo = dbInstance.getOrderInfo();
+        List<DealOrder> finishedDealOrderList = dbInstance.getDealOrdersList(true);
+        dbInstance.close();
+
+        int dealItemCount = 0;
+        double dealTotalPrice = 0.00;
+        if(finishedDealOrderList != null && finishedDealOrderList.size() > 0){
+            dealItemCount = finishedDealOrderList.size();
+            for (int dealIndex = 0; dealIndex < finishedDealOrderList.size(); dealIndex++){
+                dealTotalPrice+= (Double.parseDouble(finishedDealOrderList.get(dealIndex).getDiscountedPrice()))*(Integer.parseInt(finishedDealOrderList.get(dealIndex).getQuantity()));
+            }
+        }
+
+        int orderItemCount = 0;
+        double  orderTotalPrice = 0.00;
+        if (finishedOrderInfo != null && finishedOrderInfo.size() == 2) {
+            orderItemCount = Integer.parseInt(finishedOrderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+            orderTotalPrice = Double.parseDouble(finishedOrderInfo.get(Constants.INDEX_ORDER_PRICE));
+        }
+        
+        int itemCount = orderItemCount + dealItemCount;
+        double totalPrice = orderTotalPrice + dealTotalPrice;
+        totalPrice = Double.valueOf(Constants.twoDForm.format(totalPrice));
+
+        List<String> orderInfo = new ArrayList<String>();
+        orderInfo.add(String.valueOf(itemCount));
+        orderInfo.add(String.valueOf(totalPrice));
+        return orderInfo;
+    }
+    
+    
+    public static String FavCount(Context mContext){
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(mContext);
+        dbInstance.open();
+        String favCount = dbInstance.getFavCount();
+        dbInstance.close();
+        
+        return favCount;
+    }
 
 }

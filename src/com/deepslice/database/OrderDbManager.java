@@ -9,7 +9,9 @@ public class OrderDbManager {
 
     private static final String TAG = OrderDbManager.class.getSimpleName();
 
-    static String[] table_order_columns = new String[] { "sr_no","ProdCatID","SubCatID1","SubCatID2", "ProdID", "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty", "Price", "Thumbnail", "FullImage", "Quantity", "Crust", "Sauce", "Toppings","ProdCatName"};
+    static String[] table_order_columns = new String[] { "sr_no","ProdCatID","SubCatID1","SubCatID2", "ProdID",
+        "ProdCode", "DisplayName", "ProdAbbr", "ProdDesc", "IsAddDeliveryAmount", "DisplaySequence", "CaloriesQty",
+        "Price", "Thumbnail", "FullImage", "Quantity", "Crust", "Sauce", "Toppings", "ProdCatName"};
 
     public static final String TABLE_ORDERS = "table_orders";
 
@@ -26,7 +28,6 @@ public class OrderDbManager {
 
     public static void cleanOrderTable(SQLiteDatabase db) {
         db.delete(TABLE_ORDERS, null, null);
-        //        db.delete("deal_orders",null,null);
     }
 
     public static long insert(SQLiteDatabase db, String... values) { 
@@ -44,49 +45,53 @@ public class OrderDbManager {
         return db.delete(TABLE_ORDERS, whereCause, null) > 0;
     }
 
+    // checked
     public static Cursor getOrdersList(SQLiteDatabase db){
         Log.d("<<<>>>", "in OrderDbManager, retrieving all orders");
         try {
-            return db.rawQuery("SELECT * FROM "+TABLE_ORDERS, null);
+            return db.rawQuery("SELECT * FROM " + TABLE_ORDERS, null);
         } catch (Exception e) {
             return null;
         }
     }   
+    
+    // checked
     public static Cursor getOrdersListWithType(SQLiteDatabase db, String type){
-        Log.d("<<<>>>", "in OrderDbManager, retrieving order with type = " + type);
+        Log.d(TAG, "retrieving order list with type = " + type);
         try {
             String[] selectionArgs={type};
-            return db.rawQuery("SELECT * FROM "+TABLE_ORDERS+" WHERE ProdCatName=?",selectionArgs);
+            return db.rawQuery("SELECT * FROM " + TABLE_ORDERS + " WHERE ProdCatName = ?",selectionArgs);
         } catch (Exception e) {
             return null;
         }
     }
-    public static Cursor getOrdersListWithProdId(SQLiteDatabase db, String pid){
-        Log.d("<<<>>>", "in OrderDbManager, retrieving order with prodId = " + pid);
-        try {
-            String[] selectionArgs={pid};
-            return db.rawQuery("SELECT * FROM "+TABLE_ORDERS+" WHERE ProdID=?",selectionArgs);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+    
+//    public static Cursor getOrdersListWithProdId(SQLiteDatabase db, String pid){
+//        Log.d("<<<>>>", "in OrderDbManager, retrieving order with prodId = " + pid);
+//        try {
+//            String[] selectionArgs={pid};
+//            return db.rawQuery("SELECT * FROM "+TABLE_ORDERS+" WHERE ProdID=?",selectionArgs);
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
 
 
-    public static void updateOrderPrice(SQLiteDatabase db, String sr_no, String price) {
-        Log.d("<<<>>>", "in OrderDbManager, updating order price with primary id = " + sr_no);
-        try {
-
-            String[] selectionArgs={sr_no};
-
-            ContentValues cv = new ContentValues();
-            cv.put("Price",price);
-
-            db.update(TABLE_ORDERS, cv, " sr_no=? ", selectionArgs);
-
-        } catch (Exception e) {
-            Log.e("DB Error", e.toString());
-            e.printStackTrace();
-        }
-    }
+//    public static void updateOrderPrice(SQLiteDatabase db, String sr_no, String price) {
+//        Log.d("<<<>>>", "in OrderDbManager, updating order price with primary id = " + sr_no);
+//        try {
+//
+//            String[] selectionArgs={sr_no};
+//
+//            ContentValues cv = new ContentValues();
+//            cv.put("Price",price);
+//
+//            db.update(TABLE_ORDERS, cv, " sr_no=? ", selectionArgs);
+//
+//        } catch (Exception e) {
+//            Log.e("DB Error", e.toString());
+//            e.printStackTrace();
+//        }
+//    }
 
 }

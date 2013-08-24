@@ -1,6 +1,7 @@
 package com.deepslice.activity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -22,18 +23,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.deepslice.cache.ImageLoader;
-import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.Product;
 import com.deepslice.model.Favourite;
+import com.deepslice.model.Product;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.Utils;
 
 public class FavsListActivity extends Activity{
 
-    ArrayList<Favourite> allProductsList;
+    List<Favourite> allProductsList;
 
     ListView listview;
+    TextView tvItemsPrice, tvFavCount;
+    
     MyListAdapterFav myAdapter;
 
     ProgressDialog pd;
@@ -45,6 +48,9 @@ public class FavsListActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fav_list);
         imageLoader=new ImageLoader(this);	
+        
+        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
+        tvFavCount = (TextView) findViewById(R.id.favCount);
 
         TextView title = (TextView) findViewById(R.id.headerTextView);
         title.setText("Favourites");
@@ -54,7 +60,7 @@ public class FavsListActivity extends Activity{
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(FavsListActivity.this);
         dbInstance.open();
-        allProductsList=dbInstance.getFavsList();
+        allProductsList = dbInstance.getFavsList();
         dbInstance.close();
 
         listview = (ListView) findViewById(R.id.listView1);				
@@ -129,10 +135,9 @@ public class FavsListActivity extends Activity{
 
     private class MyListAdapterFav extends ArrayAdapter<Favourite> {
 
-        private ArrayList<Favourite> items;
+        private List<Favourite> items;
 
-        public MyListAdapterFav(Context context, int viewResourceId,
-                ArrayList<Favourite> items) {
+        public MyListAdapterFav(Context context, int viewResourceId, List<Favourite> items) {
             super(context, viewResourceId, items);
             this.items = items;
 
@@ -200,32 +205,28 @@ public class FavsListActivity extends Activity{
 
     @Override
     protected void onResume() {
-        // //////////////////////////////////////////////////////////////////////////////
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(FavsListActivity.this);
-        dbInstance.open();
-        ArrayList<String> orderInfo = dbInstance.getOrderInfo();
-
-        TextView itemsPrice = (TextView) findViewById(R.id.itemPrice);
-        if (null != orderInfo && orderInfo.size() == 2) {
-            itemsPrice.setText(orderInfo.get(0)+" Items "+"\n$" + orderInfo.get(1));
-            itemsPrice.setVisibility(View.VISIBLE);
-        }
-        else{
-            itemsPrice.setVisibility(View.INVISIBLE);
-
-        }
-
-        TextView favCount = (TextView) findViewById(R.id.favCount);
-        String fvs=dbInstance.getFavCount();
-        if (null != fvs && !fvs.equals("0")) {
-            favCount.setText(fvs);
-            favCount.setVisibility(View.VISIBLE);
-        }
-        else{
-            favCount.setVisibility(View.INVISIBLE);
-        }
-        dbInstance.close();
-
         super.onResume();
+        
+        List<String> orderInfo = Utils.OrderInfo(FavsListActivity.this);
+        int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+        String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+        
+        if(itemCount > 0){
+            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
+            tvItemsPrice.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvItemsPrice.setVisibility(View.INVISIBLE);
+        }
+
+        
+        String favCount = Utils.FavCount(FavsListActivity.this);
+        if (favCount != null && !favCount.equals("0")) {
+            tvFavCount.setText(favCount);
+            tvFavCount.setVisibility(View.VISIBLE);
+        }
+        else{
+            tvFavCount.setVisibility(View.INVISIBLE);
+        }
     }
 }

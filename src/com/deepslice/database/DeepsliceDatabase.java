@@ -90,8 +90,8 @@ public class DeepsliceDatabase {
     public void close() {
         dbHelper.close();
     }
-    
-    
+
+
     public boolean deleteRecord(String DATABASE_TABLE, String whereCause) {
         return this.db.delete(DATABASE_TABLE, whereCause, null) > 0;
     }
@@ -99,30 +99,30 @@ public class DeepsliceDatabase {
     public int delete(String table, String whereClause, String[] whereArgs) {
         return this.db.delete(table, whereClause, whereArgs);
     }
-    
-    
-//    public synchronized String getMaxId(String tbl) {
-//        try {
-//            Cursor cursor=this.db.rawQuery("SELECT MAX(id) AS max_id FROM "+tbl, null);
-//            String s=null;
-//            if (cursor.moveToFirst()) {
-//                    s=cursor.getString(0);
-//            }
-//            
-//            if (cursor != null && !cursor.isClosed()) {
-//                cursor.close();
-//            }
-//            return s;
-//            
-//        } catch (Exception e) {
-//            return null;
-//        }
-//    }
-    
-    
-    
-    
-    
+
+
+    //    public synchronized String getMaxId(String tbl) {
+    //        try {
+    //            Cursor cursor=this.db.rawQuery("SELECT MAX(id) AS max_id FROM "+tbl, null);
+    //            String s=null;
+    //            if (cursor.moveToFirst()) {
+    //                    s=cursor.getString(0);
+    //            }
+    //            
+    //            if (cursor != null && !cursor.isClosed()) {
+    //                cursor.close();
+    //            }
+    //            return s;
+    //            
+    //        } catch (Exception e) {
+    //            return null;
+    //        }
+    //    }
+
+
+
+
+
     // Topping & Sauce
 
     public boolean insertToppingSizes(List<ToppingSizes> aList ) {
@@ -156,16 +156,16 @@ public class DeepsliceDatabase {
         return true;
     }
 
-    public boolean recordExistsToppingPrices() {
-        return ToppingPriceDbManager.isEmptyToppingsPrices(this.db);
+    public boolean isToppingsExist() {
+        return ToppingPriceDbManager.isToppingsExist(this.db);
     }
 
-    
-    public boolean recordExistsToppings(String prodId) {
-        return SauceAndToppingDbManager.isEmptyToppingsTables(this.db, prodId);
+
+    public boolean isProductToppingsExist(String prodId) {
+        return SauceAndToppingDbManager.isProductToppingsExist(this.db, prodId);
     }
-    
-    
+
+
     public String getToppingPrice(String toppingId,String toppingSize){
         return ToppingPriceDbManager.getToppingPrice(this.db, toppingId, toppingSize);
     }
@@ -259,8 +259,9 @@ public class DeepsliceDatabase {
     }
 
 
-    public ArrayList<Favourite> cursorToFavs(Cursor cursor) {
-        ArrayList<Favourite> list = new ArrayList<Favourite>();
+    // checked
+    public List<Favourite> cursorToFavs(Cursor cursor) {
+        List<Favourite> favList = new ArrayList<Favourite>();
         if (cursor.moveToFirst()) {
             do {
                 Favourite f = new Favourite();
@@ -280,13 +281,13 @@ public class DeepsliceDatabase {
                 f.setFullImage(cursor.getString(14));
                 f.setCustomName(cursor.getString(15));
                 f.setProdCatName(cursor.getString(16));
-                list.add(f);
+                favList.add(f);
             } while (cursor.moveToNext());
         }
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
-        return list;
+        return favList;
     }
 
 
@@ -294,9 +295,11 @@ public class DeepsliceDatabase {
         return FavoriteDbManager.isFavAdded(this.db, ProdID,customName);
     }
 
-    public ArrayList<Favourite> getFavsList() {
+    
+    // checked
+    public List<Favourite> getFavsList() {
 
-        Cursor cursor= FavoriteDbManager.getFavsList(this.db);
+        Cursor cursor = FavoriteDbManager.getFavsList(this.db);
         try{      
             return cursorToFavs(cursor);
         }finally{
@@ -305,14 +308,13 @@ public class DeepsliceDatabase {
     }
 
 
-
+    // checked
     public String getFavCount(){
-        ArrayList<Favourite> fs = getFavsList();
-
-        if(fs==null)
+        List<Favourite> favList = getFavsList();
+        if(favList == null)
             return "0";
         else 
-            return String.valueOf(fs.size());
+            return String.valueOf(favList.size());
     }
 
 
@@ -332,7 +334,7 @@ public class DeepsliceDatabase {
     }
 
 
-    public ArrayList<Order> getOrdersList() {
+    public List<Order> getOrdersList() {
 
         Cursor cursor= OrderDbManager.getOrdersList(this.db);
         try{        
@@ -341,51 +343,49 @@ public class DeepsliceDatabase {
             if (cursor != null && !cursor.isClosed())
                 cursor.close(); 
         }
-
     }
 
 
 
-    public ArrayList<String> getOrderInfo() {
+    // element-0 -> order-list size, element-1 -> order total price
+    public List<String> getOrderInfo() {
 
-        ArrayList<String> orderInfo=new ArrayList<String>();
-        ArrayList<Order>  order=getOrdersList();
-        if(order==null || order.size()<=0)
+        List<String> orderInfo=new ArrayList<String>();
+        List<Order>  orderList = getOrdersList();
+        if(orderList == null || orderList.size() <= 0)
             return null;
-        orderInfo.add(String.valueOf(order.size()));
+        orderInfo.add(String.valueOf(orderList.size()));
 
-        double price=0.00f;
-
-        for (Order orderVo : order) {
-
-            try {
-                price+=Double.parseDouble(orderVo.getPrice());
-            } catch (Exception e) {
-            }
+        double orderTotalPrice = 0.00;
+        for (Order order : orderList) {
+            orderTotalPrice+= Double.parseDouble(order.getPrice());
         }
-        String couponType=AppSharedPreference.getData(mContext, "couponType",AppProperties.COUPON_TYPE_NONE);
-
-        if(couponType.equals(AppProperties.COUPON_TYPE_FIXED) || couponType.equals(AppProperties.COUPON_TYPE_PERCENTAGE))
-        {
-            String couponAmountStr=AppSharedPreference.getData(mContext, "couponAmount","0.00");
-            double couponAmout=Double.parseDouble(couponAmountStr);
-
-            if(couponType.equals(AppProperties.COUPON_TYPE_FIXED))
-            {
-                price=price-couponAmout;
-            }
-            else if(couponType.equals(AppProperties.COUPON_TYPE_PERCENTAGE))
-            {
-                double disc=(couponAmout/100)*price;
-                price=price-disc;
-            }
-        }
-        orderInfo.add(String.valueOf(AppProperties.roundTwoDecimals(price)));
+        
+        //        String couponType=AppSharedPreference.getData(mContext, "couponType",AppProperties.COUPON_TYPE_NONE);
+        //
+        //        if(couponType.equals(AppProperties.COUPON_TYPE_FIXED) || couponType.equals(AppProperties.COUPON_TYPE_PERCENTAGE))
+        //        {
+        //            String couponAmountStr=AppSharedPreference.getData(mContext, "couponAmount","0.00");
+        //            double couponAmout=Double.parseDouble(couponAmountStr);
+        //
+        //            if(couponType.equals(AppProperties.COUPON_TYPE_FIXED))
+        //            {
+        //                price=price-couponAmout;
+        //            }
+        //            else if(couponType.equals(AppProperties.COUPON_TYPE_PERCENTAGE))
+        //            {
+        //                double disc=(couponAmout/100)*price;
+        //                price=price-disc;
+        //            }
+        //        }
+        orderInfo.add(String.valueOf(AppProperties.roundTwoDecimals(orderTotalPrice)));
 
         return orderInfo;
     }
 
-    public ArrayList<Order> getOrdersListWithType(String type) {
+    
+    // checked
+    public List<Order> getOrdersListWithType(String type) {
 
         Cursor cursor= OrderDbManager.getOrdersListWithType(this.db, type);
         try{        
@@ -395,16 +395,16 @@ public class DeepsliceDatabase {
         }
 
     }
-    public ArrayList<Order> getOrdersListWithProdId(String pid) {
-
-        Cursor cursor= OrderDbManager.getOrdersListWithProdId(this.db, pid);
-        try{        
-            return cursorToOrderBean(cursor);
-        }finally{
-            cursor.close(); 
-        }
-
-    }
+//    public List<Order> getOrdersListWithProdId(String pid) {
+//
+//        Cursor cursor= OrderDbManager.getOrdersListWithProdId(this.db, pid);
+//        try{        
+//            return cursorToOrderBean(cursor);
+//        }finally{
+//            cursor.close(); 
+//        }
+//
+//    }
 
     public boolean deleteOrderRec(int serialKey) {
         return OrderDbManager.deleteRecordOrder(this.db, "sr_no="+serialKey);
@@ -415,27 +415,28 @@ public class DeepsliceDatabase {
     }
 
 
-    public void updateOrderDetails(ArrayList<CouponDetails> couponDetails) {
-
-        ArrayList<Order> vList=null;
-        double discountPrice=0.00;
-        double currentPrice=0.00;
-        double newPrice=0.00;
-        for (CouponDetails couponDetailsVo : couponDetails) {
-            discountPrice=Double.parseDouble(couponDetailsVo.getDiscountedPrice());
-            vList = getOrdersListWithProdId(couponDetailsVo.getProdID());
-
-            for (Order orderVo : vList) {
-                currentPrice=Double.parseDouble(orderVo.getPrice());
-                newPrice=currentPrice-discountPrice;
-                OrderDbManager.updateOrderPrice(this.db, String.valueOf(orderVo.getSerialId()),String.valueOf(AppProperties.roundTwoDecimals(newPrice)));
-            }
-        }
-
-    }
-
-    public ArrayList<Order> cursorToOrderBean(Cursor cursor) {
-        ArrayList<Order> list = new ArrayList<Order>();
+//    public void updateOrderDetails(ArrayList<CouponDetails> couponDetails) {
+//
+//        List<Order> vList=null;
+//        double discountPrice=0.00;
+//        double currentPrice=0.00;
+//        double newPrice=0.00;
+//        for (CouponDetails couponDetailsVo : couponDetails) {
+//            discountPrice=Double.parseDouble(couponDetailsVo.getDiscountedPrice());
+//            vList = getOrdersListWithProdId(couponDetailsVo.getProdID());
+//
+//            for (Order orderVo : vList) {
+//                currentPrice=Double.parseDouble(orderVo.getPrice());
+//                newPrice=currentPrice-discountPrice;
+//                OrderDbManager.updateOrderPrice(this.db, String.valueOf(orderVo.getSerialId()),String.valueOf(AppProperties.roundTwoDecimals(newPrice)));
+//            }
+//        }
+//
+//    }
+    
+    // checked
+    public List<Order> cursorToOrderBean(Cursor cursor) {
+        List<Order> orderList = new ArrayList<Order>();
         if (cursor.moveToFirst()) {
             do {
                 Order  f = new Order();
@@ -460,33 +461,33 @@ public class DeepsliceDatabase {
                 f.setToppings(cursor.getString(18));
                 f.setProdCatName(cursor.getString(19));
 
-                list.add(f);
+                orderList.add(f);
             } while (cursor.moveToNext());
         }
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
-        return list;
+        return orderList;
     }
 
 
-    
+
     // Deals
-    
+
     public void finalizedDealOrder(){
         DealsDbManager.finalizedDealOrder(this.db);
     }
 
     // checked
-    public int getDealOrderCount(String coupnID){
-        return DealsDbManager.getDealOrderCount(this.db, coupnID);
-    }
+//    public int getDealOrderCount(String coupnID){
+//        return DealsDbManager.getDealOrderCount(this.db, coupnID);
+//    }
 
     // checked
-//    public void resetDealOrder(String coupnID){
-//        DealsDbManager.resetDealOrder(this.db, coupnID);
-//    }
-    
+    //    public void resetDealOrder(String coupnID){
+    //        DealsDbManager.resetDealOrder(this.db, coupnID);
+    //    }
+
     // checked
     public void insertDealOrder(DealOrder f) {
 
@@ -502,7 +503,6 @@ public class DeepsliceDatabase {
                 f.getUpdate(),
                 f.getImage()
                 );
-//        return true;
     }
 
 
@@ -512,7 +512,7 @@ public class DeepsliceDatabase {
     }
 
     public boolean insertDeals(Coupon deal){
-//        Log.d("DeepsliceDatabase", "inseting deals to DB..");
+        //        Log.d("DeepsliceDatabase", "inseting deals to DB..");
         DealsDbManager.insertDeal(this.db,
                 deal.getCouponID(),
                 deal.getCouponTypeID(),
@@ -549,14 +549,14 @@ public class DeepsliceDatabase {
                 deal.getPic()
                 );
 
-//        Log.d("DeepsliceDatabase", "Reading all coupons..");
-//        List<Coupons> couponList = getDealList();
-//
-//        for (Coupons cn : couponList) {
-//            String log = "amount: "+cn.getAmount()+" ,coupon code: " + cn.getCouponCode() + " ,displayText: " + cn.getDisplayText();
-//            // Writing Contacts to log
-//            Log.d("this coupon: ", log);
-//        }
+        //        Log.d("DeepsliceDatabase", "Reading all coupons..");
+        //        List<Coupons> couponList = getDealList();
+        //
+        //        for (Coupons cn : couponList) {
+        //            String log = "amount: "+cn.getAmount()+" ,coupon code: " + cn.getCouponCode() + " ,displayText: " + cn.getDisplayText();
+        //            // Writing Contacts to log
+        //            Log.d("this coupon: ", log);
+        //        }
         return true;
     }
 
@@ -625,16 +625,16 @@ public class DeepsliceDatabase {
             cursor.close();
         }
     }
-    
+
     // NEW - 20130814 1300, i think it wont needed, can be sub by getDealOrdersList() method
-    public List<DealOrder> getUnfinishedDealOrdersList(String couponID){
-        Cursor cursor = DealsDbManager.getUnfinishedDealOrdersList(this.db, couponID);
-        try{
-            return cursorToDealOrder(cursor);
-        }finally{
-            cursor.close();
-        }
-    }
+//    public List<DealOrder> getUnfinishedDealOrdersList(String couponID){
+//        Cursor cursor = DealsDbManager.getUnfinishedDealOrdersList(this.db, couponID);
+//        try{
+//            return cursorToDealOrder(cursor);
+//        }finally{
+//            cursor.close();
+//        }
+//    }
 
     // will be deprecated
     public ArrayList<String> getDealData(String couponID, String couponGroupId){
@@ -654,13 +654,13 @@ public class DeepsliceDatabase {
         }
         return list;
     }
-    
-    
+
+
 
     public boolean deleteDealOrderRec(int serialKey) {
         return DealsDbManager.deleteRecordDealOrder(this.db, "sr_no="+serialKey);
     }
-    
+
     // checked
     public boolean deleteUnfinishedDealOrder( ) {
         return DealsDbManager.deleteUnfinishedDealOrder(this.db, "isUpdate = 0");
@@ -676,12 +676,12 @@ public class DeepsliceDatabase {
         return DealsDbManager.isDealGroupAlreadySelected(this.db, couponID, CouponGroupID);
     }
 
-    public boolean deleteDealOrderRec(String CouponID ) {
-        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "CouponID = "+CouponID);
-    }
-    public boolean deleteDealOrderRecByGroupID(String CouponGroupID ) {
-        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "CouponGroupID = " + CouponGroupID);
-    }
+//    public boolean deleteDealOrderRec(String CouponID ) {
+//        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "CouponID = "+CouponID);
+//    }
+//    public boolean deleteDealOrderRecByGroupID(String CouponGroupID ) {
+//        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "CouponGroupID = " + CouponGroupID);
+//    }
 
 
     private List<DealOrder> cursorToDealOrder(Cursor cursor) {
@@ -960,11 +960,11 @@ public class DeepsliceDatabase {
         }
         return list;
     }
-    
-    
-    
+
+
+
     // Categories & Sub-categories
-    
+
     public boolean insertProdCat(List<ProductCategory> aList ) {
         for (Iterator<ProductCategory> iterator = aList.iterator(); iterator.hasNext();) {
             ProductCategory f = (ProductCategory) iterator.next();
@@ -1010,11 +1010,12 @@ public class DeepsliceDatabase {
         }
         return true;
     }
-    
-    public boolean recordExists() {
-        return CategoryDbManager.isEmptyDB(this.db);
+
+    // modified
+    public boolean isProductCategoriesExist() {
+        return CategoryDbManager.isCategoriesExist(this.db);
     }
-    
+
     public ArrayList<ProductSubCategory> getSubCategoriesPizza() {
         Cursor ls = CategoryDbManager.searchPizzaSubCats(this.db);
         return cursorToSubCat(ls);
@@ -1028,8 +1029,8 @@ public class DeepsliceDatabase {
         Cursor ls = CategoryDbManager.searchSides(this.db);
         return cursorToPeoductCats(ls);
     }
-    
-    
+
+
     public ArrayList<ProductSubCategory> getPizzaCrusts(String catId,
             String subCatId) {
 
@@ -1041,16 +1042,16 @@ public class DeepsliceDatabase {
         }
 
     }
-    
-    
+
+
     public String getCatIdByCatCode(String catCode) {
         return CategoryDbManager.getCatIdByCatCode(this.db, catCode);
     }
     public String getCatCodeByCatId(String catId) {
         return CategoryDbManager.getCatCodeByCatId(this.db, catId);
     }
-    
-    
+
+
     public ArrayList<ProductSubCategory> cursorToSubCat(Cursor cursor) {
         ArrayList<ProductSubCategory> list = new ArrayList<ProductSubCategory>();
         if (cursor.moveToFirst()) {
@@ -1074,8 +1075,8 @@ public class DeepsliceDatabase {
         }
         return list;
     }
-    
-    
+
+
     public ArrayList<ProductCategory> cursorToPeoductCats(Cursor cursor) {
         if(null==cursor)
             return null;
