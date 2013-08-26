@@ -43,7 +43,7 @@ import com.deepslice.utilities.Utils;
 
 
 public class DealsProductListActivity extends Activity {
-    
+
     private static final String TAG = DealsDbManager.class.getSimpleName();
 
     String productCatId, productName;
@@ -52,19 +52,19 @@ public class DealsProductListActivity extends Activity {
     String selectedCouponGroupID;
     Coupon selectedCoupon;
     int Qty;
-//    boolean syncedPrices = false;
-//    boolean syncedToppings = false;
-        
+    //    boolean syncedPrices = false;
+    //    boolean syncedToppings = false;
+
     DealOrder dealOrder;
     Product selectedProduct;
-    
+
     List<ToppingPrices> toppingsPriceList;
     List<ToppingSizes> toppingsSizeList;
     List<ToppingsAndSauces> toppingsAndSaucesList;    
     List<CouponDetails> selectedCouponGrpcouponDetailsList;
     List<Product> pList;
     List<DealOrder> dealOrderList;
-    
+
     DealProductListAdapter dealProductListAdapter;
 
     ProgressDialog pDialog;
@@ -104,7 +104,11 @@ public class DealsProductListActivity extends Activity {
                 currentPosition = position;
                 selectedProduct = (Product) parent.getItemAtPosition(position);
 
-                String prodType = AppProperties.getCatName(DealsProductListActivity.this, selectedProduct.getProdCatID());
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsProductListActivity.this);
+                dbInstance.open();
+                String prodType=dbInstance.getCatCodeFromCatId(selectedProduct.getProdCatID());
+                dbInstance.close();
+
                 if(prodType.equalsIgnoreCase("Pizza")){
                     appInstance.setCouponDetails(selectedCouponGrpcouponDetailsList.get(currentPosition));
                     gotoActivity(true);
@@ -321,7 +325,7 @@ public class DealsProductListActivity extends Activity {
         List<String> orderInfo = Utils.OrderInfo(DealsProductListActivity.this);
         int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
         String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
-        
+
         if(itemCount > 0){
             tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
             tvItemsPrice.setVisibility(View.VISIBLE);
@@ -330,7 +334,7 @@ public class DealsProductListActivity extends Activity {
             tvItemsPrice.setVisibility(View.INVISIBLE);
         }
 
-        
+
         String favCount = Utils.FavCount(DealsProductListActivity.this);
         if (favCount != null && !favCount.equals("0")) {
             tvFavCount.setText(favCount);
@@ -398,7 +402,7 @@ public class DealsProductListActivity extends Activity {
         dbInstance.open();
         boolean isToppingsSynced = dbInstance.isProductToppingsExist(prodId);
         dbInstance.close();
-        
+
         if(isToppingsSynced) {
             runPizzaDetailsActivity();
         }
@@ -460,7 +464,7 @@ public class DealsProductListActivity extends Activity {
         } 
     }
 
-    
+
     public void addDeal(DealOrder dealOrder){
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsProductListActivity.this);

@@ -35,9 +35,9 @@ public class  PizzaSubMenuActivity extends Activity{
 
     private static final int REQUEST_CODE_IS_PIZZA_HALF = 1001;
 
-    ArrayList<ProductCategory> productCatList;
-    ArrayList<ProductSubCategory> subCatList;
-    ArrayList<Product> allProductsList;
+//    ArrayList<ProductCategory> productCatList;
+    List<ProductSubCategory> subCatList;
+//    ArrayList<Product> allProductsList;
 
     Boolean isHalf = false;
 
@@ -61,7 +61,7 @@ public class  PizzaSubMenuActivity extends Activity{
         
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaSubMenuActivity.this);
         dbInstance.open();
-        subCatList = dbInstance.getSubCategoriesPizza();
+        subCatList = dbInstance.retrievePizzaSubMenu();
         dbInstance.close();
 
         listview = (ListView) findViewById(R.id.listView1);				
@@ -173,10 +173,9 @@ public class  PizzaSubMenuActivity extends Activity{
 
     private class MyListAdapterPizza extends ArrayAdapter<ProductSubCategory> {
 
-        private ArrayList<ProductSubCategory> items;
+        private List<ProductSubCategory> items;
 
-        public MyListAdapterPizza(Context context, int viewResourceId,
-                ArrayList<ProductSubCategory> items) {
+        public MyListAdapterPizza(Context context, int viewResourceId, List<ProductSubCategory> items) {
             super(context, viewResourceId, items);
             this.items = items;
 

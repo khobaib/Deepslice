@@ -16,6 +16,7 @@ import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DeliveryAddress;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.model.LocationPoints;
+import com.deepslice.model.NewToppingsOrder;
 import com.deepslice.model.ToppingsHashmap;
 import com.deepslice.model.UserBean;
 
@@ -28,8 +29,9 @@ public class AppProperties {
 	public static final String COUPON_TYPE_FIXED="F";
 	public static final String COUPON_TYPE_PRODUCTS="P";
 	
-
-	public static HashMap<String, ToppingsHashmap> selectedToppings;
+	public static List<NewToppingsOrder> selectedToppings;
+//	public static List<HashMap<String, String>> selectedToppings;
+//	public static HashMap<String, ToppingsHashmap> selectedToppings;
 	public static boolean isFirstPizzaChosen;
 	public static boolean isLoogedIn	= false;
 	public static final String PREFS_NAME = "DeepSlice";
@@ -39,15 +41,15 @@ public class AppProperties {
 	public static ArrayList<LocationDetails> locationPointsSearched;
 	
 
-	public static String getCatName(Context ctx,String catId){
-		String catName=null;
-		
-		DeepsliceDatabase dbInstance = new DeepsliceDatabase(ctx);
-		dbInstance.open();
-		catName=dbInstance.getCatCodeByCatId(catId);
-		dbInstance.close();
-		return catName;
-	}
+//	public static String getCatName(Context ctx,String catId){
+//		String catName=null;
+//		
+//		DeepsliceDatabase dbInstance = new DeepsliceDatabase(ctx);
+//		dbInstance.open();
+//		catName=dbInstance.getCatCodeByCatId(catId);
+//		dbInstance.close();
+//		return catName;
+//	}
 
 	protected AppProperties() {
 	}

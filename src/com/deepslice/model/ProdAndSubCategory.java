@@ -1,12 +1,6 @@
 package com.deepslice.model;
 
-/**
- * Created with IntelliJ IDEA.
- * User: rukshan
- * Date: 7/20/13
- * Time: 6:37 PM
- * To change this template use File | Settings | File Templates.
- */
+
 public class ProdAndSubCategory {
     private String ProdID;
     private String SubCat2Id;

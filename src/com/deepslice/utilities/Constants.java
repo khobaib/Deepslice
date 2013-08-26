@@ -32,4 +32,22 @@ public class Constants {
     public static final String PRODUCT_CATEGORY_DRINKS = "Drinks";
     public static final String PRODUCT_CATEGORY_CREATE_YOUR_OWN = "create_your_own";
     public static final String PRODUCT_CATEGORY_HALF_N_HALF = "half_n_half";
+    
+    public static final int PRODUCT_SELECTION_WHOLE = 99;
+    public static final int PRODUCT_SELECTION_LEFT = 100;
+    public static final int PRODUCT_SELECTION_RIGHT = 101;
+    
+    public static final int MAX_TOPPING_COUNT_FOR_PIZZA = 11;
+    public static final String SINGLE_SIZE_TOPPING_ID = "13";
+    
+    public static final String[] CREDIT_CARD_TYPE = {
+      "Visa", "MasterCard", "American Express"  
+    };
+    
+    public static final String[] MONTH_NAME = {
+        "January", "February", "March", "April", "May", "June", "July",
+        "August", "September", "October", "November", "December"
+      };
+    
+    
 }

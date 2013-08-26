@@ -45,7 +45,7 @@
             "IsCreateByOwn": false,
             "CaloriesQty": 0,
             "Qty": 3,
-            "Price": 23.85,
+            "Price": 23.85,				// price of a single item?
             "TotalPrice": 35.85,
             "Toppings": [
                 {

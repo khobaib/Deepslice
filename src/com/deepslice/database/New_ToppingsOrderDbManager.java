@@ -42,7 +42,7 @@ public class New_ToppingsOrderDbManager {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TOPPINGS_ORDER);
     }
     
-    public static void cleanToppingsOrderTable(SQLiteDatabase db) throws SQLException {
+    public static void cleanTable(SQLiteDatabase db) throws SQLException {
         Log.d(TAG, "deleting ALL TOPPINGS ORDER DATA");
         db.delete(TABLE_TOPPINGS_ORDER, null, null);
     }

@@ -113,32 +113,6 @@ public class FavAddActivity extends Activity {
                 }
                 dbInstance.close();
 
-                //				AppDao dao=null;
-                //				try {
-                //					dao=AppDao.getSingleton(getApplicationContext());
-                //					dao.openConnection();
-                //					
-                //					boolean favAdded=dao.favAlreadyAdded(prodBean.getProdID(),editView.getText().toString());
-                //					if(favAdded)
-                //					{
-                //						Toast.makeText(FavAddActivity.this, "Already added to Favourites", Toast.LENGTH_LONG).show();
-                //					}
-                //					else
-                //					{
-                //						dao.insertFav(getFavBean());
-                //						doOnResumeWork();
-                //						Toast.makeText(FavAddActivity.this, "Successfully added to Favourites", Toast.LENGTH_LONG).show();
-                //					}
-                //					
-                //					
-                //				} catch (Exception ex)
-                //				{
-                //					System.out.println(ex.getMessage());
-                //				}finally{
-                //					if(null!=dao)
-                //						dao.closeConnection();
-                //				}
-
             }
 
 
@@ -159,7 +133,7 @@ public class FavAddActivity extends Activity {
 
                     finish();
                 }else {
-                    dbInstance.insertOrder(getOrderBean());
+//                    dbInstance.insertOrder(getOrderBean());
                     Toast.makeText(FavAddActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
                     finish();
                 }

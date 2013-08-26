@@ -11,6 +11,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.deepslice.model.NewProductOrder;
+import com.deepslice.model.NewToppingsOrder;
 import com.deepslice.model.Product;
 import com.deepslice.model.CouponDetails;
 import com.deepslice.model.Coupon;
@@ -56,6 +58,12 @@ public class DeepsliceDatabase {
             DealsDbManager.createTable(db);
             DeliveryLocationDbManager.createTable(db);
             LocationHistoryDbManager.createTable(db);
+            
+            NEW_CategoriesDbManager.createTable(db);
+            NEW_ProductOrderDbManager.createTable(db);
+            New_ToppingsOrderDbManager.createTable(db);
+            NEW_DealsOrderDbManager.createTable(db);
+            NEW_DealsOrderDetailsDbManager.createTable(db);
         }
 
         @Override
@@ -70,6 +78,12 @@ public class DeepsliceDatabase {
             DealsDbManager.dropTable(db);
             DeliveryLocationDbManager.dropTable(db);
             LocationHistoryDbManager.dropTable(db);
+            
+            NEW_CategoriesDbManager.dropTable(db);
+            NEW_ProductOrderDbManager.dropTable(db);
+            New_ToppingsOrderDbManager.dropTable(db);
+            NEW_DealsOrderDbManager.dropTable(db);
+            NEW_DealsOrderDetailsDbManager.dropTable(db);
 
             onCreate(db);
         }
@@ -125,15 +139,35 @@ public class DeepsliceDatabase {
 
     // Topping & Sauce
 
-    public boolean insertToppingSizes(List<ToppingSizes> aList ) {
-        for (Iterator<ToppingSizes> iterator = aList.iterator(); iterator.hasNext();) {
-            ToppingSizes f = (ToppingSizes) iterator.next();
-            ToppingSizeDbManager.insert(this.db,
-                    f.getToppingSizeID(), f.getToppingSizeCode(), f.getToppingSizeDesc(),
-                    f.getToppingAbbr(), f.getToppingAmount(), f.getDisplaySequence()
-                    );
+    //    public boolean insertToppingSizes(List<ToppingSizes> aList ) {
+    //        for (Iterator<ToppingSizes> iterator = aList.iterator(); iterator.hasNext();) {
+    //            ToppingSizes f = (ToppingSizes) iterator.next();
+    //            ToppingSizeDbManager.insert(this.db,
+    //                    f.getToppingSizeID(), f.getToppingSizeCode(), f.getToppingSizeDesc(),
+    //                    f.getToppingAbbr(), f.getToppingAmount(), f.getDisplaySequence()
+    //                    );
+    //        }
+    //        return true;
+    //    }
+
+
+    public boolean insertToppingSizes(List<ToppingSizes> toppingSizeList ) {
+        for(ToppingSizes toppingSize : toppingSizeList){
+            ToppingSizeDbManager.insert(this.db, toppingSize);
         }
         return true;
+    }
+
+    public List<ToppingSizes> retrieveToppingSizes(){
+        return ToppingSizeDbManager.retrieveAll(this.db);       
+    }
+
+    public ToppingSizes retrieveToppingSizeById(String toppingSizeId){
+        return ToppingSizeDbManager.retrieveByToppingSizeId(this.db, toppingSizeId);
+    }
+
+    public String retrieveToppingSizeIdByCode(String toppingSizeCode){
+        return ToppingSizeDbManager.retrieveToppingSizeIdByCode(this.db, toppingSizeCode);
     }
 
 
@@ -166,11 +200,13 @@ public class DeepsliceDatabase {
     }
 
 
-    public String getToppingPrice(String toppingId,String toppingSize){
-        return ToppingPriceDbManager.getToppingPrice(this.db, toppingId, toppingSize);
+    // checked
+    public double getToppingPrice(String toppingId, String toppingSizeId){
+        return ToppingPriceDbManager.getToppingPrice(this.db, toppingId, toppingSizeId);
     }
 
 
+    // checked
     public ArrayList<ToppingsAndSauces> getPizzaToppings(String pizzaId) {
         Cursor ls = SauceAndToppingDbManager.getPizzaToppings(this.db, pizzaId);
         return cursorToToppingsAndSauces(ls);
@@ -182,6 +218,7 @@ public class DeepsliceDatabase {
     }
 
 
+    // checked
     public ArrayList<ToppingsAndSauces> cursorToToppingsAndSauces(Cursor cursor) {
         if(null==cursor)
             return null;
@@ -228,6 +265,21 @@ public class DeepsliceDatabase {
                     );
         }
         return true;
+    }
+
+
+    public void cleanToppingsOrderTable(){
+        New_ToppingsOrderDbManager.cleanTable(this.db);
+    }
+
+
+    public long insertToppingsOrder(NewToppingsOrder toppingsOrder){
+        return New_ToppingsOrderDbManager.insert(this.db, toppingsOrder);
+    }
+
+
+    public List<NewToppingsOrder> retrieveToppingsOrderByProdOrderId(int prodOrderId){
+        return New_ToppingsOrderDbManager.retrieve(this.db, prodOrderId);
     }
 
 
@@ -295,7 +347,7 @@ public class DeepsliceDatabase {
         return FavoriteDbManager.isFavAdded(this.db, ProdID,customName);
     }
 
-    
+
     // checked
     public List<Favourite> getFavsList() {
 
@@ -321,7 +373,7 @@ public class DeepsliceDatabase {
 
     // Order
 
-    public boolean insertOrder(Order f) {
+    /*    public boolean insertOrder(Order f) {
 
         OrderDbManager.insert(this.db,
                 f.getProdCatID(), f.getSubCatID1(), f.getSubCatID2(), f.getProdID(),
@@ -331,6 +383,10 @@ public class DeepsliceDatabase {
                 f.getSauce(), f.getToppings(), f.getProdCatName()
                 );
         return true;
+    }*/
+
+    public long insertOrder(NewProductOrder order) {
+        return NEW_ProductOrderDbManager.insert(this.db, order);
     }
 
 
@@ -360,7 +416,7 @@ public class DeepsliceDatabase {
         for (Order order : orderList) {
             orderTotalPrice+= Double.parseDouble(order.getPrice());
         }
-        
+
         //        String couponType=AppSharedPreference.getData(mContext, "couponType",AppProperties.COUPON_TYPE_NONE);
         //
         //        if(couponType.equals(AppProperties.COUPON_TYPE_FIXED) || couponType.equals(AppProperties.COUPON_TYPE_PERCENTAGE))
@@ -383,7 +439,7 @@ public class DeepsliceDatabase {
         return orderInfo;
     }
 
-    
+
     // checked
     public List<Order> getOrdersListWithType(String type) {
 
@@ -395,16 +451,16 @@ public class DeepsliceDatabase {
         }
 
     }
-//    public List<Order> getOrdersListWithProdId(String pid) {
-//
-//        Cursor cursor= OrderDbManager.getOrdersListWithProdId(this.db, pid);
-//        try{        
-//            return cursorToOrderBean(cursor);
-//        }finally{
-//            cursor.close(); 
-//        }
-//
-//    }
+    //    public List<Order> getOrdersListWithProdId(String pid) {
+    //
+    //        Cursor cursor= OrderDbManager.getOrdersListWithProdId(this.db, pid);
+    //        try{        
+    //            return cursorToOrderBean(cursor);
+    //        }finally{
+    //            cursor.close(); 
+    //        }
+    //
+    //    }
 
     public boolean deleteOrderRec(int serialKey) {
         return OrderDbManager.deleteRecordOrder(this.db, "sr_no="+serialKey);
@@ -415,25 +471,25 @@ public class DeepsliceDatabase {
     }
 
 
-//    public void updateOrderDetails(ArrayList<CouponDetails> couponDetails) {
-//
-//        List<Order> vList=null;
-//        double discountPrice=0.00;
-//        double currentPrice=0.00;
-//        double newPrice=0.00;
-//        for (CouponDetails couponDetailsVo : couponDetails) {
-//            discountPrice=Double.parseDouble(couponDetailsVo.getDiscountedPrice());
-//            vList = getOrdersListWithProdId(couponDetailsVo.getProdID());
-//
-//            for (Order orderVo : vList) {
-//                currentPrice=Double.parseDouble(orderVo.getPrice());
-//                newPrice=currentPrice-discountPrice;
-//                OrderDbManager.updateOrderPrice(this.db, String.valueOf(orderVo.getSerialId()),String.valueOf(AppProperties.roundTwoDecimals(newPrice)));
-//            }
-//        }
-//
-//    }
-    
+    //    public void updateOrderDetails(ArrayList<CouponDetails> couponDetails) {
+    //
+    //        List<Order> vList=null;
+    //        double discountPrice=0.00;
+    //        double currentPrice=0.00;
+    //        double newPrice=0.00;
+    //        for (CouponDetails couponDetailsVo : couponDetails) {
+    //            discountPrice=Double.parseDouble(couponDetailsVo.getDiscountedPrice());
+    //            vList = getOrdersListWithProdId(couponDetailsVo.getProdID());
+    //
+    //            for (Order orderVo : vList) {
+    //                currentPrice=Double.parseDouble(orderVo.getPrice());
+    //                newPrice=currentPrice-discountPrice;
+    //                OrderDbManager.updateOrderPrice(this.db, String.valueOf(orderVo.getSerialId()),String.valueOf(AppProperties.roundTwoDecimals(newPrice)));
+    //            }
+    //        }
+    //
+    //    }
+
     // checked
     public List<Order> cursorToOrderBean(Cursor cursor) {
         List<Order> orderList = new ArrayList<Order>();
@@ -479,9 +535,9 @@ public class DeepsliceDatabase {
     }
 
     // checked
-//    public int getDealOrderCount(String coupnID){
-//        return DealsDbManager.getDealOrderCount(this.db, coupnID);
-//    }
+    //    public int getDealOrderCount(String coupnID){
+    //        return DealsDbManager.getDealOrderCount(this.db, coupnID);
+    //    }
 
     // checked
     //    public void resetDealOrder(String coupnID){
@@ -627,14 +683,14 @@ public class DeepsliceDatabase {
     }
 
     // NEW - 20130814 1300, i think it wont needed, can be sub by getDealOrdersList() method
-//    public List<DealOrder> getUnfinishedDealOrdersList(String couponID){
-//        Cursor cursor = DealsDbManager.getUnfinishedDealOrdersList(this.db, couponID);
-//        try{
-//            return cursorToDealOrder(cursor);
-//        }finally{
-//            cursor.close();
-//        }
-//    }
+    //    public List<DealOrder> getUnfinishedDealOrdersList(String couponID){
+    //        Cursor cursor = DealsDbManager.getUnfinishedDealOrdersList(this.db, couponID);
+    //        try{
+    //            return cursorToDealOrder(cursor);
+    //        }finally{
+    //            cursor.close();
+    //        }
+    //    }
 
     // will be deprecated
     public ArrayList<String> getDealData(String couponID, String couponGroupId){
@@ -676,12 +732,12 @@ public class DeepsliceDatabase {
         return DealsDbManager.isDealGroupAlreadySelected(this.db, couponID, CouponGroupID);
     }
 
-//    public boolean deleteDealOrderRec(String CouponID ) {
-//        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "CouponID = "+CouponID);
-//    }
-//    public boolean deleteDealOrderRecByGroupID(String CouponGroupID ) {
-//        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "CouponGroupID = " + CouponGroupID);
-//    }
+    //    public boolean deleteDealOrderRec(String CouponID ) {
+    //        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "CouponID = "+CouponID);
+    //    }
+    //    public boolean deleteDealOrderRecByGroupID(String CouponGroupID ) {
+    //        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "CouponGroupID = " + CouponGroupID);
+    //    }
 
 
     private List<DealOrder> cursorToDealOrder(Cursor cursor) {
@@ -965,150 +1021,197 @@ public class DeepsliceDatabase {
 
     // Categories & Sub-categories
 
-    public boolean insertProdCat(List<ProductCategory> aList ) {
-        for (Iterator<ProductCategory> iterator = aList.iterator(); iterator.hasNext();) {
-            ProductCategory f = (ProductCategory) iterator.next();
-            CategoryDbManager.insertCategory(this.db,
-                    f.getProdCatID(),
-                    f.getProdCatCode(),
-                    f.getProdCatAbbr(),
-                    f.getProdCatDesc(),
-                    f.getAllowPartialSelection(),
-                    f.getPartialSelectionText(),
-                    f.getPartialSelectionSurcharge(),
-                    f.getAllowSubCat1(),
-                    f.getSubCat1Text(),
-                    f.getAllowSubCat2(),
-                    f.getSubCat2Text(),
-                    f.getProductBarText(),
-                    f.getAllowOptions(),
-                    f.getOptionBarText(),
-                    f.getOptionCounting(),
-                    f.getThumbnail(),
-                    f.getFullImage()
+    //    public boolean insertProdCat(List<ProductCategory> aList ) {
+    //        for (Iterator<ProductCategory> iterator = aList.iterator(); iterator.hasNext();) {
+    //            ProductCategory f = (ProductCategory) iterator.next();
+    //            CategoryDbManager.insertCategory(this.db,
+    //                    f.getProdCatID(),
+    //                    f.getProdCatCode(),
+    //                    f.getProdCatAbbr(),
+    //                    f.getProdCatDesc(),
+    //                    f.getAllowPartialSelection(),
+    //                    f.getPartialSelectionText(),
+    //                    f.getPartialSelectionSurcharge(),
+    //                    f.getAllowSubCat1(),
+    //                    f.getSubCat1Text(),
+    //                    f.getAllowSubCat2(),
+    //                    f.getSubCat2Text(),
+    //                    f.getProductBarText(),
+    //                    f.getAllowOptions(),
+    //                    f.getOptionBarText(),
+    //                    f.getOptionCounting(),
+    //                    f.getThumbnail(),
+    //                    f.getFullImage()
+    //
+    //                    );
+    //        }
+    //        return true;
+    //    }
 
-                    );
+    public void insertProdCatList(List<ProductCategory> prodCatList) {
+        for(ProductCategory pCat : prodCatList){
+            long catPId = NEW_CategoriesDbManager.insertCategory(this.db, pCat);
         }
-        return true;
     }
 
-    public boolean insertSubCatList(List<ProductSubCategory> aList ) {
-        for (Iterator<ProductSubCategory> iterator = aList.iterator(); iterator.hasNext();) {
-            ProductSubCategory f = (ProductSubCategory) iterator.next();
-            CategoryDbManager.insertSubcategory(this.db,
-                    f.getProdCatID(),
-                    f.getSubCatID(),
-                    f.getSubCatOf(),
-                    f.getSubCatCode(),
-                    f.getSubCatAbbr(),
-                    f.getSubCatDesc(),
-                    f.getDisplaySequence(),
-                    f.getThumbnail(),
-                    f.getFullImage()
+    //    public boolean insertSubCatList(List<ProductSubCategory> aList ) {
+    //        for (Iterator<ProductSubCategory> iterator = aList.iterator(); iterator.hasNext();) {
+    //            ProductSubCategory f = (ProductSubCategory) iterator.next();
+    //            CategoryDbManager.insertSubcategory(this.db,
+    //                    f.getProdCatID(),
+    //                    f.getSubCatID(),
+    //                    f.getSubCatOf(),
+    //                    f.getSubCatCode(),
+    //                    f.getSubCatAbbr(),
+    //                    f.getSubCatDesc(),
+    //                    f.getDisplaySequence(),
+    //                    f.getThumbnail(),
+    //                    f.getFullImage()
+    //
+    //                    );
+    //        }
+    //        return true;
+    //    }
 
-                    );
+    public void insertSubCatList(List<ProductSubCategory> prodSubCatList) {
+        for(ProductSubCategory pSubCat : prodSubCatList){
+            long subCatPId = NEW_CategoriesDbManager.insertSubCategory(this.db, pSubCat);
         }
-        return true;
     }
+
 
     // modified
     public boolean isProductCategoriesExist() {
-        return CategoryDbManager.isCategoriesExist(this.db);
+        return NEW_CategoriesDbManager.isCategoriesExist(this.db);
     }
 
-    public ArrayList<ProductSubCategory> getSubCategoriesPizza() {
-        Cursor ls = CategoryDbManager.searchPizzaSubCats(this.db);
-        return cursorToSubCat(ls);
-    }
-    public ArrayList<ProductSubCategory> getSubCategoriesDrinks() {
-        Cursor ls = CategoryDbManager.searchDrinksSubCats(this.db);
-        return cursorToSubCat(ls);
-    }
+    //    public ArrayList<ProductSubCategory> getSubCategoriesPizza() {
+    //        Cursor ls = CategoryDbManager.searchPizzaSubCats(this.db);
+    //        return cursorToSubCat(ls);
+    //    }
 
-    public ArrayList<ProductCategory> getSides() {
-        Cursor ls = CategoryDbManager.searchSides(this.db);
-        return cursorToPeoductCats(ls);
+    // updated
+    public List<ProductSubCategory> retrievePizzaSubMenu() {
+        return NEW_CategoriesDbManager.retrievePizzaSubMenu(this.db);
     }
 
 
-    public ArrayList<ProductSubCategory> getPizzaCrusts(String catId,
-            String subCatId) {
+//    public ArrayList<ProductSubCategory> getSubCategoriesDrinks() {
+//        Cursor ls = CategoryDbManager.searchDrinksSubCats(this.db);
+//        return cursorToSubCat(ls);
+//    }
+    
+    // updated
+    public List<ProductSubCategory> retrieveDrinksSize() {
+        return NEW_CategoriesDbManager.retrieveDrinksSize(this.db);
+    }
 
-        Cursor cursor= CategoryDbManager.searchPizzaCrusts(this.db, catId,subCatId);
-        try{        
-            return cursorToSubCat(cursor);
-        }finally{
-            cursor.close(); 
-        }
+    //    public ArrayList<ProductCategory> getSides() {
+    //        Cursor ls = CategoryDbManager.searchSides(this.db);
+    //        return cursorToPeoductCats(ls);
+    //    }
 
+    // updated
+    public List<ProductCategory> getSides() {
+        return NEW_CategoriesDbManager.retrieveSides(this.db);
     }
 
 
-    public String getCatIdByCatCode(String catCode) {
-        return CategoryDbManager.getCatIdByCatCode(this.db, catCode);
-    }
-    public String getCatCodeByCatId(String catId) {
-        return CategoryDbManager.getCatCodeByCatId(this.db, catId);
-    }
-
-
-    public ArrayList<ProductSubCategory> cursorToSubCat(Cursor cursor) {
-        ArrayList<ProductSubCategory> list = new ArrayList<ProductSubCategory>();
-        if (cursor.moveToFirst()) {
-            do {
-                ProductSubCategory f = new ProductSubCategory();
-                f.setProdCatID(cursor.getString(1));
-                f.setSubCatID(cursor.getString(2));
-                f.setSubCatOf(cursor.getString(3));
-                f.setSubCatCode(cursor.getString(4));
-                f.setSubCatAbbr(cursor.getString(5));
-                f.setSubCatDesc(cursor.getString(6));
-                f.setDisplaySequence(cursor.getString(7));
-                f.setThumbnail(cursor.getString(8));
-                f.setFullImage(cursor.getString(9));
-
-                list.add(f);
-            } while (cursor.moveToNext());
-        }
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-        return list;
+//    public ArrayList<ProductSubCategory> getPizzaCrusts(String catId,
+//            String subCatId) {
+//
+//        Cursor cursor= CategoryDbManager.searchPizzaCrusts(this.db, catId, subCatId);
+//        try{        
+//            return cursorToSubCat(cursor);
+//        }finally{
+//            cursor.close(); 
+//        }
+//
+//    }
+    
+    public List<ProductSubCategory> retrievePizzaCrustList(String catId, String subCatId) {
+        return NEW_CategoriesDbManager.retrievePizzaCrustList(this.db, catId, subCatId);
     }
 
 
-    public ArrayList<ProductCategory> cursorToPeoductCats(Cursor cursor) {
-        if(null==cursor)
-            return null;
-        ArrayList<ProductCategory> list = new ArrayList<ProductCategory>();
-        if (cursor.moveToFirst()) {
-            do {
-                ProductCategory f = new ProductCategory();
-                f.setProdCatID(cursor.getString(1));
-                f.setProdCatCode(cursor.getString(2));
-                f.setProdCatAbbr(cursor.getString(3));
-                f.setProdCatDesc(cursor.getString(4));
-                f.setAllowPartialSelection(cursor.getString(5));
-                f.setPartialSelectionText(cursor.getString(6));
-                f.setPartialSelectionSurcharge(cursor.getString(7));
-                f.setAllowSubCat1(cursor.getString(8));
-                f.setSubCat1Text(cursor.getString(9));
-                f.setAllowSubCat2(cursor.getString(10));
-                f.setSubCat2Text(cursor.getString(11));
-                f.setProductBarText(cursor.getString(12));
-                f.setAllowOptions(cursor.getString(13));
-                f.setOptionBarText(cursor.getString(14));
-                f.setOptionCounting(cursor.getString(15));
-                f.setThumbnail(cursor.getString(16));
-                f.setFullImage(cursor.getString(17));
+    //    public String getCatIdByCatCode(String catCode) {
+    //        return CategoryDbManager.getCatIdByCatCode(this.db, catCode);
+    //    }
 
-                list.add(f);
-            } while (cursor.moveToNext());
-        }
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-        return list;
+
+    // updated
+    public String getCatIdFromCatCode(String catCode) {
+        return NEW_CategoriesDbManager.getCatIdByCatCode(this.db, catCode);
     }
+
+
+    //    public String getCatCodeByCatId(String catId) {
+    //        return CategoryDbManager.getCatCodeByCatId(this.db, catId);
+    //    }
+
+    // updated
+    public String getCatCodeFromCatId(String catId) {
+        return NEW_CategoriesDbManager.getCatCodeByCatId(this.db, catId);
+    }
+
+
+//    public ArrayList<ProductSubCategory> cursorToSubCat(Cursor cursor) {
+//        ArrayList<ProductSubCategory> list = new ArrayList<ProductSubCategory>();
+//        if (cursor.moveToFirst()) {
+//            do {
+//                ProductSubCategory f = new ProductSubCategory();
+//                f.setProdCatID(cursor.getString(1));
+//                f.setSubCatID(cursor.getString(2));
+//                f.setSubCatOf(cursor.getString(3));
+//                f.setSubCatCode(cursor.getString(4));
+//                f.setSubCatAbbr(cursor.getString(5));
+//                f.setSubCatDesc(cursor.getString(6));
+//                f.setDisplaySequence(cursor.getString(7));
+//                f.setThumbnail(cursor.getString(8));
+//                f.setFullImage(cursor.getString(9));
+//
+//                list.add(f);
+//            } while (cursor.moveToNext());
+//        }
+//        if (cursor != null && !cursor.isClosed()) {
+//            cursor.close();
+//        }
+//        return list;
+//    }
+
+
+    //    public ArrayList<ProductCategory> cursorToPeoductCats(Cursor cursor) {
+    //        if(null==cursor)
+    //            return null;
+    //        ArrayList<ProductCategory> list = new ArrayList<ProductCategory>();
+    //        if (cursor.moveToFirst()) {
+    //            do {
+    //                ProductCategory f = new ProductCategory();
+    //                f.setProdCatID(cursor.getString(1));
+    //                f.setProdCatCode(cursor.getString(2));
+    //                f.setProdCatAbbr(cursor.getString(3));
+    //                f.setProdCatDesc(cursor.getString(4));
+    //                f.setAllowPartialSelection(cursor.getString(5));
+    //                f.setPartialSelectionText(cursor.getString(6));
+    //                f.setPartialSelectionSurcharge(cursor.getString(7));
+    //                f.setAllowSubCat1(cursor.getString(8));
+    //                f.setSubCat1Text(cursor.getString(9));
+    //                f.setAllowSubCat2(cursor.getString(10));
+    //                f.setSubCat2Text(cursor.getString(11));
+    //                f.setProductBarText(cursor.getString(12));
+    //                f.setAllowOptions(cursor.getString(13));
+    //                f.setOptionBarText(cursor.getString(14));
+    //                f.setOptionCounting(cursor.getString(15));
+    //                f.setThumbnail(cursor.getString(16));
+    //                f.setFullImage(cursor.getString(17));
+    //
+    //                list.add(f);
+    //            } while (cursor.moveToNext());
+    //        }
+    //        if (cursor != null && !cursor.isClosed()) {
+    //            cursor.close();
+    //        }
+    //        return list;
+    //    }
 
 }

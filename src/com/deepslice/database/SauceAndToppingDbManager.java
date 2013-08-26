@@ -48,10 +48,11 @@ public class SauceAndToppingDbManager {
     }
     
     
-    public synchronized static Cursor getPizzaToppings(SQLiteDatabase db, String pizzaId) {
-        Log.d("<<<>>>", "in SauceAndToppingDbManager, retrieving pizza toppings");
+    // checked
+    public static Cursor getPizzaToppings(SQLiteDatabase db, String pizzaId) {
+        Log.d(TAG, "retrieving pizzaToppings cursor for prodId = " + pizzaId);
         try {
-            return db.rawQuery("SELECT * FROM "+TABLE_SAUCES_AND_TOPPINGS+" WHERE IsSauce='False' AND ProdID="+pizzaId+" order by DisplaySequence asc ", null);
+            return db.rawQuery("SELECT * FROM " + TABLE_SAUCES_AND_TOPPINGS + " WHERE IsSauce='False' AND ProdID=" + pizzaId + " order by DisplaySequence asc ", null);
         } catch (Exception e) {
             return null;
         }

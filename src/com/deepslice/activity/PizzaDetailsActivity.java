@@ -180,14 +180,13 @@ public class PizzaDetailsActivity extends Activity{
 
                 Intent i=new Intent(PizzaDetailsActivity.this,PizzaToppingsActivity.class);
                 Bundle bundle=new Bundle();
-                AppProperties.selectedToppings=toppingsSelected;
+//                AppProperties.selectedToppings=toppingsSelected;
                 if (isDeal){
                     bundle.putSerializable("selectedProduct",appInstance.getDealOrder());
                     bundle.putBoolean("isDeal",isDeal);
                 }  else {
                     bundle.putSerializable("selectedProduct",selectedBean);
                 }
-                //  bundle.putSerializable("selectedProduct",selectedBean);
                 i.putExtras(bundle);
                 startActivityForResult(i, SELECT_TOPPINGS);
 
@@ -195,11 +194,6 @@ public class PizzaDetailsActivity extends Activity{
             }
         });
 
-        //                RelativeLayout rlCrusts = (RelativeLayout) findViewById(R.id.rl_crust);
-        //        if(isHalf && AppProperties.isFirstPizzaChosen){
-        //                        rlCrusts.setVisibility(View.GONE);
-        //        }
-        //        else{
         LinearLayout ltCrusts= (LinearLayout)findViewById(R.id.ltCrusts);
         final String pId=b.getString("prdID");
         ltCrusts.setOnClickListener(new OnClickListener() {
@@ -230,7 +224,6 @@ public class PizzaDetailsActivity extends Activity{
 
             }
         });
-        //        }
 
         spinnerCat=(Spinner)findViewById(R.id.spinner1);
         populateCategoryData();
@@ -337,12 +330,12 @@ public class PizzaDetailsActivity extends Activity{
             else{
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaDetailsActivity.this);
                 dbInstance.open();
-                ArrayList<ProductSubCategory> crustList=new ArrayList<ProductSubCategory>();
+                List<ProductSubCategory> crustList=new ArrayList<ProductSubCategory>();
                 if (isDeal){
                     Product allProductsVo=dbInstance.getProductById(dealOrder.getProdID());
-                    crustList = dbInstance.getPizzaCrusts(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
+                    crustList = dbInstance.retrievePizzaCrustList(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
                 }else {
-                    crustList = dbInstance.getPizzaCrusts(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
+                    crustList = dbInstance.retrievePizzaCrustList(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
                 }
                 if(crustList != null && crustList.size()>0 ) {
                     ProductSubCategory crLocal = crustList.get(0);
@@ -404,24 +397,21 @@ public class PizzaDetailsActivity extends Activity{
                     if(isHalf){
                         if(AppProperties.isFirstPizzaChosen){
                             Log.d("HALF PIZZA", "adding orders to cart");
-                            Order firstHalfOrder = appInstance.getHalfOder();
-                            dbInstance.insertOrder(firstHalfOrder);         // first half
-                            dbInstance.insertOrder(tempOrderBean);             // 2nd half
+//                            Order firstHalfOrder = appInstance.getHalfOder();
+//                            dbInstance.insertOrder(firstHalfOrder);         // first half
+//                            dbInstance.insertOrder(tempOrderBean);             // 2nd half
                             AppProperties.isFirstPizzaChosen = false;
-                            //                            finish();
                         }
                         else{
                             Log.d("HALF PIZZA", "returning from PizzaDetailsActivity after set half-pizza");
                             String halfCrust = selectedCrusts.getText().toString();
-                            appInstance.setHalfOder(tempOrderBean, halfCrust);
+//                            appInstance.setHalfOder(tempOrderBean, halfCrust);
                             AppProperties.isFirstPizzaChosen = true;
-                            //                            finish();
                         }
                     }
                     else{
-                        dbInstance.insertOrder(tempOrderBean);
+//                        dbInstance.insertOrder(tempOrderBean);
                         Toast.makeText(PizzaDetailsActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
-                        //                        finish();
                     }
 
                 }
@@ -487,7 +477,7 @@ public class PizzaDetailsActivity extends Activity{
         }
         if (requestCode == SELECT_TOPPINGS) {
             String tempList="";
-            toppingsSelected=AppProperties.selectedToppings;
+//            toppingsSelected=AppProperties.selectedToppings;
             if(toppingsSelected==null)
                 toppingsSelected=new HashMap<String, ToppingsHashmap>();
 
@@ -563,7 +553,7 @@ public class PizzaDetailsActivity extends Activity{
             ToppingsHashmap gm=(ToppingsHashmap)pairs.getValue();
 
             if("False".equalsIgnoreCase(gm.getIsFreeWithPizza())){
-                tempPrice=dbInstance.getToppingPrice(gm.getToppingID(),gm.getToppingSize());
+//                tempPrice=dbInstance.getToppingPrice(gm.getToppingID(),gm.getToppingSize());
             }
             tempDoublePrice=Double.parseDouble(tempPrice);
             totalPrice=totalPrice+tempDoublePrice;

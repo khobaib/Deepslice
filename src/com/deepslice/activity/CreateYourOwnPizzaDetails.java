@@ -47,13 +47,7 @@ import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.Utils;
 
-/**
- * Created with IntelliJ IDEA.
- * User: rukshan
- * Date: 6/5/13
- * Time: 9:56 PM
- * To change this template use File | Settings | File Templates.
- */
+
 public class CreateYourOwnPizzaDetails extends Activity {
 
     int currentIndex;
@@ -74,7 +68,6 @@ public class CreateYourOwnPizzaDetails extends Activity {
     List<String> prodIds;
     ArrayList<Product> productList;
 
-    //    private ProgressDialog pDialog;
     JsonParser jsonParser = new JsonParser();
     
     List<ToppingPrices> toppingsPriceList;
@@ -149,13 +142,11 @@ public class CreateYourOwnPizzaDetails extends Activity {
                 imageLoader.DisplayImage(productList.get(currentIndex).getFullImage(), ImageViewCreateYourOwn);
                 PizzaName.setText(productList.get(currentIndex).getProdDesc());
                 updateTopingSaucesData(productList.get(currentIndex).getProdID());
-                //                populateSauceData(currentIndex);
                 if(currentIndex < (productList.size()-1)){
                     ImageButtonNext.setVisibility(View.VISIBLE);
                     ImageButtonPrv.setVisibility(View.VISIBLE);
                     Log.d("............",""+currentIndex);
 
-                    //                    imageViewCreateYourOwn.setImageResource(imageSet[currentIndex]);
                 } else {
                     ImageButtonNext.setVisibility(View.GONE);
 
@@ -224,7 +215,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
 
                 Intent i=new Intent(CreateYourOwnPizzaDetails.this,PizzaToppingsActivity.class);
                 Bundle bundle=new Bundle();
-                AppProperties.selectedToppings=toppingsSelected;
+//                AppProperties.selectedToppings=toppingsSelected;
 
                 bundle.putSerializable("selectedProduct",productList.get(currentIndex));
 
@@ -235,11 +226,6 @@ public class CreateYourOwnPizzaDetails extends Activity {
 
             }
         });
-
-
-
-
-        //        populateCategoryData();
 
         LinearLayout ltSauces= (LinearLayout)findViewById(R.id.ltSauces);
         ltSauces.setOnClickListener(new OnClickListener() {
@@ -346,7 +332,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
                 Order tempOrderBean = getOrderBean();
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
                 dbInstance.open();
-                dbInstance.insertOrder(tempOrderBean);
+//                dbInstance.insertOrder(tempOrderBean);
                 Toast.makeText(CreateYourOwnPizzaDetails.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
                 dbInstance.close();
                 
@@ -531,7 +517,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
         }
         if (requestCode == SELECT_TOPPINGS) {
             String tempList="";
-            toppingsSelected=AppProperties.selectedToppings;
+//            toppingsSelected=AppProperties.selectedToppings;
             if(toppingsSelected==null)
                 toppingsSelected=new HashMap<String, ToppingsHashmap>();
 
@@ -597,7 +583,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
             ToppingsHashmap gm=(ToppingsHashmap)pairs.getValue();
 
             if("False".equalsIgnoreCase(gm.getIsFreeWithPizza())){
-                tempPrice=dbInstance.getToppingPrice(gm.getToppingID(),gm.getToppingSize());
+//                tempPrice=dbInstance.getToppingPrice(gm.getToppingID(),gm.getToppingSize());
             }
             tempDoublePrice=Double.parseDouble(tempPrice);
             totalPrice=totalPrice+tempDoublePrice;

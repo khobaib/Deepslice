@@ -29,6 +29,11 @@ public class NewToppingsOrder {
             String toppingPrice, Boolean isFreeWithPizza) {
         this(0, prodOrderId, toppingsId, toppingSizeId, isSauce, toppingPrice, isFreeWithPizza);
     }
+    
+    public NewToppingsOrder(String toppingsId, String toppingSizeId, Boolean isSauce,
+            String toppingPrice, Boolean isFreeWithPizza) {
+        this(0, 0, toppingsId, toppingSizeId, isSauce, toppingPrice, isFreeWithPizza);
+    }
 
     public int getPrimaryId() {
         return primaryId;

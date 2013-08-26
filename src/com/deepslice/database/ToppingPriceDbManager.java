@@ -49,26 +49,42 @@ public class ToppingPriceDbManager {
     }
 
 
-    public static String getToppingPrice(SQLiteDatabase db, String toppingId, String toppingSize) {
-        Log.d("<<<>>>", "in ToppingPriceDbManager, retrieving topping price");
-        String[] selectionArgs={toppingId,toppingSize};
-        String returnValue=null;
-        try {
-            Cursor cursor = db.rawQuery("SELECT ToppingPrice AS val FROM " + TABLE_TOPPING_PRICES + " WHERE ToppingID=? AND ToppingSizeCode=?", selectionArgs);
+    // checked
+//    public static String getToppingPrice(SQLiteDatabase db, String toppingId, String toppingSize) {
+//        Log.d(TAG, "retrieving topping-price for toppingId = " + toppingId + " and toppingSizeCode = " + toppingSize);
+//        String[] selectionArgs={toppingId, toppingSize};
+//        String returnValue=null;
+//        try {
+//            Cursor cursor = db.rawQuery("SELECT ToppingPrice AS val FROM " + TABLE_TOPPING_PRICES + " WHERE ToppingID=? AND ToppingSizeCode=?", selectionArgs);
+//
+//            if (cursor.moveToFirst()) {
+//                returnValue=cursor.getString(0);                
+//            }
+//
+//
+//            if (cursor != null && !cursor.isClosed()) {
+//                cursor.close();
+//            }
+//            return returnValue;
+//
+//        } catch (Exception e) {
+//            return returnValue;
+//        } 
+//    }
+    
+    // checked
+    public static double getToppingPrice(SQLiteDatabase db, String toppingId, String toppingSizeId) {
+        Log.d(TAG, "retrieving topping-price for toppingId = " + toppingId + " and toppingSizeId = " + toppingSizeId);
+        String[] selectionArgs={toppingId, toppingSizeId};
 
-            if (cursor.moveToFirst()) {
-                returnValue=cursor.getString(0);                
-            }
-
-
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-            return returnValue;
-
-        } catch (Exception e) {
-            return returnValue;
-        } 
+        double price = 0.0;
+        Cursor cursor = db.query(TABLE_TOPPING_PRICES, null, "ToppingID = ? AND ToppingSizeID = ?", selectionArgs, null, null, null);
+        if(cursor != null && cursor.getCount() > 0){
+            cursor.moveToFirst();
+            price = Double.parseDouble(cursor.getString(cursor.getColumnIndex("ToppingPrice")));
+        }
+        cursor.close();
+        return price;
     }
 
 

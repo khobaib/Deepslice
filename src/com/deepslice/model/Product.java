@@ -25,13 +25,11 @@ public class Product implements Serializable {
 	private String IsAddDeliveryAmount;
 	private String DisplaySequence;
 	private String CaloriesQty;
-	private String Price;
-	
+	private String Price;	
 	private String Thumbnail;
 	private String FullImage;
 	
-	public Product() {
-        // TODO Auto-generated constructor stub
+	public Product() {        
     }
 	
     public static List<Product> parseAllProducts(JSONArray productArray){

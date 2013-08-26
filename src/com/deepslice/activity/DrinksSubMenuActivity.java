@@ -30,9 +30,9 @@ import com.deepslice.utilities.Utils;
 
 public class DrinksSubMenuActivity extends Activity{
 
-    ArrayList<ProductCategory> productCatList;
-    ArrayList<ProductSubCategory> subCatList;
-    ArrayList<Product> allProductsList;
+//    ArrayList<ProductCategory> productCatList;
+    List<ProductSubCategory> subCatList;
+//    ArrayList<Product> allProductsList;
 
     ListView listview;
     TextView tvItemsPrice, tvFavCount;
@@ -57,7 +57,7 @@ public class DrinksSubMenuActivity extends Activity{
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DrinksSubMenuActivity.this);
         dbInstance.open();
-        subCatList=dbInstance.getSubCategoriesDrinks();
+        subCatList = dbInstance.retrieveDrinksSize();
         dbInstance.close();
 
         //        AppDao dao=null;
@@ -136,10 +136,9 @@ public class DrinksSubMenuActivity extends Activity{
 
     private class MyListAdapterDrinks extends ArrayAdapter<ProductSubCategory> {
 
-        private ArrayList<ProductSubCategory> items;
+        private List<ProductSubCategory> items;
 
-        public MyListAdapterDrinks(Context context, int viewResourceId,
-                ArrayList<ProductSubCategory> items) {
+        public MyListAdapterDrinks(Context context, int viewResourceId, List<ProductSubCategory> items) {
             super(context, viewResourceId, items);
             this.items = items;
 

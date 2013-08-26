@@ -123,12 +123,12 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                String pastaId=getProdCatId("Pasta");
-                Intent intent=new Intent(MenuActivity.this,ProductsListActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putString("catId",pastaId);
-                bundle.putString("subCatId","0");
-                bundle.putString("catType","Pasta");
+                String pastaId = getProdCatId("Pasta");
+                Intent intent = new Intent(MenuActivity.this,ProductsListActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("catId", pastaId);
+                bundle.putString("subCatId", "0");
+                bundle.putString("catType", "Pasta");
                 intent.putExtras(bundle);
                 startActivity(intent);
 
@@ -138,13 +138,13 @@ public class MenuActivity extends Activity {
         ivDeals.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                String pastaId=getProdCatId("Deals");
+//                String pastaId=getProdCatId("Deals");
                 Intent intent=new Intent(MenuActivity.this, DealsListActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putString("catId",pastaId);
-                bundle.putString("subCatId","0");
-                bundle.putString("catType","Deals");
-                intent.putExtras(bundle);
+//                Bundle bundle=new Bundle();
+//                bundle.putString("catId",pastaId);
+//                bundle.putString("subCatId","0");
+//                bundle.putString("catType","Deals");
+//                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -204,10 +204,10 @@ public class MenuActivity extends Activity {
 
                     DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
                     dbInstance.open();
-                    dbInstance.insertProdCat(categoryList);
+                    dbInstance.insertProdCatList(categoryList);
                     dbInstance.close();
 
-                    System.out.println("Got product catetgories: "+categoryList.size());
+                    System.out.println("Got product catetgories: " + categoryList.size());
 
                     return true;
                 } catch (JSONException e) {
@@ -252,7 +252,7 @@ public class MenuActivity extends Activity {
                     dbInstance.insertSubCatList(subcategoryList);
                     dbInstance.close();
 
-                    System.out.println("Got product catetgories: " + subcategoryList.size());
+                    System.out.println("Got product sub-catetgories: " + subcategoryList.size());
 
                     return true;
                 } catch (JSONException e) {
@@ -468,7 +468,7 @@ public class MenuActivity extends Activity {
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
         dbInstance.open();
-        pCatId=dbInstance.getCatIdByCatCode(abbr);
+        pCatId=dbInstance.getCatIdFromCatCode(abbr);
         dbInstance.close();
 
         return pCatId;

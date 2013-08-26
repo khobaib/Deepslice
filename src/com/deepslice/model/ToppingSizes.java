@@ -25,6 +25,16 @@ public class ToppingSizes implements Serializable {
         // TODO Auto-generated constructor stub
     }
 
+    public ToppingSizes(String toppingSizeID, String toppingSizeCode, String toppingSizeDesc, String toppingAbbr,
+            String toppingAmount, String displaySequence) {
+        ToppingSizeID = toppingSizeID;
+        ToppingSizeCode = toppingSizeCode;
+        ToppingSizeDesc = toppingSizeDesc;
+        ToppingAbbr = toppingAbbr;
+        ToppingAmount = toppingAmount;
+        DisplaySequence = displaySequence;
+    }
+
     public static List<ToppingSizes> parseToppingsSizes(JSONArray toppingsSizesArray){
         List<ToppingSizes> toppingSizeList = new ArrayList<ToppingSizes>();
         GsonBuilder gsonb = new GsonBuilder();

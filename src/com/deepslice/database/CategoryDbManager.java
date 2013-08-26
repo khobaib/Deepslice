@@ -37,136 +37,140 @@ public class CategoryDbManager {
 
 
 
-    public static long insertCategory(SQLiteDatabase db, String... values) {
-        Log.d(TAG, "in CategoryDbManager, inserting category");
-        ContentValues cv = new ContentValues();
-        for (int i = 0; i < values.length; i++) {
-            cv.put(table_categories_columns[i + 1], values[i]);
-        }
-
-        return db.insert(TABLE_CATEGORIES, null, cv);
-    }
-
-
-    public static long insertSubcategory(SQLiteDatabase db, String... values) {
-        Log.d(TAG, "in CategoryDbManager, inserting subcategory");
-        ContentValues cv = new ContentValues();
-        for (int i = 0; i < values.length; i++) {
-            cv.put(table_subcategories_columns[i + 1], values[i]);
-        }
-
-        return db.insert(TABLE_SUB_CATEGORIES, null, cv);
-    }
+//    public static long insertCategory(SQLiteDatabase db, String... values) {
+//        Log.d(TAG, "in CategoryDbManager, inserting category");
+//        ContentValues cv = new ContentValues();
+//        for (int i = 0; i < values.length; i++) {
+//            cv.put(table_categories_columns[i + 1], values[i]);
+//        }
+//
+//        return db.insert(TABLE_CATEGORIES, null, cv);
+//    }
 
 
-    public Cursor getRow(SQLiteDatabase db, String DATABASE_TABLE, String rowId) {
-        Log.d(TAG, "in CategoryDbManager, getRow");
-        try {
-            return db.rawQuery("SELECT * FROM "+TABLE_CATEGORIES+" WHERE sr_no=" + "\'"+ rowId + "\'", null);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+//    public static long insertSubcategory(SQLiteDatabase db, String... values) {
+//        Log.d(TAG, "in CategoryDbManager, inserting subcategory");
+//        ContentValues cv = new ContentValues();
+//        for (int i = 0; i < values.length; i++) {
+//            cv.put(table_subcategories_columns[i + 1], values[i]);
+//        }
+//
+//        return db.insert(TABLE_SUB_CATEGORIES, null, cv);
+//    }
 
-    public static Cursor searchPizzaSubCats(SQLiteDatabase db) {
-        Log.d(TAG, "in CategoryDbManager, searchPizzaSubCats");
-        try {
-            return db.rawQuery("SELECT * FROM "+TABLE_SUB_CATEGORIES+" WHERE SubCatOf='0' AND ProdCatID IN (SELECT ProdCatID FROM "+TABLE_CATEGORIES+" WHERE ProdCatCode='Pizza') order by SubCatCode asc", null);
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
-    public static Cursor searchPizzaCrusts(SQLiteDatabase db, String catId, String subCatId) {
-        Log.d(TAG, "in CategoryDbManager, searchPizzaCrusts catId = " + catId + " and subCatId " + subCatId);
-        try {
-            String[] selectionArgs={catId,subCatId};
-            return db.rawQuery("SELECT * FROM "+TABLE_SUB_CATEGORIES+" WHERE ProdCatID=? AND SubCatOf=?  ORDER BY DisplaySequence asc", selectionArgs);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    public static Cursor searchDrinksSubCats(SQLiteDatabase db) {
-        Log.d(TAG, "in CategoryDbManager, searchDrinksSubCats");
-        try {
-            return db.rawQuery("SELECT * FROM "+TABLE_SUB_CATEGORIES+" WHERE SubCatOf='0' AND ProdCatID IN (SELECT ProdCatID FROM "+TABLE_CATEGORIES+" WHERE ProdCatCode='Drinks')", null);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+//    public Cursor getRow(SQLiteDatabase db, String DATABASE_TABLE, String rowId) {
+//        Log.d(TAG, "in CategoryDbManager, getRow");
+//        try {
+//            return db.rawQuery("SELECT * FROM "+TABLE_CATEGORIES+" WHERE sr_no=" + "\'"+ rowId + "\'", null);
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
 
-    public static Cursor searchSides(SQLiteDatabase db) {
-        Log.d(TAG, "in CategoryDbManager, searchSides");
-        try {
-            return db.rawQuery("SELECT * FROM "+TABLE_CATEGORIES+" WHERE ProdCatCode NOT IN ('Drinks','Pizza','Pasta')", null);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+//    public static Cursor searchPizzaSubCats(SQLiteDatabase db) {
+//        Log.d(TAG, "in CategoryDbManager, searchPizzaSubCats");
+//        try {
+//            return db.rawQuery("SELECT * FROM "+TABLE_SUB_CATEGORIES+" WHERE SubCatOf='0' AND ProdCatID IN (SELECT ProdCatID FROM "+TABLE_CATEGORIES+" WHERE ProdCatCode='Pizza') order by SubCatCode asc", null);
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
+
+//    public static Cursor searchPizzaCrusts(SQLiteDatabase db, String catId, String subCatId) {
+//        Log.d(TAG, "in CategoryDbManager, searchPizzaCrusts catId = " + catId + " and subCatId " + subCatId);
+//        try {
+//            String[] selectionArgs={catId,subCatId};
+//            return db.rawQuery("SELECT * FROM "+TABLE_SUB_CATEGORIES+" WHERE ProdCatID=? AND SubCatOf=?  ORDER BY DisplaySequence asc", selectionArgs);
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
+    
+    
+    
+//    public static Cursor searchDrinksSubCats(SQLiteDatabase db) {
+//        Log.d(TAG, "in CategoryDbManager, searchDrinksSubCats");
+//        try {
+//            return db.rawQuery("SELECT * FROM "+TABLE_SUB_CATEGORIES+" WHERE SubCatOf='0' AND ProdCatID IN (SELECT ProdCatID FROM "+TABLE_CATEGORIES+" WHERE ProdCatCode='Drinks')", null);
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
+
+    // modified
+//    public static Cursor searchSides(SQLiteDatabase db) {
+//        Log.d(TAG, "in CategoryDbManager, searchSides");
+//        try {
+//            return db.rawQuery("SELECT * FROM "+TABLE_CATEGORIES+" WHERE ProdCatCode NOT IN ('Drinks','Pizza','Pasta')", null);
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
 
 
     // modified
-    public static boolean isCategoriesExist(SQLiteDatabase db) {
-        Log.d(TAG, "isEmptyDB?");
-        Cursor cursor = db.query(TABLE_CATEGORIES, null, null, null, null, null, null);
-
-        if(cursor != null && cursor.getCount() > 0){
-            cursor.close();
-            return true;
-        }
-        return false;
-    }
+//    public static boolean isCategoriesExist(SQLiteDatabase db) {
+//        Log.d(TAG, "isEmptyDB?");
+//        Cursor cursor = db.query(TABLE_CATEGORIES, null, null, null, null, null, null);
+//
+//        if(cursor != null && cursor.getCount() > 0){
+//            cursor.close();
+//            return true;
+//        }
+//        return false;
+//    }
 
     
-    public static String getCatIdByCatCode(SQLiteDatabase db, String catCode) {
-        Log.d(TAG, "in CategoryDbManager, getCatIdByCatCode catCode = " + catCode);
+//    public static String getCatIdByCatCode(SQLiteDatabase db, String catCode) {
+//        Log.d(TAG, "in CategoryDbManager, getCatIdByCatCode catCode = " + catCode);
+//
+//        String[] selectionArgs={catCode};
+//        String returnValue=null;
+//        try {
+//            Cursor cursor=db.rawQuery("SELECT ProdCatID AS val FROM "+TABLE_CATEGORIES+" WHERE ProdCatCode=?", selectionArgs);
+//
+//            if (cursor.moveToFirst()) {
+//                returnValue=cursor.getString(0);                
+//            }
+//
+//
+//            if (cursor != null && !cursor.isClosed()) {
+//                cursor.close();
+//            }
+//            return returnValue;
+//
+//        } catch (Exception e) {
+//            return returnValue;
+//        } 
+//    }
 
-        String[] selectionArgs={catCode};
-        String returnValue=null;
-        try {
-            Cursor cursor=db.rawQuery("SELECT ProdCatID AS val FROM "+TABLE_CATEGORIES+" WHERE ProdCatCode=?", selectionArgs);
-
-            if (cursor.moveToFirst()) {
-                returnValue=cursor.getString(0);                
-            }
-
-
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-            return returnValue;
-
-        } catch (Exception e) {
-            return returnValue;
-        } 
-    }
-
-    public static String getCatCodeByCatId(SQLiteDatabase db, String catId) {
-        Log.d(TAG, "in CategoryDbManager, getCatCodeByCatId catId = " + catId);
-
-        String[] selectionArgs={catId};
-        String returnValue=null;
-        try {
-            Cursor cursor=db.rawQuery("SELECT ProdCatCode AS val FROM "+TABLE_CATEGORIES+" WHERE ProdCatID=?", selectionArgs);
-
-            if (cursor.moveToFirst()) {
-                returnValue=cursor.getString(0);                
-            }
-            if(!AppProperties.isNull(returnValue)){
-
-                if(!"Pizza".equals(returnValue) && !"Drinks".equals(returnValue) && !"Pasta".equals(returnValue))
-                {
-                    returnValue="Sides";
-                }
-            }
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-            return returnValue;
-
-        } catch (Exception e) {
-            return returnValue;
-        } 
-    }
+//    public static String getCatCodeByCatId(SQLiteDatabase db, String catId) {
+//        Log.d(TAG, "in CategoryDbManager, getCatCodeByCatId catId = " + catId);
+//
+//        String[] selectionArgs={catId};
+//        String returnValue=null;
+//        try {
+//            Cursor cursor=db.rawQuery("SELECT ProdCatCode AS val FROM "+TABLE_CATEGORIES+" WHERE ProdCatID=?", selectionArgs);
+//
+//            if (cursor.moveToFirst()) {
+//                returnValue=cursor.getString(0);                
+//            }
+//            if(!AppProperties.isNull(returnValue)){
+//
+//                if(!"Pizza".equals(returnValue) && !"Drinks".equals(returnValue) && !"Pasta".equals(returnValue))
+//                {
+//                    returnValue="Sides";
+//                }
+//            }
+//            if (cursor != null && !cursor.isClosed()) {
+//                cursor.close();
+//            }
+//            return returnValue;
+//
+//        } catch (Exception e) {
+//            return returnValue;
+//        } 
+//    }
 
 }

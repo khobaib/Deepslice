@@ -71,7 +71,7 @@ public class ProductsListActivity extends Activity{
 //    boolean syncedToppings =false;
 
     public ImageLoader imageLoader;
-    Product selectedBean;	
+    Product selectedProduct;	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,7 +127,7 @@ public class ProductsListActivity extends Activity{
                     long id) {
                 Product eBean = (Product) v.getTag();
                 if (eBean != null) {
-                    selectedBean = eBean;
+                    selectedProduct = eBean;
 
                     if("Pizza".equals(catType)){
                         updateTopingSaucesData(eBean.getProdID());
@@ -141,7 +141,7 @@ public class ProductsListActivity extends Activity{
                         bundle.putSerializable("prodBean",eBean);
                         bundle.putString("catType",catType);
                         i.putExtras(bundle);
-                        startActivityForResult(i, 112233);
+                        startActivity(i);
                     }
                 }
             }
@@ -270,16 +270,16 @@ public class ProductsListActivity extends Activity{
 
     }
 
-    private String getProdCatId(String abbr) {
-        String pCatId="0";
-
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(ProductsListActivity.this);
-        dbInstance.open();
-        pCatId=dbInstance.getCatIdByCatCode(abbr);
-        dbInstance.close();
-
-        return pCatId;
-    }
+//    private String getProdCatId(String abbr) {
+//        String pCatId="0";
+//
+//        DeepsliceDatabase dbInstance = new DeepsliceDatabase(ProductsListActivity.this);
+//        dbInstance.open();
+//        pCatId=dbInstance.getCatIdByCatCode(abbr);
+//        dbInstance.close();
+//
+//        return pCatId;
+//    }
 
 
     private void GetPizzaToppingAndSauces(String prodId){
@@ -324,10 +324,10 @@ public class ProductsListActivity extends Activity{
         if(null != pd)
             pd.dismiss();
 
-        Intent i=new Intent(ProductsListActivity.this, PizzaDetailsActivity.class);
+        Intent i=new Intent(ProductsListActivity.this, NEW_PizzaDetailsActivity.class);
         Bundle bundle=new Bundle();
         bundle.putBoolean("isHalf", isHalf);
-        bundle.putSerializable("selectedProduct", selectedBean);
+        bundle.putSerializable("selectedProduct", selectedProduct);
         i.putExtras(bundle);
 
         if(isHalf){
@@ -338,30 +338,30 @@ public class ProductsListActivity extends Activity{
         }
 
         else
-            startActivityForResult(i, 112233);
+            startActivity(i);
     }	
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode != RESULT_OK) {
-            return;
-        }
-
-        switch(requestCode){
-            case REQUEST_CODE_IS_PIZZA_HALF:
-                // parse data
-                Log.d("HALF PIZZA", "returning from ProductListActivity after set half-pizza");
-                Intent resultData = new Intent();
-                setResult(Activity.RESULT_OK, resultData);
-                finish();
-                break;
-            default:
-                break;
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (resultCode != RESULT_OK) {
+//            return;
+//        }
+//
+//        switch(requestCode){
+//            case REQUEST_CODE_IS_PIZZA_HALF:
+//                // parse data
+//                Log.d("HALF PIZZA", "returning from ProductListActivity after set half-pizza");
+//                Intent resultData = new Intent();
+//                setResult(Activity.RESULT_OK, resultData);
+//                finish();
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 
 
 

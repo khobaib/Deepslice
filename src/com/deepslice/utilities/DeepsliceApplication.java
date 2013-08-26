@@ -8,20 +8,14 @@ import com.deepslice.model.CouponData;
 import com.deepslice.model.CouponDetails;
 import com.deepslice.model.CreateOwnPizzaData;
 import com.deepslice.model.DealOrder;
+import com.deepslice.model.NewProductOrder;
 import com.deepslice.model.Order;
 
-/**
- * Created with IntelliJ IDEA.
- * User: rukshan
- * Date: 7/20/13
- * Time: 7:20 PM
- * To change this template use File | Settings | File Templates.
- */
 public class DeepsliceApplication extends Application {
     private CouponData couponData;
     private CouponDetails couponDetails;
     private DealOrder dealOrder;
-    private Order halfOder;
+    private NewProductOrder halfOder;
     private String halfCrust;               // for demo
     private List<CreateOwnPizzaData> createPizzaDataList;
 
@@ -34,7 +28,11 @@ public class DeepsliceApplication extends Application {
         this.createPizzaDataList = createPizzaDataList;
     }
 
-    public Order getHalfOder() {
+//    public Order getHalfOder() {
+//        return halfOder;
+//    }
+    
+    public NewProductOrder getHalfOder() {
         return halfOder;
     }
     
@@ -42,7 +40,12 @@ public class DeepsliceApplication extends Application {
         return halfCrust;
     }
 
-    public void setHalfOder(Order halfOder, String crust) {
+//    public void setHalfOder(Order halfOder, String crust) {
+//        this.halfOder = halfOder;
+//        this.halfCrust = crust;
+//    }
+    
+    public void setHalfOder(NewProductOrder halfOder, String crust) {
         this.halfOder = halfOder;
         this.halfCrust = crust;
     }

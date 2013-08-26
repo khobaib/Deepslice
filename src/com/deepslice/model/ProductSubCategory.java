@@ -12,19 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class ProductSubCategory implements Serializable {
-
-    public String getThumbnail() {
-        return Thumbnail;
-    }
-    public void setThumbnail(String thumbnail) {
-        Thumbnail = thumbnail;
-    }
-    public String getFullImage() {
-        return FullImage;
-    }
-    public void setFullImage(String fullImage) {
-        FullImage = fullImage;
-    }
+    
     private static final long serialVersionUID = 1L;
     private String ProdCatID;
     private String SubCatID;
@@ -35,6 +23,7 @@ public class ProductSubCategory implements Serializable {
     private String DisplaySequence;
     private String Thumbnail;
     private String FullImage;
+
 
     public ProductSubCategory() {
         // TODO Auto-generated constructor stub
@@ -108,6 +97,17 @@ public class ProductSubCategory implements Serializable {
         DisplaySequence = displaySequence;
     }
 
-
+    public String getThumbnail() {
+        return Thumbnail;
+    }
+    public void setThumbnail(String thumbnail) {
+        Thumbnail = thumbnail;
+    }
+    public String getFullImage() {
+        return FullImage;
+    }
+    public void setFullImage(String fullImage) {
+        FullImage = fullImage;
+    }
 
 }

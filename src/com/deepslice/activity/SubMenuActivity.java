@@ -30,7 +30,7 @@ import com.deepslice.utilities.Utils;
 
 public class SubMenuActivity extends Activity{
 
-    ArrayList<ProductCategory> productCatList;
+    List<ProductCategory> productCatList;
     ArrayList<ProductSubCategory> subCatList;
     ArrayList<Product> allProductsList;
 
@@ -123,10 +123,9 @@ public class SubMenuActivity extends Activity{
 
     private class MyListAdapterSides extends ArrayAdapter<ProductCategory> {
 
-        private ArrayList<ProductCategory> items;
+        private List<ProductCategory> items;
 
-        public MyListAdapterSides(Context context, int viewResourceId,
-                ArrayList<ProductCategory> items) {
+        public MyListAdapterSides(Context context, int viewResourceId, List<ProductCategory> items) {
             super(context, viewResourceId, items);
             this.items = items;
 

@@ -11,7 +11,7 @@
         <TextView
             android:id="@+id/headerTextView"
             style="@style/headerText"
-            android:text="@string/deliveryAddress"
+            android:text="Card Info"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>
 
@@ -41,7 +41,9 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dip"
-                android:text="TextView this is text view for test size of the cview"
+                android:textSize="16dp"
+                android:layout_marginBottom="10dp"
+                android:text="Please enter Credit/Debit card info"
                 android:textColor="#ffffff" />
 
             <TableLayout
@@ -52,25 +54,25 @@
                 <TableRow
                     android:id="@+id/tableRow1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dip" >
 
                     <TextView
-                        android:id="@+id/unittextView"
+                        android:id="@+id/tv_card_type"
                         style="@style/textView"
                         android:layout_weight="1"
-                        android:text="@string/unit" />
+                        android:text="Card Type" />
 
-                    <EditText
-                        android:id="@+id/unitEditText"
+                    <Spinner
+                        android:id="@+id/s_card_type"
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
-                        android:layout_weight="4"
-                        android:inputType="number" />
+                        android:layout_weight="10" />
 
                     <TextView
                         android:id="@+id/dmmmmm"
                         style="@style/textView"
-                        android:layout_weight="6" />
+                        android:layout_weight="3" />
                 </TableRow>
 
                 <TableRow
@@ -80,23 +82,16 @@
                     android:layout_marginTop="5dip" >
 
                     <TextView
-                        android:id="@+id/streetNotextView"
+                        android:id="@+id/tv_name"
                         style="@style/textView"
                         android:layout_weight="1"
-                        android:text="@string/streetNo" />
+                        android:text="Name on Card" />
 
                     <EditText
-                        android:id="@+id/streetNoEditText"
+                        android:id="@+id/et_name"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="4"
-                        android:inputType="number" >
-                    </EditText>
-
-                    <TextView
-                        android:id="@+id/dmmmmm2"
-                        style="@style/textView"
-                        android:layout_weight="6" />
+                        android:layout_weight="10" />
                 </TableRow>
 
                 <TableRow
@@ -106,37 +101,36 @@
                     android:layout_marginTop="5dip" >
 
                     <TextView
-                        android:id="@+id/streetNametextView"
+                        android:id="@+id/tv_credit_card"
                         style="@style/textView"
                         android:layout_weight="1"
-                        android:text="@string/streetName" />
+                        android:text="Credit Card No" />
 
-                    <AutoCompleteTextView
-                        android:id="@+id/streetNameEditText"
+                    <EditText
+                        android:id="@+id/et_credit_card_no"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="10" />
+                        android:layout_weight="10"
+                        android:inputType="number" />
                 </TableRow>
 
                 <TableRow
                     android:id="@+id/tableRow4"
                     android:layout_width="match_parent"
-                    android:layout_height="45dip"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="5dip" >
 
                     <TextView
-                        android:id="@+id/crossStreetNametextView"
+                        android:id="@+id/tv_credit_card_security_code"
                         style="@style/textView"
                         android:layout_weight="1"
-                        android:maxLines="2"
-                        android:text="@string/crossStreetName" />
+                        android:text="Security Code" />
 
                     <EditText
-                        android:id="@+id/crossStreetNameEditText"
+                        android:id="@+id/et_credit_card_security_code"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="10"
-                        android:lines="2" />
+                        android:layout_weight="10" />
                 </TableRow>
 
                 <TableRow
@@ -146,17 +140,32 @@
                     android:layout_marginTop="5dip" >
 
                     <TextView
-                        android:id="@+id/deliveryInstructionstextView"
+                        android:id="@+id/tv_expiration_date"
                         style="@style/textView"
-                        android:layout_weight="1"
-                        android:text="@string/deliveryInstructions" />
+                        android:layout_weight="3"
+                        android:text="Expiration Date" />
 
-                    <EditText
-                        android:id="@+id/deliveryInstructionsEditText"
+                    <Spinner
+                        android:id="@+id/s_month"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="10"
-                        android:lines="3" />
+                        android:hint="MM"
+                        android:layout_weight="8" />
+
+                    <TextView
+                        android:id="@+id/tv_separator"
+                        style="@style/textView"
+                        android:layout_weight="1"
+                        android:textSize="25dp"
+                        android:gravity="center_horizontal"
+                        android:text="/" />
+
+                    <EditText
+                        android:id="@+id/et_year"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="YYYY"
+                        android:layout_weight="8" />
                 </TableRow>
             </TableLayout>
 
@@ -165,36 +174,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+                android:layout_marginTop="10dp"
+                android:onClick="onClickContinue"
                 android:layout_below="@id/deliveryAddressTableLayout"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/btn_continue"
-                android:textColor="#fff" />
+                android:textColor="#ffffffff" />
         </RelativeLayout>
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/llmenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="#000000"
-        android:padding="0dp" >
-
-        <Button
-            android:id="@+id/buttonnumbers"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:onClick="onNumbers"
-            android:text="Numbers" />
-
-        <Button
-            android:id="@+id/buttonletters"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:onClick="onLetters"
-            android:text="Letters" />
-    </LinearLayout>
 
 </RelativeLayout>

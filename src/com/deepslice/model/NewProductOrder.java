@@ -14,9 +14,9 @@ public class NewProductOrder {
     private String thumbnailImage;
     private String fullImage;
     private String quantity;
-    private String prodCatName;
-    private Boolean isCreateByOwn;
-    private int selection;
+    private String prodCatName;                     // pizza/pasta/drinks etc
+    private Boolean isCreateByOwn;                  // create_by_own? true : false
+    private int selection;                          // whole/left/right
     
     
     public NewProductOrder() {
