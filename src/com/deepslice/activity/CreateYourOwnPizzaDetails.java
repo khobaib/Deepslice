@@ -366,7 +366,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
         dbInstance.open();
         toppingsSelected=new HashMap<String, ToppingsHashmap>();
-        ArrayList<ToppingsAndSauces> toppingsList = dbInstance.getPizzaToppings(productList.get(currentIndex).getProdID());
+        List<ToppingsAndSauces> toppingsList = dbInstance.retrievePizzaToppings(productList.get(currentIndex).getProdID());
         for (ToppingsAndSauces toppingsAndSaucesVo : toppingsList) {
             if("True".equalsIgnoreCase(toppingsAndSaucesVo.getIsFreeWithPizza()))
                 toppingsSelected.put(toppingsAndSaucesVo.getToppingID(), getHashBean(toppingsAndSaucesVo,"Single"));
@@ -483,11 +483,11 @@ public class CreateYourOwnPizzaDetails extends Activity {
         return hMap;
     }
     private void populateSauceData(int thisIndex){
-        ArrayList<ToppingsAndSauces> saucesList=null;
+        List<ToppingsAndSauces> saucesList=null;
         
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
         dbInstance.open();
-        saucesList=dbInstance.getPizzaSauces(productList.get(thisIndex).getProdID());
+        saucesList=dbInstance.retrievePizzaSauces(productList.get(thisIndex).getProdID());
         dbInstance.close();
 
         try{

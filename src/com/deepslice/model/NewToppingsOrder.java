@@ -5,6 +5,7 @@ public class NewToppingsOrder {
     private int primaryId;
     private int ProdOrderId;
     private String toppingsId;
+    private String toppingsCode;
     private String toppingSizeId;
     private Boolean isSauce;
     private String toppingPrice;
@@ -14,25 +15,26 @@ public class NewToppingsOrder {
         // TODO Auto-generated constructor stub
     }
 
-    public NewToppingsOrder(int primaryId, int prodOrderId, String toppingsId, String toppingSizeId, Boolean isSauce,
+    public NewToppingsOrder(int primaryId, int prodOrderId, String toppingsId, String toppingsCode, String toppingSizeId, Boolean isSauce,
             String toppingPrice, Boolean isFreeWithPizza) {
         this.primaryId = primaryId;
         this.ProdOrderId = prodOrderId;
         this.toppingsId = toppingsId;
+        this.toppingsCode = toppingsCode;
         this.toppingSizeId = toppingSizeId;
         this.isSauce = isSauce;
         this.toppingPrice = toppingPrice;
         this.isFreeWithPizza = isFreeWithPizza;
     }
     
-    public NewToppingsOrder(int prodOrderId, String toppingsId, String toppingSizeId, Boolean isSauce,
+    public NewToppingsOrder(int prodOrderId, String toppingsId, String toppingsCode, String toppingSizeId, Boolean isSauce,
             String toppingPrice, Boolean isFreeWithPizza) {
-        this(0, prodOrderId, toppingsId, toppingSizeId, isSauce, toppingPrice, isFreeWithPizza);
+        this(0, prodOrderId, toppingsId, toppingsCode, toppingSizeId, isSauce, toppingPrice, isFreeWithPizza);
     }
     
-    public NewToppingsOrder(String toppingsId, String toppingSizeId, Boolean isSauce,
+    public NewToppingsOrder(String toppingsId, String toppingsCode, String toppingSizeId, Boolean isSauce,
             String toppingPrice, Boolean isFreeWithPizza) {
-        this(0, 0, toppingsId, toppingSizeId, isSauce, toppingPrice, isFreeWithPizza);
+        this(0, 0, toppingsId, toppingsCode, toppingSizeId, isSauce, toppingPrice, isFreeWithPizza);
     }
 
     public int getPrimaryId() {
@@ -57,6 +59,14 @@ public class NewToppingsOrder {
 
     public void setToppingsId(String toppingsId) {
         this.toppingsId = toppingsId;
+    }
+    
+    public String getToppingsCode() {
+        return toppingsCode;
+    }
+
+    public void setToppingsCode(String toppingsCode) {
+        this.toppingsCode = toppingsCode;
     }
 
     public String getToppingSizeId() {

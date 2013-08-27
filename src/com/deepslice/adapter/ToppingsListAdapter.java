@@ -82,6 +82,14 @@ public class ToppingsListAdapter extends ArrayAdapter<ToppingsAndSauces> {
                 }
 
                 int toppingsPosition = isThisToppingsAlreadySelected(item.getToppingID());
+                if(toppingsPosition == -1){
+                    NewToppingsOrder thisToppingsOrder = Utils.convertToppingAndSauceObjectToToppingsOrder(item);
+//                    NewToppingsOrder thisToppingsOrder = new NewToppingsOrder(item.getToppingID(), item.getToppingCode(),
+//                            Constants.SINGLE_SIZE_TOPPING_ID, item.getIsSauce().equalsIgnoreCase("true"), item.getOwnPrice(),
+//                            item.getIsFreeWithPizza().equalsIgnoreCase("true"));
+                    toppingsSelected.add(thisToppingsOrder);
+                    toppingsPosition = toppingsSelected.size() - 1;
+                }
                 if(progress==0){
                     holder.ToppingSize.setText("No");                    
                     toppingsSelected.remove(toppingsPosition);

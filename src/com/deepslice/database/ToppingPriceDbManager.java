@@ -26,27 +26,27 @@ public class ToppingPriceDbManager {
     }
 
 
-    public static long insert(SQLiteDatabase db, String... values) {
-        Log.d("<<<>>>", "in ToppingPriceDbManager, inserting topping prices");
-        ContentValues cv = new ContentValues();
-        for (int i = 0; i < values.length; i++) {
-            cv.put(table_topping_prices[i + 1], values[i]);
-        }
-        return db.insert(TABLE_TOPPING_PRICES, null, cv);
-    }
+//    public static long insert(SQLiteDatabase db, String... values) {
+//        Log.d("<<<>>>", "in ToppingPriceDbManager, inserting topping prices");
+//        ContentValues cv = new ContentValues();
+//        for (int i = 0; i < values.length; i++) {
+//            cv.put(table_topping_prices[i + 1], values[i]);
+//        }
+//        return db.insert(TABLE_TOPPING_PRICES, null, cv);
+//    }
 
 
     // modified
-    public static boolean isToppingsExist(SQLiteDatabase db) {
-        Log.d(TAG, "isEmptyDB?");
-        Cursor cursor = db.query(TABLE_TOPPING_PRICES, null, null, null, null, null, null);
-
-        if(cursor != null && cursor.getCount() > 0){
-            cursor.close();
-            return true;
-        }
-        return false;
-    }
+//    public static boolean isToppingsExist(SQLiteDatabase db) {
+//        Log.d(TAG, "isEmptyDB?");
+//        Cursor cursor = db.query(TABLE_TOPPING_PRICES, null, null, null, null, null, null);
+//
+//        if(cursor != null && cursor.getCount() > 0){
+//            cursor.close();
+//            return true;
+//        }
+//        return false;
+//    }
 
 
     // checked
@@ -73,19 +73,19 @@ public class ToppingPriceDbManager {
 //    }
     
     // checked
-    public static double getToppingPrice(SQLiteDatabase db, String toppingId, String toppingSizeId) {
-        Log.d(TAG, "retrieving topping-price for toppingId = " + toppingId + " and toppingSizeId = " + toppingSizeId);
-        String[] selectionArgs={toppingId, toppingSizeId};
-
-        double price = 0.0;
-        Cursor cursor = db.query(TABLE_TOPPING_PRICES, null, "ToppingID = ? AND ToppingSizeID = ?", selectionArgs, null, null, null);
-        if(cursor != null && cursor.getCount() > 0){
-            cursor.moveToFirst();
-            price = Double.parseDouble(cursor.getString(cursor.getColumnIndex("ToppingPrice")));
-        }
-        cursor.close();
-        return price;
-    }
+//    public static double getToppingPrice(SQLiteDatabase db, String toppingId, String toppingSizeId) {
+//        Log.d(TAG, "retrieving topping-price for toppingId = " + toppingId + " and toppingSizeId = " + toppingSizeId);
+//        String[] selectionArgs={toppingId, toppingSizeId};
+//
+//        double price = 0.0;
+//        Cursor cursor = db.query(TABLE_TOPPING_PRICES, null, "ToppingID = ? AND ToppingSizeID = ?", selectionArgs, null, null, null);
+//        if(cursor != null && cursor.getCount() > 0){
+//            cursor.moveToFirst();
+//            price = Double.parseDouble(cursor.getString(cursor.getColumnIndex("ToppingPrice")));
+//        }
+//        cursor.close();
+//        return price;
+//    }
 
 
 }

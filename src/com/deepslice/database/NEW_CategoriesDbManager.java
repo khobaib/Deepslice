@@ -15,7 +15,7 @@ import com.deepslice.utilities.AppProperties;
 
 public class NEW_CategoriesDbManager {
 
-    private static final String TAG = CategoryDbManager.class.getSimpleName();
+    private static final String TAG = NEW_CategoriesDbManager.class.getSimpleName();
 
     public static final String TABLE_CATEGORIES = "categories_table";
     public static final String TABLE_SUB_CATEGORIES = "sub_categories_table";

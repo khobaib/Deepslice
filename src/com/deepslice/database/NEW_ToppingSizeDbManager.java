@@ -12,15 +12,16 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-public class ToppingSizeDbManager {
+public class NEW_ToppingSizeDbManager {
 
-    private static final String TAG = ToppingSizeDbManager.class.getSimpleName();
+    private static final String TAG = NEW_ToppingSizeDbManager.class.getSimpleName();
 
     static String[] table_topping_sizes = new String[] { "sr_no", "ToppingSizeID","ToppingSizeCode", "ToppingSizeDesc","ToppingAbbr","ToppingAmount","DisplaySequence"};
 
     private static String TABLE_TOPPING_SIZE = "topping_size_table";
 
     private static final String TABLE_PRIMARY_KEY = "_id";
+    
     private static final String TOPPING_SIZE_ID = "topping_size_id";
     private static final String TOPPING_SIZE_CODE = "topping_size_code";
     private static final String TOPPING_SIZE_DESC = "topping_size_desc";

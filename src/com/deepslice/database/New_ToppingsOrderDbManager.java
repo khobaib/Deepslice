@@ -21,6 +21,7 @@ public class New_ToppingsOrderDbManager {
     private static final String TABLE_PRIMARY_KEY = "_id";
     private static final String PROD_ORDER_ID = "prod_order_id";
     private static final String TOPPINGS_ID = "toppings_id";
+    private static final String TOPPINGS_CODE = "toppings_code";
     private static final String TOPPINGS_SIZE_ID = "toppings_size_id";
     private static final String IS_SAUCE = "is_sauce";
     private static final String TOPPINGS_PRICE = "toppings_price";
@@ -30,7 +31,7 @@ public class New_ToppingsOrderDbManager {
 
     private static final String CREATE_TABLE_TOPPINGS_ORDER = "create table " + TABLE_TOPPINGS_ORDER + " ( "
             + TABLE_PRIMARY_KEY + " integer primary key autoincrement, " + PROD_ORDER_ID + " integer, "
-            + TOPPINGS_ID + " text, " + TOPPINGS_SIZE_ID + " text, " + IS_SAUCE + " integer, "
+            + TOPPINGS_ID + " text, " + TOPPINGS_CODE + " text, " + TOPPINGS_SIZE_ID + " text, " + IS_SAUCE + " integer, "
             + TOPPINGS_PRICE + " text, " + IS_FREE_WITH_PIZZA + " integer);";
 
 
@@ -52,12 +53,14 @@ public class New_ToppingsOrderDbManager {
         return db.delete(TABLE_TOPPINGS_ORDER, PROD_ORDER_ID + "=" + prodOrderId, null) > 0;
     }
     
+    
     public static long insert(SQLiteDatabase db, NewToppingsOrder toppingsOrder) throws SQLException {
         Log.d(TAG, "inserting toppingsOrder with toppingsId = " + toppingsOrder.getToppingsId());
         ContentValues cv = new ContentValues();
 
         cv.put(PROD_ORDER_ID, toppingsOrder.getProdOrderId());
         cv.put(TOPPINGS_ID, toppingsOrder.getToppingsId());
+        cv.put(TOPPINGS_CODE, toppingsOrder.getToppingsCode());
         cv.put(TOPPINGS_SIZE_ID, toppingsOrder.getToppingSizeId());
         cv.put(IS_SAUCE, (toppingsOrder.getIsSauce() ? 1 : 0));
         cv.put(TOPPINGS_PRICE, toppingsOrder.getToppingPrice());
@@ -65,6 +68,7 @@ public class New_ToppingsOrderDbManager {
         
         return db.insert(TABLE_TOPPINGS_ORDER, null, cv);
     }
+    
     
     public static List<NewToppingsOrder> retrieve(SQLiteDatabase db, int prodOrderId) throws SQLException {
         Log.d(TAG, "retrieving toppings list for product orderId = " + prodOrderId);
@@ -77,19 +81,19 @@ public class New_ToppingsOrderDbManager {
             while (!cursor.isAfterLast()) {
                 int primaryId = cursor.getInt(cursor.getColumnIndex(TABLE_PRIMARY_KEY));
                 String toppingsId = cursor.getString(cursor.getColumnIndex(TOPPINGS_ID));
+                String toppingsCode = cursor.getString(cursor.getColumnIndex(TOPPINGS_CODE));
                 String toppingsSizeId = cursor.getString(cursor.getColumnIndex(TOPPINGS_SIZE_ID));
                 Boolean isSauce = cursor.getInt(cursor.getColumnIndex(IS_SAUCE)) > 0;
                 String toppingsPrice = cursor.getString(cursor.getColumnIndex(TOPPINGS_PRICE));
                 Boolean isFreeWithPizza = cursor.getInt(cursor.getColumnIndex(IS_FREE_WITH_PIZZA)) > 0;
                 
-                NewToppingsOrder thisToppingsOrder = new NewToppingsOrder(primaryId, prodOrderId, toppingsId, toppingsSizeId, isSauce, toppingsPrice, isFreeWithPizza);
+                NewToppingsOrder thisToppingsOrder = new NewToppingsOrder(primaryId, prodOrderId, toppingsId, toppingsCode, toppingsSizeId, isSauce, toppingsPrice, isFreeWithPizza);
                 toppingsOrderList.add(thisToppingsOrder);                     
                 cursor.moveToNext();
             }
         }               
         cursor.close(); 
-        return toppingsOrderList;
-        
+        return toppingsOrderList;        
     }
 
 }

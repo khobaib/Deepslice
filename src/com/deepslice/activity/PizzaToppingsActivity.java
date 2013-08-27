@@ -32,7 +32,7 @@ public class PizzaToppingsActivity extends Activity{
     ListView listview;
     ToppingsListAdapter toppingsListAdapter;
 
-    ArrayList<ToppingsAndSauces> toppingsList;
+    List<ToppingsAndSauces> toppingsList;
 
     public List<NewToppingsOrder> toppingsSelected;
     //    List<HashMap<String, String>> toppingsSelected;
@@ -64,7 +64,7 @@ public class PizzaToppingsActivity extends Activity{
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaToppingsActivity.this);
         dbInstance.open();
-        toppingsList = dbInstance.getPizzaToppings(productId);
+        toppingsList = dbInstance.retrievePizzaToppings(productId);
         dbInstance.close();
 
         listview = (ListView) findViewById(R.id.listView1);				

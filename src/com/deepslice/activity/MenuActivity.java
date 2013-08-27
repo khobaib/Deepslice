@@ -323,7 +323,7 @@ public class MenuActivity extends Activity {
             if(result){                
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
                 dbInstance.open();
-                boolean isToppingsSynced = dbInstance.isToppingsExist();
+                boolean isToppingsSynced = dbInstance.isToppingsDataExist();
                 dbInstance.close();
 
                 if(isToppingsSynced){

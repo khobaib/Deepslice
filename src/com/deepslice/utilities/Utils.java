@@ -12,6 +12,8 @@ import java.util.List;
 import com.deepslice.activity.DealsProductListActivity;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DealOrder;
+import com.deepslice.model.NewToppingsOrder;
+import com.deepslice.model.ToppingsAndSauces;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -234,6 +236,14 @@ public class Utils
         dbInstance.close();
         
         return favCount;
+    }
+    
+    
+    // toppings size = SINGLE by-default
+    public static NewToppingsOrder convertToppingAndSauceObjectToToppingsOrder(ToppingsAndSauces thisToppings){
+        return new NewToppingsOrder(thisToppings.getToppingID(), thisToppings.getToppingCode(), 
+                Constants.SINGLE_SIZE_TOPPING_ID, thisToppings.getIsSauce().equalsIgnoreCase("true"), thisToppings.getOwnPrice(),
+                thisToppings.getIsFreeWithPizza().equalsIgnoreCase("true"));
     }
 
 }

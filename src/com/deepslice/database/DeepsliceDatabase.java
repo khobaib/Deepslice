@@ -48,11 +48,10 @@ public class DeepsliceDatabase {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            CategoryDbManager.createTable(db);
+//            CategoryDbManager.createTable(db);
             ProductDbManager.createTable(db);
-            ToppingSizeDbManager.createTable(db);
-            ToppingPriceDbManager.createTable(db);
-            SauceAndToppingDbManager.createTable(db);
+//            ToppingPriceDbManager.createTable(db);
+//            SauceAndToppingDbManager.createTable(db);
             FavoriteDbManager.createTable(db);
             OrderDbManager.createTable(db);
             DealsDbManager.createTable(db);
@@ -64,15 +63,18 @@ public class DeepsliceDatabase {
             New_ToppingsOrderDbManager.createTable(db);
             NEW_DealsOrderDbManager.createTable(db);
             NEW_DealsOrderDetailsDbManager.createTable(db);
+            NEW_SauceAndToppingsDbManager.createTable(db);
+            NEW_ToppingSizeDbManager.createTable(db);
+            NEW_ToppingPriceDbManager.createTable(db);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            CategoryDbManager.dropTable(db);
+//            CategoryDbManager.dropTable(db);
             ProductDbManager.dropTable(db);
-            ToppingSizeDbManager.dropTable(db);
-            ToppingPriceDbManager.dropTable(db);
-            SauceAndToppingDbManager.dropTable(db);
+            
+//            ToppingPriceDbManager.dropTable(db);
+//            SauceAndToppingDbManager.dropTable(db);
             FavoriteDbManager.dropTable(db);
             OrderDbManager.dropTable(db);
             DealsDbManager.dropTable(db);
@@ -84,6 +86,9 @@ public class DeepsliceDatabase {
             New_ToppingsOrderDbManager.dropTable(db);
             NEW_DealsOrderDbManager.dropTable(db);
             NEW_DealsOrderDetailsDbManager.dropTable(db);
+            NEW_SauceAndToppingsDbManager.dropTable(db);
+            NEW_ToppingSizeDbManager.dropTable(db);
+            NEW_ToppingPriceDbManager.dropTable(db);
 
             onCreate(db);
         }
@@ -153,73 +158,94 @@ public class DeepsliceDatabase {
 
     public boolean insertToppingSizes(List<ToppingSizes> toppingSizeList ) {
         for(ToppingSizes toppingSize : toppingSizeList){
-            ToppingSizeDbManager.insert(this.db, toppingSize);
+            NEW_ToppingSizeDbManager.insert(this.db, toppingSize);
         }
         return true;
     }
 
     public List<ToppingSizes> retrieveToppingSizes(){
-        return ToppingSizeDbManager.retrieveAll(this.db);       
+        return NEW_ToppingSizeDbManager.retrieveAll(this.db);       
     }
 
     public ToppingSizes retrieveToppingSizeById(String toppingSizeId){
-        return ToppingSizeDbManager.retrieveByToppingSizeId(this.db, toppingSizeId);
+        return NEW_ToppingSizeDbManager.retrieveByToppingSizeId(this.db, toppingSizeId);
     }
 
     public String retrieveToppingSizeIdByCode(String toppingSizeCode){
-        return ToppingSizeDbManager.retrieveToppingSizeIdByCode(this.db, toppingSizeCode);
+        return NEW_ToppingSizeDbManager.retrieveToppingSizeIdByCode(this.db, toppingSizeCode);
     }
 
 
-    public boolean insertToppingPrices(List<ToppingPrices> aList ) {
-        for (Iterator<ToppingPrices> iterator = aList.iterator(); iterator.hasNext();) {
-            ToppingPrices f = (ToppingPrices) iterator.next();
-            ToppingPriceDbManager.insert(this.db,
-                    f.getToppingID(),
-                    f.getToppingCode(),
-                    f.getToppingAbbr(),
-                    f.getToppingDesc(),
-                    f.getIsSauce(),
-                    f.getCaloriesQty(),
-                    f.getToppingSizeID(),
-                    f.getToppingSizeCode(),
-                    f.getToppingSizeDesc(),
-                    f.getToppingPrice()
-                    );
+//    public boolean insertToppingPrices(List<ToppingPrices> aList ) {
+//        for (Iterator<ToppingPrices> iterator = aList.iterator(); iterator.hasNext();) {
+//            ToppingPrices f = (ToppingPrices) iterator.next();
+//            ToppingPriceDbManager.insert(this.db,
+//                    f.getToppingID(),
+//                    f.getToppingCode(),
+//                    f.getToppingAbbr(),
+//                    f.getToppingDesc(),
+//                    f.getIsSauce(),
+//                    f.getCaloriesQty(),
+//                    f.getToppingSizeID(),
+//                    f.getToppingSizeCode(),
+//                    f.getToppingSizeDesc(),
+//                    f.getToppingPrice()
+//                    );
+//        }
+//        return true;
+//    }
+    
+    // updated
+    public boolean insertToppingPrices(List<ToppingPrices> toppingPriceList ) {
+        for(ToppingPrices thisToppingPrice : toppingPriceList){
+            NEW_ToppingPriceDbManager.insert(this.db, thisToppingPrice);
         }
         return true;
     }
 
-    public boolean isToppingsExist() {
-        return ToppingPriceDbManager.isToppingsExist(this.db);
+    // updated
+    public boolean isToppingsDataExist() {
+        return NEW_ToppingPriceDbManager.isToppingsDataExist(this.db);
     }
 
 
+    // updated
     public boolean isProductToppingsExist(String prodId) {
-        return SauceAndToppingDbManager.isProductToppingsExist(this.db, prodId);
+        return NEW_SauceAndToppingsDbManager.isProductToppingsExist(this.db, prodId);
     }
 
 
-    // checked
+    // updated
     public double getToppingPrice(String toppingId, String toppingSizeId){
-        return ToppingPriceDbManager.getToppingPrice(this.db, toppingId, toppingSizeId);
+        return NEW_ToppingPriceDbManager.getToppingPrice(this.db, toppingId, toppingSizeId);
     }
 
 
     // checked
-    public ArrayList<ToppingsAndSauces> getPizzaToppings(String pizzaId) {
-        Cursor ls = SauceAndToppingDbManager.getPizzaToppings(this.db, pizzaId);
-        return cursorToToppingsAndSauces(ls);
+//    public ArrayList<ToppingsAndSauces> getPizzaToppings(String pizzaId) {
+//        Cursor ls = SauceAndToppingDbManager.getPizzaToppings(this.db, pizzaId);
+//        return cursorToToppingsAndSauces(ls);
+//    }
+    
+    
+    // updated
+    public List<ToppingsAndSauces> retrievePizzaToppings(String prodId) {
+        return NEW_SauceAndToppingsDbManager.retrievePizzaToppings(this.db, prodId);
     }
 
-    public ArrayList<ToppingsAndSauces> getPizzaSauces(String pizzaId) {
-        Cursor ls = SauceAndToppingDbManager.getPizzaSauces(this.db, pizzaId);
-        return cursorToToppingsAndSauces(ls);
+//    public ArrayList<ToppingsAndSauces> getPizzaSauces(String prodId) {
+//        Cursor ls = SauceAndToppingDbManager.getPizzaSauces(this.db, prodId);
+//        return cursorToToppingsAndSauces(ls);
+//    }
+    
+    // updated
+    public List<ToppingsAndSauces> retrievePizzaSauces(String prodId) {
+        return NEW_SauceAndToppingsDbManager.retrievePizzaSauces(this.db, prodId);
     }
 
 
     // checked
-    public ArrayList<ToppingsAndSauces> cursorToToppingsAndSauces(Cursor cursor) {
+/*    public ArrayList<ToppingsAndSauces> cursorToToppingsAndSauces(Cursor cursor) {
         if(null==cursor)
             return null;
         ArrayList<ToppingsAndSauces> list = new ArrayList<ToppingsAndSauces>();
@@ -245,39 +271,49 @@ public class DeepsliceDatabase {
             cursor.close();
         }
         return list;
-    }
+    }*/
 
 
-    public boolean insertToppingSauces(List<ToppingsAndSauces> aList ) {
-        for (Iterator<ToppingsAndSauces> iterator = aList.iterator(); iterator.hasNext();) {
-            ToppingsAndSauces f = (ToppingsAndSauces) iterator.next();
-            SauceAndToppingDbManager.insert(this.db,
-                    f.getToppingID(),
-                    f.getToppingCode(),
-                    f.getToppingAbbr(),
-                    f.getToppingDesc(),
-                    f.getIsSauce(),
-                    f.getCaloriesQty(),
-                    f.getProdID(),
-                    f.getOwnPrice(),
-                    f.getDisplaySequence(),
-                    f.getIsFreeWithPizza()
-                    );
+//    public boolean insertToppingSauces(List<ToppingsAndSauces> aList ) {
+//        for (Iterator<ToppingsAndSauces> iterator = aList.iterator(); iterator.hasNext();) {
+//            ToppingsAndSauces f = (ToppingsAndSauces) iterator.next();
+//            SauceAndToppingDbManager.insert(this.db,
+//                    f.getToppingID(),
+//                    f.getToppingCode(),
+//                    f.getToppingAbbr(),
+//                    f.getToppingDesc(),
+//                    f.getIsSauce(),
+//                    f.getCaloriesQty(),
+//                    f.getProdID(),
+//                    f.getOwnPrice(),
+//                    f.getDisplaySequence(),
+//                    f.getIsFreeWithPizza()
+//                    );
+//        }
+//        return true;
+//    }
+    
+    // updated
+    public void insertToppingSauces(List<ToppingsAndSauces> toppingsList ) {
+        for(ToppingsAndSauces thisTopping : toppingsList){
+            NEW_SauceAndToppingsDbManager.insert(this.db, thisTopping);
         }
-        return true;
     }
 
 
+    // updated
     public void cleanToppingsOrderTable(){
         New_ToppingsOrderDbManager.cleanTable(this.db);
     }
 
 
+    // updated
     public long insertToppingsOrder(NewToppingsOrder toppingsOrder){
         return New_ToppingsOrderDbManager.insert(this.db, toppingsOrder);
     }
 
 
+    // updated
     public List<NewToppingsOrder> retrieveToppingsOrderByProdOrderId(int prodOrderId){
         return New_ToppingsOrderDbManager.retrieve(this.db, prodOrderId);
     }
