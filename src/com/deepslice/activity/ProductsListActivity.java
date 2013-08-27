@@ -45,11 +45,7 @@ import com.deepslice.utilities.Utils;
 
 public class ProductsListActivity extends Activity{
 
-    private static final int REQUEST_CODE_IS_PIZZA_HALF = 1001;
-
     List<Product> allProductsList;
-    List<ToppingPrices> toppingsPriceList;
-    List<ToppingSizes> toppingsSizeList;
     List<ToppingsAndSauces> toppingsAndSaucesList;
 
     ProgressDialog pDialog;
@@ -66,12 +62,9 @@ public class ProductsListActivity extends Activity{
     String catId;
     String subCatId;
 
-    ProgressDialog pd;
-    //    boolean syncedPrices =false;
-//    boolean syncedToppings =false;
-
     public ImageLoader imageLoader;
     Product selectedProduct;	
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,7 +105,7 @@ public class ProductsListActivity extends Activity{
         }
         else {
             // GetDataFromApiCall();
-            allProductsList=dbInstance.getProductsSelected(catId,subCatId);
+            allProductsList = dbInstance.retrieveProducts(catId,subCatId);
             int t = allProductsList.size();
         }
         dbInstance.close();
@@ -123,23 +116,22 @@ public class ProductsListActivity extends Activity{
 
 
         listview.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position,
-                    long id) {
-                Product eBean = (Product) v.getTag();
-                if (eBean != null) {
-                    selectedProduct = eBean;
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                Product product = (Product) v.getTag();
+                if (product != null) {
+                    selectedProduct = product;
 
                     if("Pizza".equals(catType)){
-                        updateTopingSaucesData(eBean.getProdID());
+                        updateTopingSaucesData(product.getProdID());
                         //								Utils.openErrorDialog(ProductsListActivity.this, eBean.getProdID());
                     }
                     else{
 
                         Intent i=new Intent(ProductsListActivity.this, FavAddActivity.class);
                         Bundle bundle=new Bundle();
-                        bundle.putString("itemName",eBean.getDisplayName());
-                        bundle.putSerializable("prodBean",eBean);
-                        bundle.putString("catType",catType);
+                        bundle.putString("itemName", product.getDisplayName());
+                        bundle.putSerializable("prodBean", product);
+                        bundle.putString("catType", catType);
                         i.putExtras(bundle);
                         startActivity(i);
                     }
@@ -251,7 +243,12 @@ public class ProductsListActivity extends Activity{
             updateResultsInUi();
         }
         else {
-            pd = ProgressDialog.show(ProductsListActivity.this, "", "Please wait...", true, false);
+//            pd = ProgressDialog.show(ProductsListActivity.this, "", "Please wait...", true, false);
+            if(!pDialog.isShowing()){
+                pDialog.setIndeterminate(true);
+                pDialog.setCancelable(false);
+                pDialog.show();
+            }
 
             Thread t = new Thread() {            
                 public void run() {                
@@ -321,8 +318,8 @@ public class ProductsListActivity extends Activity{
 
     private void updateResultsInUi() { 
 
-        if(null != pd)
-            pd.dismiss();
+        if(pDialog.isShowing())
+            pDialog.dismiss();
 
         Intent i=new Intent(ProductsListActivity.this, NEW_PizzaDetailsActivity.class);
         Bundle bundle=new Bundle();

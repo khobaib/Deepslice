@@ -233,7 +233,7 @@ public class NEW_CategoriesDbManager {
         Log.d(TAG, "retrieving pizza-crust for catId = " + catId + " and subCatId(level-1) " + subCatId);
         List<ProductSubCategory> crustList = new ArrayList<ProductSubCategory>();
         
-        Cursor cursor = db.query(TABLE_SUB_CATEGORIES, null, PROD_CAT_ID + "= ? AND " + SUB_CAT_OF + "= ?", new String[] {catId,subCatId}, null, null, DISPLAY_SEQUENCE);
+        Cursor cursor = db.query(TABLE_SUB_CATEGORIES, null, PROD_CAT_ID + "= ? AND " + SUB_CAT_OF + "= ?", new String[] {catId, subCatId}, null, null, DISPLAY_SEQUENCE);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
@@ -244,6 +244,21 @@ public class NEW_CategoriesDbManager {
         }
         cursor.close(); 
         return crustList;
+    }
+    
+    
+    public static ProductSubCategory retrievePizzaCrust(SQLiteDatabase db, String catId, String subCatId1, String subCatId2) throws SQLException {
+        Log.d(TAG, "retrieving pizza-crust for catId = " + catId + " and subCatId(level-1) " + subCatId1 + " and subCatId(level-2) " + subCatId2);
+        ProductSubCategory crust = new ProductSubCategory();
+        
+        Cursor cursor = db.query(TABLE_SUB_CATEGORIES, null, PROD_CAT_ID + "= ? AND " + SUB_CAT_OF + "= ? AND " + SUB_CAT_ID + "= ?",
+                new String[] {catId, subCatId1, subCatId2}, null, null, DISPLAY_SEQUENCE);
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            crust = retrieveProductSubCategory(cursor);
+        }
+        cursor.close(); 
+        return crust;
     }
 
 
@@ -267,7 +282,7 @@ public class NEW_CategoriesDbManager {
 
         String catCode = null;
 
-        Cursor cursor = db.query(TABLE_CATEGORIES, new String[] {PROD_CAT_CODE}, PROD_CAT_ID, new String[] {catId}, null, null, null);
+        Cursor cursor = db.query(TABLE_CATEGORIES, new String[] {PROD_CAT_CODE}, PROD_CAT_ID + "= ?", new String[] {catId}, null, null, null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             catCode = cursor.getString(cursor.getColumnIndex(PROD_CAT_CODE));

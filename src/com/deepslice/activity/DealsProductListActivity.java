@@ -220,7 +220,7 @@ public class DealsProductListActivity extends Activity {
                     for (int i=0;i<allCouponDetailsList.size();i++){
                         CouponDetails thisCouponDetails = allCouponDetailsList.get(i);
                         if (thisCouponDetails.getCouponGroupID().equalsIgnoreCase(selectedCouponGroupID)){
-                            pList.add(dbInstance.getProductById(thisCouponDetails.getProdID()));
+                            pList.add(dbInstance.retrieveProductById(thisCouponDetails.getProdID()));
                             selectedCouponGrpcouponDetailsList.add(thisCouponDetails);
                         }
 
@@ -384,7 +384,7 @@ public class DealsProductListActivity extends Activity {
             pDialog.dismiss();
 
         appInstance.setDealOrder(dealOrder);
-        Intent intent=new Intent(DealsProductListActivity.this,PizzaDetailsActivity.class);
+        Intent intent=new Intent(DealsProductListActivity.this, PizzaDetailsActivity.class);
         Bundle bundle=new Bundle();
         bundle.putSerializable("selectedProduct", selectedProduct);
         bundle.putString("prdID", selectedProduct.getProdID());             // it isnt necessary

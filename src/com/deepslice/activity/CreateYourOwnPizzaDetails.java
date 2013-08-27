@@ -102,7 +102,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
         dbInstance.open();
         for (int i=0;i<prodIds.size();i++){
             String prodId = prodIds.get(i);
-            productList.add(dbInstance.getProductById(prodId));
+            productList.add(dbInstance.retrieveProductById(prodId));
         }
         dbInstance.close();       
 

@@ -52,6 +52,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
     TextView favCountTxt;
     int currentCount=1;
     Product selectedProduct;
+    ProductSubCategory selectedCrust;
 
     ImageLoader imageLoader;
 
@@ -62,8 +63,15 @@ public class NEW_PizzaDetailsActivity extends Activity {
     int SELECT_TOPPINGS=112233;
     int SELECT_CRUST=112244;
 
-    String crustName="", crustCatId="", crustSubCatId="",couponGroupID,productId="",curentPId;
-    boolean isDeal=false;
+    String prodCatId, subCatId1, subCatId2, prodCode;
+    //    String crustName;
+    //    String crustCatId;
+    //    String crustSubCatId;
+    String couponGroupID;
+//    String productId;
+    //    String curentPId;
+
+    boolean isDeal = false;
 
     TextView selectedToppings,selectedSauces,selectedCrusts;
     TextView tvItemsPrice, tvFavCount;
@@ -109,7 +117,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
 
         if(b.containsKey("selectedProduct")){
             selectedProduct = (Product)b.getSerializable("selectedProduct");
-            productId = selectedProduct.getProdID();
+//            productId = selectedProduct.getProdID();
 
             pDesc.setText(selectedProduct.getProdDesc());
             imageLoader.DisplayImage(selectedProduct.getFullImage(), pImage);
@@ -122,7 +130,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
             rlCount.setVisibility(View.GONE);
             dealOrder = appInstance.getDealOrder();
             couponGroupID = b.getString("couponGroupID");
-            productId = dealOrder.getProdID();
+//            productId = dealOrder.getProdID();            // here's some confusion, will sort out later
             buttonAddOrders.setText("Add to Deal");
             headerTextView.setText("Add to Deal");
             String defCrusts="";
@@ -198,7 +206,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
             }
         });
 
-        final String pId = b.getString("prdID");            // ??? need to check it
+        //        final String pId = b.getString("prdID");            // ??? need to check it
         LinearLayout ltCrusts= (LinearLayout)findViewById(R.id.ltCrusts);
         ltCrusts.setOnClickListener(new OnClickListener() {
 
@@ -207,13 +215,14 @@ public class NEW_PizzaDetailsActivity extends Activity {
                 if(!(isHalf && AppProperties.isFirstPizzaChosen)){
                     Intent i = new Intent(NEW_PizzaDetailsActivity.this, PizzaCrustActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString("catId", crustCatId);
-                    bundle.putString("subCatId", crustSubCatId);
+                    bundle.putString("prodCatId", prodCatId);
+                    bundle.putString("subCatId1", subCatId1);
+                    bundle.putString("prodCode", prodCode);                    
                     if(isDeal){
                         bundle.putBoolean("isDeal", true);
-                        bundle.putString("prdID", pId);
+                        //                        bundle.putString("prdID", pId);
                     }
-                    bundle.putSerializable("selectedProduct",selectedProduct);
+                    //                    bundle.putSerializable("selectedProduct",selectedProduct);
                     i.putExtras(bundle);
                     startActivityForResult(i, SELECT_CRUST);
                 }
@@ -244,7 +253,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
 
             }
         });
-        
+
 
         Button openFavs=(Button)findViewById(R.id.favs);
         openFavs.setOnClickListener(new OnClickListener() {
@@ -312,57 +321,52 @@ public class NEW_PizzaDetailsActivity extends Activity {
             }
         });
 
-        //populating default crust
+        //populating default crust - if coming from Deal, then crust already set in line-145
         if(!isDeal){
+            prodCatId = selectedProduct.getProdCatID();
+            subCatId1 = selectedProduct.getSubCatID1();
+            subCatId2 = selectedProduct.getSubCatID2();
+            prodCode = selectedProduct.getProdCode();
 
-            if(isHalf && AppProperties.isFirstPizzaChosen){
-                String halfCrust = appInstance.getHalfCrust();
-                selectedCrusts.setText(halfCrust);
-            }
-            else{
-                DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
-                dbInstance.open();
-                List<ProductSubCategory> crustList=new ArrayList<ProductSubCategory>();
-                if (isDeal){
-                    Product allProductsVo=dbInstance.getProductById(dealOrder.getProdID());
-                    crustList = dbInstance.retrievePizzaCrustList(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
-                }else {
-                    crustList = dbInstance.retrievePizzaCrustList(selectedProduct.getProdCatID(),selectedProduct.getSubCatID1());
-                }
-                if(crustList != null && crustList.size()>0 ) {
-                    ProductSubCategory crLocal = crustList.get(0);
-                    crustName = crLocal.getSubCatDesc();
-                    crustCatId = crLocal.getProdCatID();
-                    crustSubCatId = crLocal.getSubCatID();
+            generateCrustInfo();
 
-                    selectedCrusts.setText(crustName);
-                }
-                dbInstance.close();
-            }
         }
-        ////////////////////
+
+
+        //        if(!isDeal){
+        //
+        //            if(isHalf && AppProperties.isFirstPizzaChosen){
+        //                String halfCrust = appInstance.getHalfCrust();
+        //                selectedCrusts.setText(halfCrust);
+        //            }
+        //            else{
+        //                DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
+        //                dbInstance.open();
+        //                List<ProductSubCategory> crustList=new ArrayList<ProductSubCategory>();
+        //                if (isDeal){
+        //                    Product allProductsVo=dbInstance.getProductById(dealOrder.getProdID());
+        //                    crustList = dbInstance.retrievePizzaCrustList(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
+        //                }else {
+        //                    crustList = dbInstance.retrievePizzaCrustList(selectedProduct.getProdCatID(),selectedProduct.getSubCatID1());
+        //                }
+        //                if(crustList != null && crustList.size() > 0) {
+        //                    crustName = crustList.get(0).getSubCatCode();               // crust-name for display
+        //                    crustCatId = crustList.get(0).getProdCatID();
+        //                    crustSubCatId = crustList.get(0).getSubCatID();
+        //
+        //                    selectedCrusts.setText(crustName);
+        //                }
+        //                dbInstance.close();
+        //            }
+        //        }
+
+
+
 
         // populating default toppings
 
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
-        dbInstance.open();
-        List<ToppingsAndSauces> toppingsList = dbInstance.retrievePizzaToppings(productId);
-        dbInstance.close();
+        generateDefaultToppings();
 
-        toppingsSelected = new ArrayList<NewToppingsOrder>();
-        for (ToppingsAndSauces thisToppings : toppingsList) {
-            if("True".equalsIgnoreCase(thisToppings.getIsFreeWithPizza())){
-                NewToppingsOrder thisToppingsOrder = Utils.convertToppingAndSauceObjectToToppingsOrder(thisToppings);
-                toppingsSelected.add(thisToppingsOrder);
-            }
-        }        
-
-
-        String toppingsCodeToDisplay = "";
-        for(NewToppingsOrder thisToppingsOrder : toppingsSelected){
-            toppingsCodeToDisplay += thisToppingsOrder.getToppingsCode() + "," ;
-        }
-        selectedToppings.setText(AppProperties.trimLastComma(toppingsCodeToDisplay));
 
 
 
@@ -374,7 +378,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
                 dbInstance.open();
                 if (isDeal){
                     dealOrder.setQuantity(String.valueOf(currentCount));
-                    dealOrder.setProdID(crustCatId);
+                    dealOrder.setProdID(selectedProduct.getProdCatID());
 
                     if(dbInstance.isDealGroupAlreadySelected(dealOrder.getCouponID(), dealOrder.getCouponGroupID())){
                         Log.d(TAG, "YES");
@@ -413,7 +417,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
                                 dbInstance.close();
                             }
                         }
-                        
+
                         // inserting sauceData to the local DB
                         if(selectedSauceIndex != -1){
                             NewToppingsOrder thisSauceOrder = Utils.convertToppingAndSauceObjectToToppingsOrder(saucesList.get(selectedSauceIndex));
@@ -444,17 +448,50 @@ public class NEW_PizzaDetailsActivity extends Activity {
             }
         });
     }
-    
+
+
+    private void generateDefaultToppings() {
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
+        dbInstance.open();
+        List<ToppingsAndSauces> toppingsList = dbInstance.retrievePizzaToppings(selectedProduct.getProdID());
+        dbInstance.close();
+
+        toppingsSelected = new ArrayList<NewToppingsOrder>();
+        for (ToppingsAndSauces thisToppings : toppingsList) {
+            if("True".equalsIgnoreCase(thisToppings.getIsFreeWithPizza())){
+                NewToppingsOrder thisToppingsOrder = Utils.convertToppingAndSauceObjectToToppingsOrder(thisToppings);
+                toppingsSelected.add(thisToppingsOrder);
+            }
+        }        
+
+
+        String toppingsCodeToDisplay = "";
+        for(NewToppingsOrder thisToppingsOrder : toppingsSelected){
+            toppingsCodeToDisplay += thisToppingsOrder.getToppingsCode() + "," ;
+        }
+        selectedToppings.setText(AppProperties.trimLastComma(toppingsCodeToDisplay));
+        
+    }
+
+
+    private void generateCrustInfo() {
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
+        dbInstance.open();
+        selectedCrust = dbInstance.retrievePizzaCrust(prodCatId, subCatId1, subCatId2);       
+        dbInstance.close();
+        selectedCrusts.setText(selectedCrust.getSubCatCode());       
+    }
+
 
     private void generateSauceList(){
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
         dbInstance.open();
         saucesList = dbInstance.retrievePizzaSauces(selectedProduct.getProdID());
         dbInstance.close();
-        
+
         selectedSauceIndex = -1;
         List<String> sauceName = new ArrayList<String>();
-        
+
         for(int sIndex = 0; sIndex < saucesList.size(); sIndex++){
             sauceName.add(saucesList.get(sIndex).getToppingCode());
             if(saucesList.get(sIndex).getIsFreeWithPizza().equals("True"))
@@ -467,7 +504,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
 
         sSauceName.setAdapter(spinnerArrayAdapter); 
         if(selectedSauceIndex != -1)
-        sSauceName.setSelection(selectedSauceIndex);                // by-default, free sauce will be selected.
+            sSauceName.setSelection(selectedSauceIndex);                // by-default, free sauce will be selected.
     }    
 
 
@@ -490,11 +527,33 @@ public class NEW_PizzaDetailsActivity extends Activity {
 
         }
         if (requestCode == SELECT_CRUST) {
+            Bundle b = data.getExtras();
+            selectedProduct = (Product)b.getSerializable("selectedProduct");
+            prodCatId = selectedProduct.getProdCatID(); 
+            subCatId1 = selectedProduct.getSubCatID1(); 
+            subCatId2 = selectedProduct.getSubCatID2(); 
+//            prodCatId = data.getStringExtra("prodCatId"); 
+//            subCatId1 = data.getStringExtra("subCatId1"); 
+//            subCatId2 = data.getStringExtra("subCatId2"); 
+            Log.d(TAG, "retrieved selectedProduct from new crust, prodId = " + selectedProduct.getProdID());
 
-            String namesList = data.getStringExtra("name"); 
-            crustCatId = data.getStringExtra("catId"); 
-            crustSubCatId = data.getStringExtra("subCatId");
-            selectedCrusts.setText(namesList);
+            generateCrustInfo();
+            
+//            DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
+//            dbInstance.open();
+//            selectedProduct = dbInstance.retrieveProductFromSubCrust(prodCatId, subCatId1, subCatId2, selectedProduct.getProdCode());       
+//            dbInstance.close();
+
+            
+            // default-toppings setup for new Product 
+            generateDefaultToppings();
+            generateSauceList();
+            
+            
+//            String namesList = data.getStringExtra("name"); 
+//            crustCatId = data.getStringExtra("catId"); 
+//            crustSubCatId = data.getStringExtra("subCatId");
+//            selectedCrusts.setText(namesList);
         }
     }
 

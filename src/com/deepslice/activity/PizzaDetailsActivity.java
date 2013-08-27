@@ -332,7 +332,7 @@ public class PizzaDetailsActivity extends Activity{
                 dbInstance.open();
                 List<ProductSubCategory> crustList=new ArrayList<ProductSubCategory>();
                 if (isDeal){
-                    Product allProductsVo=dbInstance.getProductById(dealOrder.getProdID());
+                    Product allProductsVo=dbInstance.retrieveProductById(dealOrder.getProdID());
                     crustList = dbInstance.retrievePizzaCrustList(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
                 }else {
                     crustList = dbInstance.retrievePizzaCrustList(selectedBean.getProdCatID(),selectedBean.getSubCatID1());

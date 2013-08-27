@@ -296,7 +296,7 @@ public class DealsGroupListActivity extends Activity{
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
         dbInstance.open();
-        Product selectedProduct = dbInstance.getProductById(prodId);
+        Product selectedProduct = dbInstance.retrieveProductById(prodId);
         dbInstance.close();
 
         DealOrder dealOrder = new DealOrder();

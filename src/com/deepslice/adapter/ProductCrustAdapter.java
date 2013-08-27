@@ -62,7 +62,7 @@ public class ProductCrustAdapter extends ArrayAdapter<ProductSubCategory> {
         
         ProductSubCategory item = getItem(position);
 
-        holder.crustName.setText(item.getSubCatDesc());
+        holder.crustName.setText(item.getSubCatCode());
         
         String imgPath = Constants.IMAGES_LOCATION_CRUSTS;
         if(AppProperties.isNull(item.getThumbnail())){

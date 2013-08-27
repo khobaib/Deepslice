@@ -48,16 +48,16 @@ public class DeepsliceDatabase {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-//            CategoryDbManager.createTable(db);
-            ProductDbManager.createTable(db);
-//            ToppingPriceDbManager.createTable(db);
-//            SauceAndToppingDbManager.createTable(db);
+            //            CategoryDbManager.createTable(db);
+            //            ProductDbManager.createTable(db);
+            //            ToppingPriceDbManager.createTable(db);
+            //            SauceAndToppingDbManager.createTable(db);
             FavoriteDbManager.createTable(db);
             OrderDbManager.createTable(db);
             DealsDbManager.createTable(db);
             DeliveryLocationDbManager.createTable(db);
             LocationHistoryDbManager.createTable(db);
-            
+
             NEW_CategoriesDbManager.createTable(db);
             NEW_ProductOrderDbManager.createTable(db);
             New_ToppingsOrderDbManager.createTable(db);
@@ -66,21 +66,22 @@ public class DeepsliceDatabase {
             NEW_SauceAndToppingsDbManager.createTable(db);
             NEW_ToppingSizeDbManager.createTable(db);
             NEW_ToppingPriceDbManager.createTable(db);
+            NEW_ProductDbManager.createTable(db);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//            CategoryDbManager.dropTable(db);
-            ProductDbManager.dropTable(db);
-            
-//            ToppingPriceDbManager.dropTable(db);
-//            SauceAndToppingDbManager.dropTable(db);
+            //            CategoryDbManager.dropTable(db);
+            //            ProductDbManager.dropTable(db);
+
+            //            ToppingPriceDbManager.dropTable(db);
+            //            SauceAndToppingDbManager.dropTable(db);
             FavoriteDbManager.dropTable(db);
             OrderDbManager.dropTable(db);
             DealsDbManager.dropTable(db);
             DeliveryLocationDbManager.dropTable(db);
             LocationHistoryDbManager.dropTable(db);
-            
+
             NEW_CategoriesDbManager.dropTable(db);
             NEW_ProductOrderDbManager.dropTable(db);
             New_ToppingsOrderDbManager.dropTable(db);
@@ -89,6 +90,7 @@ public class DeepsliceDatabase {
             NEW_SauceAndToppingsDbManager.dropTable(db);
             NEW_ToppingSizeDbManager.dropTable(db);
             NEW_ToppingPriceDbManager.dropTable(db);
+            NEW_ProductDbManager.dropTable(db);
 
             onCreate(db);
         }
@@ -176,25 +178,25 @@ public class DeepsliceDatabase {
     }
 
 
-//    public boolean insertToppingPrices(List<ToppingPrices> aList ) {
-//        for (Iterator<ToppingPrices> iterator = aList.iterator(); iterator.hasNext();) {
-//            ToppingPrices f = (ToppingPrices) iterator.next();
-//            ToppingPriceDbManager.insert(this.db,
-//                    f.getToppingID(),
-//                    f.getToppingCode(),
-//                    f.getToppingAbbr(),
-//                    f.getToppingDesc(),
-//                    f.getIsSauce(),
-//                    f.getCaloriesQty(),
-//                    f.getToppingSizeID(),
-//                    f.getToppingSizeCode(),
-//                    f.getToppingSizeDesc(),
-//                    f.getToppingPrice()
-//                    );
-//        }
-//        return true;
-//    }
-    
+    //    public boolean insertToppingPrices(List<ToppingPrices> aList ) {
+    //        for (Iterator<ToppingPrices> iterator = aList.iterator(); iterator.hasNext();) {
+    //            ToppingPrices f = (ToppingPrices) iterator.next();
+    //            ToppingPriceDbManager.insert(this.db,
+    //                    f.getToppingID(),
+    //                    f.getToppingCode(),
+    //                    f.getToppingAbbr(),
+    //                    f.getToppingDesc(),
+    //                    f.getIsSauce(),
+    //                    f.getCaloriesQty(),
+    //                    f.getToppingSizeID(),
+    //                    f.getToppingSizeCode(),
+    //                    f.getToppingSizeDesc(),
+    //                    f.getToppingPrice()
+    //                    );
+    //        }
+    //        return true;
+    //    }
+
     // updated
     public boolean insertToppingPrices(List<ToppingPrices> toppingPriceList ) {
         for(ToppingPrices thisToppingPrice : toppingPriceList){
@@ -222,22 +224,22 @@ public class DeepsliceDatabase {
 
 
     // checked
-//    public ArrayList<ToppingsAndSauces> getPizzaToppings(String pizzaId) {
-//        Cursor ls = SauceAndToppingDbManager.getPizzaToppings(this.db, pizzaId);
-//        return cursorToToppingsAndSauces(ls);
-//    }
-    
-    
+    //    public ArrayList<ToppingsAndSauces> getPizzaToppings(String pizzaId) {
+    //        Cursor ls = SauceAndToppingDbManager.getPizzaToppings(this.db, pizzaId);
+    //        return cursorToToppingsAndSauces(ls);
+    //    }
+
+
     // updated
     public List<ToppingsAndSauces> retrievePizzaToppings(String prodId) {
         return NEW_SauceAndToppingsDbManager.retrievePizzaToppings(this.db, prodId);
     }
 
-//    public ArrayList<ToppingsAndSauces> getPizzaSauces(String prodId) {
-//        Cursor ls = SauceAndToppingDbManager.getPizzaSauces(this.db, prodId);
-//        return cursorToToppingsAndSauces(ls);
-//    }
-    
+    //    public ArrayList<ToppingsAndSauces> getPizzaSauces(String prodId) {
+    //        Cursor ls = SauceAndToppingDbManager.getPizzaSauces(this.db, prodId);
+    //        return cursorToToppingsAndSauces(ls);
+    //    }
+
     // updated
     public List<ToppingsAndSauces> retrievePizzaSauces(String prodId) {
         return NEW_SauceAndToppingsDbManager.retrievePizzaSauces(this.db, prodId);
@@ -245,7 +247,7 @@ public class DeepsliceDatabase {
 
 
     // checked
-/*    public ArrayList<ToppingsAndSauces> cursorToToppingsAndSauces(Cursor cursor) {
+    /*    public ArrayList<ToppingsAndSauces> cursorToToppingsAndSauces(Cursor cursor) {
         if(null==cursor)
             return null;
         ArrayList<ToppingsAndSauces> list = new ArrayList<ToppingsAndSauces>();
@@ -274,25 +276,25 @@ public class DeepsliceDatabase {
     }*/
 
 
-//    public boolean insertToppingSauces(List<ToppingsAndSauces> aList ) {
-//        for (Iterator<ToppingsAndSauces> iterator = aList.iterator(); iterator.hasNext();) {
-//            ToppingsAndSauces f = (ToppingsAndSauces) iterator.next();
-//            SauceAndToppingDbManager.insert(this.db,
-//                    f.getToppingID(),
-//                    f.getToppingCode(),
-//                    f.getToppingAbbr(),
-//                    f.getToppingDesc(),
-//                    f.getIsSauce(),
-//                    f.getCaloriesQty(),
-//                    f.getProdID(),
-//                    f.getOwnPrice(),
-//                    f.getDisplaySequence(),
-//                    f.getIsFreeWithPizza()
-//                    );
-//        }
-//        return true;
-//    }
-    
+    //    public boolean insertToppingSauces(List<ToppingsAndSauces> aList ) {
+    //        for (Iterator<ToppingsAndSauces> iterator = aList.iterator(); iterator.hasNext();) {
+    //            ToppingsAndSauces f = (ToppingsAndSauces) iterator.next();
+    //            SauceAndToppingDbManager.insert(this.db,
+    //                    f.getToppingID(),
+    //                    f.getToppingCode(),
+    //                    f.getToppingAbbr(),
+    //                    f.getToppingDesc(),
+    //                    f.getIsSauce(),
+    //                    f.getCaloriesQty(),
+    //                    f.getProdID(),
+    //                    f.getOwnPrice(),
+    //                    f.getDisplaySequence(),
+    //                    f.getIsFreeWithPizza()
+    //                    );
+    //        }
+    //        return true;
+    //    }
+
     // updated
     public void insertToppingSauces(List<ToppingsAndSauces> toppingsList ) {
         for(ToppingsAndSauces thisTopping : toppingsList){
@@ -805,110 +807,125 @@ public class DeepsliceDatabase {
 
     // Products
 
-    public boolean insertAllProducts(List<Product> aList ) {
-        for (Iterator<Product> iterator = aList.iterator(); iterator.hasNext();) {
-            Product f = (Product) iterator.next();
-            ProductDbManager.insert(this.db,
-                    f.getProdCatID(),
-                    f.getSubCatID1(),
-                    f.getSubCatID2(),
-                    f.getProdID(),
-                    f.getProdCode(),
-                    f.getDisplayName(),
-                    f.getProdAbbr(),
-                    f.getProdDesc(),
-                    f.getIsAddDeliveryAmount(),
-                    f.getDisplaySequence(),
-                    f.getCaloriesQty(),
-                    f.getPrice(),
-                    f.getThumbnail(),
-                    f.getFullImage()
-                    );
+    //    public boolean insertAllProducts(List<Product> aList ) {
+    //        for (Iterator<Product> iterator = aList.iterator(); iterator.hasNext();) {
+    //            Product f = (Product) iterator.next();
+    //            ProductDbManager.insert(this.db,
+    //                    f.getProdCatID(),
+    //                    f.getSubCatID1(),
+    //                    f.getSubCatID2(),
+    //                    f.getProdID(),
+    //                    f.getProdCode(),
+    //                    f.getDisplayName(),
+    //                    f.getProdAbbr(),
+    //                    f.getProdDesc(),
+    //                    f.getIsAddDeliveryAmount(),
+    //                    f.getDisplaySequence(),
+    //                    f.getCaloriesQty(),
+    //                    f.getPrice(),
+    //                    f.getThumbnail(),
+    //                    f.getFullImage()
+    //                    );
+    //        }
+    //        return true;
+    //    }
+
+    // updated
+    public boolean insertAllProducts(List<Product> prodList ) {
+        for(Product thisProduct : prodList){
+            NEW_ProductDbManager.insert(this.db, thisProduct);
         }
         return true;
     }
 
 
-    public List<Product> getProductsSelected(String catId, String subCatId) {
-
-        Cursor cursor= ProductDbManager.getProductsSelected(this.db, catId, subCatId);
-        try{        
-            return cursorToAllProducts(cursor);
-        }finally{
-            cursor.close(); 
-        }
-
+    // updated
+    public List<Product> retrieveProducts(String prodCatId, String subCatId) {
+        return NEW_ProductDbManager.retrieveProducts(this.db, prodCatId, subCatId);
     }
 
 
-    public List<Product> getProductsPizza(String catId, String subCatId) {
+//    public List<Product> getProductsPizza(String catId, String subCatId) {
+//
+//        Cursor cursor= ProductDbManager.getProductsPizza(this.db, catId, subCatId);
+//        try{        
+//            return cursorToAllProducts(cursor);
+//        }finally{
+//            cursor.close(); 
+//        }
+//
+//    }
 
-        Cursor cursor= ProductDbManager.getProductsPizza(this.db, catId, subCatId);
-        try{        
-            return cursorToAllProducts(cursor);
-        }finally{
-            cursor.close(); 
-        }
+//    public List<Product> getProductsListByIds(String prodIds) {
+//
+//        Cursor cursor= ProductDbManager.getProductsListById(this.db, prodIds);
+//        try{        
+//            return cursorToAllProducts(cursor);
+//        }finally{
+//            cursor.close(); 
+//        }
+//
+//    }
 
+//    public Product getProductById(String prodId) {
+//
+//        Cursor cursor= ProductDbManager.getProductById(this.db, prodId);
+//        try{    
+//            List<Product> lst = cursorToAllProducts(cursor);
+//            if(lst!=null && lst.size()>0)
+//            {
+//                return lst.get(0);
+//            }
+//            else{
+//                return null;
+//            }
+//        }finally{
+//            cursor.close(); 
+//        }
+//
+//    }
+    
+    
+    // updated
+    public Product retrieveProductById(String prodId) {
+        return NEW_ProductDbManager.retrieveProductById(this.db, prodId);
     }
 
-    public List<Product> getProductsListByIds(String prodIds) {
-
-        Cursor cursor= ProductDbManager.getProductsListById(this.db, prodIds);
-        try{        
-            return cursorToAllProducts(cursor);
-        }finally{
-            cursor.close(); 
-        }
-
-    }
-
-    public Product getProductById(String prodId) {
-
-        Cursor cursor= ProductDbManager.getProductById(this.db, prodId);
-        try{    
-            List<Product> lst = cursorToAllProducts(cursor);
-            if(lst!=null && lst.size()>0)
-            {
-                return lst.get(0);
-            }
-            else{
-                return null;
-            }
-        }finally{
-            cursor.close(); 
-        }
-
+    // added
+    public Product retrieveProductFromSubCrust(String prodCatId, String SubCatId1, String SubCatId2, String prodCode){
+        return NEW_ProductDbManager.retrieveProductFromSubCrust(this.db, prodCatId, SubCatId1, SubCatId2, prodCode);
     }
 
 
-    public List<Product> cursorToAllProducts(Cursor cursor) {
-        List<Product> list = new ArrayList<Product>();
-        if (cursor.moveToFirst()) {
-            do {
-                Product f = new Product();
-                f.setProdCatID(cursor.getString(1));
-                f.setSubCatID1(cursor.getString(2));
-                f.setSubCatID2(cursor.getString(3));
-                f.setProdID(cursor.getString(4));
-                f.setProdCode(cursor.getString(5));
-                f.setDisplayName(cursor.getString(6));
-                f.setProdAbbr(cursor.getString(7));
-                f.setProdDesc(cursor.getString(8));
-                f.setIsAddDeliveryAmount(cursor.getString(9));
-                f.setDisplaySequence(cursor.getString(10));
-                f.setCaloriesQty(cursor.getString(11));
-                f.setPrice(cursor.getString(12));
-                f.setThumbnail(cursor.getString(13));
-                f.setFullImage(cursor.getString(14));
-                list.add(f);
-            } while (cursor.moveToNext());
-        }
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-        return list;
-    }
+
+
+//    public List<Product> cursorToAllProducts(Cursor cursor) {
+//        List<Product> list = new ArrayList<Product>();
+//        if (cursor.moveToFirst()) {
+//            do {
+//                Product f = new Product();
+//                f.setProdCatID(cursor.getString(1));
+//                f.setSubCatID1(cursor.getString(2));
+//                f.setSubCatID2(cursor.getString(3));
+//                f.setProdID(cursor.getString(4));
+//                f.setProdCode(cursor.getString(5));
+//                f.setDisplayName(cursor.getString(6));
+//                f.setProdAbbr(cursor.getString(7));
+//                f.setProdDesc(cursor.getString(8));
+//                f.setIsAddDeliveryAmount(cursor.getString(9));
+//                f.setDisplaySequence(cursor.getString(10));
+//                f.setCaloriesQty(cursor.getString(11));
+//                f.setPrice(cursor.getString(12));
+//                f.setThumbnail(cursor.getString(13));
+//                f.setFullImage(cursor.getString(14));
+//                list.add(f);
+//            } while (cursor.moveToNext());
+//        }
+//        if (cursor != null && !cursor.isClosed()) {
+//            cursor.close();
+//        }
+//        return list;
+//    }
 
 
     // Delivery Location
@@ -1132,11 +1149,11 @@ public class DeepsliceDatabase {
     }
 
 
-//    public ArrayList<ProductSubCategory> getSubCategoriesDrinks() {
-//        Cursor ls = CategoryDbManager.searchDrinksSubCats(this.db);
-//        return cursorToSubCat(ls);
-//    }
-    
+    //    public ArrayList<ProductSubCategory> getSubCategoriesDrinks() {
+    //        Cursor ls = CategoryDbManager.searchDrinksSubCats(this.db);
+    //        return cursorToSubCat(ls);
+    //    }
+
     // updated
     public List<ProductSubCategory> retrieveDrinksSize() {
         return NEW_CategoriesDbManager.retrieveDrinksSize(this.db);
@@ -1153,20 +1170,24 @@ public class DeepsliceDatabase {
     }
 
 
-//    public ArrayList<ProductSubCategory> getPizzaCrusts(String catId,
-//            String subCatId) {
-//
-//        Cursor cursor= CategoryDbManager.searchPizzaCrusts(this.db, catId, subCatId);
-//        try{        
-//            return cursorToSubCat(cursor);
-//        }finally{
-//            cursor.close(); 
-//        }
-//
-//    }
-    
+    //    public ArrayList<ProductSubCategory> getPizzaCrusts(String catId,
+    //            String subCatId) {
+    //
+    //        Cursor cursor= CategoryDbManager.searchPizzaCrusts(this.db, catId, subCatId);
+    //        try{        
+    //            return cursorToSubCat(cursor);
+    //        }finally{
+    //            cursor.close(); 
+    //        }
+    //
+    //    }
+
     public List<ProductSubCategory> retrievePizzaCrustList(String catId, String subCatId) {
         return NEW_CategoriesDbManager.retrievePizzaCrustList(this.db, catId, subCatId);
+    }
+
+    public ProductSubCategory retrievePizzaCrust(String catId, String subCatId1, String subCatId2) {
+        return NEW_CategoriesDbManager.retrievePizzaCrust(this.db, catId, subCatId1, subCatId2);
     }
 
 
@@ -1191,29 +1212,29 @@ public class DeepsliceDatabase {
     }
 
 
-//    public ArrayList<ProductSubCategory> cursorToSubCat(Cursor cursor) {
-//        ArrayList<ProductSubCategory> list = new ArrayList<ProductSubCategory>();
-//        if (cursor.moveToFirst()) {
-//            do {
-//                ProductSubCategory f = new ProductSubCategory();
-//                f.setProdCatID(cursor.getString(1));
-//                f.setSubCatID(cursor.getString(2));
-//                f.setSubCatOf(cursor.getString(3));
-//                f.setSubCatCode(cursor.getString(4));
-//                f.setSubCatAbbr(cursor.getString(5));
-//                f.setSubCatDesc(cursor.getString(6));
-//                f.setDisplaySequence(cursor.getString(7));
-//                f.setThumbnail(cursor.getString(8));
-//                f.setFullImage(cursor.getString(9));
-//
-//                list.add(f);
-//            } while (cursor.moveToNext());
-//        }
-//        if (cursor != null && !cursor.isClosed()) {
-//            cursor.close();
-//        }
-//        return list;
-//    }
+    //    public ArrayList<ProductSubCategory> cursorToSubCat(Cursor cursor) {
+    //        ArrayList<ProductSubCategory> list = new ArrayList<ProductSubCategory>();
+    //        if (cursor.moveToFirst()) {
+    //            do {
+    //                ProductSubCategory f = new ProductSubCategory();
+    //                f.setProdCatID(cursor.getString(1));
+    //                f.setSubCatID(cursor.getString(2));
+    //                f.setSubCatOf(cursor.getString(3));
+    //                f.setSubCatCode(cursor.getString(4));
+    //                f.setSubCatAbbr(cursor.getString(5));
+    //                f.setSubCatDesc(cursor.getString(6));
+    //                f.setDisplaySequence(cursor.getString(7));
+    //                f.setThumbnail(cursor.getString(8));
+    //                f.setFullImage(cursor.getString(9));
+    //
+    //                list.add(f);
+    //            } while (cursor.moveToNext());
+    //        }
+    //        if (cursor != null && !cursor.isClosed()) {
+    //            cursor.close();
+    //        }
+    //        return list;
+    //    }
 
 
     //    public ArrayList<ProductCategory> cursorToPeoductCats(Cursor cursor) {
