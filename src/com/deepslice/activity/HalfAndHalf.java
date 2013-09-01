@@ -44,20 +44,20 @@ public class HalfAndHalf extends Activity {
         
         TickFirstHalf = (ImageView) findViewById(R.id.iv_tick_1st_half);
 
-        final Intent intent = new Intent(this,PizzaSubMenuActivity.class);
+        final Intent intent = new Intent(this, PizzaMenuActivity.class);
 
-        Button buttonStHalf=(Button)findViewById(R.id.buttonStHalf);
+        Button buttonStHalf = (Button)findViewById(R.id.buttonStHalf);
         buttonStHalf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle bundle=new Bundle();
-                bundle.putBoolean("isHalf",true);
+                bundle.putBoolean("isHalf", true);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
 
-        Button buttonNdHalf=(Button)findViewById(R.id.buttonNdHalf);
+        Button buttonNdHalf = (Button)findViewById(R.id.buttonNdHalf);
         buttonNdHalf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,7 +74,7 @@ public class HalfAndHalf extends Activity {
             }
         });
         
-        Button openFavs=(Button)findViewById(R.id.favs);
+        Button openFavs = (Button)findViewById(R.id.favs);
         openFavs.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,7 +90,7 @@ public class HalfAndHalf extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(HalfAndHalf.this, MenuActivity.class);
+                Intent intent=new Intent(HalfAndHalf.this, MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -98,7 +98,7 @@ public class HalfAndHalf extends Activity {
             }
         });
 
-        LinearLayout myOrder=(LinearLayout)findViewById(R.id.cartDummy);
+        LinearLayout myOrder = (LinearLayout)findViewById(R.id.cartDummy);
         myOrder.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

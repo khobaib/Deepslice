@@ -13,7 +13,7 @@ import com.deepslice.utilities.Constants;
 
 import android.util.Log;
 
-public class CreateOwnPizzaData  implements Serializable {
+public class CreateOwnPizzaData implements Serializable {
 
     private static final String TAG = CreateOwnPizzaData.class.getSimpleName();
     private static final long serialVersionUID = 1L;

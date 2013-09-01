@@ -135,6 +135,7 @@ public class NEW_ProductDbManager {
 
 
     public static Product retrieveProductFromSubCrust(SQLiteDatabase db, String prodCatId, String SubCatId1, String SubCatId2, String prodCode) throws SQLException {
+        Log.d(TAG, "retrieving product for (prodCatId, subCatId1, subCatId2, prodCode) = " + prodCatId + ", " + SubCatId1 + ", " + SubCatId2 + ", " + prodCode);
         Product product = new Product();
         Cursor cursor = db.query(TABLE_PRODUCTS, null, 
                 PROD_CAT_ID + "= ? AND " + SUB_CAT_ID1 + "= ? AND " + SUB_CAT_ID2 + "= ? AND " + PROD_CODE + "= ?",

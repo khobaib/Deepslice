@@ -111,7 +111,7 @@ public class DrinksSubMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(DrinksSubMenuActivity.this,MenuActivity.class);
+                Intent intent=new Intent(DrinksSubMenuActivity.this,MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 

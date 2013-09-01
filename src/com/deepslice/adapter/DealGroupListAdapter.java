@@ -20,22 +20,25 @@ import com.deepslice.activity.R;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.model.Coupon;
 import com.deepslice.model.DealOrder;
+import com.deepslice.model.NewDealsOrderDetails;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
 
-public class DealGroupListAdapter extends ArrayAdapter<DealOrder> {
+public class DealGroupListAdapter extends ArrayAdapter<NewDealsOrderDetails> {
     
     private Context mContext;
     private ImageLoader imageLoader;
     private LayoutInflater mInflater;
     private Coupon selectedCoupon;
+    private long dealOrderId;
 
-    public DealGroupListAdapter(Context context, List<DealOrder> mDealOrders, Coupon selectedCoupon) {
-        super(context, R.layout.row_deal_group, mDealOrders);
+    public DealGroupListAdapter(Context context, List<NewDealsOrderDetails> mDealOrderDetails, Coupon selectedCoupon, long dealOrderId) {
+        super(context, R.layout.row_deal_group, mDealOrderDetails);
         this.mContext = context;
         imageLoader = new ImageLoader((Activity) mContext);
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.selectedCoupon = selectedCoupon;
+        this.dealOrderId = dealOrderId;
     }
     
     
@@ -63,16 +66,16 @@ public class DealGroupListAdapter extends ArrayAdapter<DealOrder> {
             holder = (ViewHolder) convertView.getTag();
         }
         
-        DealOrder item = getItem(position);
+        NewDealsOrderDetails item = getItem(position);
 
         holder.productName.setText(item.getDisplayName());
         
         String imgPath=Constants.IMAGES_LOCATION_PRODUCTS;
-        if(AppProperties.isNull(item.getImage())){
+        if(AppProperties.isNull(item.getThumbnail())){
             imgPath = imgPath + "noimage.png";
         }
         else{
-            imgPath = imgPath + item.getImage();
+            imgPath = imgPath + item.getThumbnail();
         }
         imageLoader.DisplayImage(imgPath, holder.productImage);
         
@@ -80,13 +83,14 @@ public class DealGroupListAdapter extends ArrayAdapter<DealOrder> {
             
             @Override
             public void onClick(View v) {
-                DealOrder item = getItem(position);
+                NewDealsOrderDetails item = getItem(position);
                 
                 Intent i=new Intent(mContext, DealsProductListActivity.class);
                 
                 Bundle bundle=new Bundle();
-                bundle.putString("coupon_group_id",item.getCouponGroupID());
-                bundle.putString("qty",item.getQuantity());
+                bundle.putString("coupon_group_id", item.getCouponGroupId());
+                bundle.putString("qty", item.getQty());
+                bundle.putLong("dealOrderId", dealOrderId);
                 bundle.putSerializable("selected_coupon", selectedCoupon);
                 i.putExtras(bundle);
                 

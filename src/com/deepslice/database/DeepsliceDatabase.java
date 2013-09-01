@@ -11,6 +11,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.deepslice.model.NewDealsOrder;
+import com.deepslice.model.NewDealsOrderDetails;
 import com.deepslice.model.NewProductOrder;
 import com.deepslice.model.NewToppingsOrder;
 import com.deepslice.model.Product;
@@ -568,8 +570,13 @@ public class DeepsliceDatabase {
 
     // Deals
 
-    public void finalizedDealOrder(){
-        DealsDbManager.finalizedDealOrder(this.db);
+//    public void finalizedDealOrder(){
+//        DealsDbManager.finalizedDealOrder(this.db);
+//    }
+    
+    // updated
+    public void finalizedDealOrder(int dealOrderId){
+        NEW_DealsOrderDbManager.completeDealOrder(this.db, dealOrderId);
     }
 
     // checked
@@ -583,20 +590,30 @@ public class DeepsliceDatabase {
     //    }
 
     // checked
-    public void insertDealOrder(DealOrder f) {
-
-        DealsDbManager.insertDealOrder(this.db,
-                f.getCouponID(),
-                f.getCouponTypeID(),
-                f.getCouponCode(),
-                f.getCouponGroupID(),
-                f.getDiscountedPrice(),
-                f.getProdID(),
-                f.getDisplayName(),
-                f.getQuantity(),
-                f.getUpdate(),
-                f.getImage()
-                );
+//    public void insertDealOrder(DealOrder f) {
+//
+//        DealsDbManager.insertDealOrder(this.db,
+//                f.getCouponID(),
+//                f.getCouponTypeID(),
+//                f.getCouponCode(),
+//                f.getCouponGroupID(),
+//                f.getDiscountedPrice(),
+//                f.getProdID(),
+//                f.getDisplayName(),
+//                f.getQuantity(),
+//                f.getUpdate(),
+//                f.getImage()
+//                );
+//    }
+    
+    // updated
+    public long insertDealOrder(NewDealsOrder dealOrder){
+        return NEW_DealsOrderDbManager.insert(this.db, dealOrder);
+    }
+    
+    // updated
+    public long insertDealOrderDetails(NewDealsOrderDetails dealsOrderDetails){
+        return NEW_DealsOrderDetailsDbManager.insert(this.db, dealsOrderDetails);
     }
 
 
@@ -709,7 +726,7 @@ public class DeepsliceDatabase {
     }
 
 
-
+    // will be deleted & converted to the just-next method
     public List<DealOrder> getDealOrdersList(boolean updateFlag) {
 
         Cursor cursor= DealsDbManager.getDealOrdersList(this.db, updateFlag);
@@ -718,6 +735,16 @@ public class DeepsliceDatabase {
         }finally{
             cursor.close();
         }
+    }
+    
+    // updated
+    public List<NewDealsOrder> retrieveDealOrderList(boolean isComplete) {
+        return NEW_DealsOrderDbManager.retrieve(this.db, isComplete);
+    }
+    
+    
+    public List<NewDealsOrderDetails> retrieveDealOrderDetailsList(int dealsOrderId){
+        return NEW_DealsOrderDetailsDbManager.retrieve(this.db, dealsOrderId);
     }
 
     // NEW - 20130814 1300, i think it wont needed, can be sub by getDealOrdersList() method
@@ -756,18 +783,33 @@ public class DeepsliceDatabase {
     }
 
     // checked
+//    public boolean deleteUnfinishedDealOrder( ) {
+//        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "isUpdate = 0");
+//    }
+    
+    // updated
     public boolean deleteUnfinishedDealOrder( ) {
-        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "isUpdate = 0");
+        return NEW_DealsOrderDbManager.deleteUnfinishedDealOrder(this.db);
     }
 
     // modified, now only delete unfinished deals
-    public boolean deleteAlreadySelectedDealGroup(String couponId, String couponGroupId){
-        return DealsDbManager.deleteAlreadySelectedDealGroup(this.db, couponId, couponGroupId);
+//    public boolean deleteAlreadySelectedDealGroup(String couponId, String couponGroupId){
+//        return DealsDbManager.deleteAlreadySelectedDealGroup(this.db, couponId, couponGroupId);
+//    }
+    
+    // modified
+    public boolean deleteAlreadySelectedDealGroup(int dealOrderId, String couponGroupId){
+        return NEW_DealsOrderDetailsDbManager.deleteAlreadySelectedDealGroup(this.db, dealOrderId, couponGroupId);
     }
 
     // modified, now only check on unfinished deals
-    public boolean isDealGroupAlreadySelected(String couponID, String CouponGroupID){
-        return DealsDbManager.isDealGroupAlreadySelected(this.db, couponID, CouponGroupID);
+//    public boolean isDealGroupAlreadySelected(String couponID, String CouponGroupID){
+//        return DealsDbManager.isDealGroupAlreadySelected(this.db, couponID, CouponGroupID);
+//    }
+    
+    // updated
+    public boolean isDealGroupAlreadySelected(int dealOrderId, String CouponGroupID){
+        return NEW_DealsOrderDetailsDbManager.isDealGroupAlreadySelected(this.db, dealOrderId, CouponGroupID);
     }
 
     //    public boolean deleteDealOrderRec(String CouponID ) {
@@ -1188,6 +1230,10 @@ public class DeepsliceDatabase {
 
     public ProductSubCategory retrievePizzaCrust(String catId, String subCatId1, String subCatId2) {
         return NEW_CategoriesDbManager.retrievePizzaCrust(this.db, catId, subCatId1, subCatId2);
+    }
+    
+    public ProductSubCategory retrievePizzaCrustId(String catId, String subCatId1, String subCatCode) {
+        return NEW_CategoriesDbManager.retrievePizzaCrustId(this.db, catId, subCatId1, subCatCode);
     }
 
 

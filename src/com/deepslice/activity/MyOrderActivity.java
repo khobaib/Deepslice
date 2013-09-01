@@ -131,7 +131,7 @@ public class MyOrderActivity extends Activity{
 
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(MyOrderActivity.this,MenuActivity.class);
+                Intent intent=new Intent(MyOrderActivity.this,MainMenuActivity.class);
                 startActivity(intent);
 
                 finish();

@@ -97,7 +97,7 @@ public class SubMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(SubMenuActivity.this,MenuActivity.class);
+                Intent intent=new Intent(SubMenuActivity.this,MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 

@@ -40,7 +40,7 @@ public class PizzaCrustActivity extends Activity{
     DealCrustAdapter dealCrustAdapter;
 
     List<ProductSubCategory> crustList;
-    String prodCatId, prodSubCatId, prodCode;
+    String prodCatId, prodSubCatId, prodCode, prodId;
     
     Product selectedProduct;
     
@@ -74,9 +74,9 @@ public class PizzaCrustActivity extends Activity{
 
         if(b.getBoolean("isDeal",false)){
             isDeal = true;
-//            currentProductId = b.getString("prdID");
+            prodId = b.getString("prodId");
 
-            dealCrustAdapter = new DealCrustAdapter(PizzaCrustActivity.this, appInstance.getCouponDetails().getProdAndSubCatID(), prodCatId);
+            dealCrustAdapter = new DealCrustAdapter(PizzaCrustActivity.this, appInstance.getCouponDetails().getProdAndSubCatID(), prodId);
             lvCrustList.setAdapter(dealCrustAdapter);
         }else {
             DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaCrustActivity.this);
@@ -92,14 +92,22 @@ public class PizzaCrustActivity extends Activity{
         lvCrustList.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 if(isDeal){
-                    CrustProducts crustProducts=(CrustProducts) parent.getItemAtPosition(position);
-
-                    Intent resultData = new Intent();
-                    resultData.putExtra("name", crustProducts.getSubCat2Code());
-                    resultData.putExtra("catId", crustProducts.getProdID());
-                    resultData.putExtra("subCatId", crustProducts.getSubCat2Id());
-                    setResult(Activity.RESULT_OK, resultData);
-                    finish();
+                    CrustProducts crustProducts = (CrustProducts) parent.getItemAtPosition(position);
+                    Log.d(">>>><<<", "selected crustId = " + crustProducts.getSubCat2Id());
+                    
+                    DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaCrustActivity.this);
+                    dbInstance.open();
+                    selectedProduct = dbInstance.retrieveProductById(crustProducts.getProdID());       
+                    dbInstance.close();
+                    Log.d(">>>><<<", "selectedProd Id = " + selectedProduct.getProdID());
+                    updateTopingSaucesData();  
+                    
+//                    Intent resultData = new Intent();
+//                    resultData.putExtra("name", crustProducts.getSubCat2Code());
+//                    resultData.putExtra("catId", crustProducts.getProdID());
+//                    resultData.putExtra("subCatId", crustProducts.getSubCat2Id());
+//                    setResult(Activity.RESULT_OK, resultData);
+//                    finish();
 
                 }else {
                     ProductSubCategory selectedSubCat = (ProductSubCategory) parent.getItemAtPosition(position);

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.deepslice.activity"
-    android:versionCode="43"
-    android:versionName="0.43" >
+    android:versionCode="44"
+    android:versionName="0.44" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -35,7 +35,7 @@
             android:value="AIzaSyCXPUbVkuwle7qJEnDxjKxB9wNPk6W1pwI" />
 
         <activity
-            android:name=".MenuActivity"
+            android:name=".MainMenuActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
@@ -151,7 +151,7 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name=".PizzaSubMenuActivity"
+            android:name=".PizzaMenuActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
@@ -256,9 +256,6 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".HalfAndHalf"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".HalfAndHalfDetailsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".CreateYourOwnPizzaDetails"

@@ -1,6 +1,7 @@
 package com.deepslice.activity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -30,12 +31,13 @@ import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.Coupon;
 import com.deepslice.model.CouponDetails;
 import com.deepslice.model.CouponGroup;
-import com.deepslice.model.DealOrder;
+import com.deepslice.model.NewDealsOrder;
+import com.deepslice.model.NewDealsOrderDetails;
 import com.deepslice.model.Product;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.parser.JsonParser;
-import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.CouponGroupIdComparator;
 import com.deepslice.utilities.Utils;
 
 public class DealsGroupListActivity extends Activity{
@@ -43,7 +45,7 @@ public class DealsGroupListActivity extends Activity{
     private static final String TAG = DealsGroupListActivity.class.getSimpleName();
 
     List<CouponGroup> couponGroupList;
-    List<DealOrder> dealOrderList;
+    List<NewDealsOrderDetails> dealOrderDetailsList;
 
     ProgressDialog pDialog;
     JsonParser jsonParser = new JsonParser();
@@ -60,16 +62,16 @@ public class DealsGroupListActivity extends Activity{
     double unfinishedDealPrice;
 
     List<String> couponGroupIds;                       // CouponGroupID list from GetCouponGroups api 
-
+    long dealOrderId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.deals_group_list);
-        
+
         tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
         tvFavCount = (TextView) findViewById(R.id.favCount);
-        
+
         TextView title = (TextView) findViewById(R.id.headerTextView);
         title.setText(selectedCouponDesc);
 
@@ -107,7 +109,7 @@ public class DealsGroupListActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(DealsGroupListActivity.this,MenuActivity.class);
+                Intent intent=new Intent(DealsGroupListActivity.this,MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
@@ -130,12 +132,12 @@ public class DealsGroupListActivity extends Activity{
         buttonGetADeal.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
                 dbInstance.open();
-                dbInstance.finalizedDealOrder();
+                dbInstance.finalizedDealOrder((int) dealOrderId);
                 dbInstance.close();
-                
+
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(DealsGroupListActivity.this);
                 alertDialog.setTitle("Deepslice");
                 alertDialog.setMessage("Deal is added to Cart Successfully");
@@ -181,7 +183,8 @@ public class DealsGroupListActivity extends Activity{
                     JSONObject errors = responseObj.getJSONObject("Errors");
 
                     couponGroupList = CouponGroup.parseCouponGroups(data);
-
+                    Collections.sort(couponGroupList, new CouponGroupIdComparator());
+                    
                     long productParseEndTime = System.currentTimeMillis();
                     Log.d("TIME", "time to parse coupongroup = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
 
@@ -244,8 +247,12 @@ public class DealsGroupListActivity extends Activity{
                     long productParseEndTime = System.currentTimeMillis();
                     Log.d("TIME", "time to parse coupon-details = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
 
-                    dealOrderList = new ArrayList<DealOrder>();
+                    dealOrderDetailsList = new ArrayList<NewDealsOrderDetails>();
                     unfinishedDealPrice = 0;
+
+                    // here we have to add the deal in NEW_DealsOrderDbManager table first
+                    dealOrderId = setNewDealOrder();
+                    Log.d(TAG, "dealOrder ID = " + dealOrderId);
 
                     for(int couponGrpIndex = 0; couponGrpIndex < couponGroupIds.size(); couponGrpIndex++){
                         String couponGrpId = couponGroupIds.get(couponGrpIndex);
@@ -254,12 +261,26 @@ public class DealsGroupListActivity extends Activity{
                                 String prodId = allCouponDetailsList.get(couponDetailsIndex).getProdID();
                                 String discountedPrice = allCouponDetailsList.get(couponDetailsIndex).getDiscountedPrice();
                                 String qty = allCouponDetailsList.get(couponDetailsIndex).getQty();
-                                DealOrder thisDealOrder = setDealOrder(couponGrpId, prodId, discountedPrice, qty);
-                                dealOrderList.add(thisDealOrder);
+                                NewDealsOrderDetails thisDealOrderDetails = setDealOrderDetails(couponGrpId, prodId, discountedPrice, qty);
+                                dealOrderDetailsList.add(thisDealOrderDetails);
                                 break;
                             }
                         }
-                    }
+                    } 
+
+                    //                    for(int couponGrpIndex = 0; couponGrpIndex < couponGroupIds.size(); couponGrpIndex++){
+                    //                        String couponGrpId = couponGroupIds.get(couponGrpIndex);
+                    //                        for(int couponDetailsIndex = 0; couponDetailsIndex < allCouponDetailsList.size(); couponDetailsIndex++){
+                    //                            if(allCouponDetailsList.get(couponDetailsIndex).getCouponGroupID().equals(couponGrpId)){
+                    //                                String prodId = allCouponDetailsList.get(couponDetailsIndex).getProdID();
+                    //                                String discountedPrice = allCouponDetailsList.get(couponDetailsIndex).getDiscountedPrice();
+                    //                                String qty = allCouponDetailsList.get(couponDetailsIndex).getQty();
+                    //                                NewDealsOrder thisDealOrder = setDealOrder(couponGrpId, prodId, discountedPrice, qty);
+                    //                                dealOrderList.add(thisDealOrder);
+                    //                                break;
+                    //                            }
+                    //                        }
+                    //                    }
 
                     return true;
                 } catch (JSONException e) {
@@ -268,6 +289,7 @@ public class DealsGroupListActivity extends Activity{
             }
             return false;
         }
+
 
         @Override
         protected void onPostExecute(Boolean result) {
@@ -292,50 +314,112 @@ public class DealsGroupListActivity extends Activity{
         }
     }  
 
-    private DealOrder setDealOrder(String couponGroupId, String prodId, String DiscountedPrice, String qty){
+    private long setNewDealOrder() {
+        NewDealsOrder dealOrder = new NewDealsOrder();
+        dealOrder.setCouponID(selectedCoupon.getCouponID());
+        dealOrder.setDealPrice(selectedCoupon.getAmount());
+        dealOrder.setTotalPrice(selectedCoupon.getAmount());
+        dealOrder.setQuantity(couponGroupList.get(0).getQty());
+        dealOrder.setDealItemCount(couponGroupList.size());
+        dealOrder.setCouponCode(selectedCoupon.getCouponCode());
+        dealOrder.setCouponDesc(selectedCoupon.getCouponDesc());
+        dealOrder.setCouponPic(selectedCoupon.getPic());
+        dealOrder.setIsCompleted(false);
+
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
+        dbInstance.open();
+        long dealOrderId = dbInstance.insertDealOrder(dealOrder);
+        dbInstance.close();
+
+        return dealOrderId;
+    }
+
+    private NewDealsOrderDetails setDealOrderDetails(String couponGrpId, String prodId, String discountedPrice, String qty) {
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
         dbInstance.open();
         Product selectedProduct = dbInstance.retrieveProductById(prodId);
         dbInstance.close();
 
-        DealOrder dealOrder = new DealOrder();
-        dealOrder.setCouponID(selectedCoupon.getCouponID());
-        dealOrder.setCouponTypeID(selectedCoupon.getCouponTypeID());
-        dealOrder.setCouponCode(selectedCoupon.getCouponCode());
-        dealOrder.setCouponGroupID(couponGroupId);
-        dealOrder.setDiscountedPrice(DiscountedPrice);
-        dealOrder.setProdID(selectedProduct.getProdID());
-        dealOrder.setQuantity(qty);
-        dealOrder.setDisplayName(selectedProduct.getDisplayName());
-        dealOrder.setImage(selectedProduct.getThumbnail());
-        dealOrder.setUpdate("0");               // 0 for temporary save
 
-        addDeal(dealOrder);
-        unfinishedDealPrice += (Double.parseDouble(DiscountedPrice) * Double.parseDouble(qty));
-
-        return dealOrder;
-    }
+        NewDealsOrderDetails dealOrderDetails = new NewDealsOrderDetails();
+        dealOrderDetails.setDealOrderId((int) dealOrderId);
+        dealOrderDetails.setCouponGroupId(couponGrpId);
+        dealOrderDetails.setProdId(prodId);
+        dealOrderDetails.setDiscountedPrice(discountedPrice);
+        dealOrderDetails.setDisplayName(selectedProduct.getDisplayName());
+        dealOrderDetails.setThumbnail(selectedProduct.getThumbnail());
+        dealOrderDetails.setQty(qty);
 
 
-    public void addDeal(DealOrder dealOrder){
-
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
+        dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
         dbInstance.open();
-        if(dbInstance.isDealGroupAlreadySelected(dealOrder.getCouponID(), dealOrder.getCouponGroupID())){
-            Log.d(TAG, "YES");
-            boolean b = dbInstance.deleteAlreadySelectedDealGroup(dealOrder.getCouponID(), dealOrder.getCouponGroupID());
+        if(dbInstance.isDealGroupAlreadySelected((int) dealOrderId, couponGrpId)){
+            Log.d(TAG, "YES, this deal group already selected");
+            boolean b = dbInstance.deleteAlreadySelectedDealGroup((int) dealOrderId, couponGrpId);
             Log.d(TAG, "delete already selected deal? = " + b);
         }
-        dbInstance.insertDealOrder(dealOrder);
+        long dealOrderDetailsId = dbInstance.insertDealOrderDetails(dealOrderDetails);
         dbInstance.close();
+
+        unfinishedDealPrice += (Double.parseDouble(discountedPrice) * Double.parseDouble(qty));
+
+        return dealOrderDetails;
     }
+
+
+
+    //    private NewDealsOrder setDealOrder(String couponGroupId, String prodId, String DiscountedPrice, String qty){
+    //
+    //        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
+    //        dbInstance.open();
+    //        Product selectedProduct = dbInstance.retrieveProductById(prodId);
+    //        dbInstance.close();
+    //
+    //        NewDealsOrder dealOrder = new DealOrder();
+    //        dealOrder.setCouponID(selectedCoupon.getCouponID());
+    //        dealOrder.setCouponTypeID(selectedCoupon.getCouponTypeID());
+    //        dealOrder.setCouponCode(selectedCoupon.getCouponCode());
+    //        dealOrder.setCouponGroupID(couponGroupId);
+    //        dealOrder.setDiscountedPrice(DiscountedPrice);
+    //        dealOrder.setProdID(selectedProduct.getProdID());
+    //        dealOrder.setQuantity(qty);
+    //        dealOrder.setDisplayName(selectedProduct.getDisplayName());
+    //        dealOrder.setImage(selectedProduct.getThumbnail());
+    //        dealOrder.setUpdate("0");               // 0 for temporary save
+    //
+    //        addDeal(dealOrder);
+    //        unfinishedDealPrice += (Double.parseDouble(DiscountedPrice) * Double.parseDouble(qty));
+    //
+    //        return dealOrder;
+    //    }
+    //
+    //
+    //    public void addDeal(DealOrder dealOrder){
+    //
+    //        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
+    //        dbInstance.open();
+    //        if(dbInstance.isDealGroupAlreadySelected(dealOrder.getCouponID(), dealOrder.getCouponGroupID())){
+    //            Log.d(TAG, "YES");
+    //            boolean b = dbInstance.deleteAlreadySelectedDealGroup(dealOrder.getCouponID(), dealOrder.getCouponGroupID());
+    //            Log.d(TAG, "delete already selected deal? = " + b);
+    //        }
+    //        dbInstance.insertDealOrder(dealOrder);
+    //        dbInstance.close();
+    //    }
 
 
 
     private void updateDealsGroupList() {
-        if(dealOrderList != null && dealOrderList.size() > 0){
-            dealGroupListAdapter = new DealGroupListAdapter(this, dealOrderList, selectedCoupon);
+        
+//        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
+//        dbInstance.open();
+//        NewDealsOrder unfinishedDealOrder = unfinishedDealOrderList.get(0);             // we know only one unfinishedDealOrder can exist at a time
+//        dealOrderDetailsList = dbInstance.retrieveDealOrderDetailsList(unfinishedDealOrder.getPrimaryId());
+//        dbInstance.close();
+        
+        if(dealOrderDetailsList != null && dealOrderDetailsList.size() > 0){
+            dealGroupListAdapter = new DealGroupListAdapter(this, dealOrderDetailsList, selectedCoupon, dealOrderId);
             lvDealGroup.setAdapter(dealGroupListAdapter);
         }
         else{
@@ -358,34 +442,49 @@ public class DealsGroupListActivity extends Activity{
         return super.onKeyDown(keyCode, event);
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
+        unfinishedDealPrice = 0;
+
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
         dbInstance.open();
-        List<DealOrder> unfinishedDealOrderList = dbInstance.getDealOrdersList(false);
+        List<NewDealsOrder> unfinishedDealOrderList = dbInstance.retrieveDealOrderList(false);
         dbInstance.close();
 
-        unfinishedDealPrice = 0;
-        dealOrderList = new ArrayList<DealOrder>();
-        for(int couponGrpIndex = 0; couponGrpIndex < couponGroupIds.size(); couponGrpIndex++){
-            String couponGrpId = couponGroupIds.get(couponGrpIndex);
-            for(int unfinishedDealIndex = 0; unfinishedDealIndex < unfinishedDealOrderList.size(); unfinishedDealIndex++){
-                if(unfinishedDealOrderList.get(unfinishedDealIndex).getCouponGroupID().equals(couponGrpId)){
-                    dealOrderList.add(unfinishedDealOrderList.get(unfinishedDealIndex));
-                    Log.d(TAG, "couponGrpId = " + couponGrpId + " & imageUrl = " + unfinishedDealOrderList.get(unfinishedDealIndex).getImage());
-                    unfinishedDealPrice += (Double.parseDouble(unfinishedDealOrderList.get(unfinishedDealIndex).getDiscountedPrice())
-                            * Double.parseDouble(unfinishedDealOrderList.get(unfinishedDealIndex).getQuantity()));
-                    break;
-                }
+        if(unfinishedDealOrderList.size() > 0){
+            dbInstance.open();
+            NewDealsOrder unfinishedDealOrder = unfinishedDealOrderList.get(0);             // we know only one unfinishedDealOrder can exist at a time
+            dealOrderDetailsList = dbInstance.retrieveDealOrderDetailsList(unfinishedDealOrder.getPrimaryId());
+            dbInstance.close();
+
+            for(int couponGrpIndex = 0; couponGrpIndex < couponGroupIds.size(); couponGrpIndex++){
+                unfinishedDealPrice += (Double.parseDouble(dealOrderDetailsList.get(couponGrpIndex).getDiscountedPrice())
+                        * Double.parseDouble(dealOrderDetailsList.get(couponGrpIndex).getQty()));            
             }
         }
+
+
+        //        dealOrderList = new ArrayList<NewDealsOrderDetails>();
+        //        for(int couponGrpIndex = 0; couponGrpIndex < couponGroupIds.size(); couponGrpIndex++){
+        //            String couponGrpId = couponGroupIds.get(couponGrpIndex);
+        //            for(int unfinishedDealIndex = 0; unfinishedDealIndex < unfinishedDealOrderList.size(); unfinishedDealIndex++){
+        //                if(unfinishedDealOrderList.get(unfinishedDealIndex).getCouponGroupID().equals(couponGrpId)){
+        //                    dealOrderList.add(unfinishedDealOrderList.get(unfinishedDealIndex));
+        //                    Log.d(TAG, "couponGrpId = " + couponGrpId + " & imageUrl = " + unfinishedDealOrderList.get(unfinishedDealIndex).getImage());
+        //                    unfinishedDealPrice += (Double.parseDouble(unfinishedDealOrderList.get(unfinishedDealIndex).getDiscountedPrice())
+        //                            * Double.parseDouble(unfinishedDealOrderList.get(unfinishedDealIndex).getQuantity()));
+        //                    break;
+        //                }
+        //            }
+        //        }
         updateDealsGroupList();
 
         List<String> orderInfo = Utils.OrderInfo(DealsGroupListActivity.this);
         int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
         String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
-        
+
         if(itemCount > 0){
             tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
             tvItemsPrice.setVisibility(View.VISIBLE);
@@ -394,7 +493,7 @@ public class DealsGroupListActivity extends Activity{
             tvItemsPrice.setVisibility(View.INVISIBLE);
         }
 
-        
+
         String favCount = Utils.FavCount(DealsGroupListActivity.this);
         if (favCount != null && !favCount.equals("0")) {
             tvFavCount.setText(favCount);

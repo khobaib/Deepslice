@@ -252,7 +252,22 @@ public class NEW_CategoriesDbManager {
         ProductSubCategory crust = new ProductSubCategory();
         
         Cursor cursor = db.query(TABLE_SUB_CATEGORIES, null, PROD_CAT_ID + "= ? AND " + SUB_CAT_OF + "= ? AND " + SUB_CAT_ID + "= ?",
-                new String[] {catId, subCatId1, subCatId2}, null, null, DISPLAY_SEQUENCE);
+                new String[] {catId, subCatId1, subCatId2}, null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            crust = retrieveProductSubCategory(cursor);
+        }
+        cursor.close(); 
+        return crust;
+    }
+    
+    
+    public static ProductSubCategory retrievePizzaCrustId(SQLiteDatabase db, String catId, String subCatId1, String subCatCode) throws SQLException {
+        Log.d(TAG, "retrieving pizza-crust for catId = " + catId + " and subCatId(level-1) = " + subCatId1 + " and subCatCode = " + subCatCode);
+        ProductSubCategory crust = new ProductSubCategory();
+        
+        Cursor cursor = db.query(TABLE_SUB_CATEGORIES, null, PROD_CAT_ID + "= ? AND " + SUB_CAT_OF + "= ? AND " + SUB_CAT_CODE + "= ?",
+                new String[] {catId, subCatId1, subCatCode}, null, null, null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             crust = retrieveProductSubCategory(cursor);

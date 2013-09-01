@@ -1,7 +1,5 @@
 package com.deepslice.activity;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -24,29 +22,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.DealOrder;
-import com.deepslice.model.Product;
-import com.deepslice.model.ProductCategory;
 import com.deepslice.model.ProductSubCategory;
 import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.Utils;
 
-public class  PizzaSubMenuActivity extends Activity{
+public class  PizzaMenuActivity extends Activity{
 
     private static final int REQUEST_CODE_IS_PIZZA_HALF = 1001;
 
-//    ArrayList<ProductCategory> productCatList;
     List<ProductSubCategory> subCatList;
-//    ArrayList<Product> allProductsList;
 
-    Boolean isHalf = false;
+    Boolean isHalf;
 
     ListView listview;
     TextView tvItemsPrice, tvFavCount;
     
     MyListAdapterPizza myAdapter;
     ProgressDialog pd;
-//    String catType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +52,7 @@ public class  PizzaSubMenuActivity extends Activity{
         tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
         tvFavCount = (TextView) findViewById(R.id.favCount);
         
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaSubMenuActivity.this);
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaMenuActivity.this);
         dbInstance.open();
         subCatList = dbInstance.retrievePizzaSubMenu();
         dbInstance.close();
@@ -70,26 +63,22 @@ public class  PizzaSubMenuActivity extends Activity{
 
         listview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                ProductSubCategory eBean = (ProductSubCategory) v.getTag();
-                if (eBean != null) {
-
-                    Intent intent=new Intent(PizzaSubMenuActivity.this,ProductsListActivity.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putString("catId",eBean.getProdCatID());
-                    bundle.putString("subCatId",eBean.getSubCatID());
-                    bundle.putString("catType","Pizza");
-                    bundle.putString("titeDisplay",eBean.getSubCatCode()+" Pizza");
+                ProductSubCategory subCat = (ProductSubCategory) parent.getItemAtPosition(position);
+                if (subCat != null) {
+                    Intent intent = new Intent(PizzaMenuActivity.this,ProductsListActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("catId", subCat.getProdCatID());
+                    bundle.putString("subCatId", subCat.getSubCatID());
+                    bundle.putString("catType", "Pizza");
+                    bundle.putString("titeDisplay", subCat.getSubCatCode() + " Pizza");
                     bundle.putBoolean("isHalf", isHalf);
 
                     intent.putExtras(bundle);
+                    startActivity(intent);
                     if(isHalf){
-                        startActivity(intent);
                         Log.d("HALF PIZZA", "returning from PizzaSubMenuActivity after set half-pizza");
                         finish();
-//                        startActivityForResult(intent, REQUEST_CODE_IS_PIZZA_HALF);
                     }
-                    else
-                        startActivity(intent);
                 }					
             }
         });
@@ -99,7 +88,7 @@ public class  PizzaSubMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(PizzaSubMenuActivity.this, FavsListActivity.class);
+                Intent intent=new Intent(PizzaMenuActivity.this, FavsListActivity.class);
                 startActivity(intent);
 
             }
@@ -110,7 +99,7 @@ public class  PizzaSubMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(PizzaSubMenuActivity.this, MenuActivity.class);
+                Intent intent=new Intent(PizzaMenuActivity.this, MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -123,7 +112,7 @@ public class  PizzaSubMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(PizzaSubMenuActivity.this, MyOrderActivity.class);
+                Intent intent=new Intent(PizzaMenuActivity.this, MyOrderActivity.class);
                 startActivity(intent);
 
             }
@@ -135,7 +124,7 @@ public class  PizzaSubMenuActivity extends Activity{
         imageButtonHalf.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(PizzaSubMenuActivity.this, HalfAndHalf.class);
+                Intent intent=new Intent(PizzaMenuActivity.this, HalfAndHalf.class);
                 startActivity(intent);
             }
         });
@@ -146,7 +135,7 @@ public class  PizzaSubMenuActivity extends Activity{
         imageButtonCreateYourOwn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(PizzaSubMenuActivity.this, CreateYourOwnCrustActivity.class);
+                Intent intent=new Intent(PizzaMenuActivity.this, CreateYourOwnCrustActivity.class);
                 startActivity(intent);
             }
         });
@@ -206,7 +195,7 @@ public class  PizzaSubMenuActivity extends Activity{
     protected void onResume() {
         super.onResume();
 
-        List<String> orderInfo = Utils.OrderInfo(PizzaSubMenuActivity.this);
+        List<String> orderInfo = Utils.OrderInfo(PizzaMenuActivity.this);
         int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
         String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
         
@@ -219,7 +208,7 @@ public class  PizzaSubMenuActivity extends Activity{
         }
 
         
-        String favCount = Utils.FavCount(PizzaSubMenuActivity.this);
+        String favCount = Utils.FavCount(PizzaMenuActivity.this);
         if (favCount != null && !favCount.equals("0")) {
             tvFavCount.setText(favCount);
             tvFavCount.setVisibility(View.VISIBLE);

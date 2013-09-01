@@ -81,7 +81,7 @@ public class DealsListActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(DealsListActivity.this,MenuActivity.class);
+                Intent intent=new Intent(DealsListActivity.this,MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 

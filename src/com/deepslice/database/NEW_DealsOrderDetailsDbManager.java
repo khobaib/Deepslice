@@ -14,21 +14,25 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 public class NEW_DealsOrderDetailsDbManager {
-    
+
     private static final String TAG = NEW_DealsOrderDetailsDbManager.class.getSimpleName();
-    
+
     private static final String TABLE_DEALS_ORDER_DETAILS = "deals_order_details_table";
-    
+
     private static final String TABLE_PRIMARY_KEY = "_id";
     private static final String DEAL_ORDER_ID = "deal_order_id";
     private static final String COUPON_GROUP_ID = "coupon_group_id";
     private static final String DISCOUNTED_PRICE = "discounted_price";
     private static final String PROD_ID = "prod_id";
-    
+    private static final String DISPLAY_NAME = "display_name";
+    private static final String THUMBNAIL = "thumbnail";
+    private static final String QTY = "qty";
+
 
     private static final String CREATE_TABLE_DEALS_ORDER_DETAILS = "create table " + TABLE_DEALS_ORDER_DETAILS + " ( "
             + TABLE_PRIMARY_KEY + " integer primary key autoincrement, " + DEAL_ORDER_ID + " integer, "
-            + COUPON_GROUP_ID + " text, " + DISCOUNTED_PRICE + " text, " + PROD_ID + " text);";
+            + COUPON_GROUP_ID + " text, " + DISCOUNTED_PRICE + " text, " + PROD_ID +  " text, "
+            + DISPLAY_NAME + " text, " + THUMBNAIL + " text, " + QTY + " text);";
 
 
     public static void createTable(SQLiteDatabase db) {
@@ -38,18 +42,29 @@ public class NEW_DealsOrderDetailsDbManager {
     public static void dropTable(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DEALS_ORDER_DETAILS);
     }
-    
+
     public static void cleanDealsOrderDetailsTable(SQLiteDatabase db) throws SQLException {
         Log.d(TAG, "deleting ALL DEALS ORDER DATA");
         db.delete(TABLE_DEALS_ORDER_DETAILS, null, null);
     }
-    
+
     public static boolean delete(SQLiteDatabase db, int dealsOrderId) throws SQLException {
         Log.d(TAG, "deleting DEALS ORDER DETAILS data for deals OrderId = " + dealsOrderId);
-        // need to Delete toppings data of corresponding TABLE_PRIMARY_KEY of TABLE_DEALS_ORDER_DETAILS.
+
+        Cursor cursor = db.query(TABLE_DEALS_ORDER_DETAILS, null, DEAL_ORDER_ID + "=" + dealsOrderId, null, null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                int primaryId = cursor.getInt(cursor.getColumnIndex(TABLE_PRIMARY_KEY));
+                New_ToppingsOrderDbManager.deleteDealToppings(db, primaryId);
+                cursor.moveToNext();
+            }
+        }               
+        cursor.close();
         return db.delete(TABLE_DEALS_ORDER_DETAILS, DEAL_ORDER_ID + "=" + dealsOrderId, null) > 0;
     }
-    
+
+
     public static long insert(SQLiteDatabase db, NewDealsOrderDetails dealsOrderDetails) throws SQLException {
         Log.d(TAG, "inserting dealsOrder details with dealOrderId = " + dealsOrderDetails.getDealOrderId());
         ContentValues cv = new ContentValues();
@@ -58,17 +73,20 @@ public class NEW_DealsOrderDetailsDbManager {
         cv.put(COUPON_GROUP_ID, dealsOrderDetails.getCouponGroupId());
         cv.put(DISCOUNTED_PRICE, dealsOrderDetails.getDiscountedPrice());
         cv.put(PROD_ID, dealsOrderDetails.getProdId());
-       
+        cv.put(DISPLAY_NAME, dealsOrderDetails.getDisplayName());
+        cv.put(THUMBNAIL, dealsOrderDetails.getThumbnail());
+        cv.put(QTY, dealsOrderDetails.getQty());
+
         return db.insert(TABLE_DEALS_ORDER_DETAILS, null, cv);
     }
-    
-    
+
+
     public static List<NewDealsOrderDetails> retrieve(SQLiteDatabase db, int dealsOrderId) throws SQLException {
         Log.d(TAG, "retrieving dealOrder details list for deals OrderId = " + dealsOrderId);
         List<NewDealsOrderDetails> dealsOrderDetailsList = new ArrayList<NewDealsOrderDetails>();
-        
-        Cursor cursor = db.query(TABLE_DEALS_ORDER_DETAILS, null, DEAL_ORDER_ID + "=" + dealsOrderId, null, null, null, null);
-        
+
+        Cursor cursor = db.query(TABLE_DEALS_ORDER_DETAILS, null, DEAL_ORDER_ID + "=" + dealsOrderId, null, null, null, COUPON_GROUP_ID);
+
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
@@ -76,9 +94,12 @@ public class NEW_DealsOrderDetailsDbManager {
                 String couponGrpId = cursor.getString(cursor.getColumnIndex(COUPON_GROUP_ID));
                 String discountedPrice = cursor.getString(cursor.getColumnIndex(DISCOUNTED_PRICE));
                 String prodId = cursor.getString(cursor.getColumnIndex(PROD_ID));
+                String displayName = cursor.getString(cursor.getColumnIndex(DISPLAY_NAME));
+                String thumbnail = cursor.getString(cursor.getColumnIndex(THUMBNAIL));
+                String qty = cursor.getString(cursor.getColumnIndex(QTY));
 
-                
-                NewDealsOrderDetails dealOrderDetails = new NewDealsOrderDetails(primaryId, dealsOrderId, couponGrpId, discountedPrice, prodId);
+                NewDealsOrderDetails dealOrderDetails = new NewDealsOrderDetails(primaryId, dealsOrderId,
+                        couponGrpId, discountedPrice, prodId, displayName, thumbnail, qty);
                 dealsOrderDetailsList.add(dealOrderDetails);                     
                 cursor.moveToNext();
             }
@@ -86,19 +107,32 @@ public class NEW_DealsOrderDetailsDbManager {
         cursor.close(); 
         return dealsOrderDetailsList;       
     }
-    
-    
-    public static boolean deleteAlreadySelectedDealGroup(SQLiteDatabase db, int dealsOrderId, String CouponGroupID) {
-        Log.d(TAG, "deleting dealorder for dealsOrderId = " + dealsOrderId + " and couponGrpId = " + CouponGroupID);
-        return db.delete(TABLE_DEALS_ORDER_DETAILS, DEAL_ORDER_ID + "=" + dealsOrderId + " AND "
-        + COUPON_GROUP_ID + "= ?", new String[] {CouponGroupID}) > 0;
+
+
+    public static boolean deleteAlreadySelectedDealGroup(SQLiteDatabase db, int dealOrderId, String CouponGroupID) {
+        Log.d(TAG, "deleting dealorder for dealsOrderId = " + dealOrderId + " and couponGrpId = " + CouponGroupID);
+        
+        Cursor cursor = db.query(TABLE_DEALS_ORDER_DETAILS, null, DEAL_ORDER_ID + "=" + dealOrderId + " AND "
+                + COUPON_GROUP_ID + "= ?", new String[] {CouponGroupID}, null, null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                int primaryId = cursor.getInt(cursor.getColumnIndex(TABLE_PRIMARY_KEY));
+                New_ToppingsOrderDbManager.deleteDealToppings(db, primaryId);
+                cursor.moveToNext();
+            }
+        }               
+        cursor.close();
+                
+        return db.delete(TABLE_DEALS_ORDER_DETAILS, DEAL_ORDER_ID + "=" + dealOrderId + " AND "
+                + COUPON_GROUP_ID + "= ?", new String[] {CouponGroupID}) > 0;
     }
-    
-    
-    public static boolean isDealGroupAlreadySelected(SQLiteDatabase db, int dealsOrderId, String CouponGroupID){
-        Log.d(TAG, "isDealGroupAlreadySelected for dealsOrderId = " + dealsOrderId + " and couponGrpId = " + CouponGroupID);
-        Cursor c = db.query(CREATE_TABLE_DEALS_ORDER_DETAILS, null, DEAL_ORDER_ID + "=" + dealsOrderId + " AND "
-                    + COUPON_GROUP_ID + "= ?", new String[] {CouponGroupID}, null, null, null);
+
+
+    public static boolean isDealGroupAlreadySelected(SQLiteDatabase db, int dealOrderId, String CouponGroupID){
+        Log.d(TAG, "isDealGroupAlreadySelected for dealsOrderId = " + dealOrderId + " and couponGrpId = " + CouponGroupID);
+        Cursor c = db.query(TABLE_DEALS_ORDER_DETAILS, null, DEAL_ORDER_ID + "=" + dealOrderId + " AND "
+                + COUPON_GROUP_ID + "= ?", new String[] {CouponGroupID}, null, null, null);
         if(c!= null && c.getCount() > 0){
             c.close();
             return true;

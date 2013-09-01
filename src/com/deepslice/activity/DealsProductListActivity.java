@@ -30,6 +30,7 @@ import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.Coupon;
 import com.deepslice.model.CouponDetails;
 import com.deepslice.model.DealOrder;
+import com.deepslice.model.NewDealsOrderDetails;
 import com.deepslice.model.Product;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.model.ToppingPrices;
@@ -48,14 +49,14 @@ public class DealsProductListActivity extends Activity {
 
     String productCatId, productName;
     int currentPosition;
+    
     String selectedCouponID;
     String selectedCouponGroupID;
     Coupon selectedCoupon;
     int Qty;
-    //    boolean syncedPrices = false;
-    //    boolean syncedToppings = false;
+    long dealOrderId;
 
-    DealOrder dealOrder;
+//    DealOrder dealOrder;
     Product selectedProduct;
 
     List<ToppingPrices> toppingsPriceList;
@@ -63,7 +64,9 @@ public class DealsProductListActivity extends Activity {
     List<ToppingsAndSauces> toppingsAndSaucesList;    
     List<CouponDetails> selectedCouponGrpcouponDetailsList;
     List<Product> pList;
-    List<DealOrder> dealOrderList;
+//    List<DealOrder> dealOrderList;
+    
+    NewDealsOrderDetails dealOrderDetails;
 
     DealProductListAdapter dealProductListAdapter;
 
@@ -86,11 +89,12 @@ public class DealsProductListActivity extends Activity {
         selectedCoupon = (Coupon)bundle.getSerializable("selected_coupon");
         selectedCouponID = selectedCoupon.getCouponID();
         Qty = Integer.parseInt(bundle.getString("qty"));
+        dealOrderId = bundle.getLong("dealOrderId");
 
 
         selectedCouponGrpcouponDetailsList = new ArrayList<CouponDetails>();
         pList = new ArrayList<Product>();
-        dealOrderList=new ArrayList<DealOrder>();
+//        dealOrderList=new ArrayList<DealOrder>();
 
         tvTitle = (TextView)findViewById(R.id.tv_title);
         tvSubtitle = (TextView)findViewById(R.id.tv_subtitle);
@@ -106,7 +110,7 @@ public class DealsProductListActivity extends Activity {
 
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsProductListActivity.this);
                 dbInstance.open();
-                String prodType=dbInstance.getCatCodeFromCatId(selectedProduct.getProdCatID());
+                String prodType = dbInstance.getCatCodeFromCatId(selectedProduct.getProdCatID());
                 dbInstance.close();
 
                 if(prodType.equalsIgnoreCase("Pizza")){
@@ -148,7 +152,7 @@ public class DealsProductListActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(DealsProductListActivity.this,MenuActivity.class);
+                Intent intent=new Intent(DealsProductListActivity.this,MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
@@ -217,7 +221,7 @@ public class DealsProductListActivity extends Activity {
 
                     DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsProductListActivity.this);
                     dbInstance.open();
-                    for (int i=0;i<allCouponDetailsList.size();i++){
+                    for (int i = 0; i < allCouponDetailsList.size(); i++){
                         CouponDetails thisCouponDetails = allCouponDetailsList.get(i);
                         if (thisCouponDetails.getCouponGroupID().equalsIgnoreCase(selectedCouponGroupID)){
                             pList.add(dbInstance.retrieveProductById(thisCouponDetails.getProdID()));
@@ -285,10 +289,10 @@ public class DealsProductListActivity extends Activity {
                     JSONArray data = responseObj.getJSONArray("Data");
                     JSONObject errors = responseObj.getJSONObject("Errors");
 
-                    List<CouponDetails> allCouponDetailsList = CouponDetails.parseCouponDetails(data);
+//                    List<CouponDetails> allCouponDetailsList = CouponDetails.parseCouponDetails(data);
                     JSONObject productCat = data.getJSONObject(0);
                     if(productCat != null){
-                        productName=productCat.getString("ProdCatCode");
+                        productName = productCat.getString("ProdCatCode");
                         return true;
                     }                    
                 } catch (JSONException e) {
@@ -348,22 +352,32 @@ public class DealsProductListActivity extends Activity {
 
 
     private void gotoActivity(boolean isPizza) {
-        dealOrder = new DealOrder();
-        dealOrder.setCouponID(selectedCoupon.getCouponID());
-        dealOrder.setCouponTypeID(selectedCoupon.getCouponTypeID());
-        dealOrder.setCouponCode(selectedCoupon.getCouponCode());
-        dealOrder.setCouponGroupID(selectedCouponGroupID);
-        dealOrder.setDiscountedPrice(selectedCouponGrpcouponDetailsList.get(currentPosition).getDiscountedPrice());
-        dealOrder.setProdID(selectedProduct.getProdID());
-        dealOrder.setQuantity(Qty+"");
-        dealOrder.setDisplayName(selectedProduct.getDisplayName());
-        dealOrder.setImage(selectedProduct.getThumbnail());
-        dealOrder.setUpdate("0");               // 0 for temporary save
+        
+        dealOrderDetails = new NewDealsOrderDetails();
+        dealOrderDetails.setDealOrderId((int) dealOrderId);
+        dealOrderDetails.setCouponGroupId(selectedCouponGroupID);
+        dealOrderDetails.setProdId(selectedProduct.getProdID());
+        dealOrderDetails.setDiscountedPrice(selectedCouponGrpcouponDetailsList.get(currentPosition).getDiscountedPrice());
+        dealOrderDetails.setDisplayName(selectedProduct.getDisplayName());
+        dealOrderDetails.setThumbnail(selectedProduct.getThumbnail());
+        dealOrderDetails.setQty(Qty + "");
+        
+//        dealOrder = new DealOrder();
+//        dealOrder.setCouponID(selectedCoupon.getCouponID());
+//        dealOrder.setCouponTypeID(selectedCoupon.getCouponTypeID());
+//        dealOrder.setCouponCode(selectedCoupon.getCouponCode());
+//        dealOrder.setCouponGroupID(selectedCouponGroupID);
+//        dealOrder.setDiscountedPrice(selectedCouponGrpcouponDetailsList.get(currentPosition).getDiscountedPrice());
+//        dealOrder.setProdID(selectedProduct.getProdID());
+//        dealOrder.setQuantity(Qty+"");
+//        dealOrder.setDisplayName(selectedProduct.getDisplayName());
+//        dealOrder.setImage(selectedProduct.getThumbnail());
+//        dealOrder.setUpdate("0");               // 0 for temporary save
         if(isPizza){
-            updateTopingSaucesData(dealOrder.getProdID());
-            Log.d("????????", "Deal's product id in updateTopingSaucesData = " + dealOrder.getProdID());
+            updateTopingSaucesData(dealOrderDetails.getProdId());
+            Log.d("????????", "Deal's product id in updateTopingSaucesData = " + dealOrderDetails.getProdId());
         }else {
-            addDeal(dealOrder);
+            addDeal();
         }
     }
 
@@ -383,12 +397,12 @@ public class DealsProductListActivity extends Activity {
         if(pDialog.isShowing())
             pDialog.dismiss();
 
-        appInstance.setDealOrder(dealOrder);
-        Intent intent=new Intent(DealsProductListActivity.this, PizzaDetailsActivity.class);
+        appInstance.setDealOrderDetails(dealOrderDetails);
+        Intent intent=new Intent(DealsProductListActivity.this, NEW_PizzaDetailsActivity.class);
         Bundle bundle=new Bundle();
         bundle.putSerializable("selectedProduct", selectedProduct);
-        bundle.putString("prdID", selectedProduct.getProdID());             // it isnt necessary
-        bundle.putBoolean("isDeal",true);
+        bundle.putString("prdID", selectedProduct.getProdID());             // it isnt necessary, is it?
+        bundle.putBoolean("isDeal", true);
         intent.putExtras(bundle);
         startActivity(intent);
         finish();
@@ -465,17 +479,27 @@ public class DealsProductListActivity extends Activity {
     }
 
 
-    public void addDeal(DealOrder dealOrder){
-
+    public void addDeal(){
+        
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsProductListActivity.this);
         dbInstance.open();
-        if(dbInstance.isDealGroupAlreadySelected(dealOrder.getCouponID(), dealOrder.getCouponGroupID())){
-            Log.d(TAG, "YES");
-            boolean b = dbInstance.deleteAlreadySelectedDealGroup(dealOrder.getCouponID(), dealOrder.getCouponGroupID());
+        if(dbInstance.isDealGroupAlreadySelected((int) dealOrderId, selectedCouponGroupID)){
+            Log.d(TAG, "YES, this deal group already selected");
+            boolean b = dbInstance.deleteAlreadySelectedDealGroup((int) dealOrderId, selectedCouponGroupID);
             Log.d(TAG, "delete already selected deal? = " + b);
         }
-        dbInstance.insertDealOrder(dealOrder);
+        long dealOrderDetailsId = dbInstance.insertDealOrderDetails(dealOrderDetails);
         dbInstance.close();
+
+//        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsProductListActivity.this);
+//        dbInstance.open();
+//        if(dbInstance.isDealGroupAlreadySelected(dealOrder.getCouponID(), dealOrder.getCouponGroupID())){
+//            Log.d(TAG, "YES");
+//            boolean b = dbInstance.deleteAlreadySelectedDealGroup(dealOrder.getCouponID(), dealOrder.getCouponGroupID());
+//            Log.d(TAG, "delete already selected deal? = " + b);
+//        }
+//        dbInstance.insertDealOrder(dealOrder);
+//        dbInstance.close();
         finish();
     }
 

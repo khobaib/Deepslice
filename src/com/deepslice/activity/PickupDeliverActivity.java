@@ -69,11 +69,11 @@ public class PickupDeliverActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.pickUpButton:
 			AppSharedPreference.putData(PickupDeliverActivity.this, "orderType", "Pickup");
-			startActivity(new Intent(this, MenuActivity.class));
+			startActivity(new Intent(this, MainMenuActivity.class));
 			break;
 		case R.id.deliveryButton:
 			AppSharedPreference.putData(PickupDeliverActivity.this, "orderType", "Delivery");
-			startActivity(new Intent(this, MenuActivity.class));
+			startActivity(new Intent(this, MainMenuActivity.class));
 			break;
 		default:
 			break;

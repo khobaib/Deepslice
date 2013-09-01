@@ -49,5 +49,7 @@ public class Constants {
         "August", "September", "October", "November", "December"
       };
     
+    public static final int DUMMY_ID = -1;
+    
     
 }

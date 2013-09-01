@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.Favourite;
+import com.deepslice.model.NewDealsOrderDetails;
 import com.deepslice.model.Order;
 import com.deepslice.model.Product;
 import com.deepslice.utilities.AppProperties;
@@ -37,7 +38,7 @@ public class FavAddActivity extends Activity {
     
     String catType,couponGroupID,productId="";
     boolean isDeal=false;
-    DealOrder selectedDealOrder;
+    NewDealsOrderDetails dealOrderDetails;
     
     
     @Override
@@ -57,9 +58,9 @@ public class FavAddActivity extends Activity {
         Button buttonAddOrders= (Button)findViewById(R.id.buttonAddOrders);
         isDeal=b.getBoolean("isDeal",false);
         if (isDeal){
-            selectedDealOrder=(DealOrder)b.getSerializable("dealData");
+            dealOrderDetails = (NewDealsOrderDetails)b.getSerializable("dealData");
             couponGroupID=b.getString("couponGroupID");
-            productId=selectedDealOrder.getProdID();
+            productId = dealOrderDetails.getProdId();
             buttonAddOrders.setText("Add to Deal");
         } else {
             buttonAddOrders.setText("Add to Order");
@@ -125,13 +126,13 @@ public class FavAddActivity extends Activity {
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(FavAddActivity.this);
                 dbInstance.open();
                 if (isDeal){
-                    selectedDealOrder.setQuantity(String.valueOf(currentCount));
-                    if(dbInstance.isDealGroupAlreadySelected(selectedDealOrder.getCouponID(), selectedDealOrder.getCouponGroupID())){
-                        dbInstance.deleteAlreadySelectedDealGroup(selectedDealOrder.getCouponID(), selectedDealOrder.getCouponGroupID());
-                    }
-                    dbInstance.insertDealOrder(selectedDealOrder);
-
-                    finish();
+//                    selectedDealOrder.setQuantity(String.valueOf(currentCount));
+//                    if(dbInstance.isDealGroupAlreadySelected(selectedDealOrder.getCouponID(), selectedDealOrder.getCouponGroupID())){
+//                        dbInstance.deleteAlreadySelectedDealGroup(selectedDealOrder.getCouponID(), selectedDealOrder.getCouponGroupID());
+//                    }
+//                    dbInstance.insertDealOrder(selectedDealOrder);
+//
+//                    finish();
                 }else {
 //                    dbInstance.insertOrder(getOrderBean());
                     Toast.makeText(FavAddActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
@@ -167,7 +168,7 @@ public class FavAddActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(FavAddActivity.this,MenuActivity.class);
+                Intent intent=new Intent(FavAddActivity.this,MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 

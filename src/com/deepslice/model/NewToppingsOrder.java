@@ -3,7 +3,9 @@ package com.deepslice.model;
 public class NewToppingsOrder {
     
     private int primaryId;
+    private Boolean isDeal;
     private int ProdOrderId;
+    private int dealOrderDetailsId;
     private String toppingsId;
     private String toppingsCode;
     private String toppingSizeId;
@@ -12,13 +14,14 @@ public class NewToppingsOrder {
     private Boolean isFreeWithPizza;
     
     public NewToppingsOrder() {
-        // TODO Auto-generated constructor stub
     }
 
-    public NewToppingsOrder(int primaryId, int prodOrderId, String toppingsId, String toppingsCode, String toppingSizeId, Boolean isSauce,
+    public NewToppingsOrder(int primaryId, Boolean isDeal, int prodOrderId, int dealOrderDetailsId, String toppingsId, String toppingsCode, String toppingSizeId, Boolean isSauce,
             String toppingPrice, Boolean isFreeWithPizza) {
         this.primaryId = primaryId;
+        this.isDeal = isDeal;
         this.ProdOrderId = prodOrderId;
+        this.dealOrderDetailsId = dealOrderDetailsId;
         this.toppingsId = toppingsId;
         this.toppingsCode = toppingsCode;
         this.toppingSizeId = toppingSizeId;
@@ -27,14 +30,14 @@ public class NewToppingsOrder {
         this.isFreeWithPizza = isFreeWithPizza;
     }
     
-    public NewToppingsOrder(int prodOrderId, String toppingsId, String toppingsCode, String toppingSizeId, Boolean isSauce,
+    public NewToppingsOrder(Boolean isDeal, int prodOrderId, int dealOrderDetailsId, String toppingsId, String toppingsCode, String toppingSizeId, Boolean isSauce,
             String toppingPrice, Boolean isFreeWithPizza) {
-        this(0, prodOrderId, toppingsId, toppingsCode, toppingSizeId, isSauce, toppingPrice, isFreeWithPizza);
+        this(0, isDeal, prodOrderId, dealOrderDetailsId, toppingsId, toppingsCode, toppingSizeId, isSauce, toppingPrice, isFreeWithPizza);
     }
     
     public NewToppingsOrder(String toppingsId, String toppingsCode, String toppingSizeId, Boolean isSauce,
             String toppingPrice, Boolean isFreeWithPizza) {
-        this(0, 0, toppingsId, toppingsCode, toppingSizeId, isSauce, toppingPrice, isFreeWithPizza);
+        this(0, false, 0, 0, toppingsId, toppingsCode, toppingSizeId, isSauce, toppingPrice, isFreeWithPizza);
     }
 
     public int getPrimaryId() {
@@ -43,6 +46,22 @@ public class NewToppingsOrder {
 
     public void setPrimaryId(int primaryId) {
         this.primaryId = primaryId;
+    }
+
+    public Boolean getIsDeal() {
+        return isDeal;
+    }
+
+    public void setIsDeal(Boolean isDeal) {
+        this.isDeal = isDeal;
+    }
+
+    public int getDealOrderDetailsId() {
+        return dealOrderDetailsId;
+    }
+
+    public void setDealOrderDetailsId(int dealOrderDetailsId) {
+        this.dealOrderDetailsId = dealOrderDetailsId;
     }
 
     public int getProdOrderId() {

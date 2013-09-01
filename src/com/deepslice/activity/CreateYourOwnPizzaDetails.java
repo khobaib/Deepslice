@@ -12,7 +12,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +37,8 @@ import com.deepslice.model.CreateOwnPizzaData;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.Favourite;
 import com.deepslice.model.LabelValueBean;
+import com.deepslice.model.NewProductOrder;
+import com.deepslice.model.NewToppingsOrder;
 import com.deepslice.model.Order;
 import com.deepslice.model.Product;
 import com.deepslice.model.ServerResponse;
@@ -50,36 +54,42 @@ import com.deepslice.utilities.Utils;
 
 public class CreateYourOwnPizzaDetails extends Activity {
 
-    int currentIndex;
-    int currentCount;
+    int currentIndex;           // index position of selectedProduct in productList 
+    int currentCount;           // qty of that product selected for ordering
 
     ImageLoader imageLoader;
 
-    int SELECT_TOPPINGS=112233;
-    int SELECT_CRUST=112244;
+    int SELECT_TOPPINGS = 112233;
+    int SELECT_CRUST = 112244;
 
-    Spinner spinnerCat;
+    Spinner sSauceName;
+    List<ToppingsAndSauces> saucesList;
 
-    ProgressDialog pd;
 
-    HashMap<String, ToppingsHashmap> toppingsSelected;
+
+//    HashMap<String, ToppingsHashmap> toppingsSelected;
 
     CreateOwnPizzaData selectedPizzaData;
     List<String> prodIds;
-    ArrayList<Product> productList;
+    List<Product> productList;
 
+    ProgressDialog pd;
     JsonParser jsonParser = new JsonParser();
     
     List<ToppingPrices> toppingsPriceList;
     List<ToppingSizes> toppingsSizeList;
     List<ToppingsAndSauces> toppingsAndSaucesList;
+    
+    List<NewToppingsOrder> toppingsSelected; 
+    
+    int selectedSauceIndex;
 
     ImageButton ImageButtonNext, ImageButtonPrv;
     TextView PizzaName;
     ImageView ImageViewCreateYourOwn;
     Button buttonAddOrders;
     TextView pKJ, headerTextView;
-    TextView selectedToppings,selectedSauces;
+    TextView selectedToppings, selectedSauces;
     TextView favCountTxt;
     TextView tvItemsPrice, tvFavCount;
 
@@ -100,7 +110,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
         productList = new ArrayList<Product>();
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
         dbInstance.open();
-        for (int i=0;i<prodIds.size();i++){
+        for (int i = 0; i < prodIds.size(); i++){
             String prodId = prodIds.get(i);
             productList.add(dbInstance.retrieveProductById(prodId));
         }
@@ -109,27 +119,27 @@ public class CreateYourOwnPizzaDetails extends Activity {
         findViewById(R.id.rl_crust).setVisibility(View.GONE);
 
         PizzaName = (TextView) findViewById(R.id.pDesc);
-        PizzaName.setText(productList.get(0).getProdDesc());
+        PizzaName.setText(productList.get(currentIndex).getProdDesc());
 
         buttonAddOrders= (Button)findViewById(R.id.buttonAddOrders);
         buttonAddOrders.setText("Add to Order");
 
         pKJ = (TextView)findViewById(R.id.pKJ);
-        pKJ.setText(productList.get(0).getCaloriesQty()+"kj");
+        pKJ.setText(productList.get(currentIndex).getCaloriesQty() + "kj");
 
         ImageViewCreateYourOwn =(ImageView)findViewById(R.id.imageViewCreateYourOwn);
-        imageLoader.DisplayImage(productList.get(0).getFullImage(), ImageViewCreateYourOwn);
+        imageLoader.DisplayImage(productList.get(currentIndex).getFullImage(), ImageViewCreateYourOwn);
 
-        headerTextView=(TextView)findViewById(R.id.headerTextView);
+        headerTextView = (TextView)findViewById(R.id.headerTextView);
+        headerTextView.setText("Create Your Own Pizza");
+        
         selectedToppings=(TextView)findViewById(R.id.selectedToppings);
         selectedSauces=(TextView)findViewById(R.id.selectedSauces);
-        spinnerCat=(Spinner)findViewById(R.id.spinner1);
+        sSauceName=(Spinner)findViewById(R.id.spinner1);
 
         // update topping list
-        updateTopingSaucesData(productList.get(0).getProdID());
-        // update sauce spinner
+        updateToppingsAndSaucesData(productList.get(currentIndex).getProdID());
 
-        //        populateSauceData(0);
 
         ImageButtonNext=(ImageButton)findViewById(R.id.imageButtonNext);
         if(productList.size() > 1)
@@ -141,7 +151,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
                 currentIndex++;
                 imageLoader.DisplayImage(productList.get(currentIndex).getFullImage(), ImageViewCreateYourOwn);
                 PizzaName.setText(productList.get(currentIndex).getProdDesc());
-                updateTopingSaucesData(productList.get(currentIndex).getProdID());
+                updateToppingsAndSaucesData(productList.get(currentIndex).getProdID());
                 if(currentIndex < (productList.size()-1)){
                     ImageButtonNext.setVisibility(View.VISIBLE);
                     ImageButtonPrv.setVisibility(View.VISIBLE);
@@ -151,10 +161,8 @@ public class CreateYourOwnPizzaDetails extends Activity {
                     ImageButtonNext.setVisibility(View.GONE);
 
                 }
-
             }
         });
-
 
 
 
@@ -165,7 +173,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
                 currentIndex--;
                 imageLoader.DisplayImage(productList.get(currentIndex).getFullImage(), ImageViewCreateYourOwn);
                 PizzaName.setText(productList.get(currentIndex).getProdDesc());
-                updateTopingSaucesData(productList.get(currentIndex).getProdID());
+                updateToppingsAndSaucesData(productList.get(currentIndex).getProdID());
                 //                populateSauceData(currentIndex);
                 if(currentIndex > 0){
                     ImageButtonPrv.setVisibility(View.VISIBLE);
@@ -176,13 +184,11 @@ public class CreateYourOwnPizzaDetails extends Activity {
             }
         });
 
-
-
-
-
         favCountTxt=(TextView)findViewById(R.id.qVal);
-        Button favArrowDown= (Button)findViewById(R.id.buttonMinus);
-        favArrowDown.setOnClickListener(new OnClickListener() {
+        
+        
+        Button bMinus= (Button)findViewById(R.id.buttonMinus);
+        bMinus.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 if(currentCount>1)
                 {
@@ -193,8 +199,9 @@ public class CreateYourOwnPizzaDetails extends Activity {
 
             }
         });
-        Button favArrowUp = (Button)findViewById(R.id.buttonPlus);
-        favArrowUp.setOnClickListener(new OnClickListener() {
+        
+        Button bPlus = (Button)findViewById(R.id.buttonPlus);
+        bPlus.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
 
                 if(currentCount<10)
@@ -206,52 +213,50 @@ public class CreateYourOwnPizzaDetails extends Activity {
 
             }
         });
-
-        LinearLayout ltToppings= (LinearLayout)findViewById(R.id.ltToppings);
+        
+        LinearLayout ltToppings = (LinearLayout)findViewById(R.id.ltToppings);
         ltToppings.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                Intent i=new Intent(CreateYourOwnPizzaDetails.this,PizzaToppingsActivity.class);
-                Bundle bundle=new Bundle();
-//                AppProperties.selectedToppings=toppingsSelected;
+                Intent i=new Intent(CreateYourOwnPizzaDetails.this, PizzaToppingsActivity.class);
+                Bundle bundle = new Bundle();
+                AppProperties.selectedToppings = toppingsSelected;
 
-                bundle.putSerializable("selectedProduct",productList.get(currentIndex));
+                    bundle.putSerializable("selectedProduct", productList.get(currentIndex));
 
-                //  bundle.putSerializable("selectedProduct",selectedBean);
                 i.putExtras(bundle);
                 startActivityForResult(i, SELECT_TOPPINGS);
 
 
             }
         });
-
-        LinearLayout ltSauces= (LinearLayout)findViewById(R.id.ltSauces);
+        
+        
+        LinearLayout ltSauces = (LinearLayout)findViewById(R.id.ltSauces);
         ltSauces.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-
-                spinnerCat.performClick();
-
-
+                sSauceName.performClick();
             }
         });
+        
+        sSauceName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-        spinnerCat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                    int arg2, long arg3) {
-
-                LabelValueBean lvl=(LabelValueBean)spinnerCat.getItemAtPosition(arg2);
-                selectedSauces.setText(lvl.getLabel());         
+            public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+                selectedSauceIndex = position;
+                selectedSauces.setText(saucesList.get(position).getToppingCode());      
+                Log.d("<<<>>>", "selected sauceID = " + saucesList.get(position).getToppingID());
             }
 
             public void onNothingSelected(AdapterView<?> arg0) {
 
             }
         });
+                
+        
 
         Button openFavs=(Button)findViewById(R.id.favs);
         openFavs.setOnClickListener(new OnClickListener() {
@@ -269,7 +274,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(CreateYourOwnPizzaDetails.this, MenuActivity.class);
+                Intent intent=new Intent(CreateYourOwnPizzaDetails.this, MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
@@ -329,18 +334,46 @@ public class CreateYourOwnPizzaDetails extends Activity {
 
         buttonAddOrders.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                Order tempOrderBean = getOrderBean();
+                
+                NewProductOrder tempOrder = getOrder(Constants.PRODUCT_SELECTION_WHOLE);
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
                 dbInstance.open();
-//                dbInstance.insertOrder(tempOrderBean);
-                Toast.makeText(CreateYourOwnPizzaDetails.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
+                long orderPId = dbInstance.insertOrder(tempOrder);                        
+
+                // inserting toppingsData to the local DB
+                if(toppingsSelected != null){               
+                    for(NewToppingsOrder thisToppingsOrder : toppingsSelected){
+                        thisToppingsOrder.setIsDeal(false);  
+                        thisToppingsOrder.setProdOrderId((int) orderPId);
+                        thisToppingsOrder.setDealOrderDetailsId(Constants.DUMMY_ID);    
+                        thisToppingsOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisToppingsOrder)));
+                        dbInstance.insertToppingsOrder(thisToppingsOrder);
+                    }
+                }
                 dbInstance.close();
+
+                // inserting sauceData to the local DB
+                if(selectedSauceIndex != -1){
+                    NewToppingsOrder thisSauceOrder = Utils.convertToppingAndSauceObjectToToppingsOrder(saucesList.get(selectedSauceIndex));
+                    thisSauceOrder.setIsDeal(false);  
+                    thisSauceOrder.setProdOrderId((int) orderPId);
+                    thisSauceOrder.setDealOrderDetailsId(Constants.DUMMY_ID);   
+                    thisSauceOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisSauceOrder)));
+                    dbInstance.open();
+                    dbInstance.insertToppingsOrder(thisSauceOrder);
+                    dbInstance.close();
+                }
                 
-                Intent intent=new Intent(CreateYourOwnPizzaDetails.this, PizzaSubMenuActivity.class);
-                intent.putExtra("isHalf", false);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(CreateYourOwnPizzaDetails.this);
+                alertDialog.setTitle("Deepslice");
+                alertDialog.setMessage("Deal is added to Cart Successfully");
+                alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    } 
+                }); 
+                alertDialog.create().show();   
 
             }
         });
@@ -355,53 +388,73 @@ public class CreateYourOwnPizzaDetails extends Activity {
             }
         });
     }
+    
+    
+    private void generateDefaultToppings() {
+
+            DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
+            dbInstance.open();
+            List<ToppingsAndSauces> toppingsList = dbInstance.retrievePizzaToppings(productList.get(currentIndex).getProdID());
+            dbInstance.close();
+
+            toppingsSelected = new ArrayList<NewToppingsOrder>();
+            for (ToppingsAndSauces thisToppings : toppingsList) {
+                if(thisToppings.getIsFreeWithPizza().equalsIgnoreCase("True")){
+                    NewToppingsOrder thisToppingsOrder = Utils.convertToppingAndSauceObjectToToppingsOrder(thisToppings);
+                    toppingsSelected.add(thisToppingsOrder);
+                }
+            }        
 
 
-    private void updateResultsInUi() { 
+            String toppingsCodeToDisplay = "";
+            for(NewToppingsOrder thisToppingsOrder : toppingsSelected){
+                toppingsCodeToDisplay += thisToppingsOrder.getToppingsCode() + "," ;
+            }
+            selectedToppings.setText(AppProperties.trimLastComma(toppingsCodeToDisplay));
+       
+    }
 
-        if(null != pd)
-            pd.dismiss();
 
-        // populating default toppings
+    private void generateSauceList(){
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
         dbInstance.open();
-        toppingsSelected=new HashMap<String, ToppingsHashmap>();
-        List<ToppingsAndSauces> toppingsList = dbInstance.retrievePizzaToppings(productList.get(currentIndex).getProdID());
-        for (ToppingsAndSauces toppingsAndSaucesVo : toppingsList) {
-            if("True".equalsIgnoreCase(toppingsAndSaucesVo.getIsFreeWithPizza()))
-                toppingsSelected.put(toppingsAndSaucesVo.getToppingID(), getHashBean(toppingsAndSaucesVo,"Single"));
-        }
-        dbInstance.close();        
+        saucesList = dbInstance.retrievePizzaSauces(productList.get(currentIndex).getProdID());
+        dbInstance.close();
 
-        String tempList="";
-        Iterator it = toppingsSelected.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pairs = (Map.Entry)it.next();
-            ToppingsHashmap gm=(ToppingsHashmap)pairs.getValue();
-            tempList+=gm.getToppingCode()+",";
+        selectedSauceIndex = -1;
+        List<String> sauceName = new ArrayList<String>();
+
+        for(int sIndex = 0; sIndex < saucesList.size(); sIndex++){
+            sauceName.add(saucesList.get(sIndex).getToppingCode());
+            if(saucesList.get(sIndex).getIsFreeWithPizza().equals("True"))
+                selectedSauceIndex = sIndex;
         }
 
-        Log.d("????????<<<<", "tempList = " + tempList);
-        selectedToppings.setText(AppProperties.trimLastComma(tempList));
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, sauceName);
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        populateSauceData(currentIndex);
-
-        //        Intent i=new Intent(CreateYourOwnPizzaDetails.this, PizzaDetailsActivity.class);
-        //        Bundle bundle=new Bundle();
-        //        bundle.putSerializable("selectedProduct",productList.get(currentIndex));
-        //        i.putExtras(bundle);
-        //        startActivityForResult(i, 112233);
-    }
+        sSauceName.setAdapter(spinnerArrayAdapter); 
+        if(selectedSauceIndex != -1)
+            sSauceName.setSelection(selectedSauceIndex);                // by-default, free sauce will be selected.
+    } 
+    
+    
 
     final Handler mHandler = new Handler();
     final Runnable mUpdateResults = new Runnable() {        
-        public void run() {            
-            updateResultsInUi();        
+        public void run() {         
+            
+            if(pd.isShowing())
+                pd.dismiss();
+            
+            generateDefaultToppings();
+            generateSauceList();   
         }    
     };   
 
     String serverResponse;
-    protected void updateTopingSaucesData(final String prodId) {
+    protected void updateToppingsAndSaucesData(final String prodId) {
         
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
         dbInstance.open();
@@ -410,7 +463,8 @@ public class CreateYourOwnPizzaDetails extends Activity {
         
         
         if(isToppingsSynced) {
-            updateResultsInUi();
+            generateDefaultToppings();
+            generateSauceList();
         }
         else {
             pd = ProgressDialog.show(CreateYourOwnPizzaDetails.this, "", "Please wait...", true, false);
@@ -467,132 +521,68 @@ public class CreateYourOwnPizzaDetails extends Activity {
             }
         } 
     }
-
-
-    private ToppingsHashmap getHashBean(
-            ToppingsAndSauces toppingsAndSaucesVo, String toppingSize) {
-
-        ToppingsHashmap hMap=new ToppingsHashmap();
-
-        hMap.setToppingCode(toppingsAndSaucesVo.getToppingCode());
-        hMap.setToppingDesc(toppingsAndSaucesVo.getToppingDesc());
-        hMap.setToppingID(toppingsAndSaucesVo.getToppingID());
-        hMap.setToppingPrice(toppingsAndSaucesVo.getOwnPrice());
-        hMap.setToppingSize(toppingSize);
-
-        return hMap;
-    }
-    private void populateSauceData(int thisIndex){
-        List<ToppingsAndSauces> saucesList=null;
-        
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
-        dbInstance.open();
-        saucesList=dbInstance.retrievePizzaSauces(productList.get(thisIndex).getProdID());
-        dbInstance.close();
-
-        try{
-
-            int i=0;
-            LabelValueBean[] albums= new LabelValueBean[saucesList.size()];
-            for (ToppingsAndSauces sBean : saucesList) {
-                albums[i++]=new LabelValueBean(sBean.getToppingCode(), sBean.getToppingID() ) ;
-            }
-
-            ArrayAdapter<Object> spinnerArrayAdapter = new ArrayAdapter<Object>(this,
-                    android.R.layout.simple_spinner_item, albums);
-            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);            
-            Log.d("SAUCE", "SAUCE LIST SIZE = " + spinnerArrayAdapter.getCount() + " for prodId - " + productList.get(thisIndex).getProdID());
-            spinnerArrayAdapter.notifyDataSetChanged();
-            spinnerCat.setAdapter(spinnerArrayAdapter);  
-
-
-
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-    }    
+    
+    
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != RESULT_OK) {
             return;
         }
+        
         if (requestCode == SELECT_TOPPINGS) {
-            String tempList="";
-//            toppingsSelected=AppProperties.selectedToppings;
-            if(toppingsSelected==null)
-                toppingsSelected=new HashMap<String, ToppingsHashmap>();
+            //            String tempList="";
+            toppingsSelected = AppProperties.selectedToppings;
+            if(toppingsSelected == null)
+                toppingsSelected = new ArrayList<NewToppingsOrder>();
 
-            Iterator it = toppingsSelected.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pairs = (Map.Entry)it.next();
-                ToppingsHashmap gm=(ToppingsHashmap)pairs.getValue();
-                tempList+=gm.getToppingCode()+",";
+            String toppingsCodeToDisplay = "";
+            for(NewToppingsOrder thisToppingsOrder : toppingsSelected){
+                toppingsCodeToDisplay += thisToppingsOrder.getToppingsCode() + "," ;
             }
 
-            selectedToppings.setText(AppProperties.trimLastComma(tempList));
+            selectedToppings.setText(AppProperties.trimLastComma(toppingsCodeToDisplay));
 
         }
     }
+    
+    
+    private NewProductOrder getOrder(int selection) {       // selection = left/right/whole
 
-    private Order getOrderBean() {
+        NewProductOrder order = new NewProductOrder();
+        order.setProdCatId(productList.get(currentIndex).getProdCatID());
+        order.setSubCatId1(productList.get(currentIndex).getSubCatID1());
+        order.setSubCatId2(productList.get(currentIndex).getSubCatID2());
+        order.setProdId(productList.get(currentIndex).getProdID());
+        order.setProdCode(productList.get(currentIndex).getProdCode());
+        order.setDisplayName(productList.get(currentIndex).getDisplayName());
+        order.setCaloriesQty(productList.get(currentIndex).getCaloriesQty());
+        order.setPrice(productList.get(currentIndex).getPrice());
+        order.setThumbnailImage(productList.get(currentIndex).getThumbnail());
+        order.setFullImage(productList.get(currentIndex).getFullImage());
+        order.setQuantity(String.valueOf(currentCount));
+        order.setProdCatName(Constants.PRODUCT_CATEGORY_PIZZA);
+        order.setIsCreateByOwn(true);
+        order.setSelection(selection);           
 
-        Order f = new Order();
-        f.setProdCatID(productList.get(currentIndex).getProdCatID());
-        f.setSubCatID1(productList.get(currentIndex).getSubCatID1());
-        f.setSubCatID2(productList.get(currentIndex).getSubCatID2());
-        f.setProdID(productList.get(currentIndex).getProdID());
-        f.setProdCode(productList.get(currentIndex).getProdCode());
-        f.setDisplayName(productList.get(currentIndex).getDisplayName());
-        f.setProdAbbr(productList.get(currentIndex).getProdAbbr());
-        f.setProdDesc(productList.get(currentIndex).getProdDesc());
-        f.setIsAddDeliveryAmount(productList.get(currentIndex).getIsAddDeliveryAmount());
-        f.setDisplaySequence(productList.get(currentIndex).getDisplaySequence());
-        f.setCaloriesQty(productList.get(currentIndex).getCaloriesQty());
-
-        double finalPrice=generateTotalPrice();
-
-        finalPrice=AppProperties.roundTwoDecimals(finalPrice);
-
-        f.setPrice(String.valueOf(finalPrice));
-
-        f.setThumbnail(productList.get(currentIndex).getThumbnail());
-        f.setFullImage(productList.get(currentIndex).getFullImage());
-
-        f.setQuantity(String.valueOf(currentCount));
-
-        f.setCrust("");
-        f.setSauce("");
-        f.setToppings("");
-
-        f.setProdCatName("Pizza");
-        return f;
+        return order;
     }
-
-    private double generateTotalPrice() {
-
-        double totalPrice=Double.parseDouble(productList.get(currentIndex).getPrice());
-
-        totalPrice=currentCount*totalPrice;
-        double tempDoublePrice;
-        
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
-        dbInstance.open();
-        String tempPrice="0.00";
-        Iterator it = toppingsSelected.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pairs = (Map.Entry)it.next();
-            ToppingsHashmap gm=(ToppingsHashmap)pairs.getValue();
-
-            if("False".equalsIgnoreCase(gm.getIsFreeWithPizza())){
-//                tempPrice=dbInstance.getToppingPrice(gm.getToppingID(),gm.getToppingSize());
-            }
-            tempDoublePrice=Double.parseDouble(tempPrice);
-            totalPrice=totalPrice+tempDoublePrice;
+    
+    
+    private double generateToppingsPrice(NewToppingsOrder toppingsOrder){
+        double ownPrice = Double.parseDouble(toppingsOrder.getToppingPrice());
+        if(toppingsOrder.getIsFreeWithPizza() && toppingsOrder.getToppingSizeId().equals(Constants.SINGLE_SIZE_TOPPING_ID))
+            return 0.000;
+        else if(ownPrice > 0.000){
+            return ownPrice;
         }
-        dbInstance.close();
-        
-        return totalPrice;
+        else{
+            DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
+            dbInstance.open();
+            double tempPrice = dbInstance.getToppingPrice(toppingsOrder.getToppingsId(),toppingsOrder.getToppingSizeId());
+            dbInstance.close();
+            Log.d(">>>><<<", "topping PRICE = " + tempPrice);
+            return tempPrice;
+        }
     }
-
 
 
     @Override
@@ -627,3 +617,5 @@ public class CreateYourOwnPizzaDetails extends Activity {
 
     }
 }
+
+

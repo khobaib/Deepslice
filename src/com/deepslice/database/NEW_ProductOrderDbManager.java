@@ -151,7 +151,7 @@ public class NEW_ProductOrderDbManager {
     public static boolean delete(SQLiteDatabase db, int primaryId) throws SQLException {
         Log.d(TAG, "deleting productOrder with primaryId = " + primaryId);
                
-        New_ToppingsOrderDbManager.delete(db, primaryId);
+        New_ToppingsOrderDbManager.deleteProductToppings(db, primaryId);
         return db.delete(TABLE_PRODUCT_ORDER, TABLE_PRIMARY_KEY + "=" + primaryId, null) > 0;
     }
     

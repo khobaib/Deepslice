@@ -71,15 +71,15 @@ public class DealsDbManager {
 
 
     // checked -> new deal order table
-    public static long insertDealOrder(SQLiteDatabase db, String... values) {
-        Log.d("<<<>>>", "in DealsDbManager, inserting deal order");
-        ContentValues cv = new ContentValues();
-        for (int i = 0; i < values.length; i++) {
-            cv.put(table_deal_order_columns[i + 1], values[i]);
-        }
-
-        return db.insert(TABLE_DEALS_ORDERS, null, cv);
-    }
+//    public static long insertDealOrder(SQLiteDatabase db, String... values) {
+//        Log.d("<<<>>>", "in DealsDbManager, inserting deal order");
+//        ContentValues cv = new ContentValues();
+//        for (int i = 0; i < values.length; i++) {
+//            cv.put(table_deal_order_columns[i + 1], values[i]);
+//        }
+//
+//        return db.insert(TABLE_DEALS_ORDERS, null, cv);
+//    }
 
 
     // checked -> new deal order table

@@ -1,7 +1,5 @@
 package com.deepslice.activity;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -26,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.DealOrder;
 import com.deepslice.model.Product;
 import com.deepslice.model.ProductCategory;
 import com.deepslice.model.ProductSubCategory;
@@ -37,7 +34,7 @@ import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.Utils;
 
-public class MenuActivity extends Activity {
+public class MainMenuActivity extends Activity {
 
     ProgressDialog pDialog;
     JsonParser jsonParser = new JsonParser();
@@ -57,14 +54,14 @@ public class MenuActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.menu_scr);
+        setContentView(R.layout.main_menu);
 
-        pDialog = ProgressDialog.show(MenuActivity.this, "", "Please wait...", true, false);
+        pDialog = ProgressDialog.show(MainMenuActivity.this, "", "Please wait...", true, false);
 
         tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
         tvFavCount = (TextView) findViewById(R.id.favCount);
 
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(MainMenuActivity.this);
         dbInstance.open();
         boolean isCatSynced = dbInstance.isProductCategoriesExist();
         dbInstance.close();
@@ -87,7 +84,7 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(MenuActivity.this,PizzaSubMenuActivity.class);
+                Intent intent=new Intent(MainMenuActivity.this, PizzaMenuActivity.class);
                 intent.putExtra("isHalf", false);
                 //                Bundle bundle=new Bundle();
                 //                bundle.putString("catType","Pizza");
@@ -95,11 +92,12 @@ public class MenuActivity extends Activity {
                 startActivity(intent);
             }
         });
+        
         ivDrinks.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(MenuActivity.this,DrinksSubMenuActivity.class);
+                Intent intent=new Intent(MainMenuActivity.this,DrinksSubMenuActivity.class);
                 Bundle bundle=new Bundle();
                 bundle.putString("catType","Drinks");
                 intent.putExtras(bundle);
@@ -110,7 +108,7 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(MenuActivity.this,SubMenuActivity.class);
+                Intent intent=new Intent(MainMenuActivity.this,SubMenuActivity.class);
                 Bundle bundle=new Bundle();
                 bundle.putString("catType","Sides");
                 intent.putExtras(bundle);
@@ -124,7 +122,7 @@ public class MenuActivity extends Activity {
             public void onClick(View v) {
 
                 String pastaId = getProdCatId("Pasta");
-                Intent intent = new Intent(MenuActivity.this,ProductsListActivity.class);
+                Intent intent = new Intent(MainMenuActivity.this,ProductsListActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("catId", pastaId);
                 bundle.putString("subCatId", "0");
@@ -139,7 +137,7 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View v) {
 //                String pastaId=getProdCatId("Deals");
-                Intent intent=new Intent(MenuActivity.this, DealsListActivity.class);
+                Intent intent=new Intent(MainMenuActivity.this, DealsListActivity.class);
 //                Bundle bundle=new Bundle();
 //                bundle.putString("catId",pastaId);
 //                bundle.putString("subCatId","0");
@@ -156,7 +154,7 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(MenuActivity.this,FavsListActivity.class);
+                Intent intent=new Intent(MainMenuActivity.this,FavsListActivity.class);
                 startActivity(intent);
 
             }
@@ -168,7 +166,7 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(MenuActivity.this,MyOrderActivity.class);
+                Intent intent=new Intent(MainMenuActivity.this,MyOrderActivity.class);
                 startActivity(intent);
 
             }
@@ -202,7 +200,7 @@ public class MenuActivity extends Activity {
 
                     categoryList = ProductCategory.parseProductCategories(data);
 
-                    DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+                    DeepsliceDatabase dbInstance = new DeepsliceDatabase(MainMenuActivity.this);
                     dbInstance.open();
                     dbInstance.insertProdCatList(categoryList);
                     dbInstance.close();
@@ -247,7 +245,7 @@ public class MenuActivity extends Activity {
 
                     subcategoryList = ProductSubCategory.parseProductSubcategories(data);
 
-                    DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+                    DeepsliceDatabase dbInstance = new DeepsliceDatabase(MainMenuActivity.this);
                     dbInstance.open();
                     dbInstance.insertSubCatList(subcategoryList);
                     dbInstance.close();
@@ -321,7 +319,7 @@ public class MenuActivity extends Activity {
             super.onPostExecute(result);
 
             if(result){                
-                DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(MainMenuActivity.this);
                 dbInstance.open();
                 boolean isToppingsSynced = dbInstance.isToppingsDataExist();
                 dbInstance.close();
@@ -350,13 +348,13 @@ public class MenuActivity extends Activity {
                 if(pDialog.isShowing())
                     pDialog.dismiss();
 
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MenuActivity.this);
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainMenuActivity.this);
                 alertDialog.setTitle("Deepslice");
                 alertDialog.setMessage("Failed to retrieve data. Try again later");
                 alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        MenuActivity.this.finish();
+                        MainMenuActivity.this.finish();
                         return;
                     } });
                 alertDialog.create().show();
@@ -396,7 +394,7 @@ public class MenuActivity extends Activity {
                 long productParseEndTime = System.currentTimeMillis();
                 Log.d("TIME", "time to parse topping Size list of item " + toppingsSizeList.size() + " = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
                 long dbInsertionStart = System.currentTimeMillis();
-                DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(MainMenuActivity.this);
                 dbInstance.open();
                 dbInstance.insertToppingSizes(toppingsSizeList);
                 dbInstance.close();
@@ -433,7 +431,7 @@ public class MenuActivity extends Activity {
                 long productParseEndTime = System.currentTimeMillis();
                 Log.d("TIME", "time to parse topping PRICE list of item " + toppingsPriceList.size() + " = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
                 long dbInsertionStart = System.currentTimeMillis();
-                DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(MainMenuActivity.this);
                 dbInstance.open();
                 dbInstance.insertToppingPrices(toppingsPriceList);
                 dbInstance.close();
@@ -450,7 +448,7 @@ public class MenuActivity extends Activity {
     private void insertProductIntoDb(){
 
         long productDBInsertstartTime = System.currentTimeMillis();
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(MainMenuActivity.this);
         dbInstance.open();
         dbInstance.insertAllProducts(productList);
         dbInstance.close();
@@ -466,7 +464,7 @@ public class MenuActivity extends Activity {
     private String getProdCatId(String abbr) {
         String pCatId="0";
 
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(MenuActivity.this);
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(MainMenuActivity.this);
         dbInstance.open();
         pCatId=dbInstance.getCatIdFromCatCode(abbr);
         dbInstance.close();
@@ -478,7 +476,7 @@ public class MenuActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        List<String> orderInfo = Utils.OrderInfo(MenuActivity.this);
+        List<String> orderInfo = Utils.OrderInfo(MainMenuActivity.this);
         int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
         String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
 
@@ -491,7 +489,7 @@ public class MenuActivity extends Activity {
         }
 
 
-        String favCount = Utils.FavCount(MenuActivity.this);
+        String favCount = Utils.FavCount(MainMenuActivity.this);
         if (favCount != null && !favCount.equals("0")) {
             tvFavCount.setText(favCount);
             tvFavCount.setVisibility(View.VISIBLE);

@@ -29,6 +29,7 @@ import com.deepslice.model.CouponDetails.CrustProducts;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.Favourite;
 import com.deepslice.model.LabelValueBean;
+import com.deepslice.model.NewDealsOrderDetails;
 import com.deepslice.model.Order;
 import com.deepslice.model.Product;
 import com.deepslice.model.ProductSubCategory;
@@ -63,7 +64,7 @@ public class PizzaDetailsActivity extends Activity{
     TextView selectedToppings,selectedSauces,selectedCrusts;
     TextView tvItemsPrice, tvFavCount;
     
-    DealOrder dealOrder;
+    NewDealsOrderDetails dealOrderDetails;
     HashMap<String, ToppingsHashmap> toppingsSelected;
     DeepsliceApplication appInstance;
     @Override
@@ -110,9 +111,9 @@ public class PizzaDetailsActivity extends Activity{
         if (isDeal){
             RelativeLayout rlCount = (RelativeLayout) findViewById(R.id.rl_count);
             rlCount.setVisibility(View.GONE);
-            dealOrder=appInstance.getDealOrder();
+//            dealOrder=appInstance.getDealOrder();
             couponGroupID=b.getString("couponGroupID");
-            productId=dealOrder.getProdID();
+//            productId=dealOrder.getProdID();
             buttonAddOrders.setText("Add to Deal");
             headerTextView.setText("Add to Deal");
             String defCrusts="";
@@ -182,7 +183,7 @@ public class PizzaDetailsActivity extends Activity{
                 Bundle bundle=new Bundle();
 //                AppProperties.selectedToppings=toppingsSelected;
                 if (isDeal){
-                    bundle.putSerializable("selectedProduct",appInstance.getDealOrder());
+//                    bundle.putSerializable("selectedProduct",appInstance.getDealOrder());
                     bundle.putBoolean("isDeal",isDeal);
                 }  else {
                     bundle.putSerializable("selectedProduct",selectedBean);
@@ -270,7 +271,7 @@ public class PizzaDetailsActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(PizzaDetailsActivity.this,MenuActivity.class);
+                Intent intent=new Intent(PizzaDetailsActivity.this,MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
@@ -324,16 +325,16 @@ public class PizzaDetailsActivity extends Activity{
         if(!isDeal){
 
             if(isHalf && AppProperties.isFirstPizzaChosen){
-                String halfCrust = appInstance.getHalfCrust();
-                selectedCrusts.setText(halfCrust);
+//                String halfCrust = appInstance.getHalfCrustCode();
+//                selectedCrusts.setText(halfCrust);
             }
             else{
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaDetailsActivity.this);
                 dbInstance.open();
                 List<ProductSubCategory> crustList=new ArrayList<ProductSubCategory>();
                 if (isDeal){
-                    Product allProductsVo=dbInstance.retrieveProductById(dealOrder.getProdID());
-                    crustList = dbInstance.retrievePizzaCrustList(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
+//                    Product allProductsVo=dbInstance.retrieveProductById(dealOrder.getProdID());
+//                    crustList = dbInstance.retrievePizzaCrustList(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
                 }else {
                     crustList = dbInstance.retrievePizzaCrustList(selectedBean.getProdCatID(),selectedBean.getSubCatID1());
                 }
@@ -383,15 +384,15 @@ public class PizzaDetailsActivity extends Activity{
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(PizzaDetailsActivity.this);
                 dbInstance.open();
                 if (isDeal){
-                    dealOrder.setQuantity(String.valueOf(currentCount));
-                    dealOrder.setProdID(crustCatId);
-                    
-                    if(dbInstance.isDealGroupAlreadySelected(dealOrder.getCouponID(), dealOrder.getCouponGroupID())){
-                        Log.d(TAG, "YES");
-                        boolean b = dbInstance.deleteAlreadySelectedDealGroup(dealOrder.getCouponID(), dealOrder.getCouponGroupID());
-                        Log.d(TAG, "delete already selected deal? = " + b);
-                    }
-                    dbInstance.insertDealOrder(dealOrder);
+//                    dealOrder.setQuantity(String.valueOf(currentCount));
+//                    dealOrder.setProdID(crustCatId);
+//                    
+//                    if(dbInstance.isDealGroupAlreadySelected(dealOrder.getCouponID(), dealOrder.getCouponGroupID())){
+//                        Log.d(TAG, "YES");
+//                        boolean b = dbInstance.deleteAlreadySelectedDealGroup(dealOrder.getCouponID(), dealOrder.getCouponGroupID());
+//                        Log.d(TAG, "delete already selected deal? = " + b);
+//                    }
+//                    dbInstance.insertDealOrder(dealOrder);
                 }
                 else {
                     if(isHalf){

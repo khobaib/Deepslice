@@ -1,13 +1,11 @@
 package com.deepslice.activity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,17 +24,13 @@ import android.widget.Toast;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.CouponDetails.CrustProducts;
-import com.deepslice.model.DealOrder;
 import com.deepslice.model.Favourite;
-import com.deepslice.model.LabelValueBean;
+import com.deepslice.model.NewDealsOrderDetails;
 import com.deepslice.model.NewProductOrder;
 import com.deepslice.model.NewToppingsOrder;
-import com.deepslice.model.Order;
 import com.deepslice.model.Product;
 import com.deepslice.model.ProductSubCategory;
-import com.deepslice.model.ToppingSizes;
 import com.deepslice.model.ToppingsAndSauces;
-import com.deepslice.model.ToppingsHashmap;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.DeepsliceApplication;
@@ -47,12 +41,14 @@ public class NEW_PizzaDetailsActivity extends Activity {
 
     private static final String TAG = NEW_PizzaDetailsActivity.class.getSimpleName();
 
-    Boolean isHalf = false;
+    Boolean isHalf;
 
     TextView favCountTxt;
-    int currentCount=1;
+    int currentCount = 1;
+
     Product selectedProduct;
     ProductSubCategory selectedCrust;
+    NewDealsOrderDetails dealOrderDetails;
 
     ImageLoader imageLoader;
 
@@ -60,27 +56,21 @@ public class NEW_PizzaDetailsActivity extends Activity {
     List<ToppingsAndSauces> saucesList;
     int selectedSauceIndex;
 
-    int SELECT_TOPPINGS=112233;
-    int SELECT_CRUST=112244;
+    int SELECT_TOPPINGS = 112233;
+    int SELECT_CRUST = 112244;
 
     String prodCatId, subCatId1, subCatId2, prodCode;
-    //    String crustName;
-    //    String crustCatId;
-    //    String crustSubCatId;
     String couponGroupID;
-//    String productId;
-    //    String curentPId;
 
-    boolean isDeal = false;
+    boolean isDeal;
 
-    TextView selectedToppings,selectedSauces,selectedCrusts;
+    TextView selectedToppings, selectedSauces, selectedCrusts;
     TextView tvItemsPrice, tvFavCount;
 
-    DealOrder dealOrder;
-
-    public static List<NewToppingsOrder> toppingsSelected;    
+    List<NewToppingsOrder> toppingsSelected;    
 
     DeepsliceApplication appInstance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +107,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
 
         if(b.containsKey("selectedProduct")){
             selectedProduct = (Product)b.getSerializable("selectedProduct");
-//            productId = selectedProduct.getProdID();
+            //            productId = selectedProduct.getProdID();
 
             pDesc.setText(selectedProduct.getProdDesc());
             imageLoader.DisplayImage(selectedProduct.getFullImage(), pImage);
@@ -128,36 +118,43 @@ public class NEW_PizzaDetailsActivity extends Activity {
         if (isDeal){
             RelativeLayout rlCount = (RelativeLayout) findViewById(R.id.rl_count);
             rlCount.setVisibility(View.GONE);
-            dealOrder = appInstance.getDealOrder();
+            dealOrderDetails = appInstance.getDealOrderDetails();
             couponGroupID = b.getString("couponGroupID");
-//            productId = dealOrder.getProdID();            // here's some confusion, will sort out later
+            //            productId = dealOrder.getProdID();            // here's some confusion, will sort out later
             buttonAddOrders.setText("Add to Deal");
             headerTextView.setText("Add to Deal");
-            String defCrusts="";
+            String crustToDisplay = "";
 
             for(CrustProducts crustProducts : appInstance.getCouponDetails().getProdAndSubCatID()){
                 if(b.getString("prdID").equalsIgnoreCase(crustProducts.getProdID())){
-                    defCrusts = crustProducts.getSubCat2Code();
+                    crustToDisplay = crustProducts.getSubCat2Code();
                     break;
                 }
             }
 
-            Log.d("...","de...."+defCrusts);
-            selectedCrusts.setText(defCrusts);
+            Log.d("........","crustToDisplay = " + crustToDisplay);
+            selectedCrusts.setText(crustToDisplay);
+
         }else {
             buttonAddOrders.setText("Add to Order");
+            selectedCrust = new ProductSubCategory();
             selectedCrusts.setText("");
         }
 
-        ImageView imageViewLogoH=(ImageView)findViewById(R.id.imageViewLogoHalf);
+        prodCatId = selectedProduct.getProdCatID();     // prodCatId will be unchanged throughout all crusts
+        subCatId1 = selectedProduct.getSubCatID1();     // subCatId1 will be unchanged throughout all crusts
+        subCatId2 = selectedProduct.getSubCatID2();
+        prodCode = selectedProduct.getProdCode();       // prodCode will be unchanged throughout all crusts
 
 
         selectedToppings = (TextView)findViewById(R.id.selectedToppings);
         selectedSauces = (TextView)findViewById(R.id.selectedSauces);
 
         favCountTxt=(TextView)findViewById(R.id.qVal);
-        Button favArrowDown= (Button)findViewById(R.id.buttonMinus);
-        favArrowDown.setOnClickListener(new OnClickListener() {
+        
+        
+        Button bMinus = (Button)findViewById(R.id.buttonMinus);
+        bMinus.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 if(!isDeal){
                     if(currentCount>1)
@@ -169,8 +166,8 @@ public class NEW_PizzaDetailsActivity extends Activity {
 
             }
         });
-        Button favArrowUp= (Button)findViewById(R.id.buttonPlus);
-        favArrowUp.setOnClickListener(new OnClickListener() {
+        Button bPlus = (Button)findViewById(R.id.buttonPlus);
+        bPlus.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 Log.d(",,,,",isDeal+".....");
                 if(!isDeal){
@@ -191,13 +188,13 @@ public class NEW_PizzaDetailsActivity extends Activity {
             public void onClick(View v) {
 
                 Intent i=new Intent(NEW_PizzaDetailsActivity.this, PizzaToppingsActivity.class);
-                Bundle bundle=new Bundle();
+                Bundle bundle = new Bundle();
                 AppProperties.selectedToppings = toppingsSelected;
                 if (isDeal){
-                    bundle.putSerializable("selectedProduct",appInstance.getDealOrder());
-                    bundle.putBoolean("isDeal",isDeal);
+                    bundle.putSerializable("selectedProduct", dealOrderDetails);       // need to check
+                    bundle.putBoolean("isDeal", isDeal);
                 }  else {
-                    bundle.putSerializable("selectedProduct",selectedProduct);
+                    bundle.putSerializable("selectedProduct", selectedProduct);
                 }
                 i.putExtras(bundle);
                 startActivityForResult(i, SELECT_TOPPINGS);
@@ -207,7 +204,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
         });
 
         //        final String pId = b.getString("prdID");            // ??? need to check it
-        LinearLayout ltCrusts= (LinearLayout)findViewById(R.id.ltCrusts);
+        LinearLayout ltCrusts = (LinearLayout)findViewById(R.id.ltCrusts);
         ltCrusts.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -220,9 +217,8 @@ public class NEW_PizzaDetailsActivity extends Activity {
                     bundle.putString("prodCode", prodCode);                    
                     if(isDeal){
                         bundle.putBoolean("isDeal", true);
-                        //                        bundle.putString("prdID", pId);
+                        bundle.putString("prodId", selectedProduct.getProdID());
                     }
-                    //                    bundle.putSerializable("selectedProduct",selectedProduct);
                     i.putExtras(bundle);
                     startActivityForResult(i, SELECT_CRUST);
                 }
@@ -230,7 +226,6 @@ public class NEW_PizzaDetailsActivity extends Activity {
         });
 
         sSauceName = (Spinner)findViewById(R.id.spinner1);
-        generateSauceList();
 
         LinearLayout ltSauces = (LinearLayout)findViewById(R.id.ltSauces);
         ltSauces.setOnClickListener(new OnClickListener() {
@@ -240,7 +235,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
                 sSauceName.performClick();
             }
         });
-
+        
         sSauceName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
@@ -253,6 +248,24 @@ public class NEW_PizzaDetailsActivity extends Activity {
 
             }
         });
+
+        
+        
+        //populating default crust - if coming from Deal, then crust already set in line-145
+        if(!isDeal){
+            if(isHalf && AppProperties.isFirstPizzaChosen){
+                selectedCrust = appInstance.getHalfCrust();
+                selectedCrusts.setText(selectedCrust.getSubCatCode());
+            }
+            else{
+                generateCrustInfo();
+            }
+        }
+        
+        // populating default toppings & sauce
+        generateDefaultToppings();
+        generateSauceList();
+
 
 
         Button openFavs=(Button)findViewById(R.id.favs);
@@ -271,21 +284,20 @@ public class NEW_PizzaDetailsActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(NEW_PizzaDetailsActivity.this,MenuActivity.class);
+                Intent intent=new Intent(NEW_PizzaDetailsActivity.this,MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
             }
         });
 
-        Button buttonAddFav= (Button)findViewById(R.id.buttonAddFav);
+        Button buttonAddFav = (Button)findViewById(R.id.buttonAddFav);
         buttonAddFav.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
                 dbInstance.open();
                 boolean favAdded=dbInstance.favAlreadyAdded(selectedProduct.getProdID(),selectedProduct.getDisplayName());
-                if(favAdded)
-                {
+                if(favAdded){
                     Toast.makeText(NEW_PizzaDetailsActivity.this, "Already added to Favourites", Toast.LENGTH_LONG).show();
                 }
                 else
@@ -321,128 +333,167 @@ public class NEW_PizzaDetailsActivity extends Activity {
             }
         });
 
-        //populating default crust - if coming from Deal, then crust already set in line-145
-        if(!isDeal){
-            prodCatId = selectedProduct.getProdCatID();
-            subCatId1 = selectedProduct.getSubCatID1();
-            subCatId2 = selectedProduct.getSubCatID2();
-            prodCode = selectedProduct.getProdCode();
-
-            generateCrustInfo();
-
-        }
-
-
-        //        if(!isDeal){
-        //
-        //            if(isHalf && AppProperties.isFirstPizzaChosen){
-        //                String halfCrust = appInstance.getHalfCrust();
-        //                selectedCrusts.setText(halfCrust);
-        //            }
-        //            else{
-        //                DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
-        //                dbInstance.open();
-        //                List<ProductSubCategory> crustList=new ArrayList<ProductSubCategory>();
-        //                if (isDeal){
-        //                    Product allProductsVo=dbInstance.getProductById(dealOrder.getProdID());
-        //                    crustList = dbInstance.retrievePizzaCrustList(allProductsVo.getProdCatID(),allProductsVo.getSubCatID1());
-        //                }else {
-        //                    crustList = dbInstance.retrievePizzaCrustList(selectedProduct.getProdCatID(),selectedProduct.getSubCatID1());
-        //                }
-        //                if(crustList != null && crustList.size() > 0) {
-        //                    crustName = crustList.get(0).getSubCatCode();               // crust-name for display
-        //                    crustCatId = crustList.get(0).getProdCatID();
-        //                    crustSubCatId = crustList.get(0).getSubCatID();
-        //
-        //                    selectedCrusts.setText(crustName);
-        //                }
-        //                dbInstance.close();
-        //            }
-        //        }
-
-
-
-
-        // populating default toppings
-
-        generateDefaultToppings();
-
-
-
 
         buttonAddOrders.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                NewProductOrder tempOrder = getOrder();
 
-                DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
-                dbInstance.open();
                 if (isDeal){
-                    dealOrder.setQuantity(String.valueOf(currentCount));
-                    dealOrder.setProdID(selectedProduct.getProdCatID());
+                    dealOrderDetails.setProdId(selectedProduct.getProdID());
+                    dealOrderDetails.setDisplayName(selectedProduct.getDisplayName());
+                    dealOrderDetails.setThumbnail(selectedProduct.getThumbnail());
 
-                    if(dbInstance.isDealGroupAlreadySelected(dealOrder.getCouponID(), dealOrder.getCouponGroupID())){
-                        Log.d(TAG, "YES");
-                        boolean b = dbInstance.deleteAlreadySelectedDealGroup(dealOrder.getCouponID(), dealOrder.getCouponGroupID());
+                    DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
+                    dbInstance.open();
+                    if(dbInstance.isDealGroupAlreadySelected(dealOrderDetails.getDealOrderId(), dealOrderDetails.getCouponGroupId())){
+                        Log.d(TAG, "YES, this deal group already selected");
+                        boolean b = dbInstance.deleteAlreadySelectedDealGroup(dealOrderDetails.getDealOrderId(), dealOrderDetails.getCouponGroupId());
                         Log.d(TAG, "delete already selected deal? = " + b);
                     }
-                    dbInstance.insertDealOrder(dealOrder);
+                    long dealOrderDetailsId = dbInstance.insertDealOrderDetails(dealOrderDetails);
+
+                    // inserting toppingsData to the local DB
+                    if(toppingsSelected != null){               
+                        for(NewToppingsOrder thisToppingsOrder : toppingsSelected){
+                            thisToppingsOrder.setIsDeal(true);
+                            thisToppingsOrder.setProdOrderId(Constants.DUMMY_ID);     
+                            thisToppingsOrder.setDealOrderDetailsId((int) dealOrderDetailsId);     
+                            thisToppingsOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisToppingsOrder)));
+                            dbInstance.insertToppingsOrder(thisToppingsOrder);
+                        }
+                    }
+                    dbInstance.close();
+
+                    // inserting sauceData to the local DB
+                    if(selectedSauceIndex != -1){
+                        NewToppingsOrder thisSauceOrder = Utils.convertToppingAndSauceObjectToToppingsOrder(saucesList.get(selectedSauceIndex));
+                        thisSauceOrder.setIsDeal(true);
+                        thisSauceOrder.setProdOrderId(Constants.DUMMY_ID);     
+                        thisSauceOrder.setDealOrderDetailsId((int) dealOrderDetailsId); 
+                        thisSauceOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisSauceOrder)));
+                        dbInstance.open();
+                        dbInstance.insertToppingsOrder(thisSauceOrder);
+                        dbInstance.close();
+                    }
+                    finish();
                 }
                 else {
-                    if(isHalf){
-                        if(AppProperties.isFirstPizzaChosen){
+
+                    if(isHalf){                        
+                        if(AppProperties.isFirstPizzaChosen){           // both half are chosen, so insert into DB
+                            NewProductOrder tempOrder = getOrder(Constants.PRODUCT_SELECTION_RIGHT);
                             Log.d("HALF PIZZA", "adding orders to cart");
                             NewProductOrder firstHalfOrder = appInstance.getHalfOder();
+                            DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
+                            dbInstance.open();
                             long firstHalfOrderPId = dbInstance.insertOrder(firstHalfOrder);         // first half
                             long secondHalfOrderPId = dbInstance.insertOrder(tempOrder);             // 2nd half
                             AppProperties.isFirstPizzaChosen = false;
+
+
+                            // inserting toppingsData to the local DB
+                            if(toppingsSelected != null){               
+                                for(NewToppingsOrder thisToppingsOrder : toppingsSelected){
+                                    thisToppingsOrder.setIsDeal(false);  
+                                    thisToppingsOrder.setProdOrderId((int) firstHalfOrderPId);
+                                    thisToppingsOrder.setDealOrderDetailsId(Constants.DUMMY_ID);    
+                                    thisToppingsOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisToppingsOrder)));
+                                    dbInstance.insertToppingsOrder(thisToppingsOrder);
+
+                                    thisToppingsOrder.setProdOrderId((int) secondHalfOrderPId);     // 2nd-half toppings
+                                    dbInstance.insertToppingsOrder(thisToppingsOrder);
+
+                                }
+                            }
+                            dbInstance.close();
+
+                            // inserting sauceData to the local DB
+                            if(selectedSauceIndex != -1){
+                                NewToppingsOrder thisSauceOrder = Utils.convertToppingAndSauceObjectToToppingsOrder(saucesList.get(selectedSauceIndex));
+                                thisSauceOrder.setIsDeal(false);  
+                                thisSauceOrder.setProdOrderId((int) firstHalfOrderPId);
+                                thisSauceOrder.setDealOrderDetailsId(Constants.DUMMY_ID);   
+                                thisSauceOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisSauceOrder)));
+                                dbInstance.open();
+                                dbInstance.insertToppingsOrder(thisSauceOrder);
+
+                                thisSauceOrder.setProdOrderId((int) secondHalfOrderPId);            // 2nd-half sauce
+                                dbInstance.insertToppingsOrder(thisSauceOrder);
+                                dbInstance.close();
+                            }
+                            
+                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(NEW_PizzaDetailsActivity.this);
+                            alertDialog.setTitle("Deepslice");
+                            alertDialog.setMessage("Your Pizza is added to Cart Successfully");
+                            alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    finish();
+                                } 
+                            }); 
+                            alertDialog.create().show();  
+
                         }
                         else{
+                            NewProductOrder tempOrder = getOrder(Constants.PRODUCT_SELECTION_LEFT);
                             Log.d("HALF PIZZA", "returning from NEW_PizzaDetailsActivity after set half-pizza");
-                            String halfCrust = selectedCrusts.getText().toString();
-                            appInstance.setHalfOder(tempOrder, halfCrust);
+//                            String halfCrust = selectedCrusts.getText().toString();
+                            appInstance.setHalfOder(tempOrder, selectedCrust);
                             AppProperties.isFirstPizzaChosen = true;
+                            finish();
                         }
                     }
                     else{
-                        long orderPId = dbInstance.insertOrder(tempOrder);
-                        Toast.makeText(NEW_PizzaDetailsActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
+                        NewProductOrder tempOrder = getOrder(Constants.PRODUCT_SELECTION_WHOLE);
+                        DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
+                        dbInstance.open();
+                        long orderPId = dbInstance.insertOrder(tempOrder);                        
 
                         // inserting toppingsData to the local DB
                         if(toppingsSelected != null){               
                             for(NewToppingsOrder thisToppingsOrder : toppingsSelected){
+                                thisToppingsOrder.setIsDeal(false);  
                                 thisToppingsOrder.setProdOrderId((int) orderPId);
+                                thisToppingsOrder.setDealOrderDetailsId(Constants.DUMMY_ID);    
                                 thisToppingsOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisToppingsOrder)));
-                                dbInstance.open();
                                 dbInstance.insertToppingsOrder(thisToppingsOrder);
-                                dbInstance.close();
                             }
                         }
+                        dbInstance.close();
 
                         // inserting sauceData to the local DB
                         if(selectedSauceIndex != -1){
                             NewToppingsOrder thisSauceOrder = Utils.convertToppingAndSauceObjectToToppingsOrder(saucesList.get(selectedSauceIndex));
+                            thisSauceOrder.setIsDeal(false);  
                             thisSauceOrder.setProdOrderId((int) orderPId);
+                            thisSauceOrder.setDealOrderDetailsId(Constants.DUMMY_ID);   
                             thisSauceOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisSauceOrder)));
                             dbInstance.open();
                             dbInstance.insertToppingsOrder(thisSauceOrder);
                             dbInstance.close();
                         }
-
-
-
+                        
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(NEW_PizzaDetailsActivity.this);
+                        alertDialog.setTitle("Deepslice");
+                        alertDialog.setMessage("Your Pizza is added to Cart Successfully");
+                        alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+                            } 
+                        }); 
+                        alertDialog.create().show();   
                     }
-
                 }
-                dbInstance.close();
-                finish();
             }
         });
+
+
         LinearLayout myOrder=(LinearLayout)findViewById(R.id.cartDummy);
         myOrder.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(NEW_PizzaDetailsActivity.this,MyOrderActivity.class);
+                Intent intent=new Intent(NEW_PizzaDetailsActivity.this, MyOrderActivity.class);
                 startActivity(intent);
 
             }
@@ -458,7 +509,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
 
         toppingsSelected = new ArrayList<NewToppingsOrder>();
         for (ToppingsAndSauces thisToppings : toppingsList) {
-            if("True".equalsIgnoreCase(thisToppings.getIsFreeWithPizza())){
+            if(thisToppings.getIsFreeWithPizza().equalsIgnoreCase("True")){
                 NewToppingsOrder thisToppingsOrder = Utils.convertToppingAndSauceObjectToToppingsOrder(thisToppings);
                 toppingsSelected.add(thisToppingsOrder);
             }
@@ -470,7 +521,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
             toppingsCodeToDisplay += thisToppingsOrder.getToppingsCode() + "," ;
         }
         selectedToppings.setText(AppProperties.trimLastComma(toppingsCodeToDisplay));
-        
+
     }
 
 
@@ -529,39 +580,18 @@ public class NEW_PizzaDetailsActivity extends Activity {
         if (requestCode == SELECT_CRUST) {
             Bundle b = data.getExtras();
             selectedProduct = (Product)b.getSerializable("selectedProduct");
-            prodCatId = selectedProduct.getProdCatID(); 
-            subCatId1 = selectedProduct.getSubCatID1(); 
             subCatId2 = selectedProduct.getSubCatID2(); 
-//            prodCatId = data.getStringExtra("prodCatId"); 
-//            subCatId1 = data.getStringExtra("subCatId1"); 
-//            subCatId2 = data.getStringExtra("subCatId2"); 
             Log.d(TAG, "retrieved selectedProduct from new crust, prodId = " + selectedProduct.getProdID());
 
             generateCrustInfo();
-            
-//            DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
-//            dbInstance.open();
-//            selectedProduct = dbInstance.retrieveProductFromSubCrust(prodCatId, subCatId1, subCatId2, selectedProduct.getProdCode());       
-//            dbInstance.close();
 
-            
-            // default-toppings setup for new Product 
             generateDefaultToppings();
             generateSauceList();
-            
-            
-//            String namesList = data.getStringExtra("name"); 
-//            crustCatId = data.getStringExtra("catId"); 
-//            crustSubCatId = data.getStringExtra("subCatId");
-//            selectedCrusts.setText(namesList);
         }
     }
 
 
-    private NewProductOrder getOrder() {
-        // this activity is for whole/left/right pizza ordering, create your own is in different activity
-        // so we set isCreateYourOwn = false
-        // currently lets take all pizza as WHOLE, will fix it asap
+    private NewProductOrder getOrder(int selection) {       // selection = left/right/whole
 
         NewProductOrder order = new NewProductOrder();
         order.setProdCatId(selectedProduct.getProdCatID());
@@ -577,7 +607,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
         order.setQuantity(String.valueOf(currentCount));
         order.setProdCatName(Constants.PRODUCT_CATEGORY_PIZZA);
         order.setIsCreateByOwn(false);
-        order.setSelection(Constants.PRODUCT_SELECTION_WHOLE);            // will change it
+        order.setSelection(selection);           
 
         return order;
     }
@@ -632,3 +662,5 @@ public class NEW_PizzaDetailsActivity extends Activity {
         }
     }
 }
+
+

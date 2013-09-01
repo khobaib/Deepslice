@@ -34,7 +34,7 @@ public class CouponDetails {
                 JSONObject thisCoupon = couponDetailsArray.getJSONObject(i);
                 if(thisCoupon!=null){
                     String jsonString = thisCoupon.toString();
-                    CouponDetails cDetails =gson.fromJson(jsonString, CouponDetails.class);
+                    CouponDetails cDetails = gson.fromJson(jsonString, CouponDetails.class);
                     couponDetailsList.add(cDetails);
                 }
             }

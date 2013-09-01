@@ -33,7 +33,7 @@ public class NEW_DealsOrderDbManager {
     private static final String CREATE_TABLE_DEALS_ORDER = "create table " + TABLE_DEALS_ORDER + " ( "
             + TABLE_PRIMARY_KEY + " integer primary key autoincrement, " + COUPON_ID + " text, "
             + DEAL_PRICE + " text, " + TOTAL_PRICE + " text, " + QTY + " text, " + DEAL_ITEM_COUNT + " integer, "
-            + COUPON_CODE + " text, " + COUPON_DESC + " text, " + COUPON_PIC + " text, " + IS_COMPLETED + "integer);";
+            + COUPON_CODE + " text, " + COUPON_DESC + " text, " + COUPON_PIC + " text, " + IS_COMPLETED + " integer);";
 
 
     public static void createTable(SQLiteDatabase db) {
@@ -102,13 +102,13 @@ public class NEW_DealsOrderDbManager {
         return dealOrderList;        
     }
 
-    public static int completeDealOrder(SQLiteDatabase db, String couponId) throws SQLException {
-        Log.d(TAG, "completing DealOrder with couponId = " + couponId);
+    public static int completeDealOrder(SQLiteDatabase db, int dealOrderId) throws SQLException {
+        Log.d(TAG, "completing DealOrder with dealOrder ID = " + dealOrderId);
 
         ContentValues  cv = new ContentValues();
         cv.put("IS_COMPLETED", 1);
 
-        return db.update(TABLE_DEALS_ORDER, cv, COUPON_ID + "= ?", new String[] {couponId});
+        return db.update(TABLE_DEALS_ORDER, cv, TABLE_PRIMARY_KEY + "=" + dealOrderId, null);
     }
 
 

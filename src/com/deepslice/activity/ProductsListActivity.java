@@ -34,6 +34,7 @@ import android.widget.TextView;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.Product;
+import com.deepslice.model.ProductSubCategory;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.model.ToppingPrices;
 import com.deepslice.model.ToppingSizes;
@@ -41,6 +42,7 @@ import com.deepslice.model.ToppingsAndSauces;
 import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.DeepsliceApplication;
 import com.deepslice.utilities.Utils;
 
 public class ProductsListActivity extends Activity{
@@ -56,28 +58,31 @@ public class ProductsListActivity extends Activity{
 
     MyListAdapterProd myAdapter;
 
-    Boolean isHalf = false;
+    Boolean isHalf;
 
     String catType;
     String catId;
     String subCatId;
 
     public ImageLoader imageLoader;
-    Product selectedProduct;	
-    
+    Product selectedProduct;
+
+    DeepsliceApplication appInstance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sub_menu_products);
 
         pDialog = new ProgressDialog(ProductsListActivity.this);
+        appInstance = (DeepsliceApplication) getApplication();
 
         imageLoader=new ImageLoader(this);	
         Bundle b = this.getIntent().getExtras();
 
-        catId=b.getString("catId");
-        subCatId=b.getString("subCatId"); 
-        catType=b.getString("catType");
+        catId = b.getString("catId");
+        subCatId = b.getString("subCatId"); 
+        catType = b.getString("catType");
         isHalf = b.getBoolean("isHalf", false);
         Log.d("...................dgh..............",subCatId);
         String titeDisplay=b.getString("titeDisplay");
@@ -88,8 +93,7 @@ public class ProductsListActivity extends Activity{
         tvFavCount = (TextView) findViewById(R.id.favCount);
 
 
-        if(AppProperties.isNull(titeDisplay))
-        {
+        if(AppProperties.isNull(titeDisplay)){
             title.setText(catType);	
         }
         else{
@@ -117,13 +121,39 @@ public class ProductsListActivity extends Activity{
 
         listview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Product product = (Product) v.getTag();
+                Product product = (Product) parent.getItemAtPosition(position);
                 if (product != null) {
                     selectedProduct = product;
 
                     if("Pizza".equals(catType)){
-                        updateTopingSaucesData(product.getProdID());
-                        //								Utils.openErrorDialog(ProductsListActivity.this, eBean.getProdID());
+                        if(isHalf && AppProperties.isFirstPizzaChosen){             
+                            // if 2nd-half, then selectedProduct will be changed because crust is already fixed
+                            ProductSubCategory halfCrust = appInstance.getHalfCrust();
+
+                            DeepsliceDatabase dbInstance = new DeepsliceDatabase(ProductsListActivity.this);
+                            dbInstance.open();
+                            ProductSubCategory subCat = dbInstance.retrievePizzaCrustId(selectedProduct.getProdCatID(), selectedProduct.getSubCatID1(), halfCrust.getSubCatCode()); 
+                            selectedProduct = dbInstance.retrieveProductFromSubCrust(selectedProduct.getProdCatID(),
+                                    selectedProduct.getSubCatID1(), subCat.getSubCatID(), selectedProduct.getProdCode());
+                            dbInstance.close();
+                            if(selectedProduct.getProdID() == null){
+                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(ProductsListActivity.this);
+                                alertDialog.setTitle("Deepslice");
+                                alertDialog.setMessage(halfCrust.getSubCatCode() + " crust is not available for pizza" + product.getProdDesc());
+                                alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    } 
+                                }); 
+                                alertDialog.create().show(); 
+                            }
+                            else{
+                                updateTopingSaucesData(selectedProduct.getProdID());
+                            }
+                        }
+                        else{
+                            updateTopingSaucesData(selectedProduct.getProdID());
+                        }
                     }
                     else{
 
@@ -155,7 +185,7 @@ public class ProductsListActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(ProductsListActivity.this,MenuActivity.class);
+                Intent intent=new Intent(ProductsListActivity.this,MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
@@ -227,7 +257,7 @@ public class ProductsListActivity extends Activity{
     final Handler mHandler = new Handler();
     final Runnable mUpdateResults = new Runnable() {        
         public void run() {            
-            updateResultsInUi();        
+            goToPizzaDetailsActivity();        
         }    
     };
 
@@ -240,10 +270,10 @@ public class ProductsListActivity extends Activity{
         dbInstance.close();
 
         if(isToppingsSynced) {
-            updateResultsInUi();
+            goToPizzaDetailsActivity();
         }
         else {
-//            pd = ProgressDialog.show(ProductsListActivity.this, "", "Please wait...", true, false);
+            //            pd = ProgressDialog.show(ProductsListActivity.this, "", "Please wait...", true, false);
             if(!pDialog.isShowing()){
                 pDialog.setIndeterminate(true);
                 pDialog.setCancelable(false);
@@ -266,17 +296,6 @@ public class ProductsListActivity extends Activity{
         }
 
     }
-
-//    private String getProdCatId(String abbr) {
-//        String pCatId="0";
-//
-//        DeepsliceDatabase dbInstance = new DeepsliceDatabase(ProductsListActivity.this);
-//        dbInstance.open();
-//        pCatId=dbInstance.getCatIdByCatCode(abbr);
-//        dbInstance.close();
-//
-//        return pCatId;
-//    }
 
 
     private void GetPizzaToppingAndSauces(String prodId){
@@ -314,51 +333,46 @@ public class ProductsListActivity extends Activity{
             }
         } 
     }
-    
 
-    private void updateResultsInUi() { 
+
+    private void goToPizzaDetailsActivity() { 
 
         if(pDialog.isShowing())
             pDialog.dismiss();
 
         Intent i=new Intent(ProductsListActivity.this, NEW_PizzaDetailsActivity.class);
-        Bundle bundle=new Bundle();
+        Bundle bundle = new Bundle();
         bundle.putBoolean("isHalf", isHalf);
         bundle.putSerializable("selectedProduct", selectedProduct);
         i.putExtras(bundle);
-
+        startActivity(i);
         if(isHalf){
-            startActivity(i);
             Log.d("HALF PIZZA", "returning from ProductListActivity after set half-pizza");
             finish();
-            //            startActivityForResult(i, REQUEST_CODE_IS_PIZZA_HALF);
         }
-
-        else
-            startActivity(i);
     }	
 
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (resultCode != RESULT_OK) {
-//            return;
-//        }
-//
-//        switch(requestCode){
-//            case REQUEST_CODE_IS_PIZZA_HALF:
-//                // parse data
-//                Log.d("HALF PIZZA", "returning from ProductListActivity after set half-pizza");
-//                Intent resultData = new Intent();
-//                setResult(Activity.RESULT_OK, resultData);
-//                finish();
-//                break;
-//            default:
-//                break;
-//        }
-//    }
+    //    @Override
+    //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    //        super.onActivityResult(requestCode, resultCode, data);
+    //
+    //        if (resultCode != RESULT_OK) {
+    //            return;
+    //        }
+    //
+    //        switch(requestCode){
+    //            case REQUEST_CODE_IS_PIZZA_HALF:
+    //                // parse data
+    //                Log.d("HALF PIZZA", "returning from ProductListActivity after set half-pizza");
+    //                Intent resultData = new Intent();
+    //                setResult(Activity.RESULT_OK, resultData);
+    //                finish();
+    //                break;
+    //            default:
+    //                break;
+    //        }
+    //    }
 
 
 
@@ -426,8 +440,6 @@ public class ProductsListActivity extends Activity{
 
                     long productParseEndTime = System.currentTimeMillis();
                     Log.d("TIME", "time to parse distinct pizza = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
-
-                    //                    insertProductIntoDb();
 
                     return true;
                 } catch (JSONException e) {
