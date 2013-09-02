@@ -1,10 +1,10 @@
 package com.deepslice.activity;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -18,61 +18,56 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.DealOrder;
 import com.deepslice.model.Favourite;
 import com.deepslice.model.NewDealsOrderDetails;
+import com.deepslice.model.NewProductOrder;
 import com.deepslice.model.Order;
 import com.deepslice.model.Product;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.Utils;
 
-public class FavAddActivity extends Activity {
-    
+public class AddToOrderActivity extends Activity {
+
     TextView favCountTxt;
-    int currentCount=1;
-    Product prodBean;
-    
+    int currentCount = 1;
+    Product selectedProduct;
+
     EditText editView;
     TextView tvItemsPrice, tvFavCount;
-    
-    String catType,couponGroupID,productId="";
-    boolean isDeal=false;
+
+    String catType, couponGroupID, productId;
     NewDealsOrderDetails dealOrderDetails;
-    
-    
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fav_add);
-        
+
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Bundle b = this.getIntent().getExtras();
-        String itemName=b.getString("itemName");
-        catType=b.getString("catType");
-        prodBean=(Product)b.getSerializable("prodBean");
-        
+        String itemName = b.getString("itemName");
+        catType = b.getString("catType");
+        selectedProduct = (Product) b.getSerializable("selected_product");
+
         tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
         tvFavCount = (TextView) findViewById(R.id.favCount);
-        
+
         Button buttonAddOrders= (Button)findViewById(R.id.buttonAddOrders);
-        isDeal=b.getBoolean("isDeal",false);
-        if (isDeal){
-            dealOrderDetails = (NewDealsOrderDetails)b.getSerializable("dealData");
-            couponGroupID=b.getString("couponGroupID");
-            productId = dealOrderDetails.getProdId();
-            buttonAddOrders.setText("Add to Deal");
-        } else {
-            buttonAddOrders.setText("Add to Order");
-        }
+
+        buttonAddOrders.setText("Add to Order");
+
         TextView headerTextView=(TextView)findViewById(R.id.headerTextView);
         headerTextView.setText(itemName);
 
         editView=(EditText)findViewById(R.id.favPizzaName);
         editView.setText(itemName);//"My "+
+        editView.setSelection(itemName.length());
 
 
         favCountTxt=(TextView)findViewById(R.id.favCountTxt);
+
         ImageView favArrowDown= (ImageView)findViewById(R.id.favArrowDown);
         favArrowDown.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -83,6 +78,7 @@ public class FavAddActivity extends Activity {
                 }
             }
         });
+
         ImageView favArrowUp= (ImageView)findViewById(R.id.favArrowUp);
         favArrowUp.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -99,18 +95,16 @@ public class FavAddActivity extends Activity {
         buttonAddFav.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
 
-                DeepsliceDatabase dbInstance = new DeepsliceDatabase(FavAddActivity.this);
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(AddToOrderActivity.this);
                 dbInstance.open();
-                boolean favAdded=dbInstance.favAlreadyAdded(prodBean.getProdID(),editView.getText().toString());
-                if(favAdded)
-                {
-                    Toast.makeText(FavAddActivity.this, "Already added to Favourites", Toast.LENGTH_LONG).show();
+                boolean favAdded=dbInstance.favAlreadyAdded(selectedProduct.getProdID(),editView.getText().toString());
+                if(favAdded){
+                    Toast.makeText(AddToOrderActivity.this, "Already added to Favourites", Toast.LENGTH_LONG).show();
                 }
-                else
-                {
+                else{
                     dbInstance.insertFav(getFavBean());
                     doOnResumeWork();
-                    Toast.makeText(FavAddActivity.this, "Successfully added to Favourites", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddToOrderActivity.this, "Successfully added to Favourites", Toast.LENGTH_LONG).show();
                 }
                 dbInstance.close();
 
@@ -123,22 +117,22 @@ public class FavAddActivity extends Activity {
         buttonAddOrders.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
 
-                DeepsliceDatabase dbInstance = new DeepsliceDatabase(FavAddActivity.this);
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(AddToOrderActivity.this);
                 dbInstance.open();
-                if (isDeal){
-//                    selectedDealOrder.setQuantity(String.valueOf(currentCount));
-//                    if(dbInstance.isDealGroupAlreadySelected(selectedDealOrder.getCouponID(), selectedDealOrder.getCouponGroupID())){
-//                        dbInstance.deleteAlreadySelectedDealGroup(selectedDealOrder.getCouponID(), selectedDealOrder.getCouponGroupID());
-//                    }
-//                    dbInstance.insertDealOrder(selectedDealOrder);
-//
-//                    finish();
-                }else {
-//                    dbInstance.insertOrder(getOrderBean());
-                    Toast.makeText(FavAddActivity.this, "Added to Cart Successfully.", Toast.LENGTH_LONG).show();
-                    finish();
-                }
+                dbInstance.insertOrder(getOrder(Constants.PRODUCT_SELECTION_WHOLE));
                 dbInstance.close();
+
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(AddToOrderActivity.this);
+                alertDialog.setTitle("Deepslice");
+                alertDialog.setMessage("Added to Cart Successfully");
+                alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    } 
+                }); 
+                alertDialog.create().show();   
+
             }
         });
 
@@ -147,7 +141,7 @@ public class FavAddActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(FavAddActivity.this,MyOrderActivity.class);
+                Intent intent=new Intent(AddToOrderActivity.this,MyOrderActivity.class);
                 startActivity(intent);
 
             }
@@ -157,7 +151,7 @@ public class FavAddActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(FavAddActivity.this,FavsListActivity.class);
+                Intent intent=new Intent(AddToOrderActivity.this,FavoriteListActivity.class);
                 startActivity(intent);
 
             }
@@ -168,7 +162,7 @@ public class FavAddActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(FavAddActivity.this,MainMenuActivity.class);
+                Intent intent=new Intent(AddToOrderActivity.this,MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
@@ -179,56 +173,47 @@ public class FavAddActivity extends Activity {
     private Favourite getFavBean() {
 
         Favourite f = new Favourite();
-        f.setProdCatID(prodBean.getProdCatID());
-        f.setSubCatID1(prodBean.getSubCatID1());
-        f.setSubCatID2(prodBean.getSubCatID2());
-        f.setProdID(prodBean.getProdID());
-        f.setProdCode(prodBean.getProdCode());
+        f.setProdCatID(selectedProduct.getProdCatID());
+        f.setSubCatID1(selectedProduct.getSubCatID1());
+        f.setSubCatID2(selectedProduct.getSubCatID2());
+        f.setProdID(selectedProduct.getProdID());
+        f.setProdCode(selectedProduct.getProdCode());
         f.setDisplayName(editView.getText().toString());
-        f.setProdAbbr(prodBean.getProdAbbr());
-        f.setProdDesc(prodBean.getProdDesc());
-        f.setIsAddDeliveryAmount(prodBean.getIsAddDeliveryAmount());
-        f.setDisplaySequence(prodBean.getDisplaySequence());
-        f.setCaloriesQty(prodBean.getCaloriesQty());
-        f.setPrice(prodBean.getPrice());
-        f.setThumbnail(prodBean.getThumbnail());
-        f.setFullImage(prodBean.getFullImage());
+        f.setProdAbbr(selectedProduct.getProdAbbr());
+        f.setProdDesc(selectedProduct.getProdDesc());
+        f.setIsAddDeliveryAmount(selectedProduct.getIsAddDeliveryAmount());
+        f.setDisplaySequence(selectedProduct.getDisplaySequence());
+        f.setCaloriesQty(selectedProduct.getCaloriesQty());
+        f.setPrice(selectedProduct.getPrice());
+        f.setThumbnail(selectedProduct.getThumbnail());
+        f.setFullImage(selectedProduct.getFullImage());
         f.setCustomName(editView.getText().toString());
         f.setProdCatName(catType);
         return f;
     }
-    private Order getOrderBean() {
 
-        Order f = new Order();
-        f.setProdCatID(prodBean.getProdCatID());
-        f.setSubCatID1(prodBean.getSubCatID1());
-        f.setSubCatID2(prodBean.getSubCatID2());
-        f.setProdID(prodBean.getProdID());
-        f.setProdCode(prodBean.getProdCode());
-        f.setDisplayName(prodBean.getDisplayName());
-        f.setProdAbbr(prodBean.getProdAbbr());
-        f.setProdDesc(prodBean.getProdDesc());
-        f.setIsAddDeliveryAmount(prodBean.getIsAddDeliveryAmount());
-        f.setDisplaySequence(prodBean.getDisplaySequence());
-        f.setCaloriesQty(prodBean.getCaloriesQty());
 
-        double finalPrice=currentCount*Double.parseDouble(prodBean.getPrice());
-        finalPrice=AppProperties.roundTwoDecimals(finalPrice);
-        f.setPrice(String.valueOf(finalPrice));
+    private NewProductOrder getOrder(int selection) {       // selection = left/right/whole
 
-        f.setThumbnail(prodBean.getThumbnail());
-        f.setFullImage(prodBean.getFullImage());
+        NewProductOrder order = new NewProductOrder();
+        order.setProdCatId(selectedProduct.getProdCatID());
+        order.setSubCatId1(selectedProduct.getSubCatID1());
+        order.setSubCatId2(selectedProduct.getSubCatID2());
+        order.setProdId(selectedProduct.getProdID());
+        order.setProdCode(selectedProduct.getProdCode());
+        order.setDisplayName(selectedProduct.getDisplayName());
+        order.setCaloriesQty(selectedProduct.getCaloriesQty());
+        order.setPrice(selectedProduct.getPrice());
+        order.setThumbnailImage(selectedProduct.getThumbnail());
+        order.setFullImage(selectedProduct.getFullImage());
+        order.setQuantity(String.valueOf(currentCount));
+        order.setProdCatName(catType);
+        order.setIsCreateByOwn(false);
+        order.setSelection(selection);           
 
-        f.setQuantity(String.valueOf(currentCount));
-
-        f.setCrust("");
-        f.setSauce("");
-        f.setToppings("");
-
-        f.setProdCatName(catType);
-
-        return f;
+        return order;
     }
+
 
     @Override
     protected void onResume() {
@@ -237,10 +222,10 @@ public class FavAddActivity extends Activity {
     }
 
     private void doOnResumeWork() {
-        List<String> orderInfo = Utils.OrderInfo(FavAddActivity.this);
+        List<String> orderInfo = Utils.OrderInfo(AddToOrderActivity.this);
         int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
         String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
-        
+
         if(itemCount > 0){
             tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
             tvItemsPrice.setVisibility(View.VISIBLE);
@@ -249,8 +234,8 @@ public class FavAddActivity extends Activity {
             tvItemsPrice.setVisibility(View.INVISIBLE);
         }
 
-        
-        String favCount = Utils.FavCount(FavAddActivity.this);
+
+        String favCount = Utils.FavCount(AddToOrderActivity.this);
         if (favCount != null && !favCount.equals("0")) {
             tvFavCount.setText(favCount);
             tvFavCount.setVisibility(View.VISIBLE);

@@ -30,7 +30,7 @@ import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.Utils;
 
-public class FavsListActivity extends Activity{
+public class FavoriteListActivity extends Activity{
 
     List<Favourite> allProductsList;
 
@@ -58,7 +58,7 @@ public class FavsListActivity extends Activity{
         Button openFavs=(Button)findViewById(R.id.favs);
         openFavs.setBackgroundResource(R.drawable.m_nav3_sel);
 
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(FavsListActivity.this);
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(FavoriteListActivity.this);
         dbInstance.open();
         allProductsList = dbInstance.getFavsList();
         dbInstance.close();
@@ -78,12 +78,12 @@ public class FavsListActivity extends Activity{
 
                     if("Pizza".equalsIgnoreCase(eBean.getProdCatName()))
                     {
-                        i=new Intent(FavsListActivity.this, PizzaDetailsActivity.class);
+                        i=new Intent(FavoriteListActivity.this, PizzaDetailsActivity.class);
                         bundle.putSerializable("selectedProduct",getProdBean(eBean));
                     }
                     else
                     {
-                        i=new Intent(FavsListActivity.this, FavAddActivity.class);
+                        i=new Intent(FavoriteListActivity.this, AddToOrderActivity.class);
                         bundle.putSerializable("prodBean",getProdBean(eBean));
                     }
 
@@ -103,7 +103,7 @@ public class FavsListActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(FavsListActivity.this,MainMenuActivity.class);
+                Intent intent=new Intent(FavoriteListActivity.this,MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
@@ -115,7 +115,7 @@ public class FavsListActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(FavsListActivity.this,MyOrderActivity.class);
+                Intent intent=new Intent(FavoriteListActivity.this,MyOrderActivity.class);
                 startActivity(intent);
 
             }
@@ -207,7 +207,7 @@ public class FavsListActivity extends Activity{
     protected void onResume() {
         super.onResume();
         
-        List<String> orderInfo = Utils.OrderInfo(FavsListActivity.this);
+        List<String> orderInfo = Utils.OrderInfo(FavoriteListActivity.this);
         int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
         String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
         
@@ -220,7 +220,7 @@ public class FavsListActivity extends Activity{
         }
 
         
-        String favCount = Utils.FavCount(FavsListActivity.this);
+        String favCount = Utils.FavCount(FavoriteListActivity.this);
         if (favCount != null && !favCount.equals("0")) {
             tvFavCount.setText(favCount);
             tvFavCount.setVisibility(View.VISIBLE);

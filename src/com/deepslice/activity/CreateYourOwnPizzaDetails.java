@@ -263,7 +263,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(CreateYourOwnPizzaDetails.this, FavsListActivity.class);
+                Intent intent=new Intent(CreateYourOwnPizzaDetails.this, FavoriteListActivity.class);
                 startActivity(intent);
 
             }

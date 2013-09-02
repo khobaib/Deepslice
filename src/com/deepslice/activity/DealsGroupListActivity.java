@@ -97,7 +97,7 @@ public class DealsGroupListActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(DealsGroupListActivity.this,FavsListActivity.class);
+                Intent intent=new Intent(DealsGroupListActivity.this,FavoriteListActivity.class);
                 startActivity(intent);
 
             }

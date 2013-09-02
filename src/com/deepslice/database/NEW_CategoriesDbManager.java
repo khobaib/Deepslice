@@ -176,7 +176,7 @@ public class NEW_CategoriesDbManager {
         Log.d(TAG, "retrieving all Sides");
         List<ProductCategory> sideList = new ArrayList<ProductCategory>();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_CATEGORIES + " WHERE ProdCatCode NOT IN ('Drinks','Pizza','Pasta')", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_CATEGORIES + " WHERE " + PROD_CAT_CODE + " NOT IN ('Drinks','Pizza','Pasta')", null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
@@ -282,7 +282,7 @@ public class NEW_CategoriesDbManager {
         Log.d(TAG, "gettingCatIdByCatCode for catCode = " + catCode);
         String catId = null;
 
-        Cursor cursor = db.query(TABLE_CATEGORIES, new String[] {PROD_CAT_ID}, PROD_CAT_CODE, new String[] {catCode}, null, null, null);
+        Cursor cursor = db.query(TABLE_CATEGORIES, new String[] {PROD_CAT_ID}, PROD_CAT_CODE + "= ?", new String[] {catCode}, null, null, null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             catId = cursor.getString(cursor.getColumnIndex(PROD_CAT_ID));

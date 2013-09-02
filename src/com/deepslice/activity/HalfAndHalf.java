@@ -79,7 +79,7 @@ public class HalfAndHalf extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(HalfAndHalf.this, FavsListActivity.class);
+                Intent intent=new Intent(HalfAndHalf.this, FavoriteListActivity.class);
                 startActivity(intent);
 
             }

@@ -85,7 +85,7 @@ public class ProductsListActivity extends Activity{
         catType = b.getString("catType");
         isHalf = b.getBoolean("isHalf", false);
         Log.d("...................dgh..............",subCatId);
-        String titeDisplay=b.getString("titeDisplay");
+        String titeDisplay = b.getString("titeDisplay");
 
         TextView title = (TextView) findViewById(R.id.headerTextView);
 
@@ -102,15 +102,12 @@ public class ProductsListActivity extends Activity{
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(ProductsListActivity.this);
         dbInstance.open();
-        if("Pizza".equals(catType)){
-            //allProductsList=dao.getProductsPizza(catId,subCatId);
-            allProductsList=new ArrayList<Product>();
+        if(catType.equals(Constants.PRODUCT_CATEGORY_PIZZA)){
+            allProductsList = new ArrayList<Product>();
             new GetDistinctPizzaList().execute();
         }
         else {
-            // GetDataFromApiCall();
-            allProductsList = dbInstance.retrieveProducts(catId,subCatId);
-            int t = allProductsList.size();
+            allProductsList = dbInstance.retrieveProducts(catId, subCatId);
         }
         dbInstance.close();
 
@@ -125,11 +122,14 @@ public class ProductsListActivity extends Activity{
                 if (product != null) {
                     selectedProduct = product;
 
-                    if("Pizza".equals(catType)){
-                        if(isHalf && AppProperties.isFirstPizzaChosen){             
+                    if(catType.equals(Constants.PRODUCT_CATEGORY_PIZZA)){
+                        
+                        /*
+                         * This if-block is just for 2nd half of HnH pizza
+                         */
+                        if(isHalf && AppProperties.isFirstPizzaChosen){                                                           
                             // if 2nd-half, then selectedProduct will be changed because crust is already fixed
                             ProductSubCategory halfCrust = appInstance.getHalfCrust();
-
                             DeepsliceDatabase dbInstance = new DeepsliceDatabase(ProductsListActivity.this);
                             dbInstance.open();
                             ProductSubCategory subCat = dbInstance.retrievePizzaCrustId(selectedProduct.getProdCatID(), selectedProduct.getSubCatID1(), halfCrust.getSubCatCode()); 
@@ -157,10 +157,10 @@ public class ProductsListActivity extends Activity{
                     }
                     else{
 
-                        Intent i=new Intent(ProductsListActivity.this, FavAddActivity.class);
+                        Intent i=new Intent(ProductsListActivity.this, AddToOrderActivity.class);
                         Bundle bundle=new Bundle();
                         bundle.putString("itemName", product.getDisplayName());
-                        bundle.putSerializable("prodBean", product);
+                        bundle.putSerializable("selected_product", product);
                         bundle.putString("catType", catType);
                         i.putExtras(bundle);
                         startActivity(i);
@@ -174,7 +174,7 @@ public class ProductsListActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(ProductsListActivity.this,FavsListActivity.class);
+                Intent intent=new Intent(ProductsListActivity.this,FavoriteListActivity.class);
                 startActivity(intent);
 
             }

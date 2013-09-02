@@ -28,7 +28,7 @@ import com.deepslice.model.ProductSubCategory;
 import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.Utils;
 
-public class SubMenuActivity extends Activity{
+public class SidesMenuActivity extends Activity{
 
     List<ProductCategory> productCatList;
     ArrayList<ProductSubCategory> subCatList;
@@ -36,7 +36,7 @@ public class SubMenuActivity extends Activity{
 
     ListView listview;
     TextView tvItemsPrice, tvFavCount;
-    
+
     MyListAdapterSides myAdapter;
 
     //	String catIds;
@@ -48,16 +48,16 @@ public class SubMenuActivity extends Activity{
 
         Bundle b = this.getIntent().getExtras();
 
-        catType=b.getString("catType");
+        catType = b.getString("catType");
         TextView title = (TextView) findViewById(R.id.headerTextView);
         title.setText(catType);
-        
+
         tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
         tvFavCount = (TextView) findViewById(R.id.favCount);
-        
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(SubMenuActivity.this);
+
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(SidesMenuActivity.this);
         dbInstance.open(); 
-        productCatList=dbInstance.getSides();
+        productCatList = dbInstance.getSides();
         dbInstance.close();
 
         listview = (ListView) findViewById(R.id.listView1);				
@@ -65,17 +65,16 @@ public class SubMenuActivity extends Activity{
         listview.setAdapter(myAdapter);
 
         listview.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position,
-                    long id) {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
-                ProductCategory eBean = (ProductCategory) v.getTag();
-                if (eBean != null) {
+                ProductCategory pCat = (ProductCategory) parent.getItemAtPosition(position);
+                if (pCat != null) {
 
-                    Intent intent=new Intent(SubMenuActivity.this,ProductsListActivity.class);
+                    Intent intent=new Intent(SidesMenuActivity.this,ProductsListActivity.class);
                     Bundle bundle=new Bundle();
-                    bundle.putString("catId",eBean.getProdCatID());
-                    bundle.putString("subCatId","0");
-                    bundle.putString("catType","Sides");
+                    bundle.putString("catId", pCat.getProdCatID());
+                    bundle.putString("subCatId", "0");
+                    bundle.putString("catType", catType);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -87,7 +86,7 @@ public class SubMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(SubMenuActivity.this,FavsListActivity.class);
+                Intent intent=new Intent(SidesMenuActivity.this,FavoriteListActivity.class);
                 startActivity(intent);
 
             }
@@ -97,7 +96,7 @@ public class SubMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(SubMenuActivity.this,MainMenuActivity.class);
+                Intent intent=new Intent(SidesMenuActivity.this,MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
@@ -109,7 +108,7 @@ public class SubMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(SubMenuActivity.this,MyOrderActivity.class);
+                Intent intent=new Intent(SidesMenuActivity.this,MyOrderActivity.class);
                 startActivity(intent);
 
             }
@@ -123,11 +122,9 @@ public class SubMenuActivity extends Activity{
 
     private class MyListAdapterSides extends ArrayAdapter<ProductCategory> {
 
-        private List<ProductCategory> items;
 
         public MyListAdapterSides(Context context, int viewResourceId, List<ProductCategory> items) {
             super(context, viewResourceId, items);
-            this.items = items;
 
         }
 
@@ -137,11 +134,10 @@ public class SubMenuActivity extends Activity{
                 LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = mInflater.inflate(R.layout.line_item_yello, null);
             }
-            ProductCategory event = items.get(position);
+            ProductCategory event = getItem(position);
             if (event != null) {
 
-                TextView title = (TextView) convertView
-                        .findViewById(R.id.itemName);
+                TextView title = (TextView) convertView.findViewById(R.id.itemName);
 
                 title.setText(event.getProdCatCode());
 
@@ -155,11 +151,11 @@ public class SubMenuActivity extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
-        
-        List<String> orderInfo = Utils.OrderInfo(SubMenuActivity.this);
+
+        List<String> orderInfo = Utils.OrderInfo(SidesMenuActivity.this);
         int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
         String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
-        
+
         if(itemCount > 0){
             tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
             tvItemsPrice.setVisibility(View.VISIBLE);
@@ -168,8 +164,8 @@ public class SubMenuActivity extends Activity{
             tvItemsPrice.setVisibility(View.INVISIBLE);
         }
 
-        
-        String favCount = Utils.FavCount(SubMenuActivity.this);
+
+        String favCount = Utils.FavCount(SidesMenuActivity.this);
         if (favCount != null && !favCount.equals("0")) {
             tvFavCount.setText(favCount);
             tvFavCount.setVisibility(View.VISIBLE);

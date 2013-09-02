@@ -141,7 +141,7 @@ public class DealsProductListActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(DealsProductListActivity.this,FavsListActivity.class);
+                Intent intent=new Intent(DealsProductListActivity.this,FavoriteListActivity.class);
                 startActivity(intent);
 
             }

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.deepslice.activity"
-    android:versionCode="44"
-    android:versionName="0.44" >
+    android:versionCode="45"
+    android:versionName="0.45" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -130,7 +130,7 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name=".FavAddActivity"
+            android:name=".AddToOrderActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
@@ -144,7 +144,7 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name=".SubMenuActivity"
+            android:name=".SidesMenuActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
@@ -158,7 +158,7 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name=".DrinksSubMenuActivity"
+            android:name=".DrinksMenuActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
@@ -186,7 +186,7 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name=".FavsListActivity"
+            android:name=".FavoriteListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"

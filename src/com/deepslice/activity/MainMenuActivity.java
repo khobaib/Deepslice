@@ -86,9 +86,6 @@ public class MainMenuActivity extends Activity {
 
                 Intent intent=new Intent(MainMenuActivity.this, PizzaMenuActivity.class);
                 intent.putExtra("isHalf", false);
-                //                Bundle bundle=new Bundle();
-                //                bundle.putString("catType","Pizza");
-                //                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -97,36 +94,38 @@ public class MainMenuActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(MainMenuActivity.this,DrinksSubMenuActivity.class);
+                Intent intent=new Intent(MainMenuActivity.this, DrinksMenuActivity.class);
                 Bundle bundle=new Bundle();
-                bundle.putString("catType","Drinks");
+                bundle.putString("catType", Constants.PRODUCT_CATEGORY_DRINKS);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
+        
         ivSides.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(MainMenuActivity.this,SubMenuActivity.class);
+                Intent intent=new Intent(MainMenuActivity.this,SidesMenuActivity.class);
                 Bundle bundle=new Bundle();
-                bundle.putString("catType","Sides");
+                bundle.putString("catType", Constants.PRODUCT_CATEGORY_SIDES);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
 
 
         });
+        
         ivPasta.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 String pastaId = getProdCatId("Pasta");
-                Intent intent = new Intent(MainMenuActivity.this,ProductsListActivity.class);
+                Intent intent = new Intent(MainMenuActivity.this, ProductsListActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("catId", pastaId);
                 bundle.putString("subCatId", "0");
-                bundle.putString("catType", "Pasta");
+                bundle.putString("catType", Constants.PRODUCT_CATEGORY_PASTA);
                 intent.putExtras(bundle);
                 startActivity(intent);
 
@@ -136,13 +135,7 @@ public class MainMenuActivity extends Activity {
         ivDeals.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-//                String pastaId=getProdCatId("Deals");
                 Intent intent=new Intent(MainMenuActivity.this, DealsListActivity.class);
-//                Bundle bundle=new Bundle();
-//                bundle.putString("catId",pastaId);
-//                bundle.putString("subCatId","0");
-//                bundle.putString("catType","Deals");
-//                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -154,7 +147,7 @@ public class MainMenuActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(MainMenuActivity.this,FavsListActivity.class);
+                Intent intent=new Intent(MainMenuActivity.this,FavoriteListActivity.class);
                 startActivity(intent);
 
             }

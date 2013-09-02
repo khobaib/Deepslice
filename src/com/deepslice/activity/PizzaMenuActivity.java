@@ -69,7 +69,7 @@ public class  PizzaMenuActivity extends Activity{
                     Bundle bundle = new Bundle();
                     bundle.putString("catId", subCat.getProdCatID());
                     bundle.putString("subCatId", subCat.getSubCatID());
-                    bundle.putString("catType", "Pizza");
+                    bundle.putString("catType", Constants.PRODUCT_CATEGORY_PIZZA);
                     bundle.putString("titeDisplay", subCat.getSubCatCode() + " Pizza");
                     bundle.putBoolean("isHalf", isHalf);
 
@@ -88,7 +88,7 @@ public class  PizzaMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(PizzaMenuActivity.this, FavsListActivity.class);
+                Intent intent=new Intent(PizzaMenuActivity.this, FavoriteListActivity.class);
                 startActivity(intent);
 
             }

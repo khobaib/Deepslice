@@ -28,19 +28,18 @@ import com.deepslice.model.ProductSubCategory;
 import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.Utils;
 
-public class DrinksSubMenuActivity extends Activity{
+public class DrinksMenuActivity extends Activity{
 
-//    ArrayList<ProductCategory> productCatList;
     List<ProductSubCategory> subCatList;
-//    ArrayList<Product> allProductsList;
 
     ListView listview;
     TextView tvItemsPrice, tvFavCount;
 
     MyListAdapterDrinks myAdapter;
 
-    //	String catIds;
     String catType;
+    
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,59 +47,45 @@ public class DrinksSubMenuActivity extends Activity{
 
         Bundle b = this.getIntent().getExtras();
 
-        catType=b.getString("catType");
+        catType = b.getString("catType");
         TextView title = (TextView) findViewById(R.id.headerTextView);
         title.setText(catType);
 
         tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
         tvFavCount = (TextView) findViewById(R.id.favCount);
 
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DrinksSubMenuActivity.this);
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DrinksMenuActivity.this);
         dbInstance.open();
         subCatList = dbInstance.retrieveDrinksSize();
         dbInstance.close();
-
-        //        AppDao dao=null;
-        //        try {
-        //            dao=AppDao.getSingleton(getApplicationContext());
-        //            dao.openConnection();
-        //
-        //            subCatList=dao.getSubCategoriesDrinks();
-        //
-        //        } catch (Exception ex)
-        //        {
-        //            System.out.println(ex.getMessage());
-        //        }finally{
-        //            if(null!=dao)
-        //                dao.closeConnection();
-        //        }
 
         listview = (ListView) findViewById(R.id.listView1);				
         myAdapter = new MyListAdapterDrinks(this,R.layout.line_item_yello, subCatList);
         listview.setAdapter(myAdapter);
 
         listview.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position,
-                    long id) {
-                ProductSubCategory eBean = (ProductSubCategory) v.getTag();
-                if (eBean != null) {
-
-                    Intent intent=new Intent(DrinksSubMenuActivity.this,ProductsListActivity.class);
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                ProductSubCategory subCat = (ProductSubCategory) parent.getItemAtPosition(position);
+                
+                if (subCat != null) {
+                    Intent intent=new Intent(DrinksMenuActivity.this, ProductsListActivity.class);
                     Bundle bundle=new Bundle();
-                    bundle.putString("catId",eBean.getProdCatID());
-                    bundle.putString("subCatId",eBean.getSubCatID());
-                    bundle.putString("catType","Drinks");
+                    bundle.putString("catId", subCat.getProdCatID());
+                    bundle.putString("subCatId", subCat.getSubCatID());
+                    bundle.putString("catType", catType);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
             }
         });
+        
+        
         Button openFavs=(Button)findViewById(R.id.favs);
         openFavs.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(DrinksSubMenuActivity.this,FavsListActivity.class);
+                Intent intent=new Intent(DrinksMenuActivity.this,FavoriteListActivity.class);
                 startActivity(intent);
 
             }
@@ -111,7 +96,7 @@ public class DrinksSubMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(DrinksSubMenuActivity.this,MainMenuActivity.class);
+                Intent intent=new Intent(DrinksMenuActivity.this,MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
@@ -122,7 +107,7 @@ public class DrinksSubMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(DrinksSubMenuActivity.this,MyOrderActivity.class);
+                Intent intent=new Intent(DrinksMenuActivity.this,MyOrderActivity.class);
                 startActivity(intent);
 
             }
@@ -171,7 +156,7 @@ public class DrinksSubMenuActivity extends Activity{
     protected void onResume() {
         super.onResume();
 
-        List<String> orderInfo = Utils.OrderInfo(DrinksSubMenuActivity.this);
+        List<String> orderInfo = Utils.OrderInfo(DrinksMenuActivity.this);
         int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
         String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
 
@@ -184,7 +169,7 @@ public class DrinksSubMenuActivity extends Activity{
         }
 
 
-        String favCount = Utils.FavCount(DrinksSubMenuActivity.this);
+        String favCount = Utils.FavCount(DrinksMenuActivity.this);
         if (favCount != null && !favCount.equals("0")) {
             tvFavCount.setText(favCount);
             tvFavCount.setVisibility(View.VISIBLE);
