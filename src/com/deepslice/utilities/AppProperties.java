@@ -18,11 +18,11 @@ import com.deepslice.model.LocationDetails;
 import com.deepslice.model.LocationPoints;
 import com.deepslice.model.NewToppingsOrder;
 import com.deepslice.model.ToppingsHashmap;
-import com.deepslice.model.UserBean;
+import com.deepslice.model.UserData;
 
 public class AppProperties {
 
-	public static UserBean userObj;
+	public static UserData userObj;
 
 	public static final String COUPON_TYPE_NONE="N";
 	public static final String COUPON_TYPE_PERCENTAGE="R";
@@ -77,7 +77,7 @@ public class AppProperties {
 		}
 	}
 
-	public static void saveUserSession(Context ct, UserBean userObj2Save) {
+	public static void saveUserSession(Context ct, UserData userObj2Save) {
 
 		AppSharedPreference.putData(ct, "m_id", userObj2Save.getCustomerID());
 		AppSharedPreference.putData(ct, "m_username", userObj2Save.getEmailID());
@@ -86,9 +86,9 @@ public class AppProperties {
 		AppSharedPreference.putData(ct, "m_phone", userObj2Save.getPhoneNo());
 	}
 
-	public static UserBean getUserFromSession(Context ct) {
+	public static UserData getUserFromSession(Context ct) {
 
-		UserBean user=new UserBean();
+		UserData user=new UserData();
 		
 		String uid = AppSharedPreference.getData(ct, "m_id", null);
 		if(isNull(uid))

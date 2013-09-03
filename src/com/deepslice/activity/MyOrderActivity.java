@@ -1,6 +1,6 @@
 package com.deepslice.activity;
 
-import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,29 +20,30 @@ import android.widget.Toast;
 import com.deepslice.activity.R.id;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.database.HelperSharedPreferences;
-import com.deepslice.model.DealOrder;
 import com.deepslice.model.LocationDetails;
-import com.deepslice.model.Order;
+import com.deepslice.model.NewDealsOrder;
+import com.deepslice.model.NewProductOrder;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.Utils;
 
 public class MyOrderActivity extends Activity{
 
-    List<Order> pizzaList;
-    List<Order> drinksList;
-    List<Order> sidesList;
-    List<Order> pastaList;
-    List<DealOrder> dealOrderList;
+    List<NewProductOrder> pizzaList, wholePizzaList, halfPizzaList, createOwnPizzaList;
+    List<NewProductOrder> drinksList;
+    List<NewProductOrder> sidesList;
+    List<NewProductOrder> pastaList;
+    List<NewDealsOrder> dealOrderList;
 
     TextView totalPrice;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_order);
-        
-        totalPrice=(TextView)findViewById(R.id.textTextView12);
+
+        totalPrice = (TextView)findViewById(R.id.textTextView12);
 
         /////////////////
         /*
@@ -120,7 +122,7 @@ public class MyOrderActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent i=new Intent(MyOrderActivity.this,CouponsActivity.class);
+                Intent i=new Intent(MyOrderActivity.this, CouponsActivity.class);
                 startActivity(i);
                 finish();
             }
@@ -131,9 +133,8 @@ public class MyOrderActivity extends Activity{
 
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(MyOrderActivity.this,MainMenuActivity.class);
+                Intent intent=new Intent(MyOrderActivity.this, MainMenuActivity.class);
                 startActivity(intent);
-
                 finish();
             }
         });
@@ -149,17 +150,17 @@ public class MyOrderActivity extends Activity{
 
                 //				i have added //
 
-                String orderType=AppSharedPreference.getData(MyOrderActivity.this, "orderType", null);
+                String orderType = AppSharedPreference.getData(MyOrderActivity.this, "orderType", null);
                 Intent i;
 
-                if("Delivery".equalsIgnoreCase(orderType)) {
+                if(orderType.equalsIgnoreCase("Delivery")) {
                     if (!HelperSharedPreferences.getSharedPreferencesString(
                             MyOrderActivity.this, "emailName", "").equals("")
                             || !HelperSharedPreferences.getSharedPreferencesString(
                                     MyOrderActivity.this, "userName", "").equals("")
                                     || AppProperties.isLoogedIn) {
 
-                        i=new Intent(MyOrderActivity.this,LocationFromHistoryActivity.class);
+                        i = new Intent(MyOrderActivity.this,LocationFromHistoryActivity.class);
                         startActivity(i);
                         finish();
 
@@ -172,8 +173,8 @@ public class MyOrderActivity extends Activity{
                             finish();
                         }else {
                             Toast.makeText(MyOrderActivity.this, " Please register/login so we can verify you.",  Toast.LENGTH_SHORT).show();
-                            AppSharedPreference.putBoolean(MyOrderActivity.this,"MyOrder",true);
-                            Intent intent=new Intent(MyOrderActivity.this,CustomerDetailsActivity.class);
+                            AppSharedPreference.putBoolean(MyOrderActivity.this, "MyOrder", true);
+                            Intent intent=new Intent(MyOrderActivity.this, CustomerDetailsActivity.class);
                             startActivity(intent);
                         }
                     }
@@ -214,486 +215,215 @@ public class MyOrderActivity extends Activity{
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(MyOrderActivity.this);
         dbInstance.open();
-        pizzaList = dbInstance.getOrdersListWithType(Constants.PRODUCT_CATEGORY_PIZZA);
-        drinksList = dbInstance.getOrdersListWithType(Constants.PRODUCT_CATEGORY_DRINKS);
-        sidesList = dbInstance.getOrdersListWithType(Constants.PRODUCT_CATEGORY_SIDES);
-        pastaList = dbInstance.getOrdersListWithType(Constants.PRODUCT_CATEGORY_PASTA);
-        dealOrderList=dbInstance.getDealOrdersList(true);
-        List<String> orderInfo = dbInstance.getOrderInfo();
-        Double orderTotal = 0.0;
-        if(null!=orderInfo && orderInfo.size()==2)
-        {
-            orderTotal = AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
-
-        }
-        Double dealTotal = 0.0;
-        if(dealOrderList!=null && dealOrderList.size()>0){
-
-            for (int x=0;x<dealOrderList.size();x++){
-
-                dealTotal+=Double.parseDouble(dealOrderList.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderList.get(x).getQuantity()));
-            }
-        }
-        double subT=dealTotal+orderTotal;
-        DecimalFormat twoDForm = new DecimalFormat("#.##");
-        subT= Double.valueOf(twoDForm.format(subT));
-        totalPrice.setText("TOTAL: $"+subT);
+        pizzaList = dbInstance.getOrdersListWithCategory(Constants.PRODUCT_CATEGORY_PIZZA);
+        drinksList = dbInstance.getOrdersListWithCategory(Constants.PRODUCT_CATEGORY_DRINKS);
+        sidesList = dbInstance.getOrdersListWithCategory(Constants.PRODUCT_CATEGORY_SIDES);
+        pastaList = dbInstance.getOrdersListWithCategory(Constants.PRODUCT_CATEGORY_PASTA);
+        dealOrderList=dbInstance.retrieveDealOrderList(true);
         dbInstance.close();
+        
+        wholePizzaList = new ArrayList<NewProductOrder>();
+        halfPizzaList = new ArrayList<NewProductOrder>();
+        createOwnPizzaList = new ArrayList<NewProductOrder>();
+        for (NewProductOrder order : pizzaList) {
+            if(order.getIsCreateByOwn())
+                createOwnPizzaList.add(order);
+            else if(order.getSelection() == Constants.PRODUCT_SELECTION_WHOLE)
+                wholePizzaList.add(order);
+            else
+                halfPizzaList.add(order);
+        }
 
-        ////////////////////////////////////////////////////////////////
-        ////// PIZZA
+        List<String> orderInfo = Utils.OrderInfo(MyOrderActivity.this);
+        if(orderInfo != null && orderInfo.size() == 2){
+            String orderPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
 
-        if(pizzaList!=null && pizzaList.size()>0)
-        {
-            LinearLayout lout=(LinearLayout)findViewById(R.id.wraperLayout);
-
-            TextView tv=new TextView(this);
-            tv.setText("Pizza");
-            tv.setTextColor(Color.BLACK);
-            tv.setTextSize(27);
-
-            LinearLayout.LayoutParams lpYello = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.FILL_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            tv.setLayoutParams(lpYello);
-            tv.setPadding(15, 5, 5, 5);
-
-
-            tv.setBackgroundResource(R.drawable.sides_yellow);
-            lout.addView(tv);
-
-            //for
-            for (Order orderObj : pizzaList) {
-
-                String itemName=orderObj.getDisplayName();
-                String itemPrice="$"+orderObj.getPrice();
-                String itemCalaroies=orderObj.getCaloriesQty()+"kj";
-                String itemQuantity=orderObj.getQuantity();
-                final int orderSerialId=orderObj.getSerialId();
+            totalPrice.setText("TOTAL: $" + orderPrice);
+        }
 
 
-                RelativeLayout ll = new RelativeLayout(this);
-                ll.setId(orderSerialId+99);
-                RelativeLayout.LayoutParams rlay = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                rlay.setMargins(5, 10, 5, 5);
-                lout.addView(ll);
-                ll.setBackgroundResource(R.drawable.kj_line);
+        if(wholePizzaList != null && wholePizzaList.size() > 0){
+            LinearLayout lout = (LinearLayout) findViewById(R.id.wraperLayout);
+            addCatHeader("Pizza", lout);
 
-                ImageView icon=new ImageView(this);
-                icon.setId(orderSerialId+1);
-                icon.setImageResource(R.drawable.order_cross);
-                RelativeLayout.LayoutParams iocnLO = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                //		 iocnLO.width=100;
-                //		 iocnLO.height=60;
-                iocnLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                iocnLO.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                ll.addView(icon, iocnLO);
+            for (NewProductOrder order : wholePizzaList) {
+                dbInstance = new DeepsliceDatabase(MyOrderActivity.this);
+                dbInstance.open();
+                double toppingsPrice = dbInstance.retrieveProductToppingsPrice(order.getPrimaryId());
+                dbInstance.close();
+                double pizzaTotalPrice = toppingsPrice + Double.parseDouble(order.getPrice());
+                String itemPrice = "$" + pizzaTotalPrice; 
 
-                TextView title=new TextView(this);
-                title.setId(orderSerialId+2);
-                title.setText(itemQuantity+" X "+itemName);
-                title.setTextColor(Color.WHITE);
-                title.setTextSize(18);
-                title.setLines(1);
-                RelativeLayout.LayoutParams titleLO = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                titleLO.setMargins(10, 5, 20, 5);
-                titleLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                titleLO.addRule(RelativeLayout.RIGHT_OF,icon.getId());
-                ll.addView(title, titleLO);
-
-
-                TextView price=new TextView(this);
-                price.setId(orderSerialId+3);
-                price.setText(itemPrice);
-                price.setTextColor(Color.WHITE);
-                price.setTextSize(14);
-                price.setLines(1);
-                RelativeLayout.LayoutParams priceLO = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                priceLO.setMargins(5, 5, 15, 5);
-                priceLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                priceLO.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                ll.addView(price, priceLO);
-                titleLO.addRule(RelativeLayout.LEFT_OF , price.getId());
-
-                icon.setOnClickListener(new OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-
-                        deleteFromOrder(orderSerialId);
-
-                    }
-                });
+                addItem(lout, false, false, order.getPrimaryId(), order.getDisplayName(), itemPrice, order.getQuantity());
             }
+        }
+        
+        
+        if(halfPizzaList != null && halfPizzaList.size() > 0){
+            LinearLayout lout = (LinearLayout) findViewById(R.id.wraperLayout);
+            addCatHeader("Half-n-Half", lout);
 
-        }///////////////// END PIZZZAAA
+            for (NewProductOrder order : halfPizzaList) {
+                dbInstance = new DeepsliceDatabase(MyOrderActivity.this);
+                dbInstance.open();
+                double toppingsPrice = dbInstance.retrieveProductToppingsPrice(order.getPrimaryId());
+                dbInstance.close();
+                double pizzaTotalPrice = toppingsPrice + Double.parseDouble(order.getPrice());
+                String itemPrice = "$" + pizzaTotalPrice; 
 
-        // //////////////////////////////////////////////////////////////
-        // //// DRINKS
+                addItem(lout, false, true, order.getPrimaryId(), order.getDisplayName(), itemPrice, order.getQuantity());
+            }
+        }
+        
+        
+        if(createOwnPizzaList != null && createOwnPizzaList.size() > 0){
+            LinearLayout lout = (LinearLayout) findViewById(R.id.wraperLayout);
+            addCatHeader("Create Your Own", lout);
+
+            for (NewProductOrder order : createOwnPizzaList) {
+                dbInstance = new DeepsliceDatabase(MyOrderActivity.this);
+                dbInstance.open();
+                double toppingsPrice = dbInstance.retrieveProductToppingsPrice(order.getPrimaryId());
+                dbInstance.close();
+                double pizzaTotalPrice = toppingsPrice + Double.parseDouble(order.getPrice());
+                String itemPrice = "$" + pizzaTotalPrice; 
+
+                addItem(lout, false, false, order.getPrimaryId(), order.getDisplayName(), itemPrice, order.getQuantity());
+            }
+        }
+        
 
         if (drinksList!= null && drinksList.size() > 0) {
             LinearLayout lout = (LinearLayout) findViewById(R.id.wraperLayout);
+            addCatHeader("Drinks", lout);
 
-            TextView tv = new TextView(this);
-            tv.setText("Drinks");
-            tv.setTextColor(Color.BLACK);
-            tv.setTextSize(27);
-
-            LinearLayout.LayoutParams lpYello = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.FILL_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            tv.setLayoutParams(lpYello);
-            tv.setPadding(15, 5, 5, 5);
-
-            tv.setBackgroundResource(R.drawable.sides_yellow);
-            lout.addView(tv);
-
-            // for
-            for (Order orderObj : drinksList) {
-
-                String itemName = orderObj.getDisplayName();
-                String itemPrice = "$" + orderObj.getPrice();
-                String itemCalaroies = orderObj.getCaloriesQty() + "kj";
-                String itemQuantity = orderObj.getQuantity();
-                final int orderSerialId = orderObj.getSerialId();
-
-                RelativeLayout ll = new RelativeLayout(this);
-                ll.setId(orderSerialId + 99);
-                RelativeLayout.LayoutParams rlay = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.FILL_PARENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-                rlay.setMargins(5, 10, 5, 5);
-                lout.addView(ll);
-                ll.setBackgroundResource(R.drawable.kj_line);
-
-                ImageView icon = new ImageView(this);
-                icon.setId(orderSerialId + 1);
-                icon.setImageResource(R.drawable.order_cross);
-                RelativeLayout.LayoutParams iocnLO = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-                // iocnLO.width=100;
-                // iocnLO.height=60;
-                iocnLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                iocnLO.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                ll.addView(icon, iocnLO);
-
-                TextView title = new TextView(this);
-                title.setId(orderSerialId + 2);
-                title.setText(itemQuantity + " X " + itemName);
-                title.setTextColor(Color.WHITE);
-                title.setTextSize(18);
-                title.setLines(1);
-                RelativeLayout.LayoutParams titleLO = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-                titleLO.setMargins(10, 5, 20, 5);
-                titleLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                titleLO.addRule(RelativeLayout.RIGHT_OF, icon.getId());
-                ll.addView(title, titleLO);
-
-                TextView price = new TextView(this);
-                price.setId(orderSerialId + 3);
-                price.setText(itemPrice);
-                price.setTextColor(Color.WHITE);
-                price.setTextSize(14);
-                price.setLines(1);
-                RelativeLayout.LayoutParams priceLO = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-                priceLO.setMargins(5, 5, 15, 5);
-                priceLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                priceLO.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                ll.addView(price, priceLO);
-                titleLO.addRule(RelativeLayout.LEFT_OF , price.getId());
-
-                icon.setOnClickListener(new OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-
-                        deleteFromOrder(orderSerialId);
-
-                    }
-                });
+            for (NewProductOrder order : drinksList) {
+                addItem(lout, false, false, order.getPrimaryId(), order.getDisplayName(), "$" + order.getPrice(), order.getQuantity());
             }
 
-        }// /////////////// END DRINKS
-
-
-        // //// PASTA
+        }
 
         if (pastaList!= null && pastaList.size() > 0) {
             LinearLayout lout = (LinearLayout) findViewById(R.id.wraperLayout);
+            addCatHeader("Pasta", lout);
 
-            TextView tv = new TextView(this);
-            tv.setText("Pasta");
-            tv.setTextColor(Color.BLACK);
-            tv.setTextSize(27);
-
-            LinearLayout.LayoutParams lpYello = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.FILL_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            tv.setLayoutParams(lpYello);
-            tv.setPadding(15, 5, 5, 5);
-
-            tv.setBackgroundResource(R.drawable.sides_yellow);
-            lout.addView(tv);
-
-            // for
-            for (Order orderObj : pastaList) {
-
-                String itemName = orderObj.getDisplayName();
-                String itemPrice = "$" + orderObj.getPrice();
-                String itemCalaroies = orderObj.getCaloriesQty() + "kj";
-                String itemQuantity = orderObj.getQuantity();
-                final int orderSerialId = orderObj.getSerialId();
-
-                RelativeLayout ll = new RelativeLayout(this);
-                ll.setId(orderSerialId + 99);
-                RelativeLayout.LayoutParams rlay = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.FILL_PARENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-                rlay.setMargins(5, 10, 5, 5);
-                lout.addView(ll);
-                ll.setBackgroundResource(R.drawable.kj_line);
-
-                ImageView icon = new ImageView(this);
-                icon.setId(orderSerialId + 1);
-                icon.setImageResource(R.drawable.order_cross);
-                RelativeLayout.LayoutParams iocnLO = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-                // iocnLO.width=100;
-                // iocnLO.height=60;
-                iocnLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                iocnLO.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                ll.addView(icon, iocnLO);
-
-                TextView title = new TextView(this);
-                title.setId(orderSerialId + 2);
-                title.setText(itemQuantity + " X " + itemName);
-                title.setTextColor(Color.WHITE);
-                title.setTextSize(18);
-                title.setLines(1);
-                RelativeLayout.LayoutParams titleLO = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-                titleLO.setMargins(10, 5, 20, 5);
-                titleLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                titleLO.addRule(RelativeLayout.RIGHT_OF, icon.getId());
-                ll.addView(title, titleLO);
-
-                TextView price = new TextView(this);
-                price.setId(orderSerialId + 3);
-                price.setText(itemPrice);
-                price.setTextColor(Color.WHITE);
-                price.setTextSize(14);
-                price.setLines(1);
-                RelativeLayout.LayoutParams priceLO = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-                priceLO.setMargins(5, 5, 15, 5);
-                priceLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                priceLO.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                ll.addView(price, priceLO);
-                titleLO.addRule(RelativeLayout.LEFT_OF , price.getId());
-
-                icon.setOnClickListener(new OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-
-                        deleteFromOrder(orderSerialId);
-
-                    }
-                });
+            for (NewProductOrder order : pastaList) {
+                addItem(lout, false, false, order.getPrimaryId(), order.getDisplayName(), "$" + order.getPrice(), order.getQuantity());
             }
 
-        }// /////////////// END Pasta
-
-        // //// SIDES
+        }
 
         if (sidesList!= null && sidesList.size() > 0) {
             LinearLayout lout = (LinearLayout) findViewById(R.id.wraperLayout);
+            addCatHeader("Sides", lout);
 
-            TextView tv = new TextView(this);
-            tv.setText("Sides");
-            tv.setTextColor(Color.BLACK);
-            tv.setTextSize(27);
-
-            LinearLayout.LayoutParams lpYello = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.FILL_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            tv.setLayoutParams(lpYello);
-            tv.setPadding(15, 5, 5, 5);
-
-            tv.setBackgroundResource(R.drawable.sides_yellow);
-            lout.addView(tv);
-
-            // for
-            for (Order orderObj : sidesList) {
-
-                String itemName = orderObj.getDisplayName();
-                String itemPrice = "$" + orderObj.getPrice();
-                String itemCalaroies = orderObj.getCaloriesQty() + "kj";
-                String itemQuantity = orderObj.getQuantity();
-                final int orderSerialId = orderObj.getSerialId();
-
-                RelativeLayout ll = new RelativeLayout(this);
-                ll.setId(orderSerialId + 99);
-                RelativeLayout.LayoutParams rlay = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.FILL_PARENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-                rlay.setMargins(5, 10, 5, 5);
-                lout.addView(ll);
-                ll.setBackgroundResource(R.drawable.kj_line);
-
-                ImageView icon = new ImageView(this);
-                icon.setId(orderSerialId + 1);
-                icon.setImageResource(R.drawable.order_cross);
-                RelativeLayout.LayoutParams iocnLO = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-                // iocnLO.width=100;
-                // iocnLO.height=60;
-                iocnLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                iocnLO.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                ll.addView(icon, iocnLO);
-
-                TextView title = new TextView(this);
-                title.setId(orderSerialId + 2);
-                title.setText(itemQuantity + " X " + itemName);
-                title.setTextColor(Color.WHITE);
-                title.setTextSize(18);
-                title.setLines(1);
-                RelativeLayout.LayoutParams titleLO = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-                titleLO.setMargins(10, 5, 20, 5);
-                titleLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                titleLO.addRule(RelativeLayout.RIGHT_OF, icon.getId());
-                ll.addView(title, titleLO);
-
-                TextView price = new TextView(this);
-                price.setId(orderSerialId + 3);
-                price.setText(itemPrice);
-                price.setTextColor(Color.WHITE);
-                price.setTextSize(14);
-                price.setLines(1);
-                RelativeLayout.LayoutParams priceLO = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-                priceLO.setMargins(5, 5, 15, 5);
-                priceLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                priceLO.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                ll.addView(price, priceLO);
-                titleLO.addRule(RelativeLayout.LEFT_OF , price.getId());
-
-                icon.setOnClickListener(new OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-
-                        deleteFromOrder(orderSerialId);
-
-                    }
-                });
+            for (NewProductOrder order : sidesList) {
+                addItem(lout, false, false, order.getPrimaryId(), order.getDisplayName(), "$" + order.getPrice(), order.getQuantity());
             }
 
-        }// /////////////// END Sides
-
-        //deal ...........................................................
-        if(dealOrderList!=null && dealOrderList.size()>0)
-        {
-            LinearLayout lout=(LinearLayout)findViewById(R.id.wraperLayout);
-
-            TextView tv=new TextView(this);
-            tv.setText("Deal");
-            tv.setTextColor(Color.BLACK);
-            tv.setTextSize(27);
-
-            LinearLayout.LayoutParams lpYello = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.FILL_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            tv.setLayoutParams(lpYello);
-            tv.setPadding(15, 5, 5, 5);
-
-
-            tv.setBackgroundResource(R.drawable.sides_yellow);
-            lout.addView(tv);
-
-            //for
-            for (DealOrder orderObj : dealOrderList) {
-
-                String itemName=orderObj.getDisplayName();
-                String itemPrice="$"+orderObj.getDiscountedPrice();
-                String itemCalaroies=orderObj.getQuantity()+"kj";
-                String itemQuantity=orderObj.getQuantity();
-                final int orderSerialId=orderObj.getSerialId();
-
-
-                RelativeLayout ll = new RelativeLayout(this);
-                ll.setId(orderSerialId+99);
-                RelativeLayout.LayoutParams rlay = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                rlay.setMargins(5, 10, 5, 5);
-                lout.addView(ll);
-                ll.setBackgroundResource(R.drawable.kj_line);
-
-                ImageView icon=new ImageView(this);
-                icon.setId(orderSerialId+1);
-                icon.setImageResource(R.drawable.order_cross);
-                RelativeLayout.LayoutParams iocnLO = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                //		 iocnLO.width=100;
-                //		 iocnLO.height=60;
-                iocnLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                iocnLO.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                ll.addView(icon, iocnLO);
-
-                TextView title=new TextView(this);
-                title.setId(orderSerialId+2);
-                title.setText(itemQuantity+" X "+itemName);
-                title.setTextColor(Color.WHITE);
-                title.setTextSize(18);
-                title.setLines(1);
-                RelativeLayout.LayoutParams titleLO = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                titleLO.setMargins(10, 5, 20, 5);
-                titleLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                titleLO.addRule(RelativeLayout.RIGHT_OF,icon.getId());
-                ll.addView(title, titleLO);
-
-
-                TextView price=new TextView(this);
-                price.setId(orderSerialId+3);
-                price.setText(itemPrice);
-                price.setTextColor(Color.WHITE);
-                price.setTextSize(14);
-                price.setLines(1);
-                RelativeLayout.LayoutParams priceLO = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                priceLO.setMargins(5, 5, 15, 5);
-                priceLO.addRule(RelativeLayout.CENTER_VERTICAL);
-                priceLO.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                ll.addView(price, priceLO);
-                titleLO.addRule(RelativeLayout.LEFT_OF , price.getId());
-
-                icon.setOnClickListener(new OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(MyOrderActivity.this, "cannot remove a deal", Toast.LENGTH_LONG).show();
-                        // deleteFromDealOrder(orderSerialId);
-
-                    }
-                });
-            }
         }
 
 
+        if(dealOrderList != null && dealOrderList.size() > 0) {
+            LinearLayout lout = (LinearLayout) findViewById(R.id.wraperLayout);
+            addCatHeader("Deals", lout);
+
+            for (NewDealsOrder order : dealOrderList) {
+                addItem(lout, true, false, order.getPrimaryId(), order.getCouponDesc(), "$" + order.getTotalPrice(), order.getQuantity());
+            }
+        }
     }
+
+
+
+    private void addCatHeader(String header, LinearLayout lout){
+        TextView tv = new TextView(this);
+        tv.setText(header);
+        tv.setTextColor(Color.BLACK);
+        tv.setTextSize(25);
+
+        LinearLayout.LayoutParams lpYello = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        tv.setLayoutParams(lpYello);
+        tv.setPadding(25, 5, 5, 5);
+
+        tv.setBackgroundResource(R.drawable.sides_yellow);
+        lout.addView(tv);
+    }
+
+
+    private void addItem(LinearLayout lout, final boolean isDeal, boolean isHalf,
+            final int orderId, String itemName, String itemPrice, String itemQuantity) {
+        RelativeLayout ll = new RelativeLayout(this);
+
+        if(isDeal)
+            ll.setId(orderId + 99999);
+        else
+            ll.setId(orderId + 99);
+
+        RelativeLayout.LayoutParams rlay = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        rlay.setMargins(5, 10, 5, 5);
+        lout.addView(ll);
+        ll.setBackgroundResource(R.drawable.kj_line);
+
+        ImageView icon = new ImageView(this);
+        icon.setId(orderId + 1);
+        icon.setScaleType(ScaleType.FIT_XY);
+        icon.setImageResource(R.drawable.order_cross);
+        RelativeLayout.LayoutParams iocnLO = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        iocnLO.width=60;
+        iocnLO.height=60;
+        iocnLO.addRule(RelativeLayout.CENTER_VERTICAL);
+        iocnLO.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        ll.addView(icon, iocnLO);
+
+        TextView title=new TextView(this);
+        title.setId(orderId + 2);
+        if(isHalf)
+            title.setText(itemQuantity + "(1/2) X " + itemName);
+        else
+            title.setText(itemQuantity + " X " + itemName);
+        title.setTextColor(Color.WHITE);
+        title.setTextSize(16);
+        title.setMaxLines(2);
+        RelativeLayout.LayoutParams titleLO = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        titleLO.setMargins(5, 5, 10, 5);
+        titleLO.addRule(RelativeLayout.CENTER_VERTICAL);
+        titleLO.addRule(RelativeLayout.RIGHT_OF, icon.getId());
+        ll.addView(title, titleLO);
+
+
+        TextView price=new TextView(this);
+        price.setId(orderId + 3);
+        price.setText(itemPrice);
+        price.setTextColor(Color.WHITE);
+        price.setTextSize(14);
+        price.setLines(1);
+        RelativeLayout.LayoutParams priceLO = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        priceLO.setMargins(5, 5, 15, 5);
+        priceLO.addRule(RelativeLayout.CENTER_VERTICAL);
+        priceLO.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        ll.addView(price, priceLO);
+        titleLO.addRule(RelativeLayout.LEFT_OF , price.getId());
+
+        icon.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if(isDeal)
+                    deleteFromDealOrder(orderId);
+                else
+                    deleteFromOrder(orderId);
+
+            }
+        });
+    }
+
+
+
+
     @Override
     protected void onResume(){
         super.onResume();
@@ -709,55 +439,40 @@ public class MyOrderActivity extends Activity{
             }
         }
     }
-    private void deleteFromOrder(int serialId){
+    private void deleteFromOrder(int orderId){
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(MyOrderActivity.this);
         dbInstance.open();
-        dbInstance.deleteOrderRec(serialId);
-        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
-        double tota=0.00;
-        for (int x=0;x<dealOrderVos1.size();x++){
-            tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-        }
-        List<String> orderInfo = dbInstance.getOrderInfo();
-        if(null!=orderInfo && orderInfo.size()==2)
-        {
-            double temp=AppProperties.getRoundTwoDecimalString(orderInfo.get(1)) ;
-            temp=temp+tota;
-            DecimalFormat twoDForm = new DecimalFormat("#.##");
-            temp= Double.valueOf(twoDForm.format(temp));
-            totalPrice.setText("TOTAL: $"+temp);
+        dbInstance.deleteProductOrder(orderId);
+        dbInstance.close();
+
+        List<String> orderInfo = Utils.OrderInfo(MyOrderActivity.this);
+        if(orderInfo != null && orderInfo.size() == 2){
+            String orderPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+
+            totalPrice.setText("TOTAL: $" + orderPrice);
         }
 
-        RelativeLayout ll = (RelativeLayout)findViewById(serialId + 99);
+        RelativeLayout ll = (RelativeLayout)findViewById(orderId + 99);
         ll.setVisibility(View.GONE);
-        dbInstance.close();
     }
-    
-    
-//    private void deleteFromDealOrder(int serialId){
-//        
-//        DeepsliceDatabase dbInstance = new DeepsliceDatabase(MyOrderActivity.this);
-//        dbInstance.open();
-//        dbInstance.deleteDealOrderRec(serialId);
-//        List<String> orderInfo = dbInstance.getOrderInfo();
-//        double temp=AppProperties.getRoundTwoDecimalString(orderInfo.get(1));
-//        List<DealOrder>dealOrderVos1= dbInstance.getDealOrdersList(true);
-//        double tota=0.00;
-//        for (int x=0;x<dealOrderVos1.size();x++){
-//            tota+=(Double.parseDouble(dealOrderVos1.get(x).getDiscountedPrice())*(Integer.parseInt(dealOrderVos1.get(x).getQuantity())));
-//        }
-//        if(null!=dealOrderVos1 && dealOrderVos1.size()==2)
-//        {
-//
-//            temp=temp+tota;
-//
-//            totalPrice.setText("TOTAL: $"+temp);
-//        }
-//
-//        RelativeLayout ll = (RelativeLayout)findViewById(serialId + 99);
-//        ll.setVisibility(View.GONE);
-//        dbInstance.close();
-//
-//    }
+
+
+    private void deleteFromDealOrder(int orderId){
+
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(MyOrderActivity.this);
+        dbInstance.open();
+        dbInstance.deleteDealsOrder(orderId);
+        dbInstance.close();
+
+        List<String> orderInfo = Utils.OrderInfo(MyOrderActivity.this);
+        if(orderInfo != null && orderInfo.size() == 2){
+            String orderPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+
+            totalPrice.setText("TOTAL: $" + orderPrice);
+        }
+
+        RelativeLayout ll = (RelativeLayout)findViewById(orderId + 99999);
+        ll.setVisibility(View.GONE);    
+    }
 }

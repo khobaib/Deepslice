@@ -30,7 +30,7 @@ public class CustomerDetailsActivity extends Activity implements
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		initializeAllViews();
 
-		ImageView emgBack= (ImageView)findViewById(R.id.farwordImageView);
+		ImageView emgBack = (ImageView)findViewById(R.id.farwordImageView);
 		emgBack.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				finish();
@@ -82,7 +82,7 @@ public class CustomerDetailsActivity extends Activity implements
 
 			Bundle bundle = new Bundle();
 			bundle.putSerializable(Constants.CUSTOMER_DETAILS,
-					getCustomerDetailsVo());
+					getCustomerDetails());
            HelperSharedPreferences.putSharedPreferencesString(CustomerDetailsActivity.this, "userName", nameEditText.getText().toString());
            HelperSharedPreferences.putSharedPreferencesString(CustomerDetailsActivity.this,"emailName" ,emailEditText.getText().toString());
            HelperSharedPreferences.putSharedPreferencesLong(CustomerDetailsActivity.this,"phoneNo" ,Long.parseLong(phoneEditText.getText().toString()));
@@ -103,9 +103,9 @@ public class CustomerDetailsActivity extends Activity implements
 				AppSharedPreference.putData(CustomerDetailsActivity.this, "customerName", nameEditText.getText().toString());
 				AppSharedPreference.putData(CustomerDetailsActivity.this, "customerEmail", emailEditText.getText().toString());
 				AppSharedPreference.putData(CustomerDetailsActivity.this, "customerPhone", phoneEditText.getText().toString());
-                    String orderType=AppSharedPreference.getData(CustomerDetailsActivity.this, "orderType", null);
+                    String orderType = AppSharedPreference.getData(CustomerDetailsActivity.this, "orderType", null);
 
-                    if("Delivery".equalsIgnoreCase(orderType)) {
+                    if(orderType.equalsIgnoreCase("Delivery")) {
                         startActivity(new Intent(new Intent(this,LocationFromHistoryActivity.class)));
                         finish();
                     } else {
@@ -121,19 +121,18 @@ public class CustomerDetailsActivity extends Activity implements
 
 	}
 
-	private CustomerDetails getCustomerDetailsVo() {
-		CustomerDetails customerDetailsVo = new CustomerDetails();
-		customerDetailsVo.setName(nameEditText.getText().toString().trim());
-		customerDetailsVo.setEmail(emailEditText.getText().toString().trim());
-		customerDetailsVo.setPhone(phoneEditText.getText().toString().trim());
-		customerDetailsVo.setSendEmail(sendEmailCheckBox.isSelected());
-		return customerDetailsVo;
+	private CustomerDetails getCustomerDetails() {
+		CustomerDetails customerDetails = new CustomerDetails();
+		customerDetails.setName(nameEditText.getText().toString().trim());
+		customerDetails.setEmail(emailEditText.getText().toString().trim());
+		customerDetails.setPhone(phoneEditText.getText().toString().trim());
+		customerDetails.setSendEmail(sendEmailCheckBox.isSelected());
+		return customerDetails;
 	}
 
 	private boolean velidateregisterButton() {
 
-		if (nameEditText.getText().toString() != null
-				&& nameEditText.getText().toString().trim().length() > 0) {
+		if (nameEditText.getText().toString() != null && nameEditText.getText().toString().trim().length() > 0) {
 
 			if (emailEditText.getText().toString().trim() != null && !(emailEditText.getText().toString().trim().equalsIgnoreCase(""))) {
 
@@ -141,8 +140,7 @@ public class CustomerDetailsActivity extends Activity implements
 						&& phoneEditText.getText().toString().trim().length() == 10) {
 					return true;
 				} else {
-					Toast.makeText(this, R.string.phoneErrorMessage,
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(this, R.string.phoneErrorMessage, Toast.LENGTH_LONG).show();
 				}
 
 			} else {

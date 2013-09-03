@@ -97,7 +97,7 @@
                     android:button="@drawable/mycheckbox"
                     android:text="@string/registerCheckBoxText"
                     android:textColor="#fff"
-                    android:textSize="13dip" />
+                    android:textSize="13dp" />
 
             </LinearLayout>
 
@@ -138,6 +138,7 @@
                 <Button
                     android:id="@+id/registerButton"
                     style="@style/buttonHCenter"
+                    android:layout_marginTop="8dp"
                     android:layout_below="@+id/textTextView"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/btn_register"

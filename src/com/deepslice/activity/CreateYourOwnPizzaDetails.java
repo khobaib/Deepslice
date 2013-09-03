@@ -366,7 +366,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
                 
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(CreateYourOwnPizzaDetails.this);
                 alertDialog.setTitle("Deepslice");
-                alertDialog.setMessage("Deal is added to Cart Successfully");
+                alertDialog.setMessage("Your pizza is added to Cart Successfully");
                 alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

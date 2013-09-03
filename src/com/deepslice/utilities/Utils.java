@@ -199,17 +199,17 @@ public class Utils
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(mContext);
         dbInstance.open();
         List<String> finishedOrderInfo = dbInstance.getOrderInfo();
-        List<DealOrder> finishedDealOrderList = dbInstance.getDealOrdersList(true);
+//        List<DealOrder> finishedDealOrderList = dbInstance.getDealOrdersList(true);
         dbInstance.close();
 
         int dealItemCount = 0;
         double dealTotalPrice = 0.00;
-        if(finishedDealOrderList != null && finishedDealOrderList.size() > 0){
-            dealItemCount = finishedDealOrderList.size();
-            for (int dealIndex = 0; dealIndex < finishedDealOrderList.size(); dealIndex++){
-                dealTotalPrice+= (Double.parseDouble(finishedDealOrderList.get(dealIndex).getDiscountedPrice()))*(Integer.parseInt(finishedDealOrderList.get(dealIndex).getQuantity()));
-            }
-        }
+//        if(finishedDealOrderList != null && finishedDealOrderList.size() > 0){
+//            dealItemCount = finishedDealOrderList.size();
+//            for (int dealIndex = 0; dealIndex < finishedDealOrderList.size(); dealIndex++){
+//                dealTotalPrice+= (Double.parseDouble(finishedDealOrderList.get(dealIndex).getDiscountedPrice()))*(Integer.parseInt(finishedDealOrderList.get(dealIndex).getQuantity()));
+//            }
+//        }
 
         int orderItemCount = 0;
         double  orderTotalPrice = 0.00;

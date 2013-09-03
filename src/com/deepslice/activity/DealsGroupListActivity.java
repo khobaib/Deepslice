@@ -135,6 +135,7 @@ public class DealsGroupListActivity extends Activity{
 
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
                 dbInstance.open();
+                dbInstance.updateTotalPrice((int) dealOrderId);
                 dbInstance.finalizedDealOrder((int) dealOrderId);
                 dbInstance.close();
 
@@ -412,11 +413,11 @@ public class DealsGroupListActivity extends Activity{
 
     private void updateDealsGroupList() {
         
-//        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
-//        dbInstance.open();
-//        NewDealsOrder unfinishedDealOrder = unfinishedDealOrderList.get(0);             // we know only one unfinishedDealOrder can exist at a time
-//        dealOrderDetailsList = dbInstance.retrieveDealOrderDetailsList(unfinishedDealOrder.getPrimaryId());
-//        dbInstance.close();
+        // if this deal has any added toppings price for pizza-deals
+        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
+        dbInstance.open();
+        unfinishedDealPrice = dbInstance.updateTotalPrice((int) dealOrderId);
+        dbInstance.close();
         
         if(dealOrderDetailsList != null && dealOrderDetailsList.size() > 0){
             dealGroupListAdapter = new DealGroupListAdapter(this, dealOrderDetailsList, selectedCoupon, dealOrderId);

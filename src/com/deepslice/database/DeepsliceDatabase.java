@@ -321,6 +321,12 @@ public class DeepsliceDatabase {
     public List<NewToppingsOrder> retrieveToppingsOrderByProdOrderId(int prodOrderId){
         return New_ToppingsOrderDbManager.retrieve(this.db, prodOrderId);
     }
+    
+    
+    // new
+    public double retrieveProductToppingsPrice(int prodOrderId){
+        return New_ToppingsOrderDbManager.retrieveProductToppingsPrice(this.db, prodOrderId);
+    }
 
 
 
@@ -430,15 +436,16 @@ public class DeepsliceDatabase {
     }
 
 
-    public List<Order> getOrdersList() {
+    public List<NewProductOrder> getOrdersList() {
+        return NEW_ProductOrderDbManager.retrieveAll(this.db);
 
-        Cursor cursor= OrderDbManager.getOrdersList(this.db);
-        try{        
-            return cursorToOrderBean(cursor);
-        }finally{
-            if (cursor != null && !cursor.isClosed())
-                cursor.close(); 
-        }
+//        Cursor cursor= OrderDbManager.getOrdersList(this.db);
+//        try{        
+//            return cursorToOrderBean(cursor);
+//        }finally{
+//            if (cursor != null && !cursor.isClosed())
+//                cursor.close(); 
+//        }
     }
 
 
@@ -446,16 +453,28 @@ public class DeepsliceDatabase {
     // element-0 -> order-list size, element-1 -> order total price
     public List<String> getOrderInfo() {
 
-        List<String> orderInfo=new ArrayList<String>();
-        List<Order>  orderList = getOrdersList();
-        if(orderList == null || orderList.size() <= 0)
-            return null;
-        orderInfo.add(String.valueOf(orderList.size()));
+        List<String> orderInfo = new ArrayList<String>();
+        List<NewProductOrder>  orderList = getOrdersList();
+//        if(orderList == null || orderList.size() <= 0)
+//            return null;
 
         double orderTotalPrice = 0.00;
-        for (Order order : orderList) {
-            orderTotalPrice+= Double.parseDouble(order.getPrice());
+        int itemCount = 0;
+        for (NewProductOrder order : orderList) {
+            itemCount += Integer.parseInt(order.getQuantity());
+            orderTotalPrice += Double.parseDouble(order.getPrice()) * Integer.parseInt(order.getQuantity());
+            double orderToppingsPrice = retrieveProductToppingsPrice(order.getPrimaryId());
+            orderTotalPrice += orderToppingsPrice;
+        }    
+        
+        
+        List<NewDealsOrder> dealsOrderList = retrieveDealOrderList(true);
+        for(NewDealsOrder dealOrder : dealsOrderList){
+            int qty = Integer.parseInt(dealOrder.getQuantity());
+            itemCount += (dealOrder.getDealItemCount() * qty);
+            orderTotalPrice += Double.parseDouble(dealOrder.getTotalPrice());            
         }
+        
 
         //        String couponType=AppSharedPreference.getData(mContext, "couponType",AppProperties.COUPON_TYPE_NONE);
         //
@@ -474,6 +493,7 @@ public class DeepsliceDatabase {
         //                price=price-disc;
         //            }
         //        }
+        orderInfo.add(String.valueOf(itemCount));
         orderInfo.add(String.valueOf(AppProperties.roundTwoDecimals(orderTotalPrice)));
 
         return orderInfo;
@@ -481,16 +501,17 @@ public class DeepsliceDatabase {
 
 
     // checked
-    public List<Order> getOrdersListWithType(String type) {
-
-        Cursor cursor= OrderDbManager.getOrdersListWithType(this.db, type);
-        try{        
-            return cursorToOrderBean(cursor);
-        }finally{
-            cursor.close(); 
-        }
+    public List<NewProductOrder> getOrdersListWithCategory(String catName) {
+        return NEW_ProductOrderDbManager.retrieve(this.db, catName);
+//        Cursor cursor= OrderDbManager.getOrdersListWithType(this.db, type);
+//        try{        
+//            return cursorToOrderBean(cursor);
+//        }finally{
+//            cursor.close(); 
+//        }
 
     }
+    
     //    public List<Order> getOrdersListWithProdId(String pid) {
     //
     //        Cursor cursor= OrderDbManager.getOrdersListWithProdId(this.db, pid);
@@ -502,8 +523,14 @@ public class DeepsliceDatabase {
     //
     //    }
 
-    public boolean deleteOrderRec(int serialKey) {
-        return OrderDbManager.deleteRecordOrder(this.db, "sr_no="+serialKey);
+//    public boolean deleteOrderRec(int serialKey) {
+//        return OrderDbManager.deleteRecordOrder(this.db, "sr_no="+serialKey);
+//    }
+    
+    
+    // new
+    public boolean deleteProductOrder(int orderId){
+        return NEW_ProductOrderDbManager.delete(this.db, orderId);
     }
 
     public void cleanOrderTable(){
@@ -575,8 +602,14 @@ public class DeepsliceDatabase {
 //    }
     
     // updated
-    public void finalizedDealOrder(int dealOrderId){
+    public void finalizedDealOrder(int dealOrderId){        
         NEW_DealsOrderDbManager.completeDealOrder(this.db, dealOrderId);
+    }
+    
+    
+    // new
+    public double updateTotalPrice(int dealOrderId){
+        return NEW_DealsOrderDbManager.updateTotalPrice(this.db, dealOrderId);
     }
 
     // checked
@@ -727,15 +760,15 @@ public class DeepsliceDatabase {
 
 
     // will be deleted & converted to the just-next method
-    public List<DealOrder> getDealOrdersList(boolean updateFlag) {
-
-        Cursor cursor= DealsDbManager.getDealOrdersList(this.db, updateFlag);
-        try{
-            return cursorToDealOrder(cursor);
-        }finally{
-            cursor.close();
-        }
-    }
+//    public List<DealOrder> getDealOrdersList(boolean updateFlag) {
+//
+//        Cursor cursor= DealsDbManager.getDealOrdersList(this.db, updateFlag);
+//        try{
+//            return cursorToDealOrder(cursor);
+//        }finally{
+//            cursor.close();
+//        }
+//    }
     
     // updated
     public List<NewDealsOrder> retrieveDealOrderList(boolean isComplete) {
@@ -777,10 +810,15 @@ public class DeepsliceDatabase {
     }
 
 
-
-    public boolean deleteDealOrderRec(int serialKey) {
-        return DealsDbManager.deleteRecordDealOrder(this.db, "sr_no="+serialKey);
+    // new
+    public boolean deleteDealsOrder(int orderId){
+        return NEW_DealsOrderDbManager.delete(this.db, orderId);
     }
+    
+
+//    public boolean deleteDealOrderRec(int serialKey) {
+//        return DealsDbManager.deleteRecordDealOrder(this.db, "sr_no="+serialKey);
+//    }
 
     // checked
 //    public boolean deleteUnfinishedDealOrder( ) {

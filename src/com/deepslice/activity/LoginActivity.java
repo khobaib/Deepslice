@@ -32,7 +32,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.deepslice.model.UserBean;
+import com.deepslice.model.UserData;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Constants;
@@ -44,7 +44,7 @@ public class LoginActivity extends Activity {
 	EditText userPassword ;
 	CheckBox rememberMeCheckBox;
 	int loginStatus = -1;
-	UserBean userObj;
+	UserData userObj;
 	boolean rememberMe;
 	ProgressDialog pd;
 	Display display = null;
@@ -67,7 +67,7 @@ public class LoginActivity extends Activity {
         rememberMeCheckBox	= (CheckBox) findViewById(R.id.checkBox);
         
         
-        UserBean savedUserObj=AppProperties.getUserFromSession(getApplicationContext());
+        UserData savedUserObj = AppProperties.getUserFromSession(getApplicationContext());
         if(null != savedUserObj && !AppProperties.isNull(savedUserObj.getCustomerID()))
         	{
         	AppProperties.userObj=savedUserObj;
@@ -193,8 +193,8 @@ public class LoginActivity extends Activity {
 	      if(dataExists==true)
 	      {
               String jsonString = data.toString();
-              userObj=new UserBean();
-              userObj=gson.fromJson(jsonString, UserBean.class);
+              userObj=new UserData();
+              userObj=gson.fromJson(jsonString, UserData.class);
 	      }
 	      
 

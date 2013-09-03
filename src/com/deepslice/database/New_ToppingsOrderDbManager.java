@@ -100,6 +100,7 @@ public class New_ToppingsOrderDbManager {
 
         return toppingsOrder;
     }
+       
 
 
     public static List<NewToppingsOrder> retrieve(SQLiteDatabase db, int prodOrderId) throws SQLException {
@@ -118,6 +119,35 @@ public class New_ToppingsOrderDbManager {
         }               
         cursor.close(); 
         return toppingsOrderList;        
+    }
+    
+    
+    public static List<NewToppingsOrder> retrieveDealToppings(SQLiteDatabase db, int dealOrderDetailsId) throws SQLException {
+        Log.d(TAG, "retrieving toppings list for dealOrderDetails Id = " + dealOrderDetailsId);
+        
+        List<NewToppingsOrder> toppingsOrderList = new ArrayList<NewToppingsOrder>();
+        Cursor cursor = db.query(TABLE_TOPPINGS_ORDER, null, DEAL_ORDER_DETAILS_ID + "=" + dealOrderDetailsId, null, null, null, null);
+
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                NewToppingsOrder thisToppingsOrder = retrieveFromCursor(cursor);
+                toppingsOrderList.add(thisToppingsOrder);                     
+                cursor.moveToNext();
+            }
+        }               
+        cursor.close(); 
+        return toppingsOrderList;        
+    }   
+    
+    
+    public static double retrieveProductToppingsPrice(SQLiteDatabase db, int productOrderId) throws SQLException {
+        double toppingPrice = 0.0;
+        List<NewToppingsOrder> toppingsOrderList = New_ToppingsOrderDbManager.retrieve(db, productOrderId);
+        for(NewToppingsOrder toppingsOrder : toppingsOrderList){
+            toppingPrice += Double.parseDouble(toppingsOrder.getToppingPrice());
+        }
+        return toppingPrice;
     }
 
 }

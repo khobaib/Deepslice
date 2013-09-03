@@ -68,6 +68,25 @@ public class NEW_DealsOrderDbManager {
     }
 
 
+    private static NewDealsOrder retrieveFromCursor(Cursor cursor) throws SQLException {
+        NewDealsOrder dealsOrder = new NewDealsOrder();
+
+        int primaryId = cursor.getInt(cursor.getColumnIndex(TABLE_PRIMARY_KEY));
+        String couponId = cursor.getString(cursor.getColumnIndex(COUPON_ID));
+        String dealPrice = cursor.getString(cursor.getColumnIndex(DEAL_PRICE));
+        String totalPrice = cursor.getString(cursor.getColumnIndex(TOTAL_PRICE));
+        String qty = cursor.getString(cursor.getColumnIndex(QTY));
+        int dealItemCount = cursor.getInt(cursor.getColumnIndex(DEAL_ITEM_COUNT));
+        String couponCode = cursor.getString(cursor.getColumnIndex(COUPON_CODE));
+        String couponDesc = cursor.getString(cursor.getColumnIndex(COUPON_DESC));
+        String couponPic = cursor.getString(cursor.getColumnIndex(COUPON_PIC));
+        Boolean isCompleted = cursor.getInt(cursor.getColumnIndex(IS_COMPLETED)) > 0;  
+        dealsOrder = new NewDealsOrder(primaryId, couponId, dealPrice, totalPrice, qty, dealItemCount, couponCode, couponDesc, couponPic, isCompleted);
+
+        return dealsOrder;
+    }
+
+
     /*
      * isComplete = false -> retrieve unfinished deals
      * isComplete = true -> retrieve finished deals
@@ -81,19 +100,7 @@ public class NEW_DealsOrderDbManager {
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                int primaryId = cursor.getInt(cursor.getColumnIndex(TABLE_PRIMARY_KEY));
-                String couponId = cursor.getString(cursor.getColumnIndex(COUPON_ID));
-                String dealPrice = cursor.getString(cursor.getColumnIndex(DEAL_PRICE));
-                String totalPrice = cursor.getString(cursor.getColumnIndex(TOTAL_PRICE));
-                String qty = cursor.getString(cursor.getColumnIndex(QTY));
-                int dealItemCount = cursor.getInt(cursor.getColumnIndex(DEAL_ITEM_COUNT));
-                String couponCode = cursor.getString(cursor.getColumnIndex(COUPON_CODE));
-                String couponDesc = cursor.getString(cursor.getColumnIndex(COUPON_DESC));
-                String couponPic = cursor.getString(cursor.getColumnIndex(COUPON_PIC));
-                Boolean isCompleted = cursor.getInt(cursor.getColumnIndex(IS_COMPLETED)) > 0;
-
-                NewDealsOrder thisDealsOrder = new NewDealsOrder(primaryId, couponId, dealPrice, totalPrice,
-                        qty, dealItemCount, couponCode, couponDesc, couponPic, isCompleted);
+                NewDealsOrder thisDealsOrder = retrieveFromCursor(cursor);
                 dealOrderList.add(thisDealsOrder);                     
                 cursor.moveToNext();
             }
@@ -102,13 +109,50 @@ public class NEW_DealsOrderDbManager {
         return dealOrderList;        
     }
 
+
+    public static NewDealsOrder retrieve(SQLiteDatabase db, int dealOrderId) throws SQLException {
+        Log.d(TAG, "retrieving DEALS ORDER with dealOrder ID = " + dealOrderId);
+        NewDealsOrder dealOrder = new NewDealsOrder();
+
+        Cursor cursor = db.query(TABLE_DEALS_ORDER, null, TABLE_PRIMARY_KEY + "=" + dealOrderId, null, null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            dealOrder = retrieveFromCursor(cursor);
+        }               
+        cursor.close(); 
+        return dealOrder;        
+    }
+
+
+
     public static int completeDealOrder(SQLiteDatabase db, int dealOrderId) throws SQLException {
         Log.d(TAG, "completing DealOrder with dealOrder ID = " + dealOrderId);
 
         ContentValues  cv = new ContentValues();
-        cv.put("IS_COMPLETED", 1);
+        cv.put(IS_COMPLETED, 1);
 
         return db.update(TABLE_DEALS_ORDER, cv, TABLE_PRIMARY_KEY + "=" + dealOrderId, null);
+    }
+
+
+    public static double updateTotalPrice(SQLiteDatabase db, int dealOrderId) throws SQLException {
+        Log.d(TAG, "updating total price for dealOrderId " + dealOrderId);
+
+
+        NewDealsOrder dealOrder = retrieve(db, dealOrderId);
+        if(dealOrder.getDealPrice() != null){
+            double toppingsPrice = NEW_DealsOrderDetailsDbManager.retrieveDealOrderToppingsPrice(db, dealOrderId);        
+            double dealPrice = Double.parseDouble(dealOrder.getDealPrice());
+            dealPrice += toppingsPrice;
+
+            ContentValues  cv = new ContentValues();
+            cv.put(TOTAL_PRICE, String.valueOf(dealPrice));
+
+            db.update(TABLE_DEALS_ORDER, cv, TABLE_PRIMARY_KEY + "=" + dealOrderId, null);
+            return dealPrice;
+        }
+        else
+            return 0.0;
     }
 
 

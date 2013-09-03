@@ -47,6 +47,8 @@ public class NEW_DealsOrderDetailsDbManager {
         Log.d(TAG, "deleting ALL DEALS ORDER DATA");
         db.delete(TABLE_DEALS_ORDER_DETAILS, null, null);
     }
+    
+    
 
     public static boolean delete(SQLiteDatabase db, int dealsOrderId) throws SQLException {
         Log.d(TAG, "deleting DEALS ORDER DETAILS data for deals OrderId = " + dealsOrderId);
@@ -106,6 +108,22 @@ public class NEW_DealsOrderDetailsDbManager {
         }               
         cursor.close(); 
         return dealsOrderDetailsList;       
+    }
+    
+    
+    public static double retrieveDealOrderToppingsPrice(SQLiteDatabase db, int dealsOrderId) throws SQLException {
+        Log.d(TAG, "retrieving toppings-price for dealOrder ID = " + dealsOrderId);
+        
+        double toppingsPrice = 0.0;
+        List<NewDealsOrderDetails> dealOrderDetailsList = retrieve(db, dealsOrderId);
+        for(NewDealsOrderDetails dOrderDetails : dealOrderDetailsList){
+            List<NewToppingsOrder> toppingsOrderList = New_ToppingsOrderDbManager.retrieveDealToppings(db, dOrderDetails.getPrimaryId());
+            for(NewToppingsOrder toppingsOrder : toppingsOrderList){
+            toppingsPrice += Double.parseDouble(toppingsOrder.getToppingPrice());
+            }
+        }
+        
+        return toppingsPrice;
     }
 
 

@@ -1,7 +1,7 @@
 package com.deepslice.model;
 
 
-public class UserBean {
+public class UserData {
 
 	private String CustomerID;
 	private String EmailID;
