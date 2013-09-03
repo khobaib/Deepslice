@@ -141,7 +141,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 					DateTimeActivity.this, "emailName", "").equals("")
 					|| !HelperSharedPreferences.getSharedPreferencesString(
 							DateTimeActivity.this, "userName", "").equals("")
-					|| AppProperties.isLoogedIn) {
+					|| AppProperties.isLoggedIn) {
 				if ((Integer.parseInt(timeStorage[0]) > openTime.getHours() && Integer
 						.parseInt(timeStorage[0]) < closeTime.getHours())
 						|| ("ASAP".equalsIgnoreCase(startOrtderButton.getText()

@@ -53,7 +53,7 @@ public class WelcomeActivity extends Activity {
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(WelcomeActivity.this);
         dbInstance.open();
         isDeliveryLocationsExist = dbInstance.isExistsDeliveryLocations() ;
-        dbInstance.cleanDeal(); 
+//        dbInstance.cleanDeal(); 
         dbInstance.close();
 
         new GetLocationPoints().execute();

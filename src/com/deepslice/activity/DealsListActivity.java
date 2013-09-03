@@ -170,13 +170,13 @@ public class DealsListActivity extends Activity {
             if(pDialog.isShowing())
                 pDialog.dismiss();
             if(result){
-                DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsListActivity.this);
-                dbInstance.open();
-                for(Coupon coupon : couponsList){
-                    Log.d(TAG, "coupon code = " + coupon.getCouponCode());
-                    dbInstance.insertDeals(coupon);
-                }
-                dbInstance.close();
+//                DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsListActivity.this);
+//                dbInstance.open();
+//                for(Coupon coupon : couponsList){
+//                    Log.d(TAG, "coupon code = " + coupon.getCouponCode());
+//                    dbInstance.insertDeals(coupon);
+//                }
+//                dbInstance.close();
 
                 dealListAdapter = new DealListAdapter(DealsListActivity.this, couponsList);
                 lvCpuponList.setAdapter(dealListAdapter);

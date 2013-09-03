@@ -30,44 +30,44 @@ public class DealsDbManager {
 
     public static void createTable(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_DEAL);
-        db.execSQL(CREATE_TABLE_DEAL_ORDERS);
+//        db.execSQL(CREATE_TABLE_DEAL_ORDERS);
     }
 
     public static void dropTable(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DEALS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DEALS_ORDERS);
+//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DEALS_ORDERS);
     }
 
-    public static void cleanDealTable(SQLiteDatabase db){
-        db.delete(TABLE_DEALS, null, null);
-    }
+//    public static void cleanDealTable(SQLiteDatabase db){
+//        db.delete(TABLE_DEALS, null, null);
+//    }
 
  // checked -> new deal order table
-    public static void cleanDealOrderTable(SQLiteDatabase db){
-        db.delete(TABLE_DEALS_ORDERS, null, null);
-    }
+//    public static void cleanDealOrderTable(SQLiteDatabase db){
+//        db.delete(TABLE_DEALS_ORDERS, null, null);
+//    }
 
 
 
-    public static long insertDeal(SQLiteDatabase db, String... values) {
-        Log.d("<<<>>>", "in DealsDbManager, inserting deal");
-        ContentValues cv = new ContentValues();
-        for (int i = 0; i < values.length; i++) {
-            cv.put(table_deal_columns[i + 1], values[i]);
-        }
-        db.insert(TABLE_DEALS, null, cv);
+//    public static long insertDeal(SQLiteDatabase db, String... values) {
+//        Log.d("<<<>>>", "in DealsDbManager, inserting deal");
+//        ContentValues cv = new ContentValues();
+//        for (int i = 0; i < values.length; i++) {
+//            cv.put(table_deal_columns[i + 1], values[i]);
+//        }
+//        db.insert(TABLE_DEALS, null, cv);
+//
+//        return 0;
+//    }
 
-        return 0;
-    }
-
-    public static Cursor getDealList(SQLiteDatabase db){
-        Log.d("<<<>>>", "in DealsDbManager, getting deal list");
-        try {
-            return db.rawQuery("SELECT * FROM "+TABLE_DEALS, null);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+//    public static Cursor getDealList(SQLiteDatabase db){
+//        Log.d("<<<>>>", "in DealsDbManager, getting deal list");
+//        try {
+//            return db.rawQuery("SELECT * FROM "+TABLE_DEALS, null);
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
 
 
     // checked -> new deal order table
@@ -83,13 +83,13 @@ public class DealsDbManager {
 
 
     // checked -> new deal order table
-    public static int finalizedDealOrder(SQLiteDatabase db){
-        Log.d(TAG, "finalizing DealOrder");
-
-        ContentValues  cv = new ContentValues();
-        cv.put("isUpdate", "1");
-        return db.update(TABLE_DEALS_ORDERS, cv, "isUpdate = ?", new String[] {"0"});
-    }
+//    public static int finalizedDealOrder(SQLiteDatabase db){
+//        Log.d(TAG, "finalizing DealOrder");
+//
+//        ContentValues  cv = new ContentValues();
+//        cv.put("isUpdate", "1");
+//        return db.update(TABLE_DEALS_ORDERS, cv, "isUpdate = ?", new String[] {"0"});
+//    }
 
     // checked
 //    public static boolean resetDealOrder(SQLiteDatabase db, String couponID){
@@ -116,43 +116,43 @@ public class DealsDbManager {
 //    }
 
 
-    // modified -> new deal order table
-    public static boolean deleteRecordDealOrder(SQLiteDatabase db, String whereCause) {
-        Log.d("<<<>>>", "in DealsDbManager, deleting some deal order");
-        return db.delete(TABLE_DEALS_ORDERS, whereCause, null) > 0;
-    }
-
-    // modified -> new deal order DETAILS table
-    public static boolean deleteAlreadySelectedDealGroup(SQLiteDatabase db, String couponID, String CouponGroupID) {
-        Log.d(TAG, "deleting dealorder for counponId = " + couponID + " and couponGrpId = " + CouponGroupID);
-        return db.delete(TABLE_DEALS_ORDERS, "isUpdate = ? AND CouponID = ? AND CouponGroupID = ?", new String[] {"0", couponID, CouponGroupID}) > 0;
-    }
-
-    // checked -> new deal order table
-    public static boolean deleteUnfinishedDealOrder(SQLiteDatabase db, String whereClause) {
-        Log.d(TAG, "deleteing deleteUnfinishedDealOrder with whereClause = " + whereClause);
-        return db.delete(TABLE_DEALS_ORDERS, whereClause, null) > 0;
-    }
-
-    // modified -> new deal order DETAILS table
-    public static boolean isDealGroupAlreadySelected(SQLiteDatabase db, String couponID, String CouponGroupID){
-        Log.d(TAG, "isDealGroupAlreadySelected for counponId = " + couponID + " and couponGrpId = " + CouponGroupID);
-        Cursor c = db.rawQuery("select * from " + TABLE_DEALS_ORDERS + " where isUpdate = ? AND CouponID = ? AND CouponGroupID = ?", new String[] {"0", couponID, CouponGroupID});
-        if(c!= null && c.getCount() > 0)
-            return true;
-        return false;
-    }
-
-    // modified -> new deal order table
-    public static Cursor getDealOrdersList(SQLiteDatabase db, boolean updateFlag){
-        Log.d(TAG, "getDealOrdersList for updateFLag = " + updateFlag);
-        String update = (updateFlag)? "1" : "0";
-        try {
-            return db.rawQuery("SELECT * FROM " + TABLE_DEALS_ORDERS + " where isUpdate = ?", new String[] {update});
-        } catch (Exception e) {
-            return null;
-        }
-    }
+//    // modified -> new deal order table
+//    public static boolean deleteRecordDealOrder(SQLiteDatabase db, String whereCause) {
+//        Log.d("<<<>>>", "in DealsDbManager, deleting some deal order");
+//        return db.delete(TABLE_DEALS_ORDERS, whereCause, null) > 0;
+//    }
+//
+//    // modified -> new deal order DETAILS table
+//    public static boolean deleteAlreadySelectedDealGroup(SQLiteDatabase db, String couponID, String CouponGroupID) {
+//        Log.d(TAG, "deleting dealorder for counponId = " + couponID + " and couponGrpId = " + CouponGroupID);
+//        return db.delete(TABLE_DEALS_ORDERS, "isUpdate = ? AND CouponID = ? AND CouponGroupID = ?", new String[] {"0", couponID, CouponGroupID}) > 0;
+//    }
+//
+//    // checked -> new deal order table
+//    public static boolean deleteUnfinishedDealOrder(SQLiteDatabase db, String whereClause) {
+//        Log.d(TAG, "deleteing deleteUnfinishedDealOrder with whereClause = " + whereClause);
+//        return db.delete(TABLE_DEALS_ORDERS, whereClause, null) > 0;
+//    }
+//
+//    // modified -> new deal order DETAILS table
+//    public static boolean isDealGroupAlreadySelected(SQLiteDatabase db, String couponID, String CouponGroupID){
+//        Log.d(TAG, "isDealGroupAlreadySelected for counponId = " + couponID + " and couponGrpId = " + CouponGroupID);
+//        Cursor c = db.rawQuery("select * from " + TABLE_DEALS_ORDERS + " where isUpdate = ? AND CouponID = ? AND CouponGroupID = ?", new String[] {"0", couponID, CouponGroupID});
+//        if(c!= null && c.getCount() > 0)
+//            return true;
+//        return false;
+//    }
+//
+//    // modified -> new deal order table
+//    public static Cursor getDealOrdersList(SQLiteDatabase db, boolean updateFlag){
+//        Log.d(TAG, "getDealOrdersList for updateFLag = " + updateFlag);
+//        String update = (updateFlag)? "1" : "0";
+//        try {
+//            return db.rawQuery("SELECT * FROM " + TABLE_DEALS_ORDERS + " where isUpdate = ?", new String[] {update});
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
 
 
     // modified
@@ -169,14 +169,14 @@ public class DealsDbManager {
 
 
     // will be deprecated
-    public static Cursor getDealOrderData(SQLiteDatabase db, String CouponID, String CouponGroupID) {
-        Log.d(TAG, "getDealOrderData for couponId = " + CouponID + " & couponGrpId = " + CouponGroupID);
-        try {
-            return db.rawQuery("SELECT DisplayName,Image,CouponGroupID,DiscountedPrice,Quantity FROM " + TABLE_DEALS_ORDERS + " where isUpdate=0 AND CouponGroupID="+CouponGroupID+" AND CouponID="+CouponID, null);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+//    public static Cursor getDealOrderData(SQLiteDatabase db, String CouponID, String CouponGroupID) {
+//        Log.d(TAG, "getDealOrderData for couponId = " + CouponID + " & couponGrpId = " + CouponGroupID);
+//        try {
+//            return db.rawQuery("SELECT DisplayName,Image,CouponGroupID,DiscountedPrice,Quantity FROM " + TABLE_DEALS_ORDERS + " where isUpdate=0 AND CouponGroupID="+CouponGroupID+" AND CouponID="+CouponID, null);
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
 
 
 }

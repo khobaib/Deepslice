@@ -93,7 +93,7 @@ public class PayByCashActivity extends Activity{
 				bundle.putString("suburbId",suburbId);
 				intent.putExtras(bundle);
 
-                if (!AppProperties.isLoogedIn){
+                if (!AppProperties.isLoggedIn){
                     AppSharedPreference.putData(PayByCashActivity.this, "customerName", "");
                     AppSharedPreference.putData(PayByCashActivity.this, "customerEmail","");
                     AppSharedPreference.putData(PayByCashActivity.this, "customerPhone", "");

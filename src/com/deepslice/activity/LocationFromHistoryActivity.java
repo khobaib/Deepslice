@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class LocationFromHistoryActivity extends Activity {
 	ImageView addPic;
 	ListView listview;
-	StateListAdapter eventsAdapter;	
+	LocationListAdapter eventsAdapter;	
 	static String cityName="";
 	static String stName="";
 	EditText input_text ;
@@ -41,7 +41,7 @@ public class LocationFromHistoryActivity extends Activity {
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		listview = (ListView) findViewById(R.id.listView1);
 
-		deliveryLocationList=new ArrayList<LocationDetails>();
+		deliveryLocationList = new ArrayList<LocationDetails>();
 		
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(LocationFromHistoryActivity.this);
         dbInstance.open(); 
@@ -70,7 +70,7 @@ public class LocationFromHistoryActivity extends Activity {
 			restext.setText("No recent Address exists");
 		}
 		
-		eventsAdapter = new StateListAdapter(this,R.layout.line_item, deliveryLocationList);
+		eventsAdapter = new LocationListAdapter(this,R.layout.line_item, deliveryLocationList);
 		listview.setAdapter(eventsAdapter);
 		
 		listview.setOnItemClickListener(new OnItemClickListener() {
@@ -90,7 +90,7 @@ public class LocationFromHistoryActivity extends Activity {
 					bundle.putString("store",eBean.getLocName());
 					bundle.putString("suburbId",eBean.getLocationID());
 					intent.putExtras(bundle);
-					startActivityForResult(intent, 56);
+					startActivity(intent);
 				}
 			}
 		});
@@ -101,19 +101,19 @@ public class LocationFromHistoryActivity extends Activity {
 			public void onClick(View v) {
                 Intent intent=new Intent(LocationFromHistoryActivity.this, DeliverySuburbActivity.class);
                 startActivity(intent);
-				finish();
+//				finish();
 			}
 		});
 	}
 	
 	
 ////////////////////////////////////////LIST ADAPTER	
-	private class StateListAdapter extends ArrayAdapter<LocationDetails> {
+	private class LocationListAdapter extends ArrayAdapter<LocationDetails> {
 
 		private ArrayList<LocationDetails> items;
 		 
 		
-		public StateListAdapter(Context context, int viewResourceId,
+		public LocationListAdapter(Context context, int viewResourceId,
 				ArrayList<LocationDetails> items) {
 			super(context, viewResourceId, items);
 			this.items = items;

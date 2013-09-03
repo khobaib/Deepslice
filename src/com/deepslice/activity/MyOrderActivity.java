@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -15,17 +18,16 @@ import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.deepslice.activity.R.id;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.database.HelperSharedPreferences;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.model.NewDealsOrder;
 import com.deepslice.model.NewProductOrder;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.DeepsliceApplication;
 import com.deepslice.utilities.Utils;
 
 public class MyOrderActivity extends Activity{
@@ -38,12 +40,16 @@ public class MyOrderActivity extends Activity{
 
     TextView totalPrice;
 
+    DeepsliceApplication appInstance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_order);
 
         totalPrice = (TextView)findViewById(R.id.textTextView12);
+
+        appInstance = (DeepsliceApplication) getApplication();
 
         /////////////////
         /*
@@ -139,7 +145,7 @@ public class MyOrderActivity extends Activity{
             }
         });
 
-        Button placeOrder=(Button)findViewById(R.id.placeOrder);
+        Button placeOrder = (Button)findViewById(R.id.placeOrder);
         placeOrder.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -147,69 +153,40 @@ public class MyOrderActivity extends Activity{
                 //	Intent i=new Intent(MyOrderActivity.this,PaymentSelectionActivity.class);
                 //	startActivity(i);
 
+                int orderItemCount = 0;
+                List<String> orderInfo = Utils.OrderInfo(MyOrderActivity.this);
+                if(orderInfo != null && orderInfo.size() == 2){
+                    orderItemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+                }
+                if(orderItemCount == 0){
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MyOrderActivity.this);
+                    alertDialog.setTitle("Deepslice");
+                    alertDialog.setMessage("No Item in your cart");
+                    alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            MyOrderActivity.this.finish();
+                        } 
+                    }); 
+                    alertDialog.create().show(); 
+                }
 
-                //				i have added //
-
-                String orderType = AppSharedPreference.getData(MyOrderActivity.this, "orderType", null);
-                Intent i;
-
-                if(orderType.equalsIgnoreCase("Delivery")) {
-                    if (!HelperSharedPreferences.getSharedPreferencesString(
-                            MyOrderActivity.this, "emailName", "").equals("")
-                            || !HelperSharedPreferences.getSharedPreferencesString(
-                                    MyOrderActivity.this, "userName", "").equals("")
-                                    || AppProperties.isLoogedIn) {
-
-                        i = new Intent(MyOrderActivity.this,LocationFromHistoryActivity.class);
-                        startActivity(i);
-                        finish();
-
-
-                    } else{
-                        if(!AppSharedPreference.getData(MyOrderActivity.this,"customerName","").equals("")||!AppSharedPreference.getData(MyOrderActivity.this,"customerEmail","").equals("")
-                                ||!AppSharedPreference.getData(MyOrderActivity.this,"customerPhone","").equals("")){
-                            i=new Intent(MyOrderActivity.this,LocationFromHistoryActivity.class);
-                            startActivity(i);
-                            finish();
+                else{
+                    appInstance.setOrderReady(true);
+                    if(AppProperties.isLoggedIn || 
+                            (appInstance.loadCustomer().getCustomerName() != null && !appInstance.loadCustomer().getCustomerName().equals(""))){
+                        Log.d("????????>>>>>", "customer id = " + appInstance.loadCustomer().getCustomerID());
+                        int orderType = appInstance.getOrderType();
+                        if(orderType == Constants.ORDER_TYPE_DELIVERY) {
+                            startActivity(new Intent(new Intent(MyOrderActivity.this, LocationFromHistoryActivity.class)));
                         }else {
-                            Toast.makeText(MyOrderActivity.this, " Please register/login so we can verify you.",  Toast.LENGTH_SHORT).show();
-                            AppSharedPreference.putBoolean(MyOrderActivity.this, "MyOrder", true);
-                            Intent intent=new Intent(MyOrderActivity.this, CustomerDetailsActivity.class);
-                            startActivity(intent);
-                        }
+                            startActivity(new Intent(new Intent(MyOrderActivity.this, StoreFromHistoryActivity.class)));
+                        }   
+                    }
+                    else{
+                        startActivity(new Intent(new Intent(MyOrderActivity.this, CustomerDetailsActivity.class)));
                     }
                 }
-                else {
-
-                    if (!HelperSharedPreferences.getSharedPreferencesString(
-                            MyOrderActivity.this, "emailName", "").equals("")
-                            || !HelperSharedPreferences.getSharedPreferencesString(
-                                    MyOrderActivity.this, "userName", "").equals("")
-                                    || AppProperties.isLoogedIn) {
-
-                        i=new Intent(MyOrderActivity.this,StoreFromHistoryActivity.class);
-                        startActivity(i);
-                        finish();
-
-
-                    } else{
-                        if(!AppSharedPreference.getData(MyOrderActivity.this,"customerName","").equals("")||!AppSharedPreference.getData(MyOrderActivity.this,"customerEmail","").equals("")
-                                ||!AppSharedPreference.getData(MyOrderActivity.this,"customerPhone","").equals("")){
-                            i=new Intent(MyOrderActivity.this,StoreFromHistoryActivity.class);
-                            startActivity(i);
-                            finish();
-                        }else {
-                            Toast.makeText(MyOrderActivity.this, " Please register/login so we can verify you.",  Toast.LENGTH_SHORT).show();
-                            AppSharedPreference.putBoolean(MyOrderActivity.this,"MyOrder",true);
-                            Intent intent=new Intent(MyOrderActivity.this,CustomerDetailsActivity.class);
-                            startActivity(intent);
-                        }
-                    }
-
-                }
-                //////////////////////////////////////////////////////////////////////////////////////////////////
-
-                //				finish();
             }
         });
 
@@ -221,7 +198,7 @@ public class MyOrderActivity extends Activity{
         pastaList = dbInstance.getOrdersListWithCategory(Constants.PRODUCT_CATEGORY_PASTA);
         dealOrderList=dbInstance.retrieveDealOrderList(true);
         dbInstance.close();
-        
+
         wholePizzaList = new ArrayList<NewProductOrder>();
         halfPizzaList = new ArrayList<NewProductOrder>();
         createOwnPizzaList = new ArrayList<NewProductOrder>();
@@ -257,8 +234,8 @@ public class MyOrderActivity extends Activity{
                 addItem(lout, false, false, order.getPrimaryId(), order.getDisplayName(), itemPrice, order.getQuantity());
             }
         }
-        
-        
+
+
         if(halfPizzaList != null && halfPizzaList.size() > 0){
             LinearLayout lout = (LinearLayout) findViewById(R.id.wraperLayout);
             addCatHeader("Half-n-Half", lout);
@@ -274,8 +251,8 @@ public class MyOrderActivity extends Activity{
                 addItem(lout, false, true, order.getPrimaryId(), order.getDisplayName(), itemPrice, order.getQuantity());
             }
         }
-        
-        
+
+
         if(createOwnPizzaList != null && createOwnPizzaList.size() > 0){
             LinearLayout lout = (LinearLayout) findViewById(R.id.wraperLayout);
             addCatHeader("Create Your Own", lout);
@@ -291,7 +268,7 @@ public class MyOrderActivity extends Activity{
                 addItem(lout, false, false, order.getPrimaryId(), order.getDisplayName(), itemPrice, order.getQuantity());
             }
         }
-        
+
 
         if (drinksList!= null && drinksList.size() > 0) {
             LinearLayout lout = (LinearLayout) findViewById(R.id.wraperLayout);
@@ -427,17 +404,17 @@ public class MyOrderActivity extends Activity{
     @Override
     protected void onResume(){
         super.onResume();
-        if(AppSharedPreference.getBoolean(MyOrderActivity.this, "okLogin")){
-            AppSharedPreference.putBoolean(MyOrderActivity.this, "okLogin", false);
-            String orderType=AppSharedPreference.getData(MyOrderActivity.this, "orderType", null);
-            if("Delivery".equalsIgnoreCase(orderType)) {
-                Intent i=new Intent(MyOrderActivity.this,LocationFromHistoryActivity.class);
-                startActivity(i);
-                finish();
-            } else {
-
-            }
-        }
+//        if(AppSharedPreference.getBoolean(MyOrderActivity.this, "okLogin")){
+//            AppSharedPreference.putBoolean(MyOrderActivity.this, "okLogin", false);
+//            String orderType=AppSharedPreference.getData(MyOrderActivity.this, "orderType", null);
+//            if("Delivery".equalsIgnoreCase(orderType)) {
+//                Intent i=new Intent(MyOrderActivity.this,LocationFromHistoryActivity.class);
+//                startActivity(i);
+//                finish();
+//            } else {
+//
+//            }
+//        }
     }
     private void deleteFromOrder(int orderId){
 

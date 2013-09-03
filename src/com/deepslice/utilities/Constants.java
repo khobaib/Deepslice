@@ -51,5 +51,19 @@ public class Constants {
     
     public static final int DUMMY_ID = -1;
     
+    public static final String CUSTOMER_ID = "customer_id";
+    public static final String CUSTOMER_NAME = "customer_name";
+    public static final String CUSTOMER_EMAIL = "customer_email";
+    public static final String CUSTOMER_PHONE = "customer_phone";
+    public static final String CUSTOMER_PASSWORD = "customer_password";
+    public static final String CUSTOMER_FLAG_SEND_EMAIL = "customer_flag_send_email";
+    
+    public static final String ORDER_TYPE = "order_type";
+    public static final int ORDER_TYPE_DELIVERY = 1;
+    public static final int ORDER_TYPE_PICKUP = 2;
+    
+    public static final String IS_ORDER_READY = "is_order_ready";
+    public static final String IS_REMEMBER_ME = "is_remember_me";
+    
     
 }

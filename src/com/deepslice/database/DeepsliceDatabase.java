@@ -55,8 +55,8 @@ public class DeepsliceDatabase {
             //            ToppingPriceDbManager.createTable(db);
             //            SauceAndToppingDbManager.createTable(db);
             FavoriteDbManager.createTable(db);
-            OrderDbManager.createTable(db);
-            DealsDbManager.createTable(db);
+//            OrderDbManager.createTable(db);
+//            DealsDbManager.createTable(db);
             DeliveryLocationDbManager.createTable(db);
             LocationHistoryDbManager.createTable(db);
 
@@ -79,8 +79,8 @@ public class DeepsliceDatabase {
             //            ToppingPriceDbManager.dropTable(db);
             //            SauceAndToppingDbManager.dropTable(db);
             FavoriteDbManager.dropTable(db);
-            OrderDbManager.dropTable(db);
-            DealsDbManager.dropTable(db);
+//            OrderDbManager.dropTable(db);
+//            DealsDbManager.dropTable(db);
             DeliveryLocationDbManager.dropTable(db);
             LocationHistoryDbManager.dropTable(db);
 
@@ -533,9 +533,9 @@ public class DeepsliceDatabase {
         return NEW_ProductOrderDbManager.delete(this.db, orderId);
     }
 
-    public void cleanOrderTable(){
-        OrderDbManager.cleanOrderTable(this.db);
-    }
+//    public void cleanOrderTable(){
+//        OrderDbManager.cleanOrderTable(this.db);
+//    }
 
 
     //    public void updateOrderDetails(ArrayList<CouponDetails> couponDetails) {
@@ -650,113 +650,104 @@ public class DeepsliceDatabase {
     }
 
 
-    public boolean cleanDeal(){
-        DealsDbManager.cleanDealTable(this.db);
-        return true;
-    }
+//    public boolean cleanDeal(){
+//        DealsDbManager.cleanDealTable(this.db);
+//        return true;
+//    }
 
-    public boolean insertDeals(Coupon deal){
-        //        Log.d("DeepsliceDatabase", "inseting deals to DB..");
-        DealsDbManager.insertDeal(this.db,
-                deal.getCouponID(),
-                deal.getCouponTypeID(),
-                deal.getCouponTypeCode(),
-                deal.getCouponCode(),
-                deal.getCouponAbbr(),
-                deal.getCouponDesc(),
-                deal.getDisplayText(),
-                deal.getIsPercentage(),
-                deal.getIsFixed(),
-                deal.getIsDiscountedProduct(),
-                deal.getAmount(),
-                deal.getMaxUsage(),
-                deal.getIsLimitedTimeOffer(),
-                deal.getEffectiveStartDate(),
-                deal.getEffectiveEndDate(),
-                deal.getEffectiveTimeStart(),
-                deal.getEffectiveTimeEnd(),
-                deal.getIsOnDelivery(),
-                deal.getIsOnPickup(),
-                deal.getIsOnSunday(),
-                deal.getIsOnMonday(),
-                deal.getIsOnTuesday(),
-                deal.getIsOnWednesday(),
-                deal.getIsOnThursday(),
-                deal.getIsOnFriday(),
-                deal.getIsOnSaturday(),
-                deal.getIsOnInternet(),
-                deal.getIsOnlyOnInternet(),
-                deal.getIsTaxable(),
-                deal.getIsPrerequisite(),
-                deal.getIsLocationBased(),
-                deal.getIsGreetingSpecials(),
-                deal.getPic()
-                );
+//    public boolean insertDeals(Coupon deal){
+//        //        Log.d("DeepsliceDatabase", "inseting deals to DB..");
+//        DealsDbManager.insertDeal(this.db,
+//                deal.getCouponID(),
+//                deal.getCouponTypeID(),
+//                deal.getCouponTypeCode(),
+//                deal.getCouponCode(),
+//                deal.getCouponAbbr(),
+//                deal.getCouponDesc(),
+//                deal.getDisplayText(),
+//                deal.getIsPercentage(),
+//                deal.getIsFixed(),
+//                deal.getIsDiscountedProduct(),
+//                deal.getAmount(),
+//                deal.getMaxUsage(),
+//                deal.getIsLimitedTimeOffer(),
+//                deal.getEffectiveStartDate(),
+//                deal.getEffectiveEndDate(),
+//                deal.getEffectiveTimeStart(),
+//                deal.getEffectiveTimeEnd(),
+//                deal.getIsOnDelivery(),
+//                deal.getIsOnPickup(),
+//                deal.getIsOnSunday(),
+//                deal.getIsOnMonday(),
+//                deal.getIsOnTuesday(),
+//                deal.getIsOnWednesday(),
+//                deal.getIsOnThursday(),
+//                deal.getIsOnFriday(),
+//                deal.getIsOnSaturday(),
+//                deal.getIsOnInternet(),
+//                deal.getIsOnlyOnInternet(),
+//                deal.getIsTaxable(),
+//                deal.getIsPrerequisite(),
+//                deal.getIsLocationBased(),
+//                deal.getIsGreetingSpecials(),
+//                deal.getPic()
+//                );
+//        return true;
+//    }
 
-        //        Log.d("DeepsliceDatabase", "Reading all coupons..");
-        //        List<Coupons> couponList = getDealList();
-        //
-        //        for (Coupons cn : couponList) {
-        //            String log = "amount: "+cn.getAmount()+" ,coupon code: " + cn.getCouponCode() + " ,displayText: " + cn.getDisplayText();
-        //            // Writing Contacts to log
-        //            Log.d("this coupon: ", log);
-        //        }
-        return true;
-    }
+//    public List<Coupon> getDealList(){
+//        Cursor cursor=DealsDbManager.getDealList(this.db);
+//        return cursorToCoupons(cursor);
+//    }
 
-    public List<Coupon> getDealList(){
-        Cursor cursor=DealsDbManager.getDealList(this.db);
-        return cursorToCoupons(cursor);
-    }
-
-    private List<Coupon> cursorToCoupons(Cursor cursor) {
-        if (cursor==null)return null;
-        List<Coupon> voArrayList=new ArrayList<Coupon>();
-        if(cursor.moveToFirst()) {
-            do {
-                Coupon f = new Coupon();
-                int counter=1;
-                f.setCouponID(cursor.getString(counter++));
-                f.setCouponTypeID(cursor.getString(counter++));
-                f.setCouponTypeCode(cursor.getString(counter++));
-                f.setCouponCode(cursor.getString(counter++));
-                f.setCouponAbbr(cursor.getString(counter++));
-                f.setCouponDesc(cursor.getString(counter++));
-                f.setDisplayText(cursor.getString(counter++));
-                f.setIsPercentage(cursor.getString(counter++));
-                f.setIsFixed(cursor.getString(counter++));
-                f.setIsDiscountedProduct(cursor.getString(counter++));
-                f.setAmount(cursor.getString(counter++));
-                f.setMaxUsage(cursor.getString(counter++));
-                f.setIsLimitedTimeOffer(cursor.getString(counter++));
-                f.setEffectiveStartDate(cursor.getString(counter++));
-                f.setEffectiveEndDate(cursor.getString(counter++));
-                f.setEffectiveTimeStart(cursor.getString(counter++));
-                f.setEffectiveTimeEnd(cursor.getString(counter++));
-                f.setIsOnDelivery(cursor.getString(counter++));
-                f.setIsOnPickup(cursor.getString(counter++));
-                f.setIsOnSunday(cursor.getString(counter++));
-                f.setIsOnMonday(cursor.getString(counter++));
-                f.setIsOnTuesday(cursor.getString(counter++));
-                f.setIsOnWednesday(cursor.getString(counter++));
-                f.setIsOnThursday(cursor.getString(counter++));
-                f.setIsOnFriday(cursor.getString(counter++));
-                f.setIsOnSaturday(cursor.getString(counter++));
-                f.setIsOnInternet(cursor.getString(counter++));
-                f.setIsOnlyOnInternet(cursor.getString(counter++));
-                f.setIsTaxable(cursor.getString(counter++));
-                f.setIsPrerequisite(cursor.getString(counter++));
-                f.setIsLocationBased(cursor.getString(counter++));
-                f.setIsGreetingSpecials(cursor.getString(counter++));
-                f.setPic(cursor.getString(counter++));
-                voArrayList.add(f);
-            } while (cursor.moveToNext());
-        }
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-        return voArrayList;  //To change body of created methods use File | Settings | File Templates.
-    }
+//    private List<Coupon> cursorToCoupons(Cursor cursor) {
+//        if (cursor==null)return null;
+//        List<Coupon> voArrayList=new ArrayList<Coupon>();
+//        if(cursor.moveToFirst()) {
+//            do {
+//                Coupon f = new Coupon();
+//                int counter=1;
+//                f.setCouponID(cursor.getString(counter++));
+//                f.setCouponTypeID(cursor.getString(counter++));
+//                f.setCouponTypeCode(cursor.getString(counter++));
+//                f.setCouponCode(cursor.getString(counter++));
+//                f.setCouponAbbr(cursor.getString(counter++));
+//                f.setCouponDesc(cursor.getString(counter++));
+//                f.setDisplayText(cursor.getString(counter++));
+//                f.setIsPercentage(cursor.getString(counter++));
+//                f.setIsFixed(cursor.getString(counter++));
+//                f.setIsDiscountedProduct(cursor.getString(counter++));
+//                f.setAmount(cursor.getString(counter++));
+//                f.setMaxUsage(cursor.getString(counter++));
+//                f.setIsLimitedTimeOffer(cursor.getString(counter++));
+//                f.setEffectiveStartDate(cursor.getString(counter++));
+//                f.setEffectiveEndDate(cursor.getString(counter++));
+//                f.setEffectiveTimeStart(cursor.getString(counter++));
+//                f.setEffectiveTimeEnd(cursor.getString(counter++));
+//                f.setIsOnDelivery(cursor.getString(counter++));
+//                f.setIsOnPickup(cursor.getString(counter++));
+//                f.setIsOnSunday(cursor.getString(counter++));
+//                f.setIsOnMonday(cursor.getString(counter++));
+//                f.setIsOnTuesday(cursor.getString(counter++));
+//                f.setIsOnWednesday(cursor.getString(counter++));
+//                f.setIsOnThursday(cursor.getString(counter++));
+//                f.setIsOnFriday(cursor.getString(counter++));
+//                f.setIsOnSaturday(cursor.getString(counter++));
+//                f.setIsOnInternet(cursor.getString(counter++));
+//                f.setIsOnlyOnInternet(cursor.getString(counter++));
+//                f.setIsTaxable(cursor.getString(counter++));
+//                f.setIsPrerequisite(cursor.getString(counter++));
+//                f.setIsLocationBased(cursor.getString(counter++));
+//                f.setIsGreetingSpecials(cursor.getString(counter++));
+//                f.setPic(cursor.getString(counter++));
+//                voArrayList.add(f);
+//            } while (cursor.moveToNext());
+//        }
+//        if (cursor != null && !cursor.isClosed()) {
+//            cursor.close();
+//        }
+//        return voArrayList;  //To change body of created methods use File | Settings | File Templates.
+//    }
 
 
     // will be deleted & converted to the just-next method
@@ -791,23 +782,23 @@ public class DeepsliceDatabase {
     //    }
 
     // will be deprecated
-    public ArrayList<String> getDealData(String couponID, String couponGroupId){
-        Cursor cursor=DealsDbManager.getDealOrderData(this.db, couponID, couponGroupId);
-        ArrayList<String> list = new ArrayList<String>();
-        if (cursor.moveToFirst()) {
-            do {
-                list.add(cursor.getString(0));
-                list.add(cursor.getString(1));
-                list.add(cursor.getString(2));
-                list.add(cursor.getString(3));
-                list.add(cursor.getString(4));
-            } while (cursor.moveToNext());
-        }
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-        return list;
-    }
+//    public ArrayList<String> getDealData(String couponID, String couponGroupId){
+//        Cursor cursor=DealsDbManager.getDealOrderData(this.db, couponID, couponGroupId);
+//        ArrayList<String> list = new ArrayList<String>();
+//        if (cursor.moveToFirst()) {
+//            do {
+//                list.add(cursor.getString(0));
+//                list.add(cursor.getString(1));
+//                list.add(cursor.getString(2));
+//                list.add(cursor.getString(3));
+//                list.add(cursor.getString(4));
+//            } while (cursor.moveToNext());
+//        }
+//        if (cursor != null && !cursor.isClosed()) {
+//            cursor.close();
+//        }
+//        return list;
+//    }
 
 
     // new

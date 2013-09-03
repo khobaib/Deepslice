@@ -1,6 +1,7 @@
 package com.deepslice.model;
 
 public class LocationDetails {
+    
 	String LocationID = "";
 	String LocName = "";
 	String LocSuburb = "";

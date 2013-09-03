@@ -18,11 +18,11 @@ import com.deepslice.model.LocationDetails;
 import com.deepslice.model.LocationPoints;
 import com.deepslice.model.NewToppingsOrder;
 import com.deepslice.model.ToppingsHashmap;
-import com.deepslice.model.UserData;
+import com.deepslice.model.Customer;
 
 public class AppProperties {
 
-	public static UserData userObj;
+//	public static Customer userObj;
 
 	public static final String COUPON_TYPE_NONE="N";
 	public static final String COUPON_TYPE_PERCENTAGE="R";
@@ -33,7 +33,7 @@ public class AppProperties {
 //	public static List<HashMap<String, String>> selectedToppings;
 //	public static HashMap<String, ToppingsHashmap> selectedToppings;
 	public static boolean isFirstPizzaChosen;
-	public static boolean isLoogedIn	= false;
+	public static boolean isLoggedIn	= false;
 	public static final String PREFS_NAME = "DeepSlice";
 	private static AppProperties mInstance = null;
 	
@@ -77,31 +77,31 @@ public class AppProperties {
 		}
 	}
 
-	public static void saveUserSession(Context ct, UserData userObj2Save) {
-
-		AppSharedPreference.putData(ct, "m_id", userObj2Save.getCustomerID());
-		AppSharedPreference.putData(ct, "m_username", userObj2Save.getEmailID());
-		AppSharedPreference.putData(ct, "m_password", userObj2Save.getPwd());
-		AppSharedPreference.putData(ct, "m_name", userObj2Save.getCustomerName());
-		AppSharedPreference.putData(ct, "m_phone", userObj2Save.getPhoneNo());
-	}
-
-	public static UserData getUserFromSession(Context ct) {
-
-		UserData user=new UserData();
-		
-		String uid = AppSharedPreference.getData(ct, "m_id", null);
-		if(isNull(uid))
-			return null;
-		
-		user.setCustomerID(uid);
-		user.setEmailID(AppSharedPreference.getData(ct, "m_username", null));
-		user.setPwd(AppSharedPreference.getData(ct, "m_password", null));
-		user.setCustomerName(AppSharedPreference.getData(ct, "m_name", null));
-		user.setPhoneNo(AppSharedPreference.getData(ct, "m_phone", null));
-		
-		return user;
-	}
+//	public static void saveUserSession(Context ct, Customer userObj2Save) {
+//
+//		AppSharedPreference.putData(ct, "m_id", userObj2Save.getCustomerID());
+//		AppSharedPreference.putData(ct, "m_username", userObj2Save.getEmailID());
+//		AppSharedPreference.putData(ct, "m_password", userObj2Save.getPwd());
+//		AppSharedPreference.putData(ct, "m_name", userObj2Save.getCustomerName());
+//		AppSharedPreference.putData(ct, "m_phone", userObj2Save.getPhoneNo());
+//	}
+//
+//	public static Customer getUserFromSession(Context ct) {
+//
+//		Customer user = new Customer();
+//		
+//		String uid = AppSharedPreference.getData(ct, "m_id", null);
+//		if(isNull(uid))
+//			return null;
+//		
+//		user.setCustomerID(uid);
+//		user.setEmailID(AppSharedPreference.getData(ct, "m_username", null));
+//		user.setPwd(AppSharedPreference.getData(ct, "m_password", null));
+//		user.setCustomerName(AppSharedPreference.getData(ct, "m_name", null));
+//		user.setPhoneNo(AppSharedPreference.getData(ct, "m_phone", null));
+//		
+//		return user;
+//	}
 	
     public static String trimLastComma(String a) {
         if (a == null || a.equals("")) {

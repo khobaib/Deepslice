@@ -102,7 +102,7 @@ public class StoreFromHistoryActivity extends Activity {
 		addLoc.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				startActivity(new Intent(StoreFromHistoryActivity.this, StoreListActivity.class));
-				finish();
+//				finish();
 			}
 		});
 	}
