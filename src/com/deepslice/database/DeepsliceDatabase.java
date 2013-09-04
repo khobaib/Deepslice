@@ -50,13 +50,7 @@ public class DeepsliceDatabase {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            //            CategoryDbManager.createTable(db);
-            //            ProductDbManager.createTable(db);
-            //            ToppingPriceDbManager.createTable(db);
-            //            SauceAndToppingDbManager.createTable(db);
             FavoriteDbManager.createTable(db);
-//            OrderDbManager.createTable(db);
-//            DealsDbManager.createTable(db);
             DeliveryLocationDbManager.createTable(db);
             LocationHistoryDbManager.createTable(db);
 
@@ -73,14 +67,7 @@ public class DeepsliceDatabase {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            //            CategoryDbManager.dropTable(db);
-            //            ProductDbManager.dropTable(db);
-
-            //            ToppingPriceDbManager.dropTable(db);
-            //            SauceAndToppingDbManager.dropTable(db);
             FavoriteDbManager.dropTable(db);
-//            OrderDbManager.dropTable(db);
-//            DealsDbManager.dropTable(db);
             DeliveryLocationDbManager.dropTable(db);
             LocationHistoryDbManager.dropTable(db);
 
@@ -124,41 +111,14 @@ public class DeepsliceDatabase {
     }
 
 
-    //    public synchronized String getMaxId(String tbl) {
-    //        try {
-    //            Cursor cursor=this.db.rawQuery("SELECT MAX(id) AS max_id FROM "+tbl, null);
-    //            String s=null;
-    //            if (cursor.moveToFirst()) {
-    //                    s=cursor.getString(0);
-    //            }
-    //            
-    //            if (cursor != null && !cursor.isClosed()) {
-    //                cursor.close();
-    //            }
-    //            return s;
-    //            
-    //        } catch (Exception e) {
-    //            return null;
-    //        }
-    //    }
-
-
-
-
+    public void cleanAllOrderTable(){
+        cleanProductOrderTable();
+        cleanDealsOrderTable();
+        cleanDealsOrderDetailsTable();
+        cleanToppingsOrderTable();
+    }
 
     // Topping & Sauce
-
-    //    public boolean insertToppingSizes(List<ToppingSizes> aList ) {
-    //        for (Iterator<ToppingSizes> iterator = aList.iterator(); iterator.hasNext();) {
-    //            ToppingSizes f = (ToppingSizes) iterator.next();
-    //            ToppingSizeDbManager.insert(this.db,
-    //                    f.getToppingSizeID(), f.getToppingSizeCode(), f.getToppingSizeDesc(),
-    //                    f.getToppingAbbr(), f.getToppingAmount(), f.getDisplaySequence()
-    //                    );
-    //        }
-    //        return true;
-    //    }
-
 
     public boolean insertToppingSizes(List<ToppingSizes> toppingSizeList ) {
         for(ToppingSizes toppingSize : toppingSizeList){
@@ -179,25 +139,6 @@ public class DeepsliceDatabase {
         return NEW_ToppingSizeDbManager.retrieveToppingSizeIdByCode(this.db, toppingSizeCode);
     }
 
-
-    //    public boolean insertToppingPrices(List<ToppingPrices> aList ) {
-    //        for (Iterator<ToppingPrices> iterator = aList.iterator(); iterator.hasNext();) {
-    //            ToppingPrices f = (ToppingPrices) iterator.next();
-    //            ToppingPriceDbManager.insert(this.db,
-    //                    f.getToppingID(),
-    //                    f.getToppingCode(),
-    //                    f.getToppingAbbr(),
-    //                    f.getToppingDesc(),
-    //                    f.getIsSauce(),
-    //                    f.getCaloriesQty(),
-    //                    f.getToppingSizeID(),
-    //                    f.getToppingSizeCode(),
-    //                    f.getToppingSizeDesc(),
-    //                    f.getToppingPrice()
-    //                    );
-    //        }
-    //        return true;
-    //    }
 
     // updated
     public boolean insertToppingPrices(List<ToppingPrices> toppingPriceList ) {
@@ -225,77 +166,17 @@ public class DeepsliceDatabase {
     }
 
 
-    // checked
-    //    public ArrayList<ToppingsAndSauces> getPizzaToppings(String pizzaId) {
-    //        Cursor ls = SauceAndToppingDbManager.getPizzaToppings(this.db, pizzaId);
-    //        return cursorToToppingsAndSauces(ls);
-    //    }
-
-
     // updated
     public List<ToppingsAndSauces> retrievePizzaToppings(String prodId) {
         return NEW_SauceAndToppingsDbManager.retrievePizzaToppings(this.db, prodId);
     }
 
-    //    public ArrayList<ToppingsAndSauces> getPizzaSauces(String prodId) {
-    //        Cursor ls = SauceAndToppingDbManager.getPizzaSauces(this.db, prodId);
-    //        return cursorToToppingsAndSauces(ls);
-    //    }
 
     // updated
     public List<ToppingsAndSauces> retrievePizzaSauces(String prodId) {
         return NEW_SauceAndToppingsDbManager.retrievePizzaSauces(this.db, prodId);
     }
 
-
-    // checked
-    /*    public ArrayList<ToppingsAndSauces> cursorToToppingsAndSauces(Cursor cursor) {
-        if(null==cursor)
-            return null;
-        ArrayList<ToppingsAndSauces> list = new ArrayList<ToppingsAndSauces>();
-        if (cursor.moveToFirst()) {
-            do {
-                ToppingsAndSauces f = new ToppingsAndSauces();
-                int count=1;
-                f.setToppingID(cursor.getString(count++));
-                f.setToppingCode(cursor.getString(count++));
-                f.setToppingAbbr(cursor.getString(count++));
-                f.setToppingDesc(cursor.getString(count++));
-                f.setIsSauce(cursor.getString(count++));
-                f.setCaloriesQty(cursor.getString(count++));
-                f.setProdID(cursor.getString(count++));
-                f.setOwnPrice(cursor.getString(count++));
-                f.setDisplaySequence(cursor.getString(count++));
-                f.setIsFreeWithPizza(cursor.getString(count++));
-
-                list.add(f);
-            } while (cursor.moveToNext());
-        }
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-        return list;
-    }*/
-
-
-    //    public boolean insertToppingSauces(List<ToppingsAndSauces> aList ) {
-    //        for (Iterator<ToppingsAndSauces> iterator = aList.iterator(); iterator.hasNext();) {
-    //            ToppingsAndSauces f = (ToppingsAndSauces) iterator.next();
-    //            SauceAndToppingDbManager.insert(this.db,
-    //                    f.getToppingID(),
-    //                    f.getToppingCode(),
-    //                    f.getToppingAbbr(),
-    //                    f.getToppingDesc(),
-    //                    f.getIsSauce(),
-    //                    f.getCaloriesQty(),
-    //                    f.getProdID(),
-    //                    f.getOwnPrice(),
-    //                    f.getDisplaySequence(),
-    //                    f.getIsFreeWithPizza()
-    //                    );
-    //        }
-    //        return true;
-    //    }
 
     // updated
     public void insertToppingSauces(List<ToppingsAndSauces> toppingsList ) {
@@ -417,19 +298,11 @@ public class DeepsliceDatabase {
 
 
 
-    // Order
+    // Product-Order
 
-    /*    public boolean insertOrder(Order f) {
-
-        OrderDbManager.insert(this.db,
-                f.getProdCatID(), f.getSubCatID1(), f.getSubCatID2(), f.getProdID(),
-                f.getProdCode(), f.getDisplayName(), f.getProdAbbr(), f.getProdDesc(),
-                f.getIsAddDeliveryAmount(), f.getDisplaySequence(), f.getCaloriesQty(), f.getPrice(),
-                f.getThumbnail(), f.getFullImage(), f.getQuantity(), f.getCrust(),
-                f.getSauce(), f.getToppings(), f.getProdCatName()
-                );
-        return true;
-    }*/
+    public void cleanProductOrderTable(){
+        NEW_ProductOrderDbManager.cleanProductOrderTable(this.db);
+    }
 
     public long insertOrder(NewProductOrder order) {
         return NEW_ProductOrderDbManager.insert(this.db, order);
@@ -438,14 +311,6 @@ public class DeepsliceDatabase {
 
     public List<NewProductOrder> getOrdersList() {
         return NEW_ProductOrderDbManager.retrieveAll(this.db);
-
-//        Cursor cursor= OrderDbManager.getOrdersList(this.db);
-//        try{        
-//            return cursorToOrderBean(cursor);
-//        }finally{
-//            if (cursor != null && !cursor.isClosed())
-//                cursor.close(); 
-//        }
     }
 
 
@@ -455,8 +320,6 @@ public class DeepsliceDatabase {
 
         List<String> orderInfo = new ArrayList<String>();
         List<NewProductOrder>  orderList = getOrdersList();
-//        if(orderList == null || orderList.size() <= 0)
-//            return null;
 
         double orderTotalPrice = 0.00;
         int itemCount = 0;
@@ -475,24 +338,7 @@ public class DeepsliceDatabase {
             orderTotalPrice += Double.parseDouble(dealOrder.getTotalPrice());            
         }
         
-
-        //        String couponType=AppSharedPreference.getData(mContext, "couponType",AppProperties.COUPON_TYPE_NONE);
-        //
-        //        if(couponType.equals(AppProperties.COUPON_TYPE_FIXED) || couponType.equals(AppProperties.COUPON_TYPE_PERCENTAGE))
-        //        {
-        //            String couponAmountStr=AppSharedPreference.getData(mContext, "couponAmount","0.00");
-        //            double couponAmout=Double.parseDouble(couponAmountStr);
-        //
-        //            if(couponType.equals(AppProperties.COUPON_TYPE_FIXED))
-        //            {
-        //                price=price-couponAmout;
-        //            }
-        //            else if(couponType.equals(AppProperties.COUPON_TYPE_PERCENTAGE))
-        //            {
-        //                double disc=(couponAmout/100)*price;
-        //                price=price-disc;
-        //            }
-        //        }
+        
         orderInfo.add(String.valueOf(itemCount));
         orderInfo.add(String.valueOf(AppProperties.roundTwoDecimals(orderTotalPrice)));
 
@@ -503,59 +349,14 @@ public class DeepsliceDatabase {
     // checked
     public List<NewProductOrder> getOrdersListWithCategory(String catName) {
         return NEW_ProductOrderDbManager.retrieve(this.db, catName);
-//        Cursor cursor= OrderDbManager.getOrdersListWithType(this.db, type);
-//        try{        
-//            return cursorToOrderBean(cursor);
-//        }finally{
-//            cursor.close(); 
-//        }
-
     }
-    
-    //    public List<Order> getOrdersListWithProdId(String pid) {
-    //
-    //        Cursor cursor= OrderDbManager.getOrdersListWithProdId(this.db, pid);
-    //        try{        
-    //            return cursorToOrderBean(cursor);
-    //        }finally{
-    //            cursor.close(); 
-    //        }
-    //
-    //    }
-
-//    public boolean deleteOrderRec(int serialKey) {
-//        return OrderDbManager.deleteRecordOrder(this.db, "sr_no="+serialKey);
-//    }
-    
+        
     
     // new
     public boolean deleteProductOrder(int orderId){
         return NEW_ProductOrderDbManager.delete(this.db, orderId);
     }
 
-//    public void cleanOrderTable(){
-//        OrderDbManager.cleanOrderTable(this.db);
-//    }
-
-
-    //    public void updateOrderDetails(ArrayList<CouponDetails> couponDetails) {
-    //
-    //        List<Order> vList=null;
-    //        double discountPrice=0.00;
-    //        double currentPrice=0.00;
-    //        double newPrice=0.00;
-    //        for (CouponDetails couponDetailsVo : couponDetails) {
-    //            discountPrice=Double.parseDouble(couponDetailsVo.getDiscountedPrice());
-    //            vList = getOrdersListWithProdId(couponDetailsVo.getProdID());
-    //
-    //            for (Order orderVo : vList) {
-    //                currentPrice=Double.parseDouble(orderVo.getPrice());
-    //                newPrice=currentPrice-discountPrice;
-    //                OrderDbManager.updateOrderPrice(this.db, String.valueOf(orderVo.getSerialId()),String.valueOf(AppProperties.roundTwoDecimals(newPrice)));
-    //            }
-    //        }
-    //
-    //    }
 
     // checked
     public List<Order> cursorToOrderBean(Cursor cursor) {
@@ -595,11 +396,11 @@ public class DeepsliceDatabase {
 
 
 
-    // Deals
-
-//    public void finalizedDealOrder(){
-//        DealsDbManager.finalizedDealOrder(this.db);
-//    }
+    // Deals-Order
+    
+    public void cleanDealsOrderTable(){
+        NEW_DealsOrderDbManager.cleanDealsOrderTable(this.db);
+    }
     
     // updated
     public void finalizedDealOrder(int dealOrderId){        
@@ -611,37 +412,16 @@ public class DeepsliceDatabase {
     public double updateTotalPrice(int dealOrderId){
         return NEW_DealsOrderDbManager.updateTotalPrice(this.db, dealOrderId);
     }
-
-    // checked
-    //    public int getDealOrderCount(String coupnID){
-    //        return DealsDbManager.getDealOrderCount(this.db, coupnID);
-    //    }
-
-    // checked
-    //    public void resetDealOrder(String coupnID){
-    //        DealsDbManager.resetDealOrder(this.db, coupnID);
-    //    }
-
-    // checked
-//    public void insertDealOrder(DealOrder f) {
-//
-//        DealsDbManager.insertDealOrder(this.db,
-//                f.getCouponID(),
-//                f.getCouponTypeID(),
-//                f.getCouponCode(),
-//                f.getCouponGroupID(),
-//                f.getDiscountedPrice(),
-//                f.getProdID(),
-//                f.getDisplayName(),
-//                f.getQuantity(),
-//                f.getUpdate(),
-//                f.getImage()
-//                );
-//    }
+    
     
     // updated
     public long insertDealOrder(NewDealsOrder dealOrder){
         return NEW_DealsOrderDbManager.insert(this.db, dealOrder);
+    }
+    
+    
+    public void cleanDealsOrderDetailsTable(){
+        NEW_DealsOrderDetailsDbManager.cleanDealsOrderDetailsTable(this.db);
     }
     
     // updated
@@ -649,117 +429,6 @@ public class DeepsliceDatabase {
         return NEW_DealsOrderDetailsDbManager.insert(this.db, dealsOrderDetails);
     }
 
-
-//    public boolean cleanDeal(){
-//        DealsDbManager.cleanDealTable(this.db);
-//        return true;
-//    }
-
-//    public boolean insertDeals(Coupon deal){
-//        //        Log.d("DeepsliceDatabase", "inseting deals to DB..");
-//        DealsDbManager.insertDeal(this.db,
-//                deal.getCouponID(),
-//                deal.getCouponTypeID(),
-//                deal.getCouponTypeCode(),
-//                deal.getCouponCode(),
-//                deal.getCouponAbbr(),
-//                deal.getCouponDesc(),
-//                deal.getDisplayText(),
-//                deal.getIsPercentage(),
-//                deal.getIsFixed(),
-//                deal.getIsDiscountedProduct(),
-//                deal.getAmount(),
-//                deal.getMaxUsage(),
-//                deal.getIsLimitedTimeOffer(),
-//                deal.getEffectiveStartDate(),
-//                deal.getEffectiveEndDate(),
-//                deal.getEffectiveTimeStart(),
-//                deal.getEffectiveTimeEnd(),
-//                deal.getIsOnDelivery(),
-//                deal.getIsOnPickup(),
-//                deal.getIsOnSunday(),
-//                deal.getIsOnMonday(),
-//                deal.getIsOnTuesday(),
-//                deal.getIsOnWednesday(),
-//                deal.getIsOnThursday(),
-//                deal.getIsOnFriday(),
-//                deal.getIsOnSaturday(),
-//                deal.getIsOnInternet(),
-//                deal.getIsOnlyOnInternet(),
-//                deal.getIsTaxable(),
-//                deal.getIsPrerequisite(),
-//                deal.getIsLocationBased(),
-//                deal.getIsGreetingSpecials(),
-//                deal.getPic()
-//                );
-//        return true;
-//    }
-
-//    public List<Coupon> getDealList(){
-//        Cursor cursor=DealsDbManager.getDealList(this.db);
-//        return cursorToCoupons(cursor);
-//    }
-
-//    private List<Coupon> cursorToCoupons(Cursor cursor) {
-//        if (cursor==null)return null;
-//        List<Coupon> voArrayList=new ArrayList<Coupon>();
-//        if(cursor.moveToFirst()) {
-//            do {
-//                Coupon f = new Coupon();
-//                int counter=1;
-//                f.setCouponID(cursor.getString(counter++));
-//                f.setCouponTypeID(cursor.getString(counter++));
-//                f.setCouponTypeCode(cursor.getString(counter++));
-//                f.setCouponCode(cursor.getString(counter++));
-//                f.setCouponAbbr(cursor.getString(counter++));
-//                f.setCouponDesc(cursor.getString(counter++));
-//                f.setDisplayText(cursor.getString(counter++));
-//                f.setIsPercentage(cursor.getString(counter++));
-//                f.setIsFixed(cursor.getString(counter++));
-//                f.setIsDiscountedProduct(cursor.getString(counter++));
-//                f.setAmount(cursor.getString(counter++));
-//                f.setMaxUsage(cursor.getString(counter++));
-//                f.setIsLimitedTimeOffer(cursor.getString(counter++));
-//                f.setEffectiveStartDate(cursor.getString(counter++));
-//                f.setEffectiveEndDate(cursor.getString(counter++));
-//                f.setEffectiveTimeStart(cursor.getString(counter++));
-//                f.setEffectiveTimeEnd(cursor.getString(counter++));
-//                f.setIsOnDelivery(cursor.getString(counter++));
-//                f.setIsOnPickup(cursor.getString(counter++));
-//                f.setIsOnSunday(cursor.getString(counter++));
-//                f.setIsOnMonday(cursor.getString(counter++));
-//                f.setIsOnTuesday(cursor.getString(counter++));
-//                f.setIsOnWednesday(cursor.getString(counter++));
-//                f.setIsOnThursday(cursor.getString(counter++));
-//                f.setIsOnFriday(cursor.getString(counter++));
-//                f.setIsOnSaturday(cursor.getString(counter++));
-//                f.setIsOnInternet(cursor.getString(counter++));
-//                f.setIsOnlyOnInternet(cursor.getString(counter++));
-//                f.setIsTaxable(cursor.getString(counter++));
-//                f.setIsPrerequisite(cursor.getString(counter++));
-//                f.setIsLocationBased(cursor.getString(counter++));
-//                f.setIsGreetingSpecials(cursor.getString(counter++));
-//                f.setPic(cursor.getString(counter++));
-//                voArrayList.add(f);
-//            } while (cursor.moveToNext());
-//        }
-//        if (cursor != null && !cursor.isClosed()) {
-//            cursor.close();
-//        }
-//        return voArrayList;  //To change body of created methods use File | Settings | File Templates.
-//    }
-
-
-    // will be deleted & converted to the just-next method
-//    public List<DealOrder> getDealOrdersList(boolean updateFlag) {
-//
-//        Cursor cursor= DealsDbManager.getDealOrdersList(this.db, updateFlag);
-//        try{
-//            return cursorToDealOrder(cursor);
-//        }finally{
-//            cursor.close();
-//        }
-//    }
     
     // updated
     public List<NewDealsOrder> retrieveDealOrderList(boolean isComplete) {
@@ -771,82 +440,28 @@ public class DeepsliceDatabase {
         return NEW_DealsOrderDetailsDbManager.retrieve(this.db, dealsOrderId);
     }
 
-    // NEW - 20130814 1300, i think it wont needed, can be sub by getDealOrdersList() method
-    //    public List<DealOrder> getUnfinishedDealOrdersList(String couponID){
-    //        Cursor cursor = DealsDbManager.getUnfinishedDealOrdersList(this.db, couponID);
-    //        try{
-    //            return cursorToDealOrder(cursor);
-    //        }finally{
-    //            cursor.close();
-    //        }
-    //    }
-
-    // will be deprecated
-//    public ArrayList<String> getDealData(String couponID, String couponGroupId){
-//        Cursor cursor=DealsDbManager.getDealOrderData(this.db, couponID, couponGroupId);
-//        ArrayList<String> list = new ArrayList<String>();
-//        if (cursor.moveToFirst()) {
-//            do {
-//                list.add(cursor.getString(0));
-//                list.add(cursor.getString(1));
-//                list.add(cursor.getString(2));
-//                list.add(cursor.getString(3));
-//                list.add(cursor.getString(4));
-//            } while (cursor.moveToNext());
-//        }
-//        if (cursor != null && !cursor.isClosed()) {
-//            cursor.close();
-//        }
-//        return list;
-//    }
-
 
     // new
     public boolean deleteDealsOrder(int orderId){
         return NEW_DealsOrderDbManager.delete(this.db, orderId);
     }
     
-
-//    public boolean deleteDealOrderRec(int serialKey) {
-//        return DealsDbManager.deleteRecordDealOrder(this.db, "sr_no="+serialKey);
-//    }
-
-    // checked
-//    public boolean deleteUnfinishedDealOrder( ) {
-//        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "isUpdate = 0");
-//    }
-    
     // updated
     public boolean deleteUnfinishedDealOrder( ) {
         return NEW_DealsOrderDbManager.deleteUnfinishedDealOrder(this.db);
     }
 
-    // modified, now only delete unfinished deals
-//    public boolean deleteAlreadySelectedDealGroup(String couponId, String couponGroupId){
-//        return DealsDbManager.deleteAlreadySelectedDealGroup(this.db, couponId, couponGroupId);
-//    }
     
     // modified
     public boolean deleteAlreadySelectedDealGroup(int dealOrderId, String couponGroupId){
         return NEW_DealsOrderDetailsDbManager.deleteAlreadySelectedDealGroup(this.db, dealOrderId, couponGroupId);
     }
 
-    // modified, now only check on unfinished deals
-//    public boolean isDealGroupAlreadySelected(String couponID, String CouponGroupID){
-//        return DealsDbManager.isDealGroupAlreadySelected(this.db, couponID, CouponGroupID);
-//    }
     
     // updated
     public boolean isDealGroupAlreadySelected(int dealOrderId, String CouponGroupID){
         return NEW_DealsOrderDetailsDbManager.isDealGroupAlreadySelected(this.db, dealOrderId, CouponGroupID);
     }
-
-    //    public boolean deleteDealOrderRec(String CouponID ) {
-    //        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "CouponID = "+CouponID);
-    //    }
-    //    public boolean deleteDealOrderRecByGroupID(String CouponGroupID ) {
-    //        return DealsDbManager.deleteUnfinishedDealOrder(this.db, "CouponGroupID = " + CouponGroupID);
-    //    }
 
 
     private List<DealOrder> cursorToDealOrder(Cursor cursor) {
@@ -878,28 +493,6 @@ public class DeepsliceDatabase {
 
     // Products
 
-    //    public boolean insertAllProducts(List<Product> aList ) {
-    //        for (Iterator<Product> iterator = aList.iterator(); iterator.hasNext();) {
-    //            Product f = (Product) iterator.next();
-    //            ProductDbManager.insert(this.db,
-    //                    f.getProdCatID(),
-    //                    f.getSubCatID1(),
-    //                    f.getSubCatID2(),
-    //                    f.getProdID(),
-    //                    f.getProdCode(),
-    //                    f.getDisplayName(),
-    //                    f.getProdAbbr(),
-    //                    f.getProdDesc(),
-    //                    f.getIsAddDeliveryAmount(),
-    //                    f.getDisplaySequence(),
-    //                    f.getCaloriesQty(),
-    //                    f.getPrice(),
-    //                    f.getThumbnail(),
-    //                    f.getFullImage()
-    //                    );
-    //        }
-    //        return true;
-    //    }
 
     // updated
     public boolean insertAllProducts(List<Product> prodList ) {
@@ -914,47 +507,6 @@ public class DeepsliceDatabase {
     public List<Product> retrieveProducts(String prodCatId, String subCatId) {
         return NEW_ProductDbManager.retrieveProducts(this.db, prodCatId, subCatId);
     }
-
-
-//    public List<Product> getProductsPizza(String catId, String subCatId) {
-//
-//        Cursor cursor= ProductDbManager.getProductsPizza(this.db, catId, subCatId);
-//        try{        
-//            return cursorToAllProducts(cursor);
-//        }finally{
-//            cursor.close(); 
-//        }
-//
-//    }
-
-//    public List<Product> getProductsListByIds(String prodIds) {
-//
-//        Cursor cursor= ProductDbManager.getProductsListById(this.db, prodIds);
-//        try{        
-//            return cursorToAllProducts(cursor);
-//        }finally{
-//            cursor.close(); 
-//        }
-//
-//    }
-
-//    public Product getProductById(String prodId) {
-//
-//        Cursor cursor= ProductDbManager.getProductById(this.db, prodId);
-//        try{    
-//            List<Product> lst = cursorToAllProducts(cursor);
-//            if(lst!=null && lst.size()>0)
-//            {
-//                return lst.get(0);
-//            }
-//            else{
-//                return null;
-//            }
-//        }finally{
-//            cursor.close(); 
-//        }
-//
-//    }
     
     
     // updated
@@ -966,37 +518,6 @@ public class DeepsliceDatabase {
     public Product retrieveProductFromSubCrust(String prodCatId, String SubCatId1, String SubCatId2, String prodCode){
         return NEW_ProductDbManager.retrieveProductFromSubCrust(this.db, prodCatId, SubCatId1, SubCatId2, prodCode);
     }
-
-
-
-
-//    public List<Product> cursorToAllProducts(Cursor cursor) {
-//        List<Product> list = new ArrayList<Product>();
-//        if (cursor.moveToFirst()) {
-//            do {
-//                Product f = new Product();
-//                f.setProdCatID(cursor.getString(1));
-//                f.setSubCatID1(cursor.getString(2));
-//                f.setSubCatID2(cursor.getString(3));
-//                f.setProdID(cursor.getString(4));
-//                f.setProdCode(cursor.getString(5));
-//                f.setDisplayName(cursor.getString(6));
-//                f.setProdAbbr(cursor.getString(7));
-//                f.setProdDesc(cursor.getString(8));
-//                f.setIsAddDeliveryAmount(cursor.getString(9));
-//                f.setDisplaySequence(cursor.getString(10));
-//                f.setCaloriesQty(cursor.getString(11));
-//                f.setPrice(cursor.getString(12));
-//                f.setThumbnail(cursor.getString(13));
-//                f.setFullImage(cursor.getString(14));
-//                list.add(f);
-//            } while (cursor.moveToNext());
-//        }
-//        if (cursor != null && !cursor.isClosed()) {
-//            cursor.close();
-//        }
-//        return list;
-//    }
 
 
     // Delivery Location
@@ -1142,60 +663,12 @@ public class DeepsliceDatabase {
     }
 
 
-
-    // Categories & Sub-categories
-
-    //    public boolean insertProdCat(List<ProductCategory> aList ) {
-    //        for (Iterator<ProductCategory> iterator = aList.iterator(); iterator.hasNext();) {
-    //            ProductCategory f = (ProductCategory) iterator.next();
-    //            CategoryDbManager.insertCategory(this.db,
-    //                    f.getProdCatID(),
-    //                    f.getProdCatCode(),
-    //                    f.getProdCatAbbr(),
-    //                    f.getProdCatDesc(),
-    //                    f.getAllowPartialSelection(),
-    //                    f.getPartialSelectionText(),
-    //                    f.getPartialSelectionSurcharge(),
-    //                    f.getAllowSubCat1(),
-    //                    f.getSubCat1Text(),
-    //                    f.getAllowSubCat2(),
-    //                    f.getSubCat2Text(),
-    //                    f.getProductBarText(),
-    //                    f.getAllowOptions(),
-    //                    f.getOptionBarText(),
-    //                    f.getOptionCounting(),
-    //                    f.getThumbnail(),
-    //                    f.getFullImage()
-    //
-    //                    );
-    //        }
-    //        return true;
-    //    }
-
     public void insertProdCatList(List<ProductCategory> prodCatList) {
         for(ProductCategory pCat : prodCatList){
             long catPId = NEW_CategoriesDbManager.insertCategory(this.db, pCat);
         }
     }
 
-    //    public boolean insertSubCatList(List<ProductSubCategory> aList ) {
-    //        for (Iterator<ProductSubCategory> iterator = aList.iterator(); iterator.hasNext();) {
-    //            ProductSubCategory f = (ProductSubCategory) iterator.next();
-    //            CategoryDbManager.insertSubcategory(this.db,
-    //                    f.getProdCatID(),
-    //                    f.getSubCatID(),
-    //                    f.getSubCatOf(),
-    //                    f.getSubCatCode(),
-    //                    f.getSubCatAbbr(),
-    //                    f.getSubCatDesc(),
-    //                    f.getDisplaySequence(),
-    //                    f.getThumbnail(),
-    //                    f.getFullImage()
-    //
-    //                    );
-    //        }
-    //        return true;
-    //    }
 
     public void insertSubCatList(List<ProductSubCategory> prodSubCatList) {
         for(ProductSubCategory pSubCat : prodSubCatList){
@@ -1209,49 +682,23 @@ public class DeepsliceDatabase {
         return NEW_CategoriesDbManager.isCategoriesExist(this.db);
     }
 
-    //    public ArrayList<ProductSubCategory> getSubCategoriesPizza() {
-    //        Cursor ls = CategoryDbManager.searchPizzaSubCats(this.db);
-    //        return cursorToSubCat(ls);
-    //    }
 
     // updated
     public List<ProductSubCategory> retrievePizzaSubMenu() {
         return NEW_CategoriesDbManager.retrievePizzaSubMenu(this.db);
     }
 
-
-    //    public ArrayList<ProductSubCategory> getSubCategoriesDrinks() {
-    //        Cursor ls = CategoryDbManager.searchDrinksSubCats(this.db);
-    //        return cursorToSubCat(ls);
-    //    }
-
     // updated
     public List<ProductSubCategory> retrieveDrinksSize() {
         return NEW_CategoriesDbManager.retrieveDrinksSize(this.db);
     }
 
-    //    public ArrayList<ProductCategory> getSides() {
-    //        Cursor ls = CategoryDbManager.searchSides(this.db);
-    //        return cursorToPeoductCats(ls);
-    //    }
 
     // updated
     public List<ProductCategory> getSides() {
         return NEW_CategoriesDbManager.retrieveSides(this.db);
     }
 
-
-    //    public ArrayList<ProductSubCategory> getPizzaCrusts(String catId,
-    //            String subCatId) {
-    //
-    //        Cursor cursor= CategoryDbManager.searchPizzaCrusts(this.db, catId, subCatId);
-    //        try{        
-    //            return cursorToSubCat(cursor);
-    //        }finally{
-    //            cursor.close(); 
-    //        }
-    //
-    //    }
 
     public List<ProductSubCategory> retrievePizzaCrustList(String catId, String subCatId) {
         return NEW_CategoriesDbManager.retrievePizzaCrustList(this.db, catId, subCatId);
@@ -1266,84 +713,15 @@ public class DeepsliceDatabase {
     }
 
 
-    //    public String getCatIdByCatCode(String catCode) {
-    //        return CategoryDbManager.getCatIdByCatCode(this.db, catCode);
-    //    }
-
-
     // updated
     public String getCatIdFromCatCode(String catCode) {
         return NEW_CategoriesDbManager.getCatIdByCatCode(this.db, catCode);
     }
 
 
-    //    public String getCatCodeByCatId(String catId) {
-    //        return CategoryDbManager.getCatCodeByCatId(this.db, catId);
-    //    }
-
     // updated
     public String getCatCodeFromCatId(String catId) {
         return NEW_CategoriesDbManager.getCatCodeByCatId(this.db, catId);
     }
-
-
-    //    public ArrayList<ProductSubCategory> cursorToSubCat(Cursor cursor) {
-    //        ArrayList<ProductSubCategory> list = new ArrayList<ProductSubCategory>();
-    //        if (cursor.moveToFirst()) {
-    //            do {
-    //                ProductSubCategory f = new ProductSubCategory();
-    //                f.setProdCatID(cursor.getString(1));
-    //                f.setSubCatID(cursor.getString(2));
-    //                f.setSubCatOf(cursor.getString(3));
-    //                f.setSubCatCode(cursor.getString(4));
-    //                f.setSubCatAbbr(cursor.getString(5));
-    //                f.setSubCatDesc(cursor.getString(6));
-    //                f.setDisplaySequence(cursor.getString(7));
-    //                f.setThumbnail(cursor.getString(8));
-    //                f.setFullImage(cursor.getString(9));
-    //
-    //                list.add(f);
-    //            } while (cursor.moveToNext());
-    //        }
-    //        if (cursor != null && !cursor.isClosed()) {
-    //            cursor.close();
-    //        }
-    //        return list;
-    //    }
-
-
-    //    public ArrayList<ProductCategory> cursorToPeoductCats(Cursor cursor) {
-    //        if(null==cursor)
-    //            return null;
-    //        ArrayList<ProductCategory> list = new ArrayList<ProductCategory>();
-    //        if (cursor.moveToFirst()) {
-    //            do {
-    //                ProductCategory f = new ProductCategory();
-    //                f.setProdCatID(cursor.getString(1));
-    //                f.setProdCatCode(cursor.getString(2));
-    //                f.setProdCatAbbr(cursor.getString(3));
-    //                f.setProdCatDesc(cursor.getString(4));
-    //                f.setAllowPartialSelection(cursor.getString(5));
-    //                f.setPartialSelectionText(cursor.getString(6));
-    //                f.setPartialSelectionSurcharge(cursor.getString(7));
-    //                f.setAllowSubCat1(cursor.getString(8));
-    //                f.setSubCat1Text(cursor.getString(9));
-    //                f.setAllowSubCat2(cursor.getString(10));
-    //                f.setSubCat2Text(cursor.getString(11));
-    //                f.setProductBarText(cursor.getString(12));
-    //                f.setAllowOptions(cursor.getString(13));
-    //                f.setOptionBarText(cursor.getString(14));
-    //                f.setOptionCounting(cursor.getString(15));
-    //                f.setThumbnail(cursor.getString(16));
-    //                f.setFullImage(cursor.getString(17));
-    //
-    //                list.add(f);
-    //            } while (cursor.moveToNext());
-    //        }
-    //        if (cursor != null && !cursor.isClosed()) {
-    //            cursor.close();
-    //        }
-    //        return list;
-    //    }
 
 }

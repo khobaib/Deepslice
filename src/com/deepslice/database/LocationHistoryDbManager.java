@@ -9,7 +9,9 @@ public class LocationHistoryDbManager {
 
     private static final String TAG = LocationHistoryDbManager.class.getSimpleName();
 
-    static String[] table_locations_history_columns = new String[] { "sr_no","LocationID","LocName","LocSuburb", "LocPostalCode", "LocStreet", "LocAddress", "LocPhones", "LocLongitude", "LocLatitude", "OpeningTime", "ClosingTime", "isDelivery","unit","streetNum","streetName","crossStreetName","deliveryInstructions"};
+    static String[] table_locations_history_columns = new String[] { "sr_no","LocationID","LocName","LocSuburb",
+        "LocPostalCode", "LocStreet", "LocAddress", "LocPhones", "LocLongitude", "LocLatitude", "OpeningTime",
+        "ClosingTime", "isDelivery", "unit", "streetNum", "streetName", "crossStreetName", "deliveryInstructions"};
 
     public static final String TABLE_LOCATIONS_HISTORY = "locations_history";
 
@@ -39,7 +41,7 @@ public class LocationHistoryDbManager {
         Log.d(TAG, "in LocationHistoryDbManager, getLocationHistory");
         try {
             String[] selectionArgs={isDelivery};
-            return db.rawQuery("SELECT * FROM "+TABLE_LOCATIONS_HISTORY+" WHERE isDelivery=?  ORDER BY sr_no desc", selectionArgs);
+            return db.rawQuery("SELECT * FROM " + TABLE_LOCATIONS_HISTORY + " WHERE isDelivery=?  ORDER BY sr_no desc", selectionArgs);
         } catch (Exception e) {
             return null;
         }

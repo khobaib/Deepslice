@@ -51,12 +51,40 @@ public class Constants {
     
     public static final int DUMMY_ID = -1;
     
+    public static final String ORDER_LOCATION_ID = "order_location_id";
+    public static final String ORDER_CUSTOMER_ID = "order_customer_id";
+    public static final String ORDER_SERVICE_METHOD = "order_service_method";
+    public static final String ORDER_IS_TIMED_ORDER = "order_is_timed_order";
+    public static final String ORDER_TIMED_ORDER_DATE = "order_timed_order_date";
+    public static final String ORDER_TIMED_ORDER_TIME = "order_timed_order_time";
+    public static final String ORDER_PAYMENT_STATUS = "order_payment_status";
+    public static final String ORDER_TOTAL_PRICE = "order_total_price";
+    public static final String ORDER_NO_OF_ITEMS = "order_no_of_items";
+    
+    public static final String PAYMENT_NO = "payment_no";
+    public static final String PAYMENT_TYPE = "payment_type";
+    public static final String PAYMENT_SUB_TYPE = "payment_sub_type";
+    public static final String PAYMENT_AMOUNT = "payment_amount";
+    public static final String PAYMENT_CARD_TYPE = "payment_card_type";
+    public static final String PAYMENT_NAME_ON_CARD = "payment_name_on_card";
+    public static final String PAYMENT_CARD_NO = "payment_card_no";
+    public static final String PAYMENT_CARD_SECURITY_CODE = "payment_card_security_code";
+    public static final String PAYMENT_EXPIRY_MONTH = "payment_expiry_month";
+    public static final String PAYMENT_EXPIRY_YEAR = "payment_expiry_year";
+    
     public static final String CUSTOMER_ID = "customer_id";
     public static final String CUSTOMER_NAME = "customer_name";
     public static final String CUSTOMER_EMAIL = "customer_email";
     public static final String CUSTOMER_PHONE = "customer_phone";
+    public static final String CUSTOMER_PHONE_EXT = "customer_phone_ext";
     public static final String CUSTOMER_PASSWORD = "customer_password";
     public static final String CUSTOMER_FLAG_SEND_EMAIL = "customer_flag_send_email";
+    public static final String CUSTOMER_SUBURB_ID = "customer_suburb_id";
+    public static final String CUSTOMER_POSTAL_CODE = "customer_postal_code";
+    public static final String CUSTOMER_UNIT = "customer_unit";
+    public static final String CUSTOMER_STREET_ID = "customer_street_id";
+    public static final String CUSTOMER_CROSS_STREET = "customer_cross_street";
+    public static final String CUSTOMER_DELIVERY_INSTRUCTIONS = "customer_delivery_instructions";  
     
     public static final String ORDER_TYPE = "order_type";
     public static final int ORDER_TYPE_DELIVERY = 1;

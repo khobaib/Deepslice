@@ -19,22 +19,22 @@ import com.deepslice.utilities.Utils;
 
 public class PaymentSelectionActivity extends Activity{
 	
-	TextView totalPrice;
-    TextView tvItemsPrice, tvFavCount;
+	TextView tvTotalPrice;
+//    TextView tvItemsPrice, tvFavCount;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.payment_options);
 		
-		totalPrice=(TextView)findViewById(R.id.totalPrice);
+		tvTotalPrice = (TextView)findViewById(R.id.totalPrice);
 		
-        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
-        tvFavCount = (TextView) findViewById(R.id.favCount);
+//        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
+//        tvFavCount = (TextView) findViewById(R.id.favCount);
 /////////////////		
 		
-		Button addCoupon=(Button)findViewById(R.id.btnPayByCash);
-		addCoupon.setOnClickListener(new OnClickListener() {
+		Button payByCash =(Button)findViewById(R.id.btnPayByCash);
+		payByCash.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				
@@ -51,12 +51,33 @@ public class PaymentSelectionActivity extends Activity{
 				bundle.putString("store",store);
 				bundle.putString("suburbId",suburbId);
 				intent.putExtras(bundle);			
-				
-				
-				
+											
 				startActivity(intent);
 			}
 		});
+		
+	      Button payByCard =(Button)findViewById(R.id.btnPayByCard);
+	      payByCard.setOnClickListener(new OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	                
+	                String location=getIntent().getStringExtra("location");
+	                String store=getIntent().getStringExtra("store");
+	                String suburbId=getIntent().getStringExtra("suburbId");
+	                
+	                
+	                Intent intent=new Intent();
+	                intent.setClass(PaymentSelectionActivity.this, PayByCardActivity.class);
+	                
+	                Bundle bundle=new Bundle();
+	                bundle.putString("location",location);
+	                bundle.putString("store",store);
+	                bundle.putString("suburbId",suburbId);
+	                intent.putExtras(bundle);           
+	                                            
+	                startActivity(intent);
+	            }
+	        });
 	}
 	
 	
@@ -67,23 +88,26 @@ public class PaymentSelectionActivity extends Activity{
         int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
         String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
         
-        if(itemCount > 0){
-            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
-            tvItemsPrice.setVisibility(View.VISIBLE);
-        }
-        else{
-            tvItemsPrice.setVisibility(View.INVISIBLE);
-        }
-
+        tvTotalPrice.setText("$" + totalPrice);
         
-        String favCount = Utils.FavCount(PaymentSelectionActivity.this);
-        if (favCount != null && !favCount.equals("0")) {
-            tvFavCount.setText(favCount);
-            tvFavCount.setVisibility(View.VISIBLE);
-        }
-        else{
-            tvFavCount.setVisibility(View.INVISIBLE);
-        }
+//        if(itemCount > 0){
+//            tvItemsPrice.setVisibility(View.VISIBLE);
+//            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
+//
+//        }
+//        else{
+//            tvItemsPrice.setVisibility(View.INVISIBLE);
+//        }
+//
+//        
+//        String favCount = Utils.FavCount(PaymentSelectionActivity.this);
+//        if (favCount != null && !favCount.equals("0")) {
+//            tvFavCount.setText(favCount);
+//            tvFavCount.setVisibility(View.VISIBLE);
+//        }
+//        else{
+//            tvFavCount.setVisibility(View.INVISIBLE);
+//        }
     }
 
 }

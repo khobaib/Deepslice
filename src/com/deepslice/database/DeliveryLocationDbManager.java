@@ -9,7 +9,9 @@ public class DeliveryLocationDbManager {
 
     private static final String TAG = DeliveryLocationDbManager.class.getSimpleName();
 
-    static String[] table_delivery_locations_columns = new String[] { "sr_no","SuburbName","SuburbAbbr","PostCode", "LocName", "LocPostalCode", "LocStreet", "LocAddress", "LocLongitude", "LocLatitude", "OpeningTime", "ClosingTime", "LocationID", "SuburbID"};
+    static String[] table_delivery_locations_columns = new String[] { "sr_no","SuburbName","SuburbAbbr","PostCode",
+        "LocName", "LocPostalCode", "LocStreet", "LocAddress", "LocLongitude", "LocLatitude",
+        "OpeningTime", "ClosingTime", "LocationID", "SuburbID"};
 
     public static final String TABLE_DELIVERY_LOCATIONS = "delivery_locations_table";
 
@@ -44,29 +46,7 @@ public class DeliveryLocationDbManager {
         if ((c != null) && (c.getCount() > 0)) {
             itemExist = true;
         }
-        return itemExist;
-        
-//        Log.d(TAG, "in DeliveryLocationDbManager, isEmptyDeliveryLocations");
-//        boolean recExists=false;
-//        int count=-1;
-//        try {
-//            Cursor cursor=db.rawQuery("SELECT COUNT(*) AS num_rows FROM "+TABLE_DELIVERY_LOCATIONS+" ", null);
-//
-//            if (cursor.moveToFirst()) {
-//                count=cursor.getInt(0);             
-//            }
-//
-//            if(count > 0)
-//                recExists=true;
-//
-//            if (cursor != null && !cursor.isClosed()) {
-//                cursor.close();
-//            }
-//            return recExists;
-//
-//        } catch (Exception e) {
-//            return recExists;
-//        }
+        return itemExist;       
     }
 
     public static Cursor fetchAllRecordsDeliveryLocations(SQLiteDatabase db) {

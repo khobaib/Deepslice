@@ -11,13 +11,18 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class LocationPoints {
-	public String LocationID;
-    public String LocationName;
-    public String Longitude;
-    public String Latitude;
-    public float distance;
+    private String LocationID;
+    private String LocationName;
+    private String Longitude;
+    private String Latitude;
+    private String OpeningTime;
+    private String ClosingTime;
+    private float distance;
     
     
+    public LocationPoints() {
+        // TODO Auto-generated constructor stub
+    }
     
     public static List<LocationPoints> parseLocationPoints(JSONArray locationArray){
         List<LocationPoints> locationPointList = new ArrayList<LocationPoints>();
@@ -44,10 +49,7 @@ public class LocationPoints {
         }
         return locationPointList;
     }
-    
-    
-    
-    
+
     
 	public String getLocationID() {
 		return LocationID;
@@ -73,7 +75,24 @@ public class LocationPoints {
 	public void setLatitude(String latitude) {
 		Latitude = latitude;
 	}
-	public float getDistance() {
+	
+	public String getOpeningTime() {
+        return OpeningTime;
+    }
+
+    public void setOpeningTime(String openingTime) {
+        OpeningTime = openingTime;
+    }
+
+    public String getClosingTime() {
+        return ClosingTime;
+    }
+
+    public void setClosingTime(String closingTime) {
+        ClosingTime = closingTime;
+    }
+
+    public float getDistance() {
 		return distance;
 	}
 	public void setDistance(float distance) {

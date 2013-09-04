@@ -148,9 +148,8 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 								.toString()) && (cal.get(Calendar.HOUR_OF_DAY) > openTime
 								.getHours() && cal.get(Calendar.HOUR_OF_DAY) < closeTime
 								.getHours()))) {
-				    Toast.makeText(DateTimeActivity.this, "Thank you, Your order is taken.",  Toast.LENGTH_SHORT).show();
-					startActivity(new Intent(new Intent(this,
-					        PaymentSelectionActivity.class)));
+//				    Toast.makeText(DateTimeActivity.this, "Thank you, Your order is taken.",  Toast.LENGTH_SHORT).show();
+					startActivity(new Intent(new Intent(this, PaymentSelectionActivity.class)));
 
 				}else {
 					Utils.openErrorDialog(DateTimeActivity.this,
@@ -159,9 +158,8 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 
 			}else if((!AppSharedPreference.getData(DateTimeActivity.this,"customerName","").equals("")||!AppSharedPreference.getData(DateTimeActivity.this,"customerEmail","").equals("")
                     ||!AppSharedPreference.getData(DateTimeActivity.this,"customerPhone","").equals(""))){
-                Toast.makeText(DateTimeActivity.this, "Thank you, Your order is taken.",  Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(new Intent(this,
-                        PaymentSelectionActivity.class)));
+//                Toast.makeText(DateTimeActivity.this, "Thank you, Your order is taken.",  Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(new Intent(this, PaymentSelectionActivity.class)));
             } else {
 				// if (Integer.parseInt(timeStorage[0]) > openTime.getHours()
 				// && Integer.parseInt(timeStorage[0]) < closeTime
@@ -180,9 +178,8 @@ public class DateTimeActivity extends Activity implements OnClickListener {
                                 .toString()) && (cal.get(Calendar.HOUR_OF_DAY) > openTime
                                 .getHours() && cal.get(Calendar.HOUR_OF_DAY) < closeTime
                                 .getHours()))) {
-                    Toast.makeText(DateTimeActivity.this, "Thank you, Your order is taken. Please register/login so we can verify you.",  Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(new Intent(this,
-                            CustomerDetailsActivity.class)));
+//                    Toast.makeText(DateTimeActivity.this, "Thank you, Your order is taken.",  Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(new Intent(this, PaymentSelectionActivity.class)));
 
                 }
 //				if (currentTime.getHours() > openTime.getHours()

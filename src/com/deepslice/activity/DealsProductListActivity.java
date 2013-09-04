@@ -1,6 +1,5 @@
 package com.deepslice.activity;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +24,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.deepslice.adapter.DealProductListAdapter;
-import com.deepslice.database.DealsDbManager;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.Coupon;
 import com.deepslice.model.CouponDetails;
-import com.deepslice.model.DealOrder;
 import com.deepslice.model.NewDealsOrderDetails;
 import com.deepslice.model.Product;
 import com.deepslice.model.ServerResponse;
@@ -37,7 +34,6 @@ import com.deepslice.model.ToppingPrices;
 import com.deepslice.model.ToppingSizes;
 import com.deepslice.model.ToppingsAndSauces;
 import com.deepslice.parser.JsonParser;
-import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.DeepsliceApplication;
 import com.deepslice.utilities.Utils;
@@ -45,7 +41,7 @@ import com.deepslice.utilities.Utils;
 
 public class DealsProductListActivity extends Activity {
 
-    private static final String TAG = DealsDbManager.class.getSimpleName();
+    private static final String TAG = DealsProductListActivity.class.getSimpleName();
 
     String productCatId, productName;
     int currentPosition;

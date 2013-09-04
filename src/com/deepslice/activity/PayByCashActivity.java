@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DealOrder;
@@ -39,8 +41,8 @@ import java.util.List;
 
 public class PayByCashActivity extends Activity{
 	
-	TextView totalPrice,descriptionText;
-    TextView tvItemsPrice, tvFavCount;
+	TextView tvTotalPrice, descriptionText;
+//    TextView tvItemsPrice, tvFavCount;
     
 	String myIp;
 	
@@ -49,20 +51,26 @@ public class PayByCashActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.pay_cash);
 		
-		totalPrice=(TextView)findViewById(R.id.totalPrice);
+		tvTotalPrice = (TextView)findViewById(R.id.totalPrice);
 		descriptionText=(TextView)findViewById(R.id.textView1);
         TextView txtUserName=(TextView)findViewById(R.id.textUserName);
         
-        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
-        tvFavCount = (TextView) findViewById(R.id.favCount);
+//        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
+//        tvFavCount = (TextView) findViewById(R.id.favCount);
 		
 /////////////////		
 		
-		Button addCoupon=(Button)findViewById(R.id.btnPayByCash);
-		addCoupon.setOnClickListener(new OnClickListener() {
+		Button PlaceOrder = (Button)findViewById(R.id.b_place_order);
+		PlaceOrder.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				
+			    
+			    DeepsliceDatabase dbInstance = new DeepsliceDatabase(PayByCashActivity.this);
+			    dbInstance.open();
+			    dbInstance.cleanAllOrderTable();
+			    dbInstance.close();			    
+			    
+				Toast.makeText(PayByCashActivity.this, "Your order is taken. thank you",  Toast.LENGTH_SHORT).show();
 				
 				/* i have changed here
 				//////////////////////
@@ -79,7 +87,7 @@ public class PayByCashActivity extends Activity{
 				////////////////////////////
 				 */
 				
-				Intent intent = new Intent(PayByCashActivity.this,PickupDeliverActivity.class);
+				Intent intent = new Intent(PayByCashActivity.this, PickupDeliverActivity.class);
 				String location=getIntent().getStringExtra("location");
 				String store=getIntent().getStringExtra("store");
 				String suburbId=getIntent().getStringExtra("suburbId");
@@ -98,7 +106,7 @@ public class PayByCashActivity extends Activity{
                     AppSharedPreference.putData(PayByCashActivity.this, "customerEmail","");
                     AppSharedPreference.putData(PayByCashActivity.this, "customerPhone", "");
                 }
-				
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				finish();
 				
@@ -112,7 +120,7 @@ public class PayByCashActivity extends Activity{
 	
 		StringBuffer theMessageString=new StringBuffer("");
 		theMessageString.append("By placing your order, you are confirming your order of ");
-		theMessageString.append(totalPrice.getText().toString());
+		theMessageString.append(tvTotalPrice.getText().toString());
 		theMessageString.append(".\n\n");
 		theMessageString.append("Your IP address of ");
 		theMessageString.append(myIp);
@@ -135,23 +143,25 @@ public class PayByCashActivity extends Activity{
         int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
         String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
         
-        if(itemCount > 0){
-            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
-            tvItemsPrice.setVisibility(View.VISIBLE);
-        }
-        else{
-            tvItemsPrice.setVisibility(View.INVISIBLE);
-        }
-
+        tvTotalPrice.setText("$" + totalPrice);
         
-        String favCount = Utils.FavCount(PayByCashActivity.this);
-        if (favCount != null && !favCount.equals("0")) {
-            tvFavCount.setText(favCount);
-            tvFavCount.setVisibility(View.VISIBLE);
-        }
-        else{
-            tvFavCount.setVisibility(View.INVISIBLE);
-        }
+//        if(itemCount > 0){
+//            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
+//            tvItemsPrice.setVisibility(View.VISIBLE);
+//        }
+//        else{
+//            tvItemsPrice.setVisibility(View.INVISIBLE);
+//        }
+//
+//        
+//        String favCount = Utils.FavCount(PayByCashActivity.this);
+//        if (favCount != null && !favCount.equals("0")) {
+//            tvFavCount.setText(favCount);
+//            tvFavCount.setVisibility(View.VISIBLE);
+//        }
+//        else{
+//            tvFavCount.setVisibility(View.INVISIBLE);
+//        }
     }
     
     
@@ -263,7 +273,7 @@ public class PayByCashActivity extends Activity{
 				
 				StringBuffer theMessageString=new StringBuffer("");
 				theMessageString.append("By placing your order, you are confirming your order of ");
-				theMessageString.append(totalPrice.getText().toString());
+				theMessageString.append(tvTotalPrice.getText().toString());
 				theMessageString.append(".\n\n");
 				theMessageString.append("Your IP address of ");
 				theMessageString.append(myIp);

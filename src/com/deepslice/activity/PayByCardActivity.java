@@ -1,6 +1,7 @@
 package com.deepslice.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.utilities.Constants;
 
 public class PayByCardActivity extends Activity {
@@ -74,7 +76,7 @@ public class PayByCardActivity extends Activity {
     }
 
 
-    public void onClickContinue(View v){
+    public void onClickPlaceOrder(View v){
 
         name = Name.getText().toString();
         cardNo = CardNo.getText().toString();
@@ -95,7 +97,18 @@ public class PayByCardActivity extends Activity {
         }
 
         else{
-
+            
+            DeepsliceDatabase dbInstance = new DeepsliceDatabase(PayByCardActivity.this);
+            dbInstance.open();
+            dbInstance.cleanAllOrderTable();
+            dbInstance.close(); 
+            
+            Toast.makeText(PayByCardActivity.this, "Your order is taken. thank you",  Toast.LENGTH_SHORT).show();
+            
+            Intent intent = new Intent(PayByCardActivity.this, PickupDeliverActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
             // continue
         }
     }
