@@ -64,29 +64,33 @@
 
             <TextView
                 android:id="@+id/datePicker"
-                android:layout_width="100dip"
+                android:layout_width="120dip"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="40dp"
                 android:background="@drawable/rate_240"
                 android:gravity="center_horizontal"
-                android:padding="5dip"
+                android:padding="10dp"
                 android:text="TextView"
-                android:textColor="#000000" />
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/timePicker"
-                android:layout_width="100dip"
+                android:layout_width="120dip"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="40dp"
                 android:background="@drawable/rate_240"
                 android:gravity="center_horizontal"
-                android:padding="5dip"
+                android:padding="10dp"
                 android:text="TextView"
-                android:textColor="#000000" />
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="18dp" />
         </RelativeLayout>
     </ScrollView>
 

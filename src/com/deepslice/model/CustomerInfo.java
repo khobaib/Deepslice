@@ -9,7 +9,7 @@ public class CustomerInfo {
     private int SuburbID;
     private String PostalCode;
     private String UNIT;
-    private int StreetId;
+    private String StreetName;
     private String CrossStreet;
     private String DeliveryInstructions;
     private String MailingAddress;
@@ -19,7 +19,7 @@ public class CustomerInfo {
     }
     
     public CustomerInfo(int customerID, String customerPhone, String customerPhoneExt, String customerName,
-            String customerPassword, int suburbID, String postalCode, String uNIT, int streetId, String crossStreet,
+            String customerPassword, int suburbID, String postalCode, String uNIT, String streetname, String crossStreet,
             String deliveryInstructions, String mailingAddress) {
         CustomerID = customerID;
         CustomerPhone = customerPhone;
@@ -29,7 +29,7 @@ public class CustomerInfo {
         SuburbID = suburbID;
         PostalCode = postalCode;
         UNIT = uNIT;
-        StreetId = streetId;
+        StreetName = streetname;
         CrossStreet = crossStreet;
         DeliveryInstructions = deliveryInstructions;
         MailingAddress = mailingAddress;
@@ -101,12 +101,12 @@ public class CustomerInfo {
         UNIT = uNIT;
     }
 
-    public int getStreetId() {
-        return StreetId;
+    public String getStreetName() {
+        return StreetName;
     }
 
-    public void setStreetId(int streetId) {
-        StreetId = streetId;
+    public void setStreetName(String streetName) {
+        StreetName = streetName;
     }
 
     public String getCrossStreet() {

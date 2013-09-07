@@ -2,6 +2,9 @@ package com.deepslice.activity;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -12,14 +15,18 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import com.deepslice.database.AppDao;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.utilities.AppProperties;
-
-import java.util.ArrayList;
 
 public class StoreFromHistoryActivity extends Activity {
 	ImageView addPic;
@@ -30,8 +37,8 @@ public class StoreFromHistoryActivity extends Activity {
 	EditText input_text ;
 	ProgressDialog pd;
 	ImageView clearTextIcon;
-	 ArrayList<LocationDetails> deliveryLocationList;
-	 LocationDetails eBean;
+	List<LocationDetails> deliveryLocationList;
+	 LocationDetails selectedLocDetails;
     /** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,31 +47,15 @@ public class StoreFromHistoryActivity extends Activity {
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		listview = (ListView) findViewById(R.id.listView1);
 		
-		deliveryLocationList=new ArrayList<LocationDetails>();
+		deliveryLocationList = new ArrayList<LocationDetails>();
 		
 		DeepsliceDatabase dbInstance = new DeepsliceDatabase(StoreFromHistoryActivity.this);
 		dbInstance.open();
 		deliveryLocationList = dbInstance.getLocationsHistory("False");
 		dbInstance.close();
-		
-//		AppDao dao=null;
-//		try {
-//			dao=AppDao.getSingleton(getApplicationContext());
-//			dao.openConnection();
-//		
-//			deliveryLocationList = dao.getLocationsHistory("False");
-//			
-//
-//		} catch (Exception ex)
-//		{
-//			System.out.println(ex.getMessage());
-//		}finally{
-//			if(null!=dao)
-//				dao.closeConnection();
-//		}
 
-		if(deliveryLocationList==null || deliveryLocationList.size()<=0)
-		{
+
+		if(deliveryLocationList==null || deliveryLocationList.size()<=0) {
 			TextView restext = (TextView) findViewById(R.id.tv22);
 			restext.setText("No recent Pick Up stores exists");
 		}
@@ -73,26 +64,18 @@ public class StoreFromHistoryActivity extends Activity {
 		listview.setAdapter(eventsAdapter);
 		
 		listview.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View v, int position,
-					long id) {
-				eBean = (LocationDetails) v.getTag();
-				if (eBean != null) {
-					
-					AppProperties.saveLocationObj(StoreFromHistoryActivity.this, eBean);
-					
-					
-//					Intent intent;
-//					if(AppProperties.isLoogedIn)
-//						intent=new Intent(StoreFromHistoryActivity.this, MenuActivity.class);
-//					else
-//						intent=new Intent(StoreFromHistoryActivity.this, CustomerDetailsActivity.class);
-					Intent intent = new Intent(StoreFromHistoryActivity.this,DateTimeActivity.class);
+			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+				selectedLocDetails = (LocationDetails) parent.getItemAtPosition(position);
+				if (selectedLocDetails != null) {					
+					AppProperties.saveLocationObj(StoreFromHistoryActivity.this, selectedLocDetails);
+
+					Intent intent = new Intent(StoreFromHistoryActivity.this, DateTimeActivity.class);
 					Bundle bundle = new Bundle();
-					bundle.putString("location",eBean.getLocSuburb()+" "+eBean.getLocPostalCode());
-					bundle.putString("store",eBean.getLocName());
-					bundle.putString("suburbId",eBean.getLocationID());
+//					bundle.putString("location",selectedLocDetails.getLocSuburb()+" " + selectedLocDetails.getLocPostalCode());
+					bundle.putString("store",selectedLocDetails.getLocName());
+//					bundle.putString("suburbId",selectedLocDetails.getLocationID());
 					intent.putExtras(bundle);
-					startActivityForResult(intent, 56);
+					startActivity(intent);
 				}
 			}
 		});
@@ -111,11 +94,10 @@ public class StoreFromHistoryActivity extends Activity {
 ////////////////////////////////////////LIST ADAPTER	
 	private class StateListAdapter extends ArrayAdapter<LocationDetails> {
 
-		private ArrayList<LocationDetails> items;
+		private List<LocationDetails> items;
 		 
 		
-		public StateListAdapter(Context context, int viewResourceId,
-				ArrayList<LocationDetails> items) {
+		public StateListAdapter(Context context, int viewResourceId, List<LocationDetails> items) {
 			super(context, viewResourceId, items);
 			this.items = items;
 			

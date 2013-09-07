@@ -2,20 +2,22 @@ package com.deepslice.model;
 
 public class LocationDetails {
     
-	String LocationID = "";
-	String LocName = "";
-	String LocSuburb = "";
-	String LocPostalCode = "";
-	String LocStreet = "";
-	String LocAddress = "";
-	String LocPhones = "";
-	String LocLatitude = "";
-	String LocLongitude = "";
-	String OpeningTime = "";
-	String ClosingTime = "";
+	String LocationID;
+	String LocName;
+	String LocSuburb;
+	String LocPostalCode;
+	String LocStreet;
+	String LocAddress;
+	String LocPhones;
+	String LocLatitude;
+	String LocLongitude;
+	String OpeningTime;
+	String ClosingTime;
 
 	
 	//delivery address related
+	private String suburbId;
+	private String postalCode;
 	private String unit;
 	private String streetNum;
 	private String streetName;
@@ -89,7 +91,21 @@ public class LocationDetails {
 	public void setClosingTime(String closingTime) {
 		ClosingTime = closingTime;
 	}
-	public String getUnit() {
+	
+	
+	public String getSuburbId() {
+        return suburbId;
+    }
+    public void setSuburbId(String suburbId) {
+        this.suburbId = suburbId;
+    }
+    public String getPostalCode() {
+        return postalCode;
+    }
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+    public String getUnit() {
 		return unit;
 	}
 	public void setUnit(String unit) {

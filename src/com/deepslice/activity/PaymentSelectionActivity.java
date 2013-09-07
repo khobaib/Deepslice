@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -13,13 +14,20 @@ import android.widget.TextView;
 
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
+import com.deepslice.model.Customer;
+import com.deepslice.model.CustomerInfo;
+import com.deepslice.model.LocationDetails;
+import com.deepslice.model.OrderInfo;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.DeepsliceApplication;
 import com.deepslice.utilities.Utils;
 
 public class PaymentSelectionActivity extends Activity{
 	
 	TextView tvTotalPrice;
+	
+	DeepsliceApplication appInstance;
 //    TextView tvItemsPrice, tvFavCount;
     
 	@Override
@@ -28,6 +36,47 @@ public class PaymentSelectionActivity extends Activity{
 		setContentView(R.layout.payment_options);
 		
 		tvTotalPrice = (TextView)findViewById(R.id.totalPrice);
+		
+		appInstance = (DeepsliceApplication) getApplication();
+		
+		LocationDetails selectedLocation = AppProperties.getLocationObj(PaymentSelectionActivity.this);
+		Log.d(">>>>>>>>>>>", "street name = " + selectedLocation.getStreetName());
+		
+        int orderItemCount = 0;
+        String orderPrice = "0.0";
+        List<String> orderInfo = Utils.OrderInfo(PaymentSelectionActivity.this);
+        if(orderInfo != null && orderInfo.size() == 2){
+            orderPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+            orderItemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+        }
+        
+        
+        CustomerInfo custInfo = appInstance.loadCustomerInfo();
+        Customer customer = appInstance.loadCustomer();
+        
+        custInfo.setCustomerID(customer.getCustomerID());
+        custInfo.setCustomerPhone(customer.getPhoneNo());
+        custInfo.setCustomerName(customer.getCustomerName());
+        custInfo.setCustomerPassword(customer.getPwd());
+        custInfo.setSuburbID(Integer.parseInt(selectedLocation.getSuburbId()));
+        custInfo.setPostalCode(selectedLocation.getPostalCode());
+        custInfo.setUNIT(selectedLocation.getUnit());
+        custInfo.setStreetName(selectedLocation.getStreetName());
+        custInfo.setCrossStreet(selectedLocation.getCrossStreetName());
+        custInfo.setDeliveryInstructions(selectedLocation.getDeliveryInstructions());
+        custInfo.setMailingAddress(customer.getEmailID());
+        
+        appInstance.saveCustomerInfo(custInfo);
+        
+        OrderInfo oInfo = appInstance.loadOrderInfo();
+        oInfo.setLocationID(Integer.parseInt(selectedLocation.getLocationID()));
+        oInfo.setCustomerID(customer.getCustomerID());
+        oInfo.setServiceMethod(appInstance.getOrderType());
+        oInfo.setTotalPrice(Double.parseDouble(orderPrice));
+        oInfo.setNoOfItems(orderItemCount);
+        
+        appInstance.saveOrderInfo(oInfo);
+        
 		
 //        tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
 //        tvFavCount = (TextView) findViewById(R.id.favCount);

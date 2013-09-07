@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -24,7 +25,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -43,9 +43,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.DelLocations;
+import com.deepslice.model.DeliveryLocation;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
@@ -54,21 +53,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class DeliverySuburbActivity extends Activity {
-    SharedPreferences settings;
-    ImageView addPic;
+
     ListView listview;
     StateListAdapter eventsAdapter;	
-    //	private static ArrayList<DelLocations> storeLocations;
-    static String cityName="";
-    static String stName="";
     String postCode="",suburbName="";
     EditText input_text ;
     ProgressDialog pd;
     ImageView clearTextIcon;
-    ArrayList<DelLocations> deliveryLocationList;
+    List<DeliveryLocation> deliveryLocationList;
     LocationDetails selectedLocation;
-    DelLocations eBean;
-    ArrayList<DelLocations> locList = null;
+    DeliveryLocation selectedDeliveryLocation;
+    ArrayList<DeliveryLocation> locList;
+
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,18 +74,17 @@ public class DeliverySuburbActivity extends Activity {
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         listview = (ListView) findViewById(R.id.listView1);
 
-        deliveryLocationList=new ArrayList<DelLocations>();
+        deliveryLocationList = new ArrayList<DeliveryLocation>();
         eventsAdapter = new StateListAdapter(this,R.layout.line_item_del, deliveryLocationList);
         listview.setAdapter(eventsAdapter);
 
         listview.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position,
-                    long id) {
-                eBean = (DelLocations) v.getTag();
-                if (eBean != null) {
-                    postCode=eBean.getPostCode();
-                    suburbName=eBean.getSuburbName();
-                    getLocationDetails(eBean.getLocationID()) ;
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                selectedDeliveryLocation = (DeliveryLocation) parent.getItemAtPosition(position);
+                if (selectedDeliveryLocation != null) {
+                    postCode = selectedDeliveryLocation.getPostCode();
+                    suburbName = selectedDeliveryLocation.getSuburbName();
+                    getLocationDetails(selectedDeliveryLocation.getLocationID()) ;
                     //					AppProperties.saveLocationObj(DeliverySuburbActivity.this, eBean);
                     //					Intent intent = new Intent(DeliverySuburbActivity.this,DeliveryAddress.class);
                     //					Bundle bundle = new Bundle();
@@ -115,116 +111,73 @@ public class DeliverySuburbActivity extends Activity {
                 //				listview.setAdapter(eventsAdapter);
             }
         });
+
+
         input_text = (EditText) findViewById(R.id.autoCompleteTextView1);
         input_text.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-                String st=input_text.getText().toString();
-                //				if (st.trim().length() > 0) 
-                //				{
-                //					searchIcon.setVisibility(View.VISIBLE);
-                //				}
-                if (st.trim().length() > 0) 
-                {
+                String st = input_text.getText().toString();
+                if (st.trim().length() > 0) {
                     clearTextIcon.setVisibility(View.VISIBLE);
                     getDeliveryLocations(st);
                 }
-                if (st.trim().length() <= 0) 
-                {
+                if (st.trim().length() <= 0) {
                     clearTextIcon.setVisibility(View.INVISIBLE);
                     //						input_text.setText("");
-                    deliveryLocationList=new ArrayList<DelLocations>();
+                    deliveryLocationList = new ArrayList<DeliveryLocation>();
                     eventsAdapter = new StateListAdapter(DeliverySuburbActivity.this,R.layout.line_item_del, deliveryLocationList);
                     eventsAdapter.notifyDataSetChanged();
                     listview.setAdapter(eventsAdapter);
                 }
-
             }
 
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                    int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
-            public void onTextChanged(CharSequence s, int start, int before,
-                    int count) {
-
-
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
 
 
-        ImageView emgBack= (ImageView)findViewById(R.id.farwordImageView);
-        emgBack.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        //        ImageView emgBack= (ImageView)findViewById(R.id.farwordImageView);
+        //        emgBack.setOnClickListener(new OnClickListener() {
+        //            public void onClick(View v) {
+        //                finish();
+        //            }
+        //        });
 
-        boolean syncStatus = false;
+        //        boolean syncStatus = false;
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DeliverySuburbActivity.this);
         dbInstance.open();
-        syncStatus=dbInstance.isExistsDeliveryLocations() ;
-        if(syncStatus)
-        {
-            locList=dbInstance.getAllDeliveryLocations();
-        }
-        else{
-            locList=new ArrayList<DelLocations>();
-        }
+        locList = dbInstance.getAllDeliveryLocations();
+        //        syncStatus=dbInstance.isExistsDeliveryLocations() ;
+        //        if(syncStatus){
+        //            locList=dbInstance.getAllDeliveryLocations();
+        //        }
+        //        else{
+        //            locList=new ArrayList<DeliveryLocation>();
+        //        }
         dbInstance.close();
-
-        //		AppDao dao=null;
-        //		try {
-        //			dao=AppDao.getSingleton(getApplicationContext());
-        //			dao.openConnection();
-        //			
-        //			syncStatus=dao.recordExistsDeliveryLocatoins() ;
-        //			if(syncStatus)
-        //			{
-        //				locList=dao.getAllDeliveryLocations();
-        //			}
-        //			else{
-        //				locList=new ArrayList<DelLocations>();
-        //			}
-        //			
-        ////			dao.insertOrUpdateList(questionList);
-        //			
-        //		} catch (Exception ex)
-        //		{
-        //			locList=new ArrayList<DelLocations>();
-        //			System.out.println(ex.getMessage());
-        //		}finally{
-        //			if(null!=dao)
-        //				dao.closeConnection();
-        //		}
-
     }
 
 
-    protected void getDeliveryLocations(final String postCodeOrSubId) {
+    protected void getDeliveryLocations(final String prefixCode) {
 
 
         try{
-            if(AppProperties.isNull(postCodeOrSubId))
+            if(AppProperties.isNull(prefixCode))
                 return;
 
 
-            deliveryLocationList = new ArrayList<DelLocations>();
+            deliveryLocationList = new ArrayList<DeliveryLocation>();
 
-            for (DelLocations delLocations : locList) {
+            for (DeliveryLocation delLocations : locList) {
 
-                //				boolean inName = Pattern.compile(Pattern.quote(postCodeOrSubId), Pattern.CASE_INSENSITIVE).matcher(delLocations.getSuburbName()).find();
-                //				boolean inAbbr = Pattern.compile(Pattern.quote(postCodeOrSubId), Pattern.CASE_INSENSITIVE).matcher(delLocations.getSuburbAbbr()).find();
-                //				boolean inPostcode = Pattern.compile(Pattern.quote(postCodeOrSubId), Pattern.CASE_INSENSITIVE).matcher(delLocations.getPostCode()).find();
-
-                //				if(delLocations.getSuburbName().toLowerCase().contains(postCodeOrSubId.toLowerCase()) || 
-                //						delLocations.getSuburbAbbr().toLowerCase().contains(postCodeOrSubId.toLowerCase()) ||
-                //						delLocations.getPostCode().toLowerCase().contains(postCodeOrSubId.toLowerCase()) 
-                //						)
-                if(delLocations.getSuburbName().toLowerCase().startsWith(postCodeOrSubId.toLowerCase()) || 
-                        delLocations.getSuburbAbbr().toLowerCase().startsWith(postCodeOrSubId.toLowerCase()) ||
-                        delLocations.getPostCode().toLowerCase().startsWith(postCodeOrSubId.toLowerCase()) 
-                        )
+                if(delLocations.getSuburbName().toLowerCase().startsWith(prefixCode.toLowerCase()) || 
+                        delLocations.getSuburbAbbr().toLowerCase().startsWith(prefixCode.toLowerCase()) ||
+                        delLocations.getPostCode().toLowerCase().startsWith(prefixCode.toLowerCase()) 
+                )
                     deliveryLocationList.add(delLocations);
             }
             eventsAdapter = new StateListAdapter(this,R.layout.line_item_del, deliveryLocationList);
@@ -237,8 +190,6 @@ public class DeliverySuburbActivity extends Activity {
             //			listview.setAdapter(myAdapter);
             //			myAdapter.notifyDataSetChanged();
 
-
-
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -246,164 +197,163 @@ public class DeliverySuburbActivity extends Activity {
 
 
 
-    final Handler mHandler = new Handler();
-    final Runnable mUpdateResults = new Runnable() {        
-        public void run() {            
-            updateResultsInUi();        
-        }    
-    };
-    String serverResponse;
-    protected void getDeliveryLocationsOld(final String postCodeOrSubId) {        
-        pd = ProgressDialog.show(DeliverySuburbActivity.this, "", "Please wait...", true, false);
+//    final Handler mHandler = new Handler();
+//    final Runnable mUpdateResults = new Runnable() {        
+//        public void run() {            
+//            updateResultsInUi();        
+//        }    
+//    };
+//    String serverResponse;
+//    protected void getDeliveryLocationsOld(final String postCodeOrSubId) {        
+//        pd = ProgressDialog.show(DeliverySuburbActivity.this, "", "Please wait...", true, false);
+//
+//        Thread t = new Thread() {            
+//            public void run() {                
+//
+//                try {
+//                    //calling the auth service
+//                    startLongRunningOperation(postCodeOrSubId);
+//                } catch (Exception ex)
+//                {
+//                    System.out.println(ex.getMessage());
+//                }
+//                mHandler.post(mUpdateResults);            
+//            }
+//
+//
+//        };        
+//        t.start();    	
+//    }
+//    String delLocError="";
+//    public void startLongRunningOperation(final String postCodeOrSubId) {
+//
+//        //		storeLocations=AppProperties.getCityAllCarersFromCache(cityName);
+//        //		if(null != storeLocations && storeLocations.size()>0)
+//        //			return;
+//
+//        StringBuilder builder = new StringBuilder();
+//        HttpClient client = new DefaultHttpClient();
+//
+//        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/DeliveryLocation.aspx?SubQueryName="+postCodeOrSubId);
+//        try {
+//            HttpResponse response = client.execute(httpGet);
+//            StatusLine statusLine = response.getStatusLine();
+//            int statusCode = statusLine.getStatusCode();
+//            if (statusCode == 200) {
+//                HttpEntity entity = response.getEntity();
+//                InputStream content = entity.getContent();
+//                BufferedReader reader = new BufferedReader(
+//                        new InputStreamReader(content));
+//                String line;
+//                while ((line = reader.readLine()) != null) {
+//                    builder.append(line);
+//                }
+//            } else {
+//                System.out.println("Failed to download file");
+//            }
+//
+//
+//            serverResponse = builder.toString();
+//
+//            //////////////////////////////////////////////////////////
+//            String errorMessage="";
+//            if (statusCode==200){
+//                GsonBuilder gsonb = new GsonBuilder();
+//                Gson gson = gsonb.create();
+//                JSONArray results = new JSONArray(serverResponse);
+//                JSONObject respOuter = results.getJSONObject(0);
+//                JSONObject resp = respOuter.getJSONObject("Response");
+//                String status = resp.getString("Status");
+//                JSONArray resultsArray =null;
+//                Object data= resp.get("Data");
+//                boolean dataExists=false;
+//                if(data instanceof JSONArray)
+//                {
+//                    resultsArray =(JSONArray)data;
+//                    dataExists=true;
+//                }
+//
+//                JSONObject errors = resp.getJSONObject("Errors");
+//
+//                boolean hasError=errors.has("Message");
+//                if(hasError)
+//                {
+//                    errorMessage=errors.getString("Message");
+//                    System.out.println("Error:"+errorMessage);
+//                }
+//
+//                deliveryLocationList = new ArrayList<DeliveryLocation>();
+//
+//                if(dataExists==true)
+//                {
+//                    DeliveryLocation aBean;
+//                    for(int i=0; i<resultsArray.length(); i++){
+//                        JSONObject jsResult = resultsArray.getJSONObject(i);
+//                        if(jsResult!=null){
+//                            String jsonString = jsResult.toString();
+//                            aBean=new DeliveryLocation();
+//                            aBean=gson.fromJson(jsonString, DeliveryLocation.class);
+//                            //                System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
+//                            deliveryLocationList.add(aBean);
+//                        }
+//                    }
+//                }
+//            }else {
+//                deliveryLocationList = new ArrayList<DeliveryLocation>();
+//            }
+//
+//            //////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
+//            //////////////////////////////////////////////////////////
+//        } catch (ClientProtocolException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }catch (Exception e) {
+//            delLocError=e.getMessage();
+//            e.printStackTrace();
+//        }
+//    }
 
-        Thread t = new Thread() {            
-            public void run() {                
-
-                try {
-                    //calling the auth service
-                    startLongRunningOperation(postCodeOrSubId);
-                } catch (Exception ex)
-                {
-                    System.out.println(ex.getMessage());
-                }
-                mHandler.post(mUpdateResults);            
-            }
-
-
-        };        
-        t.start();    	
-    }
-    String delLocError="";
-    public void startLongRunningOperation(final String postCodeOrSubId) {
-
-        //		storeLocations=AppProperties.getCityAllCarersFromCache(cityName);
-        //		if(null != storeLocations && storeLocations.size()>0)
-        //			return;
-
-        StringBuilder builder = new StringBuilder();
-        HttpClient client = new DefaultHttpClient();
-
-        HttpGet httpGet = new HttpGet(Constants.ROOT_URL+"/DeliveryLocation.aspx?SubQueryName="+postCodeOrSubId);
-        try {
-            HttpResponse response = client.execute(httpGet);
-            StatusLine statusLine = response.getStatusLine();
-            int statusCode = statusLine.getStatusCode();
-            if (statusCode == 200) {
-                HttpEntity entity = response.getEntity();
-                InputStream content = entity.getContent();
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(content));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    builder.append(line);
-                }
-            } else {
-                System.out.println("Failed to download file");
-            }
-
-
-            serverResponse = builder.toString();
-
-            //////////////////////////////////////////////////////////
-            String errorMessage="";
-            if (statusCode==200){
-                GsonBuilder gsonb = new GsonBuilder();
-                Gson gson = gsonb.create();
-                JSONArray results = new JSONArray(serverResponse);
-                JSONObject respOuter = results.getJSONObject(0);
-                JSONObject resp = respOuter.getJSONObject("Response");
-                String status = resp.getString("Status");
-                JSONArray resultsArray =null;
-                Object data= resp.get("Data");
-                boolean dataExists=false;
-                if(data instanceof JSONArray)
-                {
-                    resultsArray =(JSONArray)data;
-                    dataExists=true;
-                }
-
-                JSONObject errors = resp.getJSONObject("Errors");
-
-                boolean hasError=errors.has("Message");
-                if(hasError)
-                {
-                    errorMessage=errors.getString("Message");
-                    System.out.println("Error:"+errorMessage);
-                }
-
-                deliveryLocationList = new ArrayList<DelLocations>();
-
-                if(dataExists==true)
-                {
-                    DelLocations aBean;
-                    for(int i=0; i<resultsArray.length(); i++){
-                        JSONObject jsResult = resultsArray.getJSONObject(i);
-                        if(jsResult!=null){
-                            String jsonString = jsResult.toString();
-                            aBean=new DelLocations();
-                            aBean=gson.fromJson(jsonString, DelLocations.class);
-                            //                System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
-                            deliveryLocationList.add(aBean);
-                        }
-                    }
-                }
-            }else {
-                deliveryLocationList = new ArrayList<DelLocations>();
-            }
-
-            //////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
-            //////////////////////////////////////////////////////////
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }catch (Exception e) {
-            delLocError=e.getMessage();
-            e.printStackTrace();
-        }
-    }
-
-    private void updateResultsInUi() { 
-        pd.dismiss();
-
-        try{
-            if(deliveryLocationList.size()>0){
-                eventsAdapter = new StateListAdapter(this,R.layout.line_item_del, deliveryLocationList);
-                eventsAdapter.notifyDataSetChanged();
-                listview.setAdapter(eventsAdapter);
-            }else {
-                AlertDialog alertDialog = new AlertDialog.Builder(DeliverySuburbActivity.this).create();
-                alertDialog.setTitle("info");
-                alertDialog.setMessage("Connection Error");
-                alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        DeliverySuburbActivity.this.finish();
-                        return;
-                    } });
-                alertDialog.show();
-            }
-        } catch (Exception e){
-            e.getMessage();
-            AlertDialog alertDialog = new AlertDialog.Builder(DeliverySuburbActivity.this).create();
-            alertDialog.setTitle("Login");
-            alertDialog.setMessage("Connection Error");
-            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    return;
-                } }); 
-            alertDialog.show();
-        }
-
-    }
+//    private void updateResultsInUi() { 
+//        pd.dismiss();
+//
+//        try{
+//            if(deliveryLocationList.size()>0){
+//                eventsAdapter = new StateListAdapter(this,R.layout.line_item_del, deliveryLocationList);
+//                eventsAdapter.notifyDataSetChanged();
+//                listview.setAdapter(eventsAdapter);
+//            }else {
+//                AlertDialog.Builder alertDialog = new AlertDialog.Builder(DeliverySuburbActivity.this);
+//                alertDialog.setTitle("info");
+//                alertDialog.setMessage("Connection Error");
+//                alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        DeliverySuburbActivity.this.finish();
+//                        return;
+//                    } });
+//                alertDialog.create().show();
+//            }
+//        } catch (Exception e){
+//            e.getMessage();
+//            AlertDialog.Builder alertDialog = new AlertDialog.Builder(DeliverySuburbActivity.this);
+//            alertDialog.setTitle("Login");
+//            alertDialog.setMessage("Connection Error");
+//            alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int which) {
+//                    return;
+//                } }); 
+//            alertDialog.create().show();
+//        }
+//
+//    }
 
     ////////////////////////////////////////LIST ADAPTER	
-    private class StateListAdapter extends ArrayAdapter<DelLocations> {
+    private class StateListAdapter extends ArrayAdapter<DeliveryLocation> {
 
-        private ArrayList<DelLocations> items;
+        private List<DeliveryLocation> items;
 
 
-        public StateListAdapter(Context context, int viewResourceId,
-                ArrayList<DelLocations> items) {
+        public StateListAdapter(Context context, int viewResourceId, List<DeliveryLocation> items) {
             super(context, viewResourceId, items);
             this.items = items;
 
@@ -415,7 +365,7 @@ public class DeliverySuburbActivity extends Activity {
                 LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = mInflater.inflate(R.layout.line_item_del,null);
             }
-            DelLocations event = items.get(position);
+            DeliveryLocation event = items.get(position);
             if (event != null) {
 
                 TextView title = (TextView) convertView.findViewById(R.id.textView1);
@@ -443,8 +393,9 @@ public class DeliverySuburbActivity extends Activity {
         }
     };
 
+  String serverResponse;
     protected void getLocationDetails(final String locationId) {
-        Log.d("locationId",locationId);
+        Log.d("locationId", locationId);
         pd = ProgressDialog.show(DeliverySuburbActivity.this, "", "Please wait...", true, false);
         Thread t = new Thread() {
             public void run() {
@@ -464,8 +415,7 @@ public class DeliverySuburbActivity extends Activity {
         t.start();
     }
 
-    public void populateLocationDetails(
-            final String locationId) {
+    public void populateLocationDetails(final String locationId) {
 
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
@@ -540,50 +490,34 @@ public class DeliverySuburbActivity extends Activity {
         if (selectedLocation!=null){
             selectedLocation.setLocPostalCode(postCode);
             selectedLocation.setLocSuburb(suburbName);
+            selectedLocation.setSuburbId(selectedDeliveryLocation.getSuburbID());
+            selectedLocation.setPostalCode(selectedDeliveryLocation.getPostCode());
+            
             AppProperties.saveLocationObj(DeliverySuburbActivity.this, selectedLocation);
             Log.d(".......selected logation............",selectedLocation.getLocPostalCode());
 
-            Intent intent = new Intent(DeliverySuburbActivity.this,DeliveryAddress.class);
+            Intent intent = new Intent(DeliverySuburbActivity.this, DeliveryAddress.class);
             Bundle bundle = new Bundle();
-            bundle.putString("location",eBean.getSuburbName()+" "+eBean.getPostCode());
-            bundle.putString("store",eBean.getLocName());
-            bundle.putString("suburbId",eBean.getSuburbID());
+            bundle.putString("location", selectedDeliveryLocation.getSuburbName() + " " + selectedDeliveryLocation.getPostCode());          // display
+            bundle.putString("store", selectedDeliveryLocation.getLocName());           // store name - to display in the DateTimeActivity
+            bundle.putString("suburbId", selectedDeliveryLocation.getSuburbID());       // need to retrieve street list
             intent.putExtras(bundle);
-            startActivityForResult(intent, 56);
+            startActivity(intent);
         }else {
-            AlertDialog alertDialog = new AlertDialog.Builder(DeliverySuburbActivity.this).create();
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(DeliverySuburbActivity.this);
             alertDialog.setTitle("info");
             alertDialog.setMessage("Connection Error");
-            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     DeliverySuburbActivity.this.finish();
                     return;
                 } });
-            alertDialog.show();
+            alertDialog.create().show();
         }
 
-        //		AppDao dao=null;
-        //		try {
-        //			dao=AppDao.getSingleton(getApplicationContext());
-        //			dao.openConnection();
-        //		
-        //			dao.insertLocationHistory(selectedLocation, "True");
-        //			
-        //
-        //		} catch (Exception ex)
-        //		{
-        //			System.out.println(ex.getMessage());
-        //		}finally{
-        //			if(null!=dao)
-        //				dao.closeConnection();
-        //		}
 
 
     }
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////////////////////////
 
 }

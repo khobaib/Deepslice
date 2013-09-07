@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.deepslice.model.LocationPoints;
 import com.deepslice.model.NewDealsOrder;
 import com.deepslice.model.NewDealsOrderDetails;
 import com.deepslice.model.NewProductOrder;
@@ -19,7 +20,7 @@ import com.deepslice.model.Product;
 import com.deepslice.model.CouponDetails;
 import com.deepslice.model.Coupon;
 import com.deepslice.model.DealOrder;
-import com.deepslice.model.DelLocations;
+import com.deepslice.model.DeliveryLocation;
 import com.deepslice.model.Favourite;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.model.Order;
@@ -63,6 +64,7 @@ public class DeepsliceDatabase {
             NEW_ToppingSizeDbManager.createTable(db);
             NEW_ToppingPriceDbManager.createTable(db);
             NEW_ProductDbManager.createTable(db);
+            StoreLocationDbManager.createTable(db);
         }
 
         @Override
@@ -80,6 +82,7 @@ public class DeepsliceDatabase {
             NEW_ToppingSizeDbManager.dropTable(db);
             NEW_ToppingPriceDbManager.dropTable(db);
             NEW_ProductDbManager.dropTable(db);
+            StoreLocationDbManager.dropTable(db);
 
             onCreate(db);
         }
@@ -117,6 +120,23 @@ public class DeepsliceDatabase {
         cleanDealsOrderDetailsTable();
         cleanToppingsOrderTable();
     }
+    
+    
+    // store-location
+    
+    public boolean insertStoreLocations(List<LocationPoints> lPointsList){
+        for(LocationPoints lPoint : lPointsList){
+            StoreLocationDbManager.insert(this.db, lPoint);
+        }
+        return true;
+    }
+        
+    public List<LocationPoints> retrieveStoreLocations(){
+        return StoreLocationDbManager.retrievePizzaCrustList(this.db);
+    }
+    
+    
+    
 
     // Topping & Sauce
 
@@ -185,29 +205,30 @@ public class DeepsliceDatabase {
         }
     }
 
+    
+    /////////////////// Toppings-Order //////////////////////////////////////
 
-    // updated
     public void cleanToppingsOrderTable(){
         New_ToppingsOrderDbManager.cleanTable(this.db);
     }
 
-
-    // updated
     public long insertToppingsOrder(NewToppingsOrder toppingsOrder){
         return New_ToppingsOrderDbManager.insert(this.db, toppingsOrder);
     }
 
-
-    // updated
     public List<NewToppingsOrder> retrieveToppingsOrderByProdOrderId(int prodOrderId){
         return New_ToppingsOrderDbManager.retrieve(this.db, prodOrderId);
     }
     
-    
-    // new
     public double retrieveProductToppingsPrice(int prodOrderId){
         return New_ToppingsOrderDbManager.retrieveProductToppingsPrice(this.db, prodOrderId);
     }
+    
+    public List<NewToppingsOrder> retrieveDealToppings(int dealOrderDetailsId){
+        return New_ToppingsOrderDbManager.retrieveDealToppings(this.db, dealOrderDetailsId);
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////
 
 
 
@@ -298,7 +319,7 @@ public class DeepsliceDatabase {
 
 
 
-    // Product-Order
+    //////////////////////// Product-Order  /////////////////////////////
 
     public void cleanProductOrderTable(){
         NEW_ProductOrderDbManager.cleanProductOrderTable(this.db);
@@ -312,6 +333,19 @@ public class DeepsliceDatabase {
     public List<NewProductOrder> getOrdersList() {
         return NEW_ProductOrderDbManager.retrieveAll(this.db);
     }
+    
+    // checked
+    public List<NewProductOrder> getOrdersListWithCategory(String catName) {
+        return NEW_ProductOrderDbManager.retrieve(this.db, catName);
+    }
+        
+    
+    // new
+    public boolean deleteProductOrder(int orderId){
+        return NEW_ProductOrderDbManager.delete(this.db, orderId);
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -346,16 +380,7 @@ public class DeepsliceDatabase {
     }
 
 
-    // checked
-    public List<NewProductOrder> getOrdersListWithCategory(String catName) {
-        return NEW_ProductOrderDbManager.retrieve(this.db, catName);
-    }
-        
-    
-    // new
-    public boolean deleteProductOrder(int orderId){
-        return NEW_ProductOrderDbManager.delete(this.db, orderId);
-    }
+
 
 
     // checked
@@ -396,72 +421,59 @@ public class DeepsliceDatabase {
 
 
 
-    // Deals-Order
+    /////////////////// Deals-order & Deals-Order Details ///////////////////
     
     public void cleanDealsOrderTable(){
         NEW_DealsOrderDbManager.cleanDealsOrderTable(this.db);
     }
     
-    // updated
     public void finalizedDealOrder(int dealOrderId){        
         NEW_DealsOrderDbManager.completeDealOrder(this.db, dealOrderId);
     }
     
-    
-    // new
     public double updateTotalPrice(int dealOrderId){
         return NEW_DealsOrderDbManager.updateTotalPrice(this.db, dealOrderId);
     }
     
-    
-    // updated
-    public long insertDealOrder(NewDealsOrder dealOrder){
-        return NEW_DealsOrderDbManager.insert(this.db, dealOrder);
-    }
-    
-    
-    public void cleanDealsOrderDetailsTable(){
-        NEW_DealsOrderDetailsDbManager.cleanDealsOrderDetailsTable(this.db);
-    }
-    
-    // updated
-    public long insertDealOrderDetails(NewDealsOrderDetails dealsOrderDetails){
-        return NEW_DealsOrderDetailsDbManager.insert(this.db, dealsOrderDetails);
-    }
-
-    
-    // updated
     public List<NewDealsOrder> retrieveDealOrderList(boolean isComplete) {
         return NEW_DealsOrderDbManager.retrieve(this.db, isComplete);
     }
     
-    
-    public List<NewDealsOrderDetails> retrieveDealOrderDetailsList(int dealsOrderId){
-        return NEW_DealsOrderDetailsDbManager.retrieve(this.db, dealsOrderId);
-    }
+    public long insertDealOrder(NewDealsOrder dealOrder){
+        return NEW_DealsOrderDbManager.insert(this.db, dealOrder);
+    }    
 
-
-    // new
     public boolean deleteDealsOrder(int orderId){
         return NEW_DealsOrderDbManager.delete(this.db, orderId);
     }
     
-    // updated
     public boolean deleteUnfinishedDealOrder( ) {
         return NEW_DealsOrderDbManager.deleteUnfinishedDealOrder(this.db);
     }
 
+    public void cleanDealsOrderDetailsTable(){
+        NEW_DealsOrderDetailsDbManager.cleanDealsOrderDetailsTable(this.db);
+    }
     
-    // modified
     public boolean deleteAlreadySelectedDealGroup(int dealOrderId, String couponGroupId){
         return NEW_DealsOrderDetailsDbManager.deleteAlreadySelectedDealGroup(this.db, dealOrderId, couponGroupId);
     }
-
     
-    // updated
+    public long insertDealOrderDetails(NewDealsOrderDetails dealsOrderDetails){
+        return NEW_DealsOrderDetailsDbManager.insert(this.db, dealsOrderDetails);
+    }    
+    
+    public List<NewDealsOrderDetails> retrieveDealOrderDetailsList(int dealsOrderId){
+        return NEW_DealsOrderDetailsDbManager.retrieve(this.db, dealsOrderId);
+    }
+    
     public boolean isDealGroupAlreadySelected(int dealOrderId, String CouponGroupID){
         return NEW_DealsOrderDetailsDbManager.isDealGroupAlreadySelected(this.db, dealOrderId, CouponGroupID);
     }
+       
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    
+    
 
 
     private List<DealOrder> cursorToDealOrder(Cursor cursor) {
@@ -526,9 +538,9 @@ public class DeepsliceDatabase {
         return DeliveryLocationDbManager.isExistDeliveryLocations(this.db);
     }
 
-    public boolean insertProdDeliveryLocations(List<DelLocations> aList ) {
-        for (Iterator<DelLocations> iterator = aList.iterator(); iterator.hasNext();) {
-            DelLocations f = (DelLocations) iterator.next();
+    public boolean insertProdDeliveryLocations(List<DeliveryLocation> aList ) {
+        for (Iterator<DeliveryLocation> iterator = aList.iterator(); iterator.hasNext();) {
+            DeliveryLocation f = (DeliveryLocation) iterator.next();
             DeliveryLocationDbManager.insert(this.db,
                     f.getSuburbName(),
                     f.getSuburbAbbr(),
@@ -549,19 +561,19 @@ public class DeepsliceDatabase {
         return true;
     }
 
-    public ArrayList<DelLocations> getAllDeliveryLocations() {
+    public ArrayList<DeliveryLocation> getAllDeliveryLocations() {
         Cursor ls = DeliveryLocationDbManager.fetchAllRecordsDeliveryLocations(this.db);
         return cursorToDelLocationVo(ls);
     }
 
 
-    public ArrayList<DelLocations> cursorToDelLocationVo(Cursor cursor) {
+    public ArrayList<DeliveryLocation> cursorToDelLocationVo(Cursor cursor) {
         if(null==cursor)
             return null;
-        ArrayList<DelLocations> list = new ArrayList<DelLocations>();
+        ArrayList<DeliveryLocation> list = new ArrayList<DeliveryLocation>();
         if (cursor.moveToFirst()) {
             do {
-                DelLocations f = new DelLocations();
+                DeliveryLocation f = new DeliveryLocation();
                 int counter=1;
                 f.setSuburbName(cursor.getString(counter++));
                 f.setSuburbAbbr(cursor.getString(counter++));
@@ -589,9 +601,10 @@ public class DeepsliceDatabase {
 
     // Location hostory
 
-    public boolean recordExistsLocationHistory(String LocationID,String SuburbID) {
-        return LocationHistoryDbManager.isLocationAlreadyAdded(this.db, LocationID, SuburbID);
-    }
+//    public boolean recordExistsLocationHistory(String LocationID,String SuburbID) {
+//        return LocationHistoryDbManager.isLocationAlreadyAdded(this.db, LocationID, SuburbID);
+//    }
+    
     public boolean locationHistoryExists(String isDelivery) {
         return LocationHistoryDbManager.locationHistoryExists(this.db, isDelivery);
     }
@@ -611,6 +624,8 @@ public class DeepsliceDatabase {
                 f.getOpeningTime(),
                 f.getClosingTime(),
                 isDelivery,
+                f.getSuburbId(),
+                f.getPostalCode(),
                 f.getUnit(),
                 f.getStreetNum(),
                 f.getStreetName(),
@@ -620,8 +635,15 @@ public class DeepsliceDatabase {
 
         return true;
     }
+    
+    // new
+    public LocationDetails getLocationById(String locationId){
+        Cursor c = LocationHistoryDbManager.getLocationById(this.db, locationId);
+        List<LocationDetails> tmpList = cursorToLocationHistoryVo(c);
+        return tmpList.get(0);
+    }
 
-    public ArrayList<LocationDetails> getLocationsHistory(String isDelivery) {
+    public List<LocationDetails> getLocationsHistory(String isDelivery) {
         Cursor ls = LocationHistoryDbManager.getLocationHistory(this.db, isDelivery);
         return cursorToLocationHistoryVo(ls);
     }
@@ -646,7 +668,9 @@ public class DeepsliceDatabase {
                 f.setClosingTime(cursor.getString(counter++));
 
                 String isDelivery=cursor.getString(counter++);
-
+               
+                f.setSuburbId(cursor.getString(counter++));
+                f.setPostalCode(cursor.getString(counter++));
                 f.setUnit(cursor.getString(counter++));
                 f.setStreetNum(cursor.getString(counter++));
                 f.setStreetName(cursor.getString(counter++));

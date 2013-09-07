@@ -1,11 +1,13 @@
 package com.deepslice.model;
 
-public class StreetsBean {
+public class Street {
 	public String SuburbID;
     public String AddressType;
     public String StreetID;
     public String StreetAbbr;
     public String StreetName;
+    
+    
 	public String getSuburbID() {
 		return SuburbID;
 	}

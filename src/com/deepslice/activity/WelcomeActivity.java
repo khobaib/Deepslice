@@ -1,25 +1,12 @@
 package com.deepslice.activity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,20 +14,19 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.deepslice.database.DeepsliceDatabase;
-import com.deepslice.model.DelLocations;
+import com.deepslice.model.DeliveryLocation;
 import com.deepslice.model.LocationPoints;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.deepslice.utilities.DeepsliceApplication;
 
 public class WelcomeActivity extends Activity {
 
     JsonParser jsonParser = new JsonParser();
 
-    List<DelLocations> deliveryLocationList;
+    List<DeliveryLocation> deliveryLocationList;
     List<LocationPoints> locPoints;
 
     Boolean isDeliveryLocationsExist;
@@ -85,7 +71,7 @@ public class WelcomeActivity extends Activity {
                     JSONArray data = responseObj.getJSONArray("Data");
                     JSONObject errors = responseObj.getJSONObject("Errors");
 
-                    deliveryLocationList = DelLocations.parseDeliveryLocations(data);
+                    deliveryLocationList = DeliveryLocation.parseDeliveryLocations(data);
                     long arrayParsedTime = System.currentTimeMillis();
                     Log.d(">>>><<<", "time for array parsing = " + (arrayParsedTime - responseReceivedTime)/1000 + " second");
 
@@ -119,7 +105,6 @@ public class WelcomeActivity extends Activity {
 
     public void updateDbDeliveryLocation(){
         
-        // running in a thread because we want to show the progressbar loading in UI when rows are INSERTED in db.
         Thread t = new Thread() {            
             public void run() {                
                 long dbInsertStartTime = System.currentTimeMillis();
@@ -159,11 +144,11 @@ public class WelcomeActivity extends Activity {
                     JSONArray data = responseObj.getJSONArray("Data");
                     JSONObject errors = responseObj.getJSONObject("Errors");
 
-                    locPoints = LocationPoints.parseLocationPoints(data);
+                    locPoints = LocationPoints.parseLocationPoints(data);                    
 
                     // Here we store in static data field but we have to create a db table for it
-                    AppProperties.locationPointsList = locPoints;
-                    System.out.println("Got location points: "+locPoints.size());
+//                    AppProperties.locationPointsList = locPoints;
+                    System.out.println("Got location points: "+ locPoints.size());
 
                     return true;
                 } catch (JSONException e) {
@@ -178,6 +163,13 @@ public class WelcomeActivity extends Activity {
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             if(result){
+                
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(WelcomeActivity.this);
+                dbInstance.open();
+                dbInstance.insertStoreLocations(locPoints);
+                dbInstance.close();
+                
+                
                 if(isDeliveryLocationsExist == false)
                     new GetDeliveryLocation().execute();
                 else

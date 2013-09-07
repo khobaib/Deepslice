@@ -52,6 +52,33 @@
                 android:layout_below="@+id/textView1" >
 
                 <TableRow
+                    android:id="@+id/tableRowPrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dp" >
+
+                    <TextView
+                        android:id="@+id/tv_card_type"
+                        style="@style/textView"
+                        android:layout_weight="1"
+                        android:text="Order Total:"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/totalPrice"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="20dip"
+                        android:layout_weight="10"
+                        android:text="$"
+                        android:textColor="#ffffff"
+                        android:textSize="18dp" />
+                </TableRow>
+
+                <TableRow
                     android:id="@+id/tableRow1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -130,6 +157,7 @@
                         android:id="@+id/et_credit_card_security_code"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="number"
                         android:layout_weight="10" />
                 </TableRow>
 
@@ -165,6 +193,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
+                        android:inputType="number"
                         android:hint="YYYY" />
                 </TableRow>
             </TableLayout>

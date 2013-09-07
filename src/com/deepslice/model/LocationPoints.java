@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -28,21 +30,15 @@ public class LocationPoints {
         List<LocationPoints> locationPointList = new ArrayList<LocationPoints>();
         GsonBuilder gsonb = new GsonBuilder();
         Gson gson = gsonb.create();
-        //        DelLocations aBean;
-
         try {
             for(int i=0; i<locationArray.length(); i++){
 
                 JSONObject thisLocation = locationArray.getJSONObject(i);
                 if(thisLocation!=null){
                     String jsonString = thisLocation.toString();
-                    //                aBean=new DelLocations();
-                    LocationPoints location=gson.fromJson(jsonString, LocationPoints.class);
-                    //                System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
+                    LocationPoints location = gson.fromJson(jsonString, LocationPoints.class);
                     locationPointList.add(location);
                 }
-
-
             }
         } catch (JSONException e) {
             e.printStackTrace();

@@ -1,5 +1,7 @@
 package com.deepslice.activity;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,18 +11,26 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deepslice.database.DeepsliceDatabase;
+import com.deepslice.model.OrderInfo;
+import com.deepslice.model.PaymentInfo;
 import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.DeepsliceApplication;
+import com.deepslice.utilities.Utils;
 
 public class PayByCardActivity extends Activity {
 
     EditText Name, CardNo, SecurityCode, ExpireYear;
     Spinner sCardType, sMonth;
+    TextView tvTotalPrice;
 
     String name, cardNo, sCode, expMonth, expYear;
     String selectedCardType;
+    String totalPrice;
+    int expMonthIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +40,15 @@ public class PayByCardActivity extends Activity {
         Name = (EditText) findViewById(R.id.et_name);
         CardNo = (EditText) findViewById(R.id.et_credit_card_no);
         SecurityCode = (EditText) findViewById(R.id.et_credit_card_security_code);
-//        ExpireMonth = (EditText) findViewById(R.id.et_month);
+        //        ExpireMonth = (EditText) findViewById(R.id.et_month);
         ExpireYear = (EditText) findViewById(R.id.et_year);
-        
+
+        tvTotalPrice = (TextView) findViewById(R.id.totalPrice);
+        List<String> orderInfo = Utils.OrderInfo(PayByCardActivity.this);
+        totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+
+        tvTotalPrice.setText("$" + totalPrice);
+
         sCardType = (Spinner) findViewById(R.id.s_card_type);
         generateSpinner(sCardType, Constants.CREDIT_CARD_TYPE);
         sCardType.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -56,6 +72,7 @@ public class PayByCardActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
                 expMonth = (String)parent.getItemAtPosition(position);
+                expMonthIndex = position;
             }
 
             @Override
@@ -98,22 +115,44 @@ public class PayByCardActivity extends Activity {
 
         else{
             
-            DeepsliceDatabase dbInstance = new DeepsliceDatabase(PayByCardActivity.this);
-            dbInstance.open();
-            dbInstance.cleanAllOrderTable();
-            dbInstance.close(); 
-            
-            Toast.makeText(PayByCardActivity.this, "Your order is taken. thank you",  Toast.LENGTH_SHORT).show();
-            
-            Intent intent = new Intent(PayByCardActivity.this, PickupDeliverActivity.class);
+            setPaymentInfo();
+
+            Intent intent = new Intent(PayByCardActivity.this, ThankYouActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
             // continue
         }
     }
-    
-    
+
+
+    private void setPaymentInfo() {
+        PaymentInfo pInfo = ((DeepsliceApplication) getApplication()).loadPaymentInfo();
+        
+        pInfo.setPaymentNo(1);
+        pInfo.setPaymentType("Card");
+        pInfo.setPaymentSubType("Now");
+        pInfo.setAmount(Double.parseDouble(totalPrice));
+        pInfo.setCardType(selectedCardType);
+        pInfo.setNameOnCard(name);
+//        pInfo.setCardNo(cardNo);
+        pInfo.setCardNo("4444333322221111");
+        pInfo.setCardSecurityCode(sCode);
+//        pInfo.setExpiryMonth(expMonthIndex + 1);
+        pInfo.setExpiryMonth(9);
+        pInfo.setExpiryYear(15);
+//        pInfo.setExpiryYear(Integer.parseInt(expYear.substring(2, 4)));         // last-2 digit of the year
+        
+        ((DeepsliceApplication) getApplication()).savePaymentInfo(pInfo);
+        
+        OrderInfo oInfo = ((DeepsliceApplication) getApplication()).loadOrderInfo();
+        oInfo.setPaymentStatus("PAID");
+        ((DeepsliceApplication) getApplication()).saveOrderInfo(oInfo);
+                
+    }
+
+
+
     private boolean isYearValid(String sYear){
         int year = Integer.parseInt(sYear);
         if(year >= 2013 && year <= 2033)

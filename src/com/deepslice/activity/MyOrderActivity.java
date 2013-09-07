@@ -24,6 +24,7 @@ import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.model.NewDealsOrder;
 import com.deepslice.model.NewProductOrder;
+import com.deepslice.model.OrderInfo;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Constants;
@@ -109,7 +110,7 @@ public class MyOrderActivity extends Activity{
          */
 
         TextView mOrderType = (TextView)findViewById(id.headerTextView);
-        LocationDetails locationObj = AppProperties.getLocationObj(MyOrderActivity.this);
+//        LocationDetails locationObj = AppProperties.getLocationObj(MyOrderActivity.this);
 
         ///////////////////////////
 
@@ -154,8 +155,10 @@ public class MyOrderActivity extends Activity{
                 //	startActivity(i);
 
                 int orderItemCount = 0;
+//                String orderPrice = "0.0";
                 List<String> orderInfo = Utils.OrderInfo(MyOrderActivity.this);
                 if(orderInfo != null && orderInfo.size() == 2){
+//                    orderPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
                     orderItemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
                 }
                 if(orderItemCount == 0){
@@ -172,6 +175,11 @@ public class MyOrderActivity extends Activity{
                 }
 
                 else{
+//                    OrderInfo oInfo = appInstance.loadOrderInfo();
+//                    oInfo.setTotalPrice(Double.parseDouble(orderPrice));
+//                    oInfo.setNoOfItems(orderItemCount);
+//                    appInstance.saveOrderInfo(oInfo);
+                    
                     appInstance.setOrderReady(true);
                     if(AppProperties.isLoggedIn || 
                             (appInstance.loadCustomer().getCustomerName() != null && !appInstance.loadCustomer().getCustomerName().equals(""))){

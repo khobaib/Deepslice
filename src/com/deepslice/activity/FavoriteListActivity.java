@@ -78,7 +78,7 @@ public class FavoriteListActivity extends Activity{
 
                     if("Pizza".equalsIgnoreCase(eBean.getProdCatName()))
                     {
-                        i=new Intent(FavoriteListActivity.this, PizzaDetailsActivity.class);
+                        i=new Intent(FavoriteListActivity.this, NEW_PizzaDetailsActivity.class);
                         bundle.putSerializable("selectedProduct",getProdBean(eBean));
                     }
                     else

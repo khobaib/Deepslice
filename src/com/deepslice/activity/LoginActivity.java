@@ -37,7 +37,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.deepslice.model.Customer;
-import com.deepslice.model.DelLocations;
+import com.deepslice.model.DeliveryLocation;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.AppProperties;

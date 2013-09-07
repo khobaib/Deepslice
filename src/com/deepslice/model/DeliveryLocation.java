@@ -11,7 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 
-public class DelLocations {
+public class DeliveryLocation {
     private String SuburbName;
     private String SuburbAbbr;
     private String PostCode;
@@ -26,12 +26,12 @@ public class DelLocations {
     private String LocationID;
     private String SuburbID;
 
-    public DelLocations() {
+    public DeliveryLocation() {
         // TODO Auto-generated constructor stub
     }
 
 
-    public DelLocations(String suburbName, String suburbAbbr, String postCode, String locName, String locPostalCode,
+    public DeliveryLocation(String suburbName, String suburbAbbr, String postCode, String locName, String locPostalCode,
             String locStreet, String locAddress, String locLongitude, String locLatitude, String openingTime,
             String closingTime, String locationID, String suburbID) {
         SuburbName = suburbName;
@@ -49,8 +49,8 @@ public class DelLocations {
         SuburbID = suburbID;
     }
 
-    public static List<DelLocations> parseDeliveryLocations(JSONArray locationArray){
-        List<DelLocations> deliveryLocationList = new ArrayList<DelLocations>();
+    public static List<DeliveryLocation> parseDeliveryLocations(JSONArray locationArray){
+        List<DeliveryLocation> deliveryLocationList = new ArrayList<DeliveryLocation>();
         GsonBuilder gsonb = new GsonBuilder();
         Gson gson = gsonb.create();
         //        DelLocations aBean;
@@ -62,7 +62,7 @@ public class DelLocations {
                 if(thisLocation!=null){
                     String jsonString = thisLocation.toString();
                     //                aBean=new DelLocations();
-                    DelLocations location=gson.fromJson(jsonString, DelLocations.class);
+                    DeliveryLocation location=gson.fromJson(jsonString, DeliveryLocation.class);
                     //                System.out.println("++++++++++++++++++++"+aBean.getAuto_name());
                     deliveryLocationList.add(location);
                 }

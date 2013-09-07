@@ -1,11 +1,7 @@
 package com.deepslice.activity;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,18 +30,14 @@ import android.widget.Toast;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.CreateOwnPizzaData;
-import com.deepslice.model.DealOrder;
 import com.deepslice.model.Favourite;
-import com.deepslice.model.LabelValueBean;
 import com.deepslice.model.NewProductOrder;
 import com.deepslice.model.NewToppingsOrder;
-import com.deepslice.model.Order;
 import com.deepslice.model.Product;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.model.ToppingPrices;
 import com.deepslice.model.ToppingSizes;
 import com.deepslice.model.ToppingsAndSauces;
-import com.deepslice.model.ToppingsHashmap;
 import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;

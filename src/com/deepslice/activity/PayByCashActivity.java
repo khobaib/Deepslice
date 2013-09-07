@@ -14,9 +14,12 @@ import android.widget.Toast;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DealOrder;
+import com.deepslice.model.OrderInfo;
+import com.deepslice.model.PaymentInfo;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.AppSharedPreference;
 import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.DeepsliceApplication;
 import com.deepslice.utilities.Utils;
 
 import org.apache.http.HttpEntity;
@@ -45,6 +48,7 @@ public class PayByCashActivity extends Activity{
 //    TextView tvItemsPrice, tvFavCount;
     
 	String myIp;
+	String totalPrice;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +69,14 @@ public class PayByCashActivity extends Activity{
 			@Override
 			public void onClick(View v) {
 			    
-			    DeepsliceDatabase dbInstance = new DeepsliceDatabase(PayByCashActivity.this);
-			    dbInstance.open();
-			    dbInstance.cleanAllOrderTable();
-			    dbInstance.close();			    
-			    
-				Toast.makeText(PayByCashActivity.this, "Your order is taken. thank you",  Toast.LENGTH_SHORT).show();
+			    setPaymentInfo();
+//			    
+//			    DeepsliceDatabase dbInstance = new DeepsliceDatabase(PayByCashActivity.this);
+//			    dbInstance.open();
+//			    dbInstance.cleanAllOrderTable();
+//			    dbInstance.close();			    
+//			    
+//				Toast.makeText(PayByCashActivity.this, "Your order is taken. thank you",  Toast.LENGTH_SHORT).show();
 				
 				/* i have changed here
 				//////////////////////
@@ -87,7 +93,7 @@ public class PayByCashActivity extends Activity{
 				////////////////////////////
 				 */
 				
-				Intent intent = new Intent(PayByCashActivity.this, PickupDeliverActivity.class);
+				Intent intent = new Intent(PayByCashActivity.this, ThankYouActivity.class);
 				String location=getIntent().getStringExtra("location");
 				String store=getIntent().getStringExtra("store");
 				String suburbId=getIntent().getStringExtra("suburbId");
@@ -129,11 +135,33 @@ public class PayByCashActivity extends Activity{
 		
 		descriptionText.setText(theMessageString.toString());
          if(AppSharedPreference.getData(PayByCashActivity.this, "customerName", "").equals("")){
-             txtUserName.setText("Dear "+AppSharedPreference.getData(PayByCashActivity.this, "customerName", ""));
+             txtUserName.setText("Dear "+ AppSharedPreference.getData(PayByCashActivity.this, "customerName", ""));
          }else {
-            txtUserName.setText("Dear "+AppSharedPreference.getData(PayByCashActivity.this, "customerName", ""));
+            txtUserName.setText("Dear "+ AppSharedPreference.getData(PayByCashActivity.this, "customerName", ""));
          }
 	}
+	
+    private void setPaymentInfo() {
+        PaymentInfo pInfo = ((DeepsliceApplication) getApplication()).loadPaymentInfo();
+        
+        pInfo.setPaymentNo(1);
+        pInfo.setPaymentType("Cash");
+        pInfo.setPaymentSubType("Later");
+        pInfo.setAmount(Double.parseDouble(totalPrice));
+        pInfo.setCardType("");
+        pInfo.setNameOnCard("");
+        pInfo.setCardNo("");
+        pInfo.setCardSecurityCode("");
+        pInfo.setExpiryMonth(0);
+        pInfo.setExpiryYear(0);
+        
+        ((DeepsliceApplication) getApplication()).savePaymentInfo(pInfo);
+        
+        OrderInfo oInfo = ((DeepsliceApplication) getApplication()).loadOrderInfo();
+        oInfo.setPaymentStatus("PENDING");
+        ((DeepsliceApplication) getApplication()).saveOrderInfo(oInfo);
+                
+    }
 	
 	
     @Override
@@ -141,7 +169,7 @@ public class PayByCashActivity extends Activity{
         super.onResume();
         List<String> orderInfo = Utils.OrderInfo(PayByCashActivity.this);
         int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
-        String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+        totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
         
         tvTotalPrice.setText("$" + totalPrice);
         

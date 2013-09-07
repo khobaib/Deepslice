@@ -11,12 +11,12 @@ public class LocationHistoryDbManager {
 
     static String[] table_locations_history_columns = new String[] { "sr_no","LocationID","LocName","LocSuburb",
         "LocPostalCode", "LocStreet", "LocAddress", "LocPhones", "LocLongitude", "LocLatitude", "OpeningTime",
-        "ClosingTime", "isDelivery", "unit", "streetNum", "streetName", "crossStreetName", "deliveryInstructions"};
+        "ClosingTime", "isDelivery", "suburbId", "postCode", "unit", "streetNum", "streetName", "crossStreetName", "deliveryInstructions"};
 
     public static final String TABLE_LOCATIONS_HISTORY = "locations_history";
 
     private static final String CREATE_TABLE_LOCATIONS_HISTORY = "create table "
-            + TABLE_LOCATIONS_HISTORY+ " (sr_no integer primary key autoincrement, LocationID text,LocName text,LocSuburb text, LocPostalCode text, LocStreet text, LocAddress text, LocPhones text, LocLongitude text, LocLatitude text, OpeningTime text, ClosingTime text, isDelivery text,unit text,streetNum text,streetName text,crossStreetName text,deliveryInstructions text);";
+            + TABLE_LOCATIONS_HISTORY+ " (sr_no integer primary key autoincrement, LocationID text,LocName text,LocSuburb text, LocPostalCode text, LocStreet text, LocAddress text, LocPhones text, LocLongitude text, LocLatitude text, OpeningTime text, ClosingTime text, isDelivery text, suburbId text, postCode text, unit text, streetNum text, streetName text, crossStreetName text, deliveryInstructions text);";
 
 
     public static void createTable(SQLiteDatabase db) {
@@ -46,9 +46,20 @@ public class LocationHistoryDbManager {
             return null;
         }
     }
+    
+    
+    public static Cursor getLocationById(SQLiteDatabase db, String locationId) {
+        Log.d(TAG, "retrieving cursor of location-history for locationId - " + locationId);
+        try {
+            String[] selectionArgs = {locationId};
+            return db.rawQuery("SELECT * FROM " + TABLE_LOCATIONS_HISTORY + " WHERE LocationID=?", selectionArgs);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 
-    public static boolean isLocationAlreadyAdded(SQLiteDatabase db, String LocationID,String SuburbID) {
+    public static boolean isLocationAlreadyAdded(SQLiteDatabase db, String LocationID, String SuburbID) {
         Log.d(TAG, "in LocationHistoryDbManager, isLocationAlreadyAdded SuburbID = " + SuburbID);
         String[] selectionArgs={LocationID,SuburbID};
         boolean recExists = false;

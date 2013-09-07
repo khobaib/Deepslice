@@ -82,7 +82,7 @@ public class Constants {
     public static final String CUSTOMER_SUBURB_ID = "customer_suburb_id";
     public static final String CUSTOMER_POSTAL_CODE = "customer_postal_code";
     public static final String CUSTOMER_UNIT = "customer_unit";
-    public static final String CUSTOMER_STREET_ID = "customer_street_id";
+    public static final String CUSTOMER_STREET_NAME = "customer_street_name";
     public static final String CUSTOMER_CROSS_STREET = "customer_cross_street";
     public static final String CUSTOMER_DELIVERY_INSTRUCTIONS = "customer_delivery_instructions";  
     
