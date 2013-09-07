@@ -7,7 +7,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -51,19 +53,7 @@ public class ThankYouActivity extends Activity {
     public void onClickProceed(View v){
         
         formOrder();
-        sendOrder();
-        
-//        DeepsliceDatabase dbInstance = new DeepsliceDatabase(ThankYouActivity.this);
-//        dbInstance.open();
-//        dbInstance.cleanAllOrderTable();
-//        dbInstance.close(); 
-
-        Toast.makeText(ThankYouActivity.this, "Your order is taken. thank you",  Toast.LENGTH_SHORT).show();
-        
-//        Intent intent = new Intent(ThankYouActivity.this, PickupDeliverActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        startActivity(intent);
-//        finish();      
+        sendOrder();     
     }
 
     private void sendOrder() {
@@ -90,6 +80,7 @@ public class ThankYouActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
 
             String url = Constants.ROOT_URL + "SaveOrder.aspx";
+//            String url = "http://apps.deepslice.com.au/ReadJSON.aspx";
             long reqSendingTime = System.currentTimeMillis();
             ServerResponse response = jsonParser.retrievePostResponse(url, finalOrderData);
             long responseReceivedTime = System.currentTimeMillis();
@@ -122,6 +113,27 @@ public class ThankYouActivity extends Activity {
                 pDialog.dismiss();
             if(result){
                 Log.d("SUCCESS", "success");
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(ThankYouActivity.this);
+                dbInstance.open();
+                dbInstance.cleanAllOrderTable();
+                dbInstance.close(); 
+
+                
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(ThankYouActivity.this);
+                alertDialog.setTitle("Deepslice");
+                alertDialog.setMessage("Your Order is received, Thank you.");
+                alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        
+                        appInstance.setOrderReady(false);
+                        Intent intent = new Intent(ThankYouActivity.this, PickupDeliverActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish(); 
+                    } 
+                }); 
+                alertDialog.create().show(); 
             }
         }
     }
@@ -153,9 +165,9 @@ public class ThankYouActivity extends Activity {
 //        String finalOrderData;
         JSONObject finalOrderObj = new JSONObject();
         try {
-            finalOrderObj.put("OrderInfo", orderData);
-            finalOrderObj.put("PaymentInfo", paymentData);
-            finalOrderObj.put("CustomerInfo", customerData);
+            finalOrderObj.put("OrderInfo", new JSONObject(orderData));
+            finalOrderObj.put("PaymentInfo", new JSONObject(paymentData));
+            finalOrderObj.put("CustomerInfo", new JSONObject(customerData));
             
             // inserting products
             JSONArray productListArray = new JSONArray();
@@ -254,10 +266,10 @@ public class ThankYouActivity extends Activity {
             }
             finalOrderObj.put("DealsList", dealListArray);
             
-            JSONObject jsonToPost = new JSONObject();
-            jsonToPost.put("order_detail", finalOrderObj);
+//            JSONObject jsonToPost = new JSONObject();
+//            jsonToPost.put("order_detail", finalOrderObj);
             
-            finalOrderData = jsonToPost.toString();
+            finalOrderData = finalOrderObj.toString();
             Log.d("FINAL FINAL FINAL FINAL FINAL", finalOrderData);  
             
             

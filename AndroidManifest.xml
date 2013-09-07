@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.deepslice.activity"
-    android:versionCode="49"
-    android:versionName="0.49" >
+    android:versionCode="50"
+    android:versionName="0.50" >
 
     <uses-sdk
         android:minSdkVersion="8"

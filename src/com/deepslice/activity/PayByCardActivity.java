@@ -136,12 +136,14 @@ public class PayByCardActivity extends Activity {
         pInfo.setCardType(selectedCardType);
         pInfo.setNameOnCard(name);
 //        pInfo.setCardNo(cardNo);
+//      pInfo.setCardSecurityCode(sCode);
+//      pInfo.setExpiryMonth(expMonthIndex + 1);
+//        pInfo.setExpiryYear(Integer.parseInt(expYear.substring(2, 4)));         // last-2 digit of the year
+        
         pInfo.setCardNo("4444333322221111");
-        pInfo.setCardSecurityCode(sCode);
-//        pInfo.setExpiryMonth(expMonthIndex + 1);
+        pInfo.setCardSecurityCode("999");
         pInfo.setExpiryMonth(9);
         pInfo.setExpiryYear(15);
-//        pInfo.setExpiryYear(Integer.parseInt(expYear.substring(2, 4)));         // last-2 digit of the year
         
         ((DeepsliceApplication) getApplication()).savePaymentInfo(pInfo);
         

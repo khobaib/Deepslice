@@ -48,6 +48,8 @@ public class DateTimeActivity extends Activity implements OnClickListener {
     int yr, mnth, dy, hr;
     boolean isOpen;
     boolean firstTime;
+    
+    String dateToSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,10 @@ public class DateTimeActivity extends Activity implements OnClickListener {
         storeName.setText(store);
 
         cal = Calendar.getInstance();
+
+        SimpleDateFormat date_format = new SimpleDateFormat("dd-MM-yyyy");
+        dateToSave = date_format.format(cal.getTime());
+        
         timePickDiag = new TimePickerDialog(DateTimeActivity.this,
                 callBackTimePick, cal.get(Calendar.HOUR_OF_DAY),
                 cal.get(Calendar.MINUTE), true);
@@ -155,7 +161,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
                     else{
                         orderInfo.setIsTimedOrder(true);
                         orderInfo.setTimedOrder_Time(timePick.getText().toString());
-                        orderInfo.setTimedOrder_Date(datePick.getText().toString());
+                        orderInfo.setTimedOrder_Date(dateToSave);
                     }
 
                     ((DeepsliceApplication) getApplication()).saveOrderInfo(orderInfo);
@@ -312,11 +318,9 @@ public class DateTimeActivity extends Activity implements OnClickListener {
                     "Store is not open on selected time.\nPlease select some other time!");
         }
     }
-
     private DatePickerDialog.OnDateSetListener callBackDatePick = new DatePickerDialog.OnDateSetListener() {
         @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                int dayOfMonth) {
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
             Calendar cal = Calendar.getInstance();
             if (year < cal.get(Calendar.YEAR)
@@ -335,8 +339,11 @@ public class DateTimeActivity extends Activity implements OnClickListener {
                 cal.set(Calendar.YEAR, year);
                 cal.set(Calendar.MONTH, monthOfYear);
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                
+                SimpleDateFormat date_format = new SimpleDateFormat("dd-MM-yyyy");
+                dateToSave = date_format.format(cal.getTime());
 
-                SimpleDateFormat date_format = new SimpleDateFormat("EEE dd-MMM");
+                date_format = new SimpleDateFormat("EEE dd-MMM");
                 String formated = date_format.format(cal.getTime());
                 datePick.setText(formated);
                 startOrtderButton.setText(timePick.getText() + ", " + datePick.getText());

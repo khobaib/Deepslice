@@ -14,6 +14,7 @@ import com.deepslice.model.Customer;
 import com.deepslice.model.CustomerInfo;
 import com.deepslice.model.NewDealsOrderDetails;
 import com.deepslice.model.NewProductOrder;
+import com.deepslice.model.NewToppingsOrder;
 import com.deepslice.model.OrderInfo;
 import com.deepslice.model.PaymentInfo;
 import com.deepslice.model.ProductSubCategory;
@@ -23,7 +24,9 @@ public class DeepsliceApplication extends Application {
     private CouponDetails couponDetails;
     private NewDealsOrderDetails dealOrderDetails;
     private NewProductOrder halfOder;
-    private ProductSubCategory halfCrust;              
+    private ProductSubCategory halfCrust;   
+    private List<NewToppingsOrder> halfToppingsOrder;
+    private NewToppingsOrder halfSauce;
     private List<CreateOwnPizzaData> createPizzaDataList;
     
     private static Context context;
@@ -235,15 +238,26 @@ public class DeepsliceApplication extends Application {
     public ProductSubCategory getHalfCrust(){
         return halfCrust;
     }
+    
+    public List<NewToppingsOrder> getHalfToppings(){
+        return this.halfToppingsOrder;
+    }
+    
+    public NewToppingsOrder getHalfSauce(){
+        return this.halfSauce;
+    }
 
 //    public void setHalfOder(Order halfOder, String crust) {
 //        this.halfOder = halfOder;
 //        this.halfCrust = crust;
 //    }
     
-    public void setHalfOder(NewProductOrder halfOder, ProductSubCategory crust) {
+    public void setHalfOder(NewProductOrder halfOder, ProductSubCategory crust,
+            List<NewToppingsOrder> halfToppingsList, NewToppingsOrder halfSauce) {
         this.halfOder = halfOder;
         this.halfCrust = crust;
+        this.halfToppingsOrder = halfToppingsList;
+        this.halfSauce = halfSauce;
     }
 
     public NewDealsOrderDetails getDealOrderDetails() {

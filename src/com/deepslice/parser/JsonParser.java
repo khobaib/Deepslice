@@ -54,7 +54,7 @@ public class JsonParser {
 
             }
             Log.d(TAG, "final url = " + url);
-            
+
             HttpGet httpGet = new HttpGet(url);
 
             HttpResponse httpResponse = httpClient.execute(httpGet);
@@ -90,7 +90,7 @@ public class JsonParser {
 
         // try parse the string to a JSON object
         try {
-//            jObj = new JSONObject(json);
+            //            jObj = new JSONObject(json);
             jArray = new JSONArray(json);
             jObj = jArray.getJSONObject(0);
             Log.d("in JSONPARSER, jObj VALUE = ", jObj.toString());
@@ -111,12 +111,15 @@ public class JsonParser {
 
         // Making HTTP request
         try {
-
+            Log.d("FInal url in post", url);
             // defaultHttpClient
             DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(url);
             StringEntity se = new StringEntity(content);
-            se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+            se.setContentEncoding("UTF-8");
+            se.setContentType("application/json");
+//            se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+//            se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "text/html"));
             httpPost.setEntity(se);
 
             Log.d(TAG, "http-post final request = " + httpPost.toString());
@@ -146,7 +149,7 @@ public class JsonParser {
             }
             is.close();
             json = sb.toString();
-            // Log.d("test", sb.toString());
+            Log.d("test", json);
         } catch (Exception e) {
             Log.e("Buffer Error", "Error converting result " + e.toString());
         }
