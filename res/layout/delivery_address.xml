@@ -17,11 +17,11 @@
 
     <ImageView
         android:id="@+id/logoImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/deposlicepizza" />
+        android:src="@drawable/logo" />
 
     <ScrollView
         android:id="@+id/scrollView"

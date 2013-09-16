@@ -19,6 +19,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.deepslice.database.DeepsliceDatabase;
@@ -259,11 +260,13 @@ public class Utils{
 
         int itemCount = orderItemCount + dealItemCount;
         double totalPrice = orderTotalPrice + dealTotalPrice;
-        totalPrice = Double.valueOf(Constants.twoDForm.format(totalPrice));
+//        totalPrice = Double.valueOf(Constants.twoDForm.format(totalPrice));
+        String sPrice = Constants.twoDForm.format(totalPrice);
+//        Log.e(">>>>>>>>", "sPrice = " + sPrice);
 
         List<String> orderInfo = new ArrayList<String>();
         orderInfo.add(String.valueOf(itemCount));
-        orderInfo.add(String.valueOf(totalPrice));
+        orderInfo.add(sPrice);
         return orderInfo;
     }
 

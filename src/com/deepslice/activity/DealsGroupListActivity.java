@@ -62,6 +62,7 @@ public class DealsGroupListActivity extends Activity{
     double unfinishedDealPrice;
 
     List<String> couponGroupIds;                       // CouponGroupID list from GetCouponGroups api 
+    public static List<Boolean> isDealItemCustomized;
     long dealOrderId;
 
     @Override
@@ -72,9 +73,6 @@ public class DealsGroupListActivity extends Activity{
         tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
         tvFavCount = (TextView) findViewById(R.id.favCount);
 
-        TextView title = (TextView) findViewById(R.id.headerTextView);
-        title.setText(selectedCouponDesc);
-
         pDialog = new ProgressDialog(DealsGroupListActivity.this);
 
         Bundle b = this.getIntent().getExtras();
@@ -83,6 +81,10 @@ public class DealsGroupListActivity extends Activity{
         selectedCouponID = selectedCoupon.getCouponID();
         selectedCouponDesc = selectedCoupon.getCouponDesc();
 
+        TextView title = (TextView) findViewById(R.id.headerTextView);
+        title.setText(selectedCouponDesc);
+
+        isDealItemCustomized = new ArrayList<Boolean>();
         couponGroupIds = new ArrayList<String>();
         couponGroupList = new ArrayList<CouponGroup>();
 
@@ -133,22 +135,43 @@ public class DealsGroupListActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
-                dbInstance.open();
-                dbInstance.updateTotalPrice((int) dealOrderId);
-                dbInstance.finalizedDealOrder((int) dealOrderId);
-                dbInstance.close();
+                boolean isAllCustomized = true;
+                for(Boolean isCustomized : isDealItemCustomized){
+                    if(isCustomized.equals(false)){
+                        isAllCustomized = false;
+                        break;
+                    }                       
+                }
 
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(DealsGroupListActivity.this);
-                alertDialog.setTitle("Deepslice");
-                alertDialog.setMessage("Deal is added to Cart Successfully");
-                alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        finish();
-                    } 
-                }); 
-                alertDialog.create().show();                  
+                if(isAllCustomized == true){
+                    DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
+                    dbInstance.open();
+                    dbInstance.updateTotalPrice((int) dealOrderId);
+                    dbInstance.finalizedDealOrder((int) dealOrderId);
+                    dbInstance.close();
+
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(DealsGroupListActivity.this);
+                    alertDialog.setTitle("Deepslice");
+                    alertDialog.setMessage("Deal is added to Cart Successfully");
+                    alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            finish();
+                        } 
+                    }); 
+                    alertDialog.create().show();   
+                }
+                else{
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(DealsGroupListActivity.this);
+                    alertDialog.setTitle("Deepslice");
+                    alertDialog.setMessage("Please customize all the deal items.");
+                    alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        } 
+                    }); 
+                    alertDialog.create().show();  
+                }
             }
         });
     }
@@ -185,7 +208,7 @@ public class DealsGroupListActivity extends Activity{
 
                     couponGroupList = CouponGroup.parseCouponGroups(data);
                     Collections.sort(couponGroupList, new CouponGroupIdComparator());
-                    
+
                     long productParseEndTime = System.currentTimeMillis();
                     Log.d("TIME", "time to parse coupongroup = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
 
@@ -203,6 +226,7 @@ public class DealsGroupListActivity extends Activity{
             if(result){                
                 for(int i=0 ; i < couponGroupList.size(); i++){
                     couponGroupIds.add(couponGroupList.get(i).getCouponGroupID());
+                    isDealItemCustomized.add(false);                    // initially all false
                 }
                 new GetCouponDetails().execute();
             }
@@ -412,13 +436,13 @@ public class DealsGroupListActivity extends Activity{
 
 
     private void updateDealsGroupList() {
-        
+
         // if this deal has any added toppings price for pizza-deals
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsGroupListActivity.this);
         dbInstance.open();
         unfinishedDealPrice = dbInstance.updateTotalPrice((int) dealOrderId);
         dbInstance.close();
-        
+
         if(dealOrderDetailsList != null && dealOrderDetailsList.size() > 0){
             dealGroupListAdapter = new DealGroupListAdapter(this, dealOrderDetailsList, selectedCoupon, dealOrderId);
             lvDealGroup.setAdapter(dealGroupListAdapter);

@@ -15,23 +15,29 @@
         android:id="@+id/logoImageView"
         style="@style/logoImage" />
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
+    <TextView
+        android:id="@+id/headerTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/logoImageView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:text="Deals name"
+        android:textColor="@color/white"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <TextView
+    <!--
+             <TextView
             android:id="@+id/headerTextView"
             style="@style/headerText"
             android:layout_width="fill_parent"
-            android:layout_alignParentLeft="false"
-            android:paddingLeft="5dp"
-            android:text="Pizza Range"
+            android:layout_centerHorizontal="true"
+            android:text="Deals name"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>
+    -->
 
     <LinearLayout
         android:id="@+id/zouterLayout"
@@ -73,8 +79,11 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:text="GET A DEAL"
-            android:textColor="#ffffff" />
+            android:paddingLeft="10dp"
+            android:text="Add to Order"
+            android:textColor="#ffffff"
+            android:textSize="16dp"
+            android:textStyle="bold" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -106,7 +115,8 @@
         </RelativeLayout>
     </RelativeLayout>
 
-<!--     <Button
+    <!--
+         <Button
         android:id="@+id/buttonGetADeal"
         android:layout_width="200dp"
         android:layout_height="48dp"
@@ -120,9 +130,12 @@
         android:text=" GET A DEAL"
         android:textColor="#f9fbff"
         android:textStyle="bold"
-        android:visibility="gone" /> -->
+        android:visibility="gone" />
+    -->
 
-<!--     <Button
+
+    <!--
+         <Button
         android:id="@+id/buttonCancel"
         android:layout_width="100dp"
         android:layout_height="38dp"
@@ -133,7 +146,8 @@
         android:text="CANCEL"
         android:textColor="#f9fbff"
         android:textStyle="bold"
-        android:visibility="visible" /> -->
+        android:visibility="visible" />
+    -->
 
     <LinearLayout
         android:id="@+id/youterLayout"

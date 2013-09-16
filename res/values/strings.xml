@@ -1,12 +1,12 @@
 <resources>
 
-    <string name="app_name">Deepslice</string>
+    <string name="app_name">deepslice</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_menu">MenuActivity</string>
     <string name="customerDetailHeader">Customer Details</string>
     <string name="customerLoginHeader">Customer Login</string>
-    <string name="registerCheckBoxText">Send me DeepSlice\'s Discount via email or sms</string>
+    <string name="registerCheckBoxText">Send me deepslice\'s Discount via email or sms</string>
     <string name="customDetailsText">Would you like to register for quicker ordering in the future? It only takes less than a minute.</string>
     <string name="privacyPolicy">PRIVACY POLICY</string>
     <string name="startOrdering">START ORDERING</string>

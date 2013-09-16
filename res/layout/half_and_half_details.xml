@@ -45,9 +45,9 @@
             android:layout_alignRight="@+id/imageView1"/>
 
     <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageViewLogoHalf" android:background="@drawable/deposlicepizza"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/imageViewLogoHalf" android:background="@drawable/logo"
             android:layout_marginTop="5dp" android:layout_marginLeft="5dp"/>
     <ScrollView
             android:id="@+id/scrollView"

@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.deepslice.activity.DealsGroupListActivity;
 import com.deepslice.activity.DealsProductListActivity;
 import com.deepslice.activity.R;
 import com.deepslice.cache.ImageLoader;
@@ -46,6 +47,7 @@ public class DealGroupListAdapter extends ArrayAdapter<NewDealsOrderDetails> {
         ImageView productImage;
         TextView productName;
         Button bCustomize;
+        ImageView Tick;
     }
     
     @Override
@@ -60,6 +62,7 @@ public class DealGroupListAdapter extends ArrayAdapter<NewDealsOrderDetails> {
             holder.productImage = (ImageView) convertView.findViewById(R.id.imageView1);
             holder.productName = (TextView) convertView.findViewById(R.id.textView1);  
             holder.bCustomize = (Button) convertView.findViewById(R.id.b_customize);
+            holder.Tick = (ImageView) convertView.findViewById(R.id.iv_tick_customized);
 
             convertView.setTag(holder);
         } else {
@@ -79,6 +82,11 @@ public class DealGroupListAdapter extends ArrayAdapter<NewDealsOrderDetails> {
         }
         imageLoader.DisplayImage(imgPath, holder.productImage);
         
+        if(DealsGroupListActivity.isDealItemCustomized.get(position).equals(true))
+            holder.Tick.setVisibility(View.VISIBLE);
+        else
+            holder.Tick.setVisibility(View.GONE);
+        
         holder.bCustomize.setOnClickListener(new OnClickListener() {
             
             @Override
@@ -88,6 +96,7 @@ public class DealGroupListAdapter extends ArrayAdapter<NewDealsOrderDetails> {
                 Intent i=new Intent(mContext, DealsProductListActivity.class);
                 
                 Bundle bundle=new Bundle();
+                bundle.putInt("item_position", position);
                 bundle.putString("coupon_group_id", item.getCouponGroupId());
                 bundle.putString("qty", item.getQty());
                 bundle.putLong("dealOrderId", dealOrderId);

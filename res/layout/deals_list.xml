@@ -8,7 +8,7 @@
 
         <ImageView
             android:id="@+id/farwordImageView"
-            style="@style/farwordButton"/>
+            style="@style/farwordButton" />
 
         <TextView
             android:id="@+id/headerTextView"
@@ -22,13 +22,16 @@
         style="@style/logoImage" />
 
     <Button
-            android:layout_width="58dp"
-            android:layout_height="wrap_content"
-            android:text="Cancel"
-            android:id="@+id/button"
-            android:background="@drawable/pizza_yellow" android:layout_alignLeft="@+id/headerRelativeLayout"
-            android:layout_below="@+id/headerRelativeLayout" android:layout_marginLeft="5dp"
-            android:visibility="invisible"/>
+        android:id="@+id/button"
+        android:layout_width="58dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/headerRelativeLayout"
+        android:layout_below="@+id/headerRelativeLayout"
+        android:layout_marginLeft="5dp"
+        android:background="@drawable/pizza_yellow"
+        android:text="Cancel"
+        android:visibility="invisible" />
+
     <LinearLayout
         android:id="@+id/zouterLayout"
         android:layout_width="fill_parent"
@@ -36,20 +39,21 @@
         android:layout_above="@+id/navBar"
         android:layout_below="@+id/headerRelativeLayout"
         android:layout_marginTop="50dp"
-        android:orientation="vertical" 
-        >
+        android:orientation="vertical" >
 
         <ListView
-        android:id="@+id/listView1"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-         android:background="@android:color/transparent"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="3dp"
-        android:fastScrollEnabled="true"
-        android:layout_centerHorizontal="true" android:paddingLeft="10dp" android:paddingRight="10dp">
-    </ListView>
+            android:id="@+id/listView1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/transparent"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="3dp"
+            android:fastScrollEnabled="true"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" >
+        </ListView>
     </LinearLayout>
 
     <LinearLayout
@@ -57,23 +61,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/headerRelativeLayout"
-        android:layout_marginTop="150dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:orientation="vertical" 
+        android:layout_marginTop="150dp"
+        android:orientation="vertical"
         android:padding="20dip"
-        android:visibility="gone">
+        android:visibility="gone" >
 
-       <TextView
+        <TextView
             android:id="@+id/headerTextView"
             style="@style/headerText"
             android:background="@drawable/red_box2"
             android:text="You haven’t added any item into Favourite"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-        
     </LinearLayout>
-    
-    
+
     <TableLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/navBar"
@@ -101,7 +103,6 @@
                     android:background="@drawable/m_nav1" />
             </LinearLayout>
 
-           
             <RelativeLayout
                 android:id="@+id/setting_icon"
                 android:layout_width="0dp"
@@ -110,11 +111,10 @@
                 android:gravity="center_horizontal" >
 
                 <Button
-                    android:layout_centerHorizontal="true"
-                    
                     android:id="@+id/callfriends"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
                     android:background="@drawable/m_nav2" />
 
                 <TextView
@@ -134,13 +134,12 @@
 
                 <LinearLayout
                     android:id="@+id/cartDummy"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
                     android:layout_width="match_parent"
-                	android:layout_height="40dip"
+                    android:layout_height="40dip"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
                     android:orientation="vertical" >
                 </LinearLayout>
-
             </RelativeLayout>
 
             <RelativeLayout
@@ -151,13 +150,11 @@
                 android:gravity="center_horizontal" >
 
                 <Button
-                    android:layout_centerHorizontal="true"
-                    
                     android:id="@+id/favs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
                     android:background="@drawable/m_nav3" />
-
 
                 <TextView
                     android:id="@+id/favCount"
@@ -173,8 +170,6 @@
                     android:textColor="#ffffff"
                     android:textSize="14dip"
                     android:textStyle="bold" />
-
-
             </RelativeLayout>
         </TableRow>
     </TableLayout>

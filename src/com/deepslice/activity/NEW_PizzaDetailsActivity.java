@@ -49,6 +49,8 @@ public class NEW_PizzaDetailsActivity extends Activity {
     Product selectedProduct;
     ProductSubCategory selectedCrust;
     NewDealsOrderDetails dealOrderDetails;
+    
+    int selectedItemPosition;
 
     ImageLoader imageLoader;
 
@@ -118,6 +120,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
         if (isDeal){
             RelativeLayout rlCount = (RelativeLayout) findViewById(R.id.rl_count);
             rlCount.setVisibility(View.GONE);
+            selectedItemPosition = b.getInt("item_position");
             dealOrderDetails = appInstance.getDealOrderDetails();
             couponGroupID = b.getString("couponGroupID");
             //            productId = dealOrder.getProdID();            // here's some confusion, will sort out later
@@ -350,6 +353,8 @@ public class NEW_PizzaDetailsActivity extends Activity {
                         Log.d(TAG, "delete already selected deal? = " + b);
                     }
                     long dealOrderDetailsId = dbInstance.insertDealOrderDetails(dealOrderDetails);
+                    
+                    DealsGroupListActivity.isDealItemCustomized.set(selectedItemPosition, true);
 
                     // inserting toppingsData to the local DB
                     if(toppingsSelected != null){               
@@ -546,7 +551,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
         for(NewToppingsOrder thisToppingsOrder : toppingsSelected){
             toppingsCodeToDisplay += thisToppingsOrder.getToppingsCode() + "," ;
         }
-        selectedToppings.setText(AppProperties.trimLastComma(toppingsCodeToDisplay));
+        selectedToppings.setText(AppProperties.trimLastCommaAddAnd(toppingsCodeToDisplay));
 
     }
 
@@ -600,7 +605,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
                 toppingsCodeToDisplay += thisToppingsOrder.getToppingsCode() + "," ;
             }
 
-            selectedToppings.setText(AppProperties.trimLastComma(toppingsCodeToDisplay));
+            selectedToppings.setText(AppProperties.trimLastCommaAddAnd(toppingsCodeToDisplay));
 
         }
         if (requestCode == SELECT_CRUST) {

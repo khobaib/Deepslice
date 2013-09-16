@@ -20,6 +20,7 @@
 
     <RelativeLayout
         android:id="@+id/footerRelativeLayout"
+        android:layout_marginBottom="5dp"
         style="@style/footer" >
 
         <TextView
@@ -37,62 +38,80 @@
             android:layout_marginBottom="5dip"
             android:layout_marginTop="5dip"
             android:background="@drawable/green_butt"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dip"
-            android:text="ASAP"
-            android:textColor="#fff" />
+            android:padding="10dp"
+            android:text="Delivery Time"
+            android:textColor="@color/white"
+            android:textSize="16dp" />
     </RelativeLayout>
 
     <ImageView
         android:id="@+id/logoImageView"
         style="@style/logoImage" />
 
-    <ScrollView
+    <!--
+         <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/footerRelativeLayout"
         android:layout_below="@+id/textView4"
-        android:layout_marginTop="15dip" >
+        android:layout_marginTop="15dip" >
+    -->
 
-        <RelativeLayout
-            android:id="@+id/tblOuter"
-            android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/tblOuter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/footerRelativeLayout"
+        android:layout_below="@+id/textView4"
+        android:layout_marginTop="15dip"
+        android:background="@drawable/datentime" >
+
+        <TextView
+            android:id="@+id/datePicker"
+            android:layout_width="120dip"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dip"
-            android:background="@drawable/datentime" >
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="40dp"
+            android:background="@drawable/rate_240"
+            android:gravity="center_horizontal"
+            android:padding="10dp"
+            android:text="TextView"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/datePicker"
-                android:layout_width="120dip"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="40dp"
-                android:background="@drawable/rate_240"
-                android:gravity="center_horizontal"
-                android:padding="10dp"
-                android:text="TextView"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="18dp" />
+        <TextView
+            android:id="@+id/timePicker"
+            android:layout_width="120dip"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/rate_240"
+            android:gravity="center_horizontal"
+            android:padding="10dp"
+            android:text="TextView"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/timePicker"
-                android:layout_width="120dip"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="40dp"
-                android:background="@drawable/rate_240"
-                android:gravity="center_horizontal"
-                android:padding="10dp"
-                android:text="TextView"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="18dp" />
-        </RelativeLayout>
-    </ScrollView>
+        <Button
+            android:id="@+id/b_asap"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/green_butt"
+            android:padding="10dp"
+            android:text="ASAP"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+    <!-- </ScrollView> -->
 
     <TextView
         android:id="@+id/textView1"

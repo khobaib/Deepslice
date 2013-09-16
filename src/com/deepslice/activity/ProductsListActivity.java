@@ -220,29 +220,35 @@ public class ProductsListActivity extends Activity{
                 LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = mInflater.inflate(R.layout.line_item_product, null);
             }
-            Product event = items.get(position);
-            if (event != null) {
+            Product product = items.get(position);
+            if (product != null) {
 
                 TextView title = (TextView) convertView.findViewById(R.id.textView1);
-                TextView price = (TextView) convertView.findViewById(R.id.textView2);
-                TextView calories = (TextView) convertView.findViewById(R.id.textView3);
+                TextView tvPrice = (TextView) convertView.findViewById(R.id.textView2);
+                TextView tvCalories = (TextView) convertView.findViewById(R.id.textView3);
 
-                title.setText(Html.fromHtml(event.getDisplayName()));
-                price.setText("$"+event.getPrice());
-                calories.setText(event.getCaloriesQty()+"kj");
+                title.setText(Html.fromHtml(product.getDisplayName()));
+                
+                double price = Double.parseDouble(product.getPrice());
+                tvPrice.setText("$" + Constants.twoDForm.format(price));
+                
+                if(catType.equals(Constants.PRODUCT_CATEGORY_SIDES))
+                    tvCalories.setVisibility(View.INVISIBLE);
+                else
+                    tvCalories.setText(product.getCaloriesQty()+"kj");
 
 
                 ImageView icon = (ImageView) convertView.findViewById(R.id.imageView1);
                 String imgPath=Constants.IMAGES_LOCATION_PRODUCTS;
-                if(AppProperties.isNull(event.getThumbnail())){
+                if(AppProperties.isNull(product.getThumbnail())){
                     imgPath=imgPath+"noimage.png";
                 }
                 else{
-                    imgPath=imgPath+event.getThumbnail();
+                    imgPath=imgPath+product.getThumbnail();
                 }
                 imageLoader.DisplayImage(imgPath, icon);
 
-                convertView.setTag(event);
+                convertView.setTag(product);
             }
             return convertView;
         }

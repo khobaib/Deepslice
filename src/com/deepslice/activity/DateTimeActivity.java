@@ -48,7 +48,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
     int yr, mnth, dy, hr;
     boolean isOpen;
     boolean firstTime;
-    
+
     String dateToSave;
 
     @Override
@@ -79,7 +79,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 
         SimpleDateFormat date_format = new SimpleDateFormat("dd-MM-yyyy");
         dateToSave = date_format.format(cal.getTime());
-        
+
         timePickDiag = new TimePickerDialog(DateTimeActivity.this,
                 callBackTimePick, cal.get(Calendar.HOUR_OF_DAY),
                 cal.get(Calendar.MINUTE), true);
@@ -112,6 +112,9 @@ public class DateTimeActivity extends Activity implements OnClickListener {
     private void initializeAllViews() {
         startOrtderButton = (Button) findViewById(R.id.startOrderingButton);
         startOrtderButton.setOnClickListener(this);
+        
+        Button ASAP = (Button) findViewById(R.id.b_asap);
+        ASAP.setOnClickListener(this);
 
         datePick = (TextView) findViewById(R.id.datePicker);
         datePick.setOnClickListener(this);
@@ -144,25 +147,38 @@ public class DateTimeActivity extends Activity implements OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
 
+            case R.id.b_asap:
+                if(cal.get(Calendar.HOUR_OF_DAY) >= openTime.getHours() && 
+                cal.get(Calendar.HOUR_OF_DAY) < closeTime.getHours()){
+                    OrderInfo orderInfo = ((DeepsliceApplication) getApplication()).loadOrderInfo();
+                    orderInfo.setIsTimedOrder(false);
+                    ((DeepsliceApplication) getApplication()).saveOrderInfo(orderInfo);
+                    startActivity(new Intent(new Intent(this, PaymentSelectionActivity.class)));
+                }else {
+                    Utils.openErrorDialog(DateTimeActivity.this,
+                            "Store is not opened right now.\nPlease select some other time!");
+                }
+                break;
+
             case R.id.startOrderingButton:
                 String[] timeStorage = timePick.getText().toString().split("[:]");
 
-                if ((Integer.parseInt(timeStorage[0]) >= openTime.getHours() && Integer
-                        .parseInt(timeStorage[0]) < closeTime.getHours())
-                        || ("ASAP".equalsIgnoreCase(startOrtderButton.getText()
-                                .toString()) && (cal.get(Calendar.HOUR_OF_DAY) >= openTime
-                                .getHours() && cal.get(Calendar.HOUR_OF_DAY) < closeTime
-                                .getHours()))) {
+                if(startOrtderButton.getText().toString().equals("Delivery Time")){
+                    Utils.openErrorDialog(DateTimeActivity.this,
+                            "Please choose a time first.");
+                }
+                else if ((Integer.parseInt(timeStorage[0]) >= openTime.getHours() && Integer
+                        .parseInt(timeStorage[0]) < closeTime.getHours())) {
 
                     OrderInfo orderInfo = ((DeepsliceApplication) getApplication()).loadOrderInfo();
 
-                    if(startOrtderButton.getText().toString().equals("ASAP"))
-                        orderInfo.setIsTimedOrder(false);
-                    else{
-                        orderInfo.setIsTimedOrder(true);
-                        orderInfo.setTimedOrder_Time(timePick.getText().toString());
-                        orderInfo.setTimedOrder_Date(dateToSave);
-                    }
+                    //                    if(startOrtderButton.getText().toString().equals("ASAP"))
+                    //                        orderInfo.setIsTimedOrder(false);
+                    //                    else{
+                    orderInfo.setIsTimedOrder(true);
+                    orderInfo.setTimedOrder_Time(timePick.getText().toString());
+                    orderInfo.setTimedOrder_Date(dateToSave);
+                    //                    }
 
                     ((DeepsliceApplication) getApplication()).saveOrderInfo(orderInfo);
 
@@ -275,8 +291,7 @@ public class DateTimeActivity extends Activity implements OnClickListener {
 
                 if(yr>cal.get(Calendar.YEAR) || mnth>cal.get(Calendar.MONTH) || dy>cal.get(Calendar.DAY_OF_MONTH)){
                     timePick.setText(getFullTime(hourOfDay, minute));
-                    startOrtderButton.setText(timePick.getText() + ", "
-                            + datePick.getText());
+                    startOrtderButton.setText(timePick.getText() + ", " + datePick.getText());
                     Log.e("It is vald","sd");
                     Log.e("year", yr + "");
                     Log.e("Month", mnth + "");
@@ -313,11 +328,12 @@ public class DateTimeActivity extends Activity implements OnClickListener {
     private void dialogCount() {
         if (firstTime == true) {
             firstTime = false;
-            startOrtderButton.setText("ASAP");
+            startOrtderButton.setText("Delivery Time");
             Utils.openErrorDialog(DateTimeActivity.this,
                     "Store is not open on selected time.\nPlease select some other time!");
         }
     }
+    
     private DatePickerDialog.OnDateSetListener callBackDatePick = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -334,12 +350,12 @@ public class DateTimeActivity extends Activity implements OnClickListener {
                 view.updateDate(year, monthOfYear, dayOfMonth);
 
                 Toast.makeText(DateTimeActivity.this, "Please Select future date!", Toast.LENGTH_SHORT).show();
-                startOrtderButton.setText("ASAP");
+                startOrtderButton.setText("Delivery Time");
             } else {
                 cal.set(Calendar.YEAR, year);
                 cal.set(Calendar.MONTH, monthOfYear);
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                
+
                 SimpleDateFormat date_format = new SimpleDateFormat("dd-MM-yyyy");
                 dateToSave = date_format.format(cal.getTime());
 

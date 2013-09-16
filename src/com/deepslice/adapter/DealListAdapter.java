@@ -34,6 +34,7 @@ public class DealListAdapter extends ArrayAdapter<Coupon> {
     private static class ViewHolder {
         ImageView dealImage;
         TextView dealName;
+        TextView dealPrice;
     }
 
     @Override
@@ -47,6 +48,7 @@ public class DealListAdapter extends ArrayAdapter<Coupon> {
             holder = new ViewHolder();
             holder.dealImage = (ImageView) convertView.findViewById(R.id.imageView1);
             holder.dealName = (TextView) convertView.findViewById(R.id.textView1);
+            holder.dealPrice = (TextView) convertView.findViewById(R.id.textView2);
 
             convertView.setTag(holder);
         } else {
@@ -55,6 +57,7 @@ public class DealListAdapter extends ArrayAdapter<Coupon> {
 
         Coupon item = getItem(position);
         holder.dealName.setText(item.getCouponDesc());
+        holder.dealPrice.setText(item.getAmount());
         
         String imgPath = Constants.IMAGES_LOCATION_DEALS;
         if(AppProperties.isNull(item.getPic())){

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/backGround">
+    style="@style/backGround" >
 
     <RelativeLayout
         android:id="@+id/headerRelativeLayout"
@@ -24,10 +24,12 @@
         <Button
             android:id="@+id/startOrderingButton"
             style="@style/buttonHVCenter"
-            android:textColor="#fff"
-            android:visibility="visible"
+            android:background="@drawable/btn_bg_new"
+            android:text="Next"
+            android:textColor="@color/white"
+            android:textSize="16dp"
             android:textStyle="bold"
-            android:background="@drawable/btn_bg_new" android:text="Complete Order" android:textSize="16dp"/>
+            android:visibility="visible" />
     </RelativeLayout>
 
     <ImageView
@@ -52,34 +54,39 @@
                 <TableRow
                     android:id="@+id/tableRow1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" 
-                    android:padding="5dip">
+                    android:layout_height="wrap_content"
+                    android:padding="5dip" >
+
                     <TextView
                         android:id="@+id/nametextView"
                         style="@style/textView"
                         android:text="@string/yourName" />
+
                     <EditText
                         android:id="@+id/yourNameEditText"
                         style="@style/tableEditText"
                         android:inputType="textPersonName" >
-
                     </EditText>
                 </TableRow>
 
                 <TableRow
                     android:id="@+id/tableRow2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:padding="5dip">
+                    android:layout_height="wrap_content"
+                    android:padding="5dip" >
+
                     <TextView
                         android:id="@+id/textView3"
                         style="@style/textView"
                         android:text="@string/yourEmail" />
+
                     <EditText
                         android:id="@+id/yourEmailEditText"
                         style="@style/tableEditText"
                         android:inputType="textEmailAddress" />
                 </TableRow>
             </TableLayout>
+
             <LinearLayout
                 android:id="@+id/checkBoxLinearLayout"
                 android:layout_width="match_parent"
@@ -88,38 +95,43 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:orientation="vertical" >
-             <CheckBox
+
+                <CheckBox
                     android:id="@+id/checkBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="80dp"
                     android:background="@drawable/checkbox_background"
                     android:button="@drawable/mycheckbox"
+                    android:checked="true"
                     android:text="@string/registerCheckBoxText"
-                    android:textColor="#fff"
+                    android:textColor="@color/white"
                     android:textSize="13dp" />
-
             </LinearLayout>
 
             <TableLayout
                 android:id="@+id/phoneTableLayout"
                 style="@style/tableStyle"
                 android:layout_below="@+id/checkBoxLinearLayout" >
+
                 <TableRow
                     android:id="@+id/tableRow3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dip" >
+
                     <TextView
                         android:id="@+id/textView4"
                         style="@style/textView"
-                        android:text="@string/yourPhone"/>
+                        android:text="@string/yourPhone" />
+
                     <EditText
                         android:id="@+id/yourPhoneEditText"
-                        style="@style/tableEditText" 
-                        android:inputType="number"/>
+                        style="@style/tableEditText"
+                        android:inputType="number" />
                 </TableRow>
             </TableLayout>
+
             <RelativeLayout
                 android:id="@+id/textLinearLayout"
                 android:layout_width="match_parent"
@@ -129,7 +141,8 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:orientation="vertical" >
-               <TextView
+
+                <TextView
                     android:id="@+id/textTextView"
                     style="@style/textView"
                     android:layout_marginTop="15dip"
@@ -138,21 +151,19 @@
                 <Button
                     android:id="@+id/registerButton"
                     style="@style/buttonHCenter"
-                    android:layout_marginTop="8dp"
                     android:layout_below="@+id/textTextView"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginTop="8dp"
                     android:background="@drawable/btn_register"
                     android:textColor="#fff" />
+
                 <Button
                     android:id="@+id/bLog"
-                    style="@style/buttonHCenter"                   
+                    style="@style/buttonHCenter"
                     android:layout_below="@+id/registerButton"
-                    android:background="@drawable/login"
                     android:layout_margin="12dp"
-                    android:textColor="#fff"/>
-                
-                 
-
+                    android:background="@drawable/login"
+                    android:textColor="#fff" />
             </RelativeLayout>
         </RelativeLayout>
     </ScrollView>

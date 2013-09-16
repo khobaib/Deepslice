@@ -98,16 +98,33 @@ public class AppProperties {
     //		return user;
     //	}
 
-    public static String trimLastComma(String a) {
-        if (a == null || a.equals("")) {
+//    public static String trimLastComma(String a) {
+//        if (a == null || a.equals("")) {
+//            return "";
+//        } else {
+//            try{
+//                a=a.substring(0,a.length()-1);
+//            }catch (Exception e) {
+//                a= "";
+//            }
+//            return a;
+//        }
+//    }
+    
+    public static String trimLastCommaAddAnd(String str) {
+        if (str == null || str.equals("")) {
             return "";
         } else {
             try{
-                a=a.substring(0,a.length()-1);
+                str = str.substring(0, str.length()-1);
+                int index = str.lastIndexOf(",");
+                if(index != -1){
+                    str = str.substring(0, index) + " and " + str.substring(index+1);
+                }
             }catch (Exception e) {
-                a= "";
+                str = "";
             }
-            return a;
+            return str;
         }
     }
 

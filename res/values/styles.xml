@@ -43,7 +43,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:textColor">#fff</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="headerTextLeft">
@@ -51,7 +51,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginLeft">6dp</item>
-        <item name="android:textColor">#fff</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="footer">
@@ -118,7 +118,7 @@
         <item name="android:layout_height">80dip</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_alignParentTop">true</item>
-        <item name="android:src">@drawable/deposlicepizza</item>
+        <item name="android:src">@drawable/logo</item>
     </style>
     <style name="logoImage_h">
         <item name="android:layout_width">wrap_content</item>

@@ -71,33 +71,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="15dip"
-                android:text="Need Change?"
-                android:textColor="#ffffff"
-                android:textSize="14dip"
-                android:textStyle="bold" />
-
-            <CheckBox
-                android:id="@+id/checkBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/checkbox_background"
-                android:button="@drawable/mycheckbox"
-                android:textColor="#fff"
-                android:textSize="13dip" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dip" >
-
-            <TextView
-                android:id="@+id/button1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="15dip"
                 android:text="Order Total:"
                 android:textColor="#ffffff"
                 android:textSize="14dip"

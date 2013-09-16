@@ -21,7 +21,7 @@ public class Constants {
 
     public static final String TAG_PARSE_ERROR = "PARSE ERROR";
     
-    public static final DecimalFormat twoDForm = new DecimalFormat("#.##");
+    public static final DecimalFormat twoDForm = new DecimalFormat("0.00");
     
     public static final int INDEX_ORDER_ITEM_COUNT = 0; 
     public static final int INDEX_ORDER_PRICE = 1; 

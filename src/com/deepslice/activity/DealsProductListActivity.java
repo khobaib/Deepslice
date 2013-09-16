@@ -46,6 +46,7 @@ public class DealsProductListActivity extends Activity {
     String productCatId, productName;
     int currentPosition;
     
+    int selectedItemPosition;
     String selectedCouponID;
     String selectedCouponGroupID;
     Coupon selectedCoupon;
@@ -86,6 +87,8 @@ public class DealsProductListActivity extends Activity {
         selectedCouponID = selectedCoupon.getCouponID();
         Qty = Integer.parseInt(bundle.getString("qty"));
         dealOrderId = bundle.getLong("dealOrderId");
+        
+        selectedItemPosition = bundle.getInt("item_position");
 
 
         selectedCouponGrpcouponDetailsList = new ArrayList<CouponDetails>();
@@ -396,6 +399,7 @@ public class DealsProductListActivity extends Activity {
         appInstance.setDealOrderDetails(dealOrderDetails);
         Intent intent=new Intent(DealsProductListActivity.this, NEW_PizzaDetailsActivity.class);
         Bundle bundle=new Bundle();
+        bundle.putInt("item_position", selectedItemPosition);
         bundle.putSerializable("selectedProduct", selectedProduct);
         bundle.putString("prdID", selectedProduct.getProdID());             // it isnt necessary, is it?
         bundle.putBoolean("isDeal", true);
@@ -487,6 +491,8 @@ public class DealsProductListActivity extends Activity {
         long dealOrderDetailsId = dbInstance.insertDealOrderDetails(dealOrderDetails);
         dbInstance.close();
 
+        DealsGroupListActivity.isDealItemCustomized.set(selectedItemPosition, true);
+        
 //        DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsProductListActivity.this);
 //        dbInstance.open();
 //        if(dbInstance.isDealGroupAlreadySelected(dealOrder.getCouponID(), dealOrder.getCouponGroupID())){

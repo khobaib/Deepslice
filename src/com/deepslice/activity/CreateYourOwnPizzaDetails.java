@@ -402,7 +402,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
             for(NewToppingsOrder thisToppingsOrder : toppingsSelected){
                 toppingsCodeToDisplay += thisToppingsOrder.getToppingsCode() + "," ;
             }
-            selectedToppings.setText(AppProperties.trimLastComma(toppingsCodeToDisplay));
+            selectedToppings.setText(AppProperties.trimLastCommaAddAnd(toppingsCodeToDisplay));
        
     }
 
@@ -531,7 +531,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
                 toppingsCodeToDisplay += thisToppingsOrder.getToppingsCode() + "," ;
             }
 
-            selectedToppings.setText(AppProperties.trimLastComma(toppingsCodeToDisplay));
+            selectedToppings.setText(AppProperties.trimLastCommaAddAnd(toppingsCodeToDisplay));
 
         }
     }
