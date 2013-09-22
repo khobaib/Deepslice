@@ -123,7 +123,7 @@ public class ProductsListActivity extends Activity{
                     selectedProduct = product;
 
                     if(catType.equals(Constants.PRODUCT_CATEGORY_PIZZA)){
-                        
+
                         /*
                          * This if-block is just for 2nd half of HnH pizza
                          */
@@ -228,14 +228,24 @@ public class ProductsListActivity extends Activity{
                 TextView tvCalories = (TextView) convertView.findViewById(R.id.textView3);
 
                 title.setText(Html.fromHtml(product.getDisplayName()));
-                
-                double price = Double.parseDouble(product.getPrice());
-                tvPrice.setText("$" + Constants.twoDForm.format(price));
-                
+
+                if(PizzaMenuActivity.isHalf)
+                    tvPrice.setVisibility(View.GONE);
+                else{
+                    double price = Double.parseDouble(product.getPrice());
+                    tvPrice.setText("$" + Constants.twoDForm.format(price));
+                }
+
                 if(catType.equals(Constants.PRODUCT_CATEGORY_SIDES))
                     tvCalories.setVisibility(View.INVISIBLE);
-                else
-                    tvCalories.setText(product.getCaloriesQty()+"kj");
+                else{
+                    if(PizzaMenuActivity.isHalf){
+                        double hnhCal = Double.parseDouble(product.getCaloriesQty())/2.0; 
+                        tvCalories.setText(Constants.twoDForm.format(hnhCal)+"kj");
+                    }
+                    else
+                        tvCalories.setText(product.getCaloriesQty()+"kj");
+                }
 
 
                 ImageView icon = (ImageView) convertView.findViewById(R.id.imageView1);

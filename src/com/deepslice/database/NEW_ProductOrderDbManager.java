@@ -32,6 +32,7 @@ public class NEW_ProductOrderDbManager {
     private static final String PROD_CAT_NAME = "prod_cat_name";
     private static final String IS_CREATE_BY_OWN = "is_create_by_own";
     private static final String SELECTION = "selection";
+    private static final String SECOND_HALF_PRIMARY_ID = "second_half_primary_id";
     
 
     private static final String CREATE_TABLE_PRODUCT_ORDER = "create table " + TABLE_PRODUCT_ORDER + " ( "
@@ -39,7 +40,7 @@ public class NEW_ProductOrderDbManager {
             + SUB_CAT_ID1 + " text, " + SUB_CAT_ID2 + " text, " + PROD_ID + " text, " + PROD_CODE + " text, "
             + DISPLAY_NAME + " text, " + CALORIES_QTY + " text, " + PRICE + " text, " + THUMBNAIL_IMAGE + " text, "
             + FULL_IMAGE + " text, " + QUANTITY + " text, " + PROD_CAT_NAME + " text, "
-            + IS_CREATE_BY_OWN + " integer, " + SELECTION + " integer);";
+            + IS_CREATE_BY_OWN + " integer, " + SELECTION + " integer, " + SECOND_HALF_PRIMARY_ID + " integer);";
 
 
     public static void createTable(SQLiteDatabase db) {
@@ -74,8 +75,37 @@ public class NEW_ProductOrderDbManager {
         cv.put(PROD_CAT_NAME, productOrder.getProdCatName());
         cv.put(IS_CREATE_BY_OWN, (productOrder.getIsCreateByOwn() ? 1 : 0));
         cv.put(SELECTION, productOrder.getSelection());
+        cv.put(SECOND_HALF_PRIMARY_ID, productOrder.getSecondHalfProdId());
         
         return db.insert(TABLE_PRODUCT_ORDER, null, cv);
+    }
+    
+    
+    private static NewProductOrder retrieveFromCursor(Cursor cursor) throws SQLException {
+        
+        int primaryId = cursor.getInt(cursor.getColumnIndex(TABLE_PRIMARY_KEY));
+        String prodCatId = cursor.getString(cursor.getColumnIndex(PROD_CAT_ID));
+        String subCatId1 = cursor.getString(cursor.getColumnIndex(SUB_CAT_ID1));
+        String subCatId2 = cursor.getString(cursor.getColumnIndex(SUB_CAT_ID2));
+        String prodId = cursor.getString(cursor.getColumnIndex(PROD_ID));
+        String prodCode = cursor.getString(cursor.getColumnIndex(PROD_CODE));
+        String displayName = cursor.getString(cursor.getColumnIndex(DISPLAY_NAME));
+        String caloriesQty = cursor.getString(cursor.getColumnIndex(CALORIES_QTY));
+        String price = cursor.getString(cursor.getColumnIndex(PRICE));
+        String thumbnailImage = cursor.getString(cursor.getColumnIndex(THUMBNAIL_IMAGE));
+        String fullImage = cursor.getString(cursor.getColumnIndex(FULL_IMAGE));
+        String quantity = cursor.getString(cursor.getColumnIndex(QUANTITY));
+        String prodCatName = cursor.getString(cursor.getColumnIndex(PROD_CAT_NAME));
+        Boolean isCreateByOwn = cursor.getInt(cursor.getColumnIndex(IS_CREATE_BY_OWN)) > 0;
+        int selection = cursor.getInt(cursor.getColumnIndex(SELECTION));
+        int secondHalfId = cursor.getInt(cursor.getColumnIndex(SECOND_HALF_PRIMARY_ID));
+        
+        NewProductOrder thisProdOrder = new NewProductOrder(primaryId, prodCatId, subCatId1, subCatId2,
+                prodId, prodCode, displayName, caloriesQty, price, thumbnailImage, fullImage,
+                quantity, prodCatName, isCreateByOwn, selection, secondHalfId);
+        
+        return thisProdOrder;
+        
     }
     
     
@@ -87,23 +117,8 @@ public class NEW_ProductOrderDbManager {
         Cursor cursor = db.query(TABLE_PRODUCT_ORDER, null, PROD_CAT_NAME + "= ?", new String[] {catName}, null, null, null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                int primaryId = cursor.getInt(cursor.getColumnIndex(TABLE_PRIMARY_KEY));
-                String prodCatId = cursor.getString(cursor.getColumnIndex(PROD_CAT_ID));
-                String subCatId1 = cursor.getString(cursor.getColumnIndex(SUB_CAT_ID1));
-                String subCatId2 = cursor.getString(cursor.getColumnIndex(SUB_CAT_ID2));
-                String prodId = cursor.getString(cursor.getColumnIndex(PROD_ID));
-                String prodCode = cursor.getString(cursor.getColumnIndex(PROD_CODE));
-                String displayName = cursor.getString(cursor.getColumnIndex(DISPLAY_NAME));
-                String caloriesQty = cursor.getString(cursor.getColumnIndex(CALORIES_QTY));
-                String price = cursor.getString(cursor.getColumnIndex(PRICE));
-                String thumbnailImage = cursor.getString(cursor.getColumnIndex(THUMBNAIL_IMAGE));
-                String fullImage = cursor.getString(cursor.getColumnIndex(FULL_IMAGE));
-                String quantity = cursor.getString(cursor.getColumnIndex(QUANTITY));
-                String prodCatName = cursor.getString(cursor.getColumnIndex(PROD_CAT_NAME));
-                Boolean isCreateByOwn = cursor.getInt(cursor.getColumnIndex(IS_CREATE_BY_OWN)) > 0;
-                int selection = cursor.getInt(cursor.getColumnIndex(SELECTION));
-                NewProductOrder thisProdOrder = new NewProductOrder(primaryId, prodCatId, subCatId1, subCatId2, prodId, prodCode, displayName, caloriesQty, price, thumbnailImage, fullImage, quantity, prodCatName, isCreateByOwn, selection);
+            while (!cursor.isAfterLast()) {                
+                NewProductOrder thisProdOrder = retrieveFromCursor(cursor);
                 prodOrderList.add(thisProdOrder);                     
                 cursor.moveToNext();
             }
@@ -121,24 +136,7 @@ public class NEW_ProductOrderDbManager {
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                int primaryId = cursor.getInt(cursor.getColumnIndex(TABLE_PRIMARY_KEY));
-                String prodCatId = cursor.getString(cursor.getColumnIndex(PROD_CAT_ID));
-                String subCatId1 = cursor.getString(cursor.getColumnIndex(SUB_CAT_ID1));
-                String subCatId2 = cursor.getString(cursor.getColumnIndex(SUB_CAT_ID2));
-                String prodId = cursor.getString(cursor.getColumnIndex(PROD_ID));
-                String prodCode = cursor.getString(cursor.getColumnIndex(PROD_CODE));
-                String displayName = cursor.getString(cursor.getColumnIndex(DISPLAY_NAME));
-                String caloriesQty = cursor.getString(cursor.getColumnIndex(CALORIES_QTY));
-                String price = cursor.getString(cursor.getColumnIndex(PRICE));
-                String thumbnailImage = cursor.getString(cursor.getColumnIndex(THUMBNAIL_IMAGE));
-                String fullImage = cursor.getString(cursor.getColumnIndex(FULL_IMAGE));
-                String quantity = cursor.getString(cursor.getColumnIndex(QUANTITY));
-                String prodCatName = cursor.getString(cursor.getColumnIndex(PROD_CAT_NAME));
-                Boolean isCreateByOwn = cursor.getInt(cursor.getColumnIndex(IS_CREATE_BY_OWN)) > 0;
-                int selection = cursor.getInt(cursor.getColumnIndex(SELECTION));
-                NewProductOrder thisProdOrder = new NewProductOrder(primaryId, prodCatId, subCatId1, subCatId2,
-                        prodId, prodCode, displayName, caloriesQty, price, thumbnailImage, fullImage, quantity,
-                        prodCatName, isCreateByOwn, selection);
+                NewProductOrder thisProdOrder = retrieveFromCursor(cursor);
                 prodOrderList.add(thisProdOrder);                     
                 cursor.moveToNext();
             }
@@ -153,6 +151,15 @@ public class NEW_ProductOrderDbManager {
                
         New_ToppingsOrderDbManager.deleteProductToppings(db, primaryId);
         return db.delete(TABLE_PRODUCT_ORDER, TABLE_PRIMARY_KEY + "=" + primaryId, null) > 0;
+    }
+    
+    
+    public static void setSecondHalfPrimaryId(SQLiteDatabase db, int primaryId, int secondHafPrimaryId){
+        Log.d(TAG, "setting  SecondHalfPrimaryId for product primary Id = " + primaryId);
+        ContentValues cv = new ContentValues();
+
+        cv.put(SECOND_HALF_PRIMARY_ID, secondHafPrimaryId);
+        db.update(TABLE_PRODUCT_ORDER, cv, TABLE_PRIMARY_KEY + "=" + primaryId, null);
     }
     
     

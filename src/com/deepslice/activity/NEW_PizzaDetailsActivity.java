@@ -362,7 +362,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
                             thisToppingsOrder.setIsDeal(true);
                             thisToppingsOrder.setProdOrderId(Constants.DUMMY_ID);     
                             thisToppingsOrder.setDealOrderDetailsId((int) dealOrderDetailsId);     
-                            thisToppingsOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisToppingsOrder)));
+                            thisToppingsOrder.setToppingPrice(Constants.twoDForm.format(generateToppingsPrice(thisToppingsOrder)));
                             dbInstance.insertToppingsOrder(thisToppingsOrder);
                         }
                     }
@@ -374,7 +374,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
                         thisSauceOrder.setIsDeal(true);
                         thisSauceOrder.setProdOrderId(Constants.DUMMY_ID);     
                         thisSauceOrder.setDealOrderDetailsId((int) dealOrderDetailsId); 
-                        thisSauceOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisSauceOrder)));
+                        thisSauceOrder.setToppingPrice(Constants.twoDForm.format(generateToppingsPrice(thisSauceOrder)));
                         dbInstance.open();
                         dbInstance.insertToppingsOrder(thisSauceOrder);
                         dbInstance.close();
@@ -392,33 +392,34 @@ public class NEW_PizzaDetailsActivity extends Activity {
                             dbInstance.open();
                             long firstHalfOrderPId = dbInstance.insertOrder(firstHalfOrder);         // first half
                             long secondHalfOrderPId = dbInstance.insertOrder(tempOrder);             // 2nd half
-                            AppProperties.isFirstPizzaChosen = false;
+                            dbInstance.setSecondHalfPrimaryId((int)firstHalfOrderPId, (int)secondHalfOrderPId);
                             dbInstance.close();
+                            AppProperties.isFirstPizzaChosen = false;
 
                             // inserting toppingsData to the local DB
-                            // first-half toppings
+                            // 2nd-half toppings
                             if(toppingsSelected != null){               
                                 dbInstance.open();
                                 for(NewToppingsOrder thisToppingsOrder : toppingsSelected){
                                     thisToppingsOrder.setIsDeal(false);  
-                                    thisToppingsOrder.setProdOrderId((int) firstHalfOrderPId);
+                                    thisToppingsOrder.setProdOrderId((int) secondHalfOrderPId);
                                     thisToppingsOrder.setDealOrderDetailsId(Constants.DUMMY_ID);    
-                                    thisToppingsOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisToppingsOrder)/2.0));
+                                    thisToppingsOrder.setToppingPrice(Constants.twoDForm.format(generateToppingsPrice(thisToppingsOrder)/2.0));
                                     dbInstance.insertToppingsOrder(thisToppingsOrder);
 
                                 }
                                 dbInstance.close();
                             }
 
-                            // 2nd-half toppings
+                            // first-half toppings
                             List<NewToppingsOrder> firstHalfToppingsSelected = appInstance.getHalfToppings();
                             if(firstHalfToppingsSelected != null){              
                                 dbInstance.open();
                                 for(NewToppingsOrder thisToppingsOrder : firstHalfToppingsSelected){
                                     thisToppingsOrder.setIsDeal(false);  
-                                    thisToppingsOrder.setProdOrderId((int) secondHalfOrderPId);
+                                    thisToppingsOrder.setProdOrderId((int) firstHalfOrderPId);
                                     thisToppingsOrder.setDealOrderDetailsId(Constants.DUMMY_ID);    
-                                    thisToppingsOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisToppingsOrder)/2.0));
+                                    thisToppingsOrder.setToppingPrice(Constants.twoDForm.format(generateToppingsPrice(thisToppingsOrder)/2.0));
                                     dbInstance.insertToppingsOrder(thisToppingsOrder);
                                 }
                                 dbInstance.close();
@@ -432,7 +433,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
                                 thisSauceOrder.setIsDeal(false);  
                                 thisSauceOrder.setProdOrderId((int) firstHalfOrderPId);
                                 thisSauceOrder.setDealOrderDetailsId(Constants.DUMMY_ID);   
-                                thisSauceOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisSauceOrder)/2.0));
+                                thisSauceOrder.setToppingPrice(Constants.twoDForm.format(generateToppingsPrice(thisSauceOrder)/2.0));
                                 dbInstance.open();
                                 dbInstance.insertToppingsOrder(thisSauceOrder);
                                 dbInstance.close();
@@ -461,7 +462,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
                         }
                         else{
                             NewToppingsOrder thisSauceOrder = Utils.convertToppingAndSauceObjectToToppingsOrder(saucesList.get(selectedSauceIndex));
-                            thisSauceOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisSauceOrder)/2.0));
+                            thisSauceOrder.setToppingPrice(Constants.twoDForm.format(generateToppingsPrice(thisSauceOrder)/2.0));
                             thisSauceOrder.setDealOrderDetailsId(Constants.DUMMY_ID);
                             thisSauceOrder.setIsDeal(false); 
                             
@@ -485,7 +486,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
                                 thisToppingsOrder.setIsDeal(false);  
                                 thisToppingsOrder.setProdOrderId((int) orderPId);
                                 thisToppingsOrder.setDealOrderDetailsId(Constants.DUMMY_ID);    
-                                thisToppingsOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisToppingsOrder)));
+                                thisToppingsOrder.setToppingPrice(Constants.twoDForm.format(generateToppingsPrice(thisToppingsOrder)));
                                 dbInstance.insertToppingsOrder(thisToppingsOrder);
                             }
                         }
@@ -497,7 +498,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
                             thisSauceOrder.setIsDeal(false);  
                             thisSauceOrder.setProdOrderId((int) orderPId);
                             thisSauceOrder.setDealOrderDetailsId(Constants.DUMMY_ID);   
-                            thisSauceOrder.setToppingPrice(String.valueOf(generateToppingsPrice(thisSauceOrder)));
+                            thisSauceOrder.setToppingPrice(Constants.twoDForm.format(generateToppingsPrice(thisSauceOrder)));
                             dbInstance.open();
                             dbInstance.insertToppingsOrder(thisSauceOrder);
                             dbInstance.close();
@@ -632,13 +633,19 @@ public class NEW_PizzaDetailsActivity extends Activity {
         order.setProdCode(selectedProduct.getProdCode());
         order.setDisplayName(selectedProduct.getDisplayName());
         order.setCaloriesQty(selectedProduct.getCaloriesQty());
-        order.setPrice(selectedProduct.getPrice());
         order.setThumbnailImage(selectedProduct.getThumbnail());
         order.setFullImage(selectedProduct.getFullImage());
         order.setQuantity(String.valueOf(currentCount));
         order.setProdCatName(Constants.PRODUCT_CATEGORY_PIZZA);
         order.setIsCreateByOwn(false);
-        order.setSelection(selection);           
+        order.setSelection(selection); 
+        if(selection != Constants.PRODUCT_SELECTION_WHOLE){
+            double hnhPrice = Double.parseDouble(selectedProduct.getPrice())/2.0;
+            order.setPrice(Constants.twoDForm.format(hnhPrice));
+        }
+        else
+            order.setPrice(selectedProduct.getPrice());
+        order.setSecondHalfProdId(0);               // default
 
         return order;
     }

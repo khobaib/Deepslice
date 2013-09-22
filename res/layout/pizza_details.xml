@@ -48,13 +48,13 @@
         android:background="@color/half_invisible"
         android:visibility="gone" />
 
-    <ImageView
+    <!-- <ImageView
         android:id="@+id/imageViewLogoHalf"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
-        android:background="@drawable/logo" />
+        android:background="@drawable/logo" /> -->
 
     <ScrollView
         android:id="@+id/scrollView"

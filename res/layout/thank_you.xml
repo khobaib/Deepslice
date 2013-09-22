@@ -29,10 +29,10 @@
         android:layout_below="@+id/logoImageView"
         android:layout_margin="10dp"
         android:layout_marginTop="20dp"
-        android:text="Thank You"
+        android:text="Thank You, your Order is received."
         android:layout_centerHorizontal="true"
         android:textColor="@color/white"
-        android:textSize="25dp" />
+        android:textSize="20dp" />
 
     <Button
         android:id="@+id/b_proceed"
@@ -43,7 +43,7 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/pizza_yellow"
         android:onClick="onClickProceed"
-        android:text="Proceed"
+        android:text="Return to App"
         android:textSize="22dip" />
 
 </RelativeLayout>

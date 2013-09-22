@@ -17,6 +17,7 @@ public class NewProductOrder {
     private String prodCatName;                     // pizza/pasta/drinks etc
     private Boolean isCreateByOwn;                  // create_by_own? true : false
     private int selection;                          // whole/left/right
+    private int secondHalfProdId;                   // for HnH, primaryId for 2nd-halfOrder
     
     
     public NewProductOrder() {
@@ -24,7 +25,7 @@ public class NewProductOrder {
     
     public NewProductOrder(int primaryId, String prodCatId, String subCatId1, String subCatId2, String prodId,
             String prodCode, String displayName, String caloriesQty, String price, String thumbnailImage,
-            String fullImage, String quantity, String prodCatName, Boolean isCreateByOwn, int selection) {
+            String fullImage, String quantity, String prodCatName, Boolean isCreateByOwn, int selection, int secondHalfProdId) {
         this.primaryId = primaryId;
         this.ProdCatId = prodCatId;
         this.subCatId1 = subCatId1;
@@ -40,14 +41,15 @@ public class NewProductOrder {
         this.prodCatName = prodCatName;
         this.isCreateByOwn = isCreateByOwn;
         this.selection = selection;
+        this.secondHalfProdId = secondHalfProdId;
     }
     
     public NewProductOrder(String prodCatId, String subCatId1, String subCatId2, String prodId,
             String prodCode, String displayName, String caloriesQty, String price, String thumbnailImage,
-            String fullImage, String quantity, String prodCatName, Boolean isCreateByOwn, int selection) {
+            String fullImage, String quantity, String prodCatName, Boolean isCreateByOwn, int selection, int secondHalfProdId) {
         
         this(0, prodCatId, subCatId1, subCatId2, prodId, prodCode, displayName, caloriesQty, price,
-                thumbnailImage, fullImage, quantity, prodCatName, isCreateByOwn, selection);
+                thumbnailImage, fullImage, quantity, prodCatName, isCreateByOwn, selection, secondHalfProdId);
     }
 
     public int getPrimaryId() {
@@ -169,5 +171,12 @@ public class NewProductOrder {
     public void setSelection(int selection) {
         this.selection = selection;
     }
-    
+
+    public int getSecondHalfProdId() {
+        return secondHalfProdId;
+    }
+
+    public void setSecondHalfProdId(int secondHalfProdId) {
+        this.secondHalfProdId = secondHalfProdId;
+    }   
 }

@@ -48,12 +48,18 @@ public class ThankYouActivity extends Activity {
         pDialog = new ProgressDialog(ThankYouActivity.this);
         jsonParser = new JsonParser();
         appInstance = (DeepsliceApplication) getApplication();
+        
+        formOrder();
+        sendOrder(); 
     }
     
     public void onClickProceed(View v){
-        
-        formOrder();
-        sendOrder();     
+        Intent intent = new Intent(ThankYouActivity.this, PickupDeliverActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish(); 
+//        formOrder();
+//        sendOrder();     
     }
 
     private void sendOrder() {
@@ -64,7 +70,7 @@ public class ThankYouActivity extends Activity {
     
     
     
-    public class SendOrderToServer extends AsyncTask<Void, Void, Boolean>{
+    public class SendOrderToServer extends AsyncTask<Void, Void, Integer>{
 
 
         @Override
@@ -77,7 +83,7 @@ public class ThankYouActivity extends Activity {
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Integer doInBackground(Void... params) {
 
             String url = Constants.ROOT_URL + "SaveOrder.aspx";
 //            String url = "http://apps.deepslice.com.au/ReadJSON.aspx";
@@ -88,49 +94,54 @@ public class ThankYouActivity extends Activity {
             if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
                 JSONObject jsonObj = response.getjObj();
                 try {
-                    JSONObject responseObj = jsonObj.getJSONObject("Response");
-                    int status = responseObj.getInt("Status");
-                    JSONArray data = responseObj.getJSONArray("Data");
-                    JSONObject errors = responseObj.getJSONObject("Errors");
-
-//                    deliveryLocationList = DeliveryLocation.parseDeliveryLocations(data);
+                    int status = jsonObj.getInt("Status");
                     long arrayParsedTime = System.currentTimeMillis();
                     Log.d(">>>><<<", "time for array parsing = " + (arrayParsedTime - responseReceivedTime)/1000 + " second");
 
-                    return true;
+                    return status;
                 } catch (JSONException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
-            return false;
+            return 0;
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
             if(pDialog.isShowing())
                 pDialog.dismiss();
-            if(result){
+            if(result == 1){
                 Log.d("SUCCESS", "success");
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(ThankYouActivity.this);
                 dbInstance.open();
                 dbInstance.cleanAllOrderTable();
                 dbInstance.close(); 
+                
+                appInstance.setOrderReady(false);
 
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        setContentView(R.layout.thank_you);
+                    }
+                });
+            }
+            else{
                 
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(ThankYouActivity.this);
                 alertDialog.setTitle("Deepslice");
-                alertDialog.setMessage("Your Order is received, Thank you.");
+                alertDialog.setMessage("Your Order couldn't be processed. Please try again.");
                 alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        finish();
                         
-                        appInstance.setOrderReady(false);
-                        Intent intent = new Intent(ThankYouActivity.this, PickupDeliverActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish(); 
+                        
+//                        Intent intent = new Intent(ThankYouActivity.this, PickupDeliverActivity.class);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        startActivity(intent);
+//                        finish(); 
                     } 
                 }); 
                 alertDialog.create().show(); 

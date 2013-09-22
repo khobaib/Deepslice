@@ -209,7 +209,8 @@ public class AddToOrderActivity extends Activity {
         order.setQuantity(String.valueOf(currentCount));
         order.setProdCatName(catType);
         order.setIsCreateByOwn(false);
-        order.setSelection(selection);           
+        order.setSelection(selection);      
+        order.setSecondHalfProdId(0);               // default
 
         return order;
     }

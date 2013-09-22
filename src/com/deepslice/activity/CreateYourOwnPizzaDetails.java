@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,13 +47,13 @@ import com.deepslice.utilities.Utils;
 
 public class CreateYourOwnPizzaDetails extends Activity {
 
-    int currentIndex;           // index position of selectedProduct in productList 
+//    int currentIndex;           // index position of selectedProduct in productList 
     int currentCount;           // qty of that product selected for ordering
 
     ImageLoader imageLoader;
 
     int SELECT_TOPPINGS = 112233;
-    int SELECT_CRUST = 112244;
+    int SELECT_PIZZA = 112255;
 
     Spinner sSauceName;
     List<ToppingsAndSauces> saucesList;
@@ -63,7 +64,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
 
     CreateOwnPizzaData selectedPizzaData;
     List<String> prodIds;
-    List<Product> productList;
+//    List<Product> productList;
 
     ProgressDialog pd;
     JsonParser jsonParser = new JsonParser();
@@ -75,6 +76,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
     List<NewToppingsOrder> toppingsSelected; 
     
     int selectedSauceIndex;
+    Product selectedProduct;
 
     ImageButton ImageButtonNext, ImageButtonPrv;
     TextView PizzaName;
@@ -92,93 +94,100 @@ public class CreateYourOwnPizzaDetails extends Activity {
         selectedPizzaData = (CreateOwnPizzaData) getIntent().getExtras().getSerializable("selected_pizza");
         prodIds = selectedPizzaData.getProdIds();
         
+        selectedProduct = new Product();
+        if(prodIds.size() > 0){
+            DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
+            dbInstance.open();
+            selectedProduct = dbInstance.retrieveProductById(prodIds.get(0));
+            dbInstance.close();
+        }
+        
         tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
         tvFavCount = (TextView) findViewById(R.id.favCount);
 
-        currentIndex = 0;
+//        currentIndex = 0;
         currentCount = 1;
         imageLoader = new ImageLoader(CreateYourOwnPizzaDetails.this);
 
-        productList = new ArrayList<Product>();
-        DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
-        dbInstance.open();
-        for (int i = 0; i < prodIds.size(); i++){
-            String prodId = prodIds.get(i);
-            productList.add(dbInstance.retrieveProductById(prodId));
-        }
-        dbInstance.close();       
+//        productList = new ArrayList<Product>();
+//        DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
+//        dbInstance.open();
+//        for (int i = 0; i < prodIds.size(); i++){
+//            String prodId = prodIds.get(i);
+//            productList.add(dbInstance.retrieveProductById(prodId));
+//        }
+//        dbInstance.close();       
 
         findViewById(R.id.rl_crust).setVisibility(View.GONE);
 
         PizzaName = (TextView) findViewById(R.id.pDesc);
-        PizzaName.setText(productList.get(currentIndex).getProdDesc());
+        PizzaName.setText(selectedProduct.getProdDesc());
 
-        buttonAddOrders= (Button)findViewById(R.id.buttonAddOrders);
+        buttonAddOrders = (Button)findViewById(R.id.buttonAddOrders);
         buttonAddOrders.setText("Add to Order");
 
         pKJ = (TextView)findViewById(R.id.pKJ);
-        pKJ.setText(productList.get(currentIndex).getCaloriesQty() + "kj");
+        pKJ.setText(selectedProduct.getCaloriesQty() + "kj");
 
         ImageViewCreateYourOwn =(ImageView)findViewById(R.id.imageViewCreateYourOwn);
-        imageLoader.DisplayImage(productList.get(currentIndex).getFullImage(), ImageViewCreateYourOwn);
+        imageLoader.DisplayImage(selectedProduct.getFullImage(), ImageViewCreateYourOwn);
 
         headerTextView = (TextView)findViewById(R.id.headerTextView);
         headerTextView.setText("Create Your Own Pizza");
         
-        selectedToppings=(TextView)findViewById(R.id.selectedToppings);
-        selectedSauces=(TextView)findViewById(R.id.selectedSauces);
+        selectedToppings = (TextView)findViewById(R.id.selectedToppings);
+        selectedSauces = (TextView)findViewById(R.id.selectedSauces);
         sSauceName=(Spinner)findViewById(R.id.spinner1);
 
-        // update topping list
-        updateToppingsAndSaucesData(productList.get(currentIndex).getProdID());
+        // update topping list for default pizza
+        updateToppingsAndSaucesData(selectedProduct.getProdID());
 
 
-        ImageButtonNext=(ImageButton)findViewById(R.id.imageButtonNext);
-        if(productList.size() > 1)
-            ImageButtonNext.setVisibility(View.VISIBLE);
-
-        ImageButtonNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentIndex++;
-                imageLoader.DisplayImage(productList.get(currentIndex).getFullImage(), ImageViewCreateYourOwn);
-                PizzaName.setText(productList.get(currentIndex).getProdDesc());
-                updateToppingsAndSaucesData(productList.get(currentIndex).getProdID());
-                if(currentIndex < (productList.size()-1)){
-                    ImageButtonNext.setVisibility(View.VISIBLE);
-                    ImageButtonPrv.setVisibility(View.VISIBLE);
-                    Log.d("............",""+currentIndex);
-
-                } else {
-                    ImageButtonNext.setVisibility(View.GONE);
-
-                }
-            }
-        });
-
-
-
-        ImageButtonPrv=(ImageButton)findViewById(R.id.imageButtonPriv);
-        ImageButtonPrv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentIndex--;
-                imageLoader.DisplayImage(productList.get(currentIndex).getFullImage(), ImageViewCreateYourOwn);
-                PizzaName.setText(productList.get(currentIndex).getProdDesc());
-                updateToppingsAndSaucesData(productList.get(currentIndex).getProdID());
-                //                populateSauceData(currentIndex);
-                if(currentIndex > 0){
-                    ImageButtonPrv.setVisibility(View.VISIBLE);
-                    ImageButtonNext.setVisibility(View.VISIBLE);
-                }else if(currentIndex == 0) {
-                    ImageButtonPrv.setVisibility(View.GONE);
-                }
-            }
-        });
+//        ImageButtonNext = (ImageButton)findViewById(R.id.imageButtonNext);
+//        if(productList.size() > 1)
+//            ImageButtonNext.setVisibility(View.VISIBLE);
+//
+//        ImageButtonNext.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                currentIndex++;
+//                imageLoader.DisplayImage(productList.get(currentIndex).getFullImage(), ImageViewCreateYourOwn);
+//                PizzaName.setText(productList.get(currentIndex).getProdDesc());
+//                updateToppingsAndSaucesData(productList.get(currentIndex).getProdID());
+//                if(currentIndex < (productList.size()-1)){
+//                    ImageButtonNext.setVisibility(View.VISIBLE);
+//                    ImageButtonPrv.setVisibility(View.VISIBLE);
+//                    Log.d("............",""+currentIndex);
+//
+//                } else {
+//                    ImageButtonNext.setVisibility(View.GONE);
+//
+//                }
+//            }
+//        });
+//
+//
+//
+//        ImageButtonPrv=(ImageButton)findViewById(R.id.imageButtonPriv);
+//        ImageButtonPrv.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                currentIndex--;
+//                imageLoader.DisplayImage(productList.get(currentIndex).getFullImage(), ImageViewCreateYourOwn);
+//                PizzaName.setText(productList.get(currentIndex).getProdDesc());
+//                updateToppingsAndSaucesData(productList.get(currentIndex).getProdID());
+//                //                populateSauceData(currentIndex);
+//                if(currentIndex > 0){
+//                    ImageButtonPrv.setVisibility(View.VISIBLE);
+//                    ImageButtonNext.setVisibility(View.VISIBLE);
+//                }else if(currentIndex == 0) {
+//                    ImageButtonPrv.setVisibility(View.GONE);
+//                }
+//            }
+//        });
 
         favCountTxt=(TextView)findViewById(R.id.qVal);
-        
-        
+                
         Button bMinus= (Button)findViewById(R.id.buttonMinus);
         bMinus.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -216,12 +225,26 @@ public class CreateYourOwnPizzaDetails extends Activity {
                 Bundle bundle = new Bundle();
                 AppProperties.selectedToppings = toppingsSelected;
 
-                    bundle.putSerializable("selectedProduct", productList.get(currentIndex));
+                    bundle.putSerializable("selectedProduct", selectedProduct);
 
                 i.putExtras(bundle);
                 startActivityForResult(i, SELECT_TOPPINGS);
 
 
+            }
+        });
+        
+        
+        RelativeLayout llPizza = (RelativeLayout)findViewById(R.id.rl_pizza_name);
+        llPizza.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(CreateYourOwnPizzaDetails.this, CreateYourOwnPizzaSelectionActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("selected_pizza_data", selectedPizzaData);
+                i.putExtras(bundle);
+                startActivityForResult(i, SELECT_PIZZA);
             }
         });
         
@@ -278,7 +301,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
             public void onClick(View v) {
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
                 dbInstance.open();
-                boolean favAdded=dbInstance.favAlreadyAdded(productList.get(currentIndex).getProdID(),productList.get(currentIndex).getDisplayName());
+                boolean favAdded=dbInstance.favAlreadyAdded(selectedProduct.getProdID(),selectedProduct.getDisplayName());
                 if(favAdded)
                 {
                     Toast.makeText(CreateYourOwnPizzaDetails.this, "Already added to Favourites", Toast.LENGTH_LONG).show();
@@ -297,21 +320,21 @@ public class CreateYourOwnPizzaDetails extends Activity {
             private Favourite getFavBean() {
 
                 Favourite f = new Favourite();
-                f.setProdCatID(productList.get(currentIndex).getProdCatID());
-                f.setSubCatID1(productList.get(currentIndex).getSubCatID1());
-                f.setSubCatID2(productList.get(currentIndex).getSubCatID2());
-                f.setProdID(productList.get(currentIndex).getProdID());
-                f.setProdCode(productList.get(currentIndex).getProdCode());
-                f.setDisplayName(productList.get(currentIndex).getDisplayName());
-                f.setProdAbbr(productList.get(currentIndex).getProdAbbr());
-                f.setProdDesc(productList.get(currentIndex).getProdDesc());
-                f.setIsAddDeliveryAmount(productList.get(currentIndex).getIsAddDeliveryAmount());
-                f.setDisplaySequence(productList.get(currentIndex).getDisplaySequence());
-                f.setCaloriesQty(productList.get(currentIndex).getCaloriesQty());
-                f.setPrice(productList.get(currentIndex).getPrice());
-                f.setThumbnail(productList.get(currentIndex).getThumbnail());
-                f.setFullImage(productList.get(currentIndex).getFullImage());
-                f.setCustomName(productList.get(currentIndex).getDisplayName());
+                f.setProdCatID(selectedProduct.getProdCatID());
+                f.setSubCatID1(selectedProduct.getSubCatID1());
+                f.setSubCatID2(selectedProduct.getSubCatID2());
+                f.setProdID(selectedProduct.getProdID());
+                f.setProdCode(selectedProduct.getProdCode());
+                f.setDisplayName(selectedProduct.getDisplayName());
+                f.setProdAbbr(selectedProduct.getProdAbbr());
+                f.setProdDesc(selectedProduct.getProdDesc());
+                f.setIsAddDeliveryAmount(selectedProduct.getIsAddDeliveryAmount());
+                f.setDisplaySequence(selectedProduct.getDisplaySequence());
+                f.setCaloriesQty(selectedProduct.getCaloriesQty());
+                f.setPrice(selectedProduct.getPrice());
+                f.setThumbnail(selectedProduct.getThumbnail());
+                f.setFullImage(selectedProduct.getFullImage());
+                f.setCustomName(selectedProduct.getDisplayName());
                 f.setProdCatName("Pizza");
                 return f;
             }
@@ -386,7 +409,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
 
             DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
             dbInstance.open();
-            List<ToppingsAndSauces> toppingsList = dbInstance.retrievePizzaToppings(productList.get(currentIndex).getProdID());
+            List<ToppingsAndSauces> toppingsList = dbInstance.retrievePizzaToppings(selectedProduct.getProdID());
             dbInstance.close();
 
             toppingsSelected = new ArrayList<NewToppingsOrder>();
@@ -410,7 +433,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
     private void generateSauceList(){
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(CreateYourOwnPizzaDetails.this);
         dbInstance.open();
-        saucesList = dbInstance.retrievePizzaSauces(productList.get(currentIndex).getProdID());
+        saucesList = dbInstance.retrievePizzaSauces(selectedProduct.getProdID());
         dbInstance.close();
 
         selectedSauceIndex = -1;
@@ -534,26 +557,38 @@ public class CreateYourOwnPizzaDetails extends Activity {
             selectedToppings.setText(AppProperties.trimLastCommaAddAnd(toppingsCodeToDisplay));
 
         }
+        
+        if (requestCode == SELECT_PIZZA) {
+            Bundle b = data.getExtras();
+            selectedProduct = (Product)b.getSerializable("selectedProduct"); 
+//            Log.d(TAG, "retrieved selectedProduct from new crust, prodId = " + selectedProduct.getProdID());
+
+            generateDefaultToppings();
+            generateSauceList();
+            
+            PizzaName.setText(selectedProduct.getProdDesc());
+        }
     }
     
     
     private NewProductOrder getOrder(int selection) {       // selection = left/right/whole
 
         NewProductOrder order = new NewProductOrder();
-        order.setProdCatId(productList.get(currentIndex).getProdCatID());
-        order.setSubCatId1(productList.get(currentIndex).getSubCatID1());
-        order.setSubCatId2(productList.get(currentIndex).getSubCatID2());
-        order.setProdId(productList.get(currentIndex).getProdID());
-        order.setProdCode(productList.get(currentIndex).getProdCode());
-        order.setDisplayName(productList.get(currentIndex).getDisplayName());
-        order.setCaloriesQty(productList.get(currentIndex).getCaloriesQty());
-        order.setPrice(productList.get(currentIndex).getPrice());
-        order.setThumbnailImage(productList.get(currentIndex).getThumbnail());
-        order.setFullImage(productList.get(currentIndex).getFullImage());
+        order.setProdCatId(selectedProduct.getProdCatID());
+        order.setSubCatId1(selectedProduct.getSubCatID1());
+        order.setSubCatId2(selectedProduct.getSubCatID2());
+        order.setProdId(selectedProduct.getProdID());
+        order.setProdCode(selectedProduct.getProdCode());
+        order.setDisplayName(selectedProduct.getDisplayName());
+        order.setCaloriesQty(selectedProduct.getCaloriesQty());
+        order.setPrice(selectedProduct.getPrice());
+        order.setThumbnailImage(selectedProduct.getThumbnail());
+        order.setFullImage(selectedProduct.getFullImage());
         order.setQuantity(String.valueOf(currentCount));
         order.setProdCatName(Constants.PRODUCT_CATEGORY_PIZZA);
         order.setIsCreateByOwn(true);
-        order.setSelection(selection);           
+        order.setSelection(selection);    
+        order.setSecondHalfProdId(0);               // default
 
         return order;
     }

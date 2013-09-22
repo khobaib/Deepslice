@@ -32,7 +32,7 @@ public class  PizzaMenuActivity extends Activity{
 
     List<ProductSubCategory> subCatList;
 
-    Boolean isHalf;
+    public static Boolean isHalf;
 
     ListView listview;
     TextView tvItemsPrice, tvFavCount;

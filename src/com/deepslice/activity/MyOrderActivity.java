@@ -42,9 +42,9 @@ public class MyOrderActivity extends Activity{
     TextView totalPrice;
 
     DeepsliceApplication appInstance;
-    
+
     List<Integer> layoutIds;
-    
+
     private static final int PIZZA_HEADER_ID = 1;
     private static final int HNH_HEADER_ID = 2;
     private static final int PASTA_HEADER_ID = 3;
@@ -52,6 +52,8 @@ public class MyOrderActivity extends Activity{
     private static final int SIDES_HEADER_ID = 5;
     private static final int DEALS_HEADER_ID = 6;
     private static final int CREATE_YOUR_OWN_HEADER_ID = 7;
+    
+    private static final int DUMMY_SECOND_HALF_ORDER_ID = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +122,7 @@ public class MyOrderActivity extends Activity{
          */
 
         TextView mOrderType = (TextView)findViewById(id.headerTextView);
-//        LocationDetails locationObj = AppProperties.getLocationObj(MyOrderActivity.this);
+        //        LocationDetails locationObj = AppProperties.getLocationObj(MyOrderActivity.this);
 
         ///////////////////////////
 
@@ -198,8 +200,8 @@ public class MyOrderActivity extends Activity{
                 }
             }
         });        
-        
-//        showOrderList();
+
+        //        showOrderList();
 
 
     }
@@ -207,9 +209,9 @@ public class MyOrderActivity extends Activity{
 
 
     private void showOrderList() {
-        
+
         layoutIds = new ArrayList<Integer>();
-        
+
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(MyOrderActivity.this);
         dbInstance.open();
         pizzaList = dbInstance.getOrdersListWithCategory(Constants.PRODUCT_CATEGORY_PIZZA);
@@ -222,7 +224,7 @@ public class MyOrderActivity extends Activity{
         wholePizzaList = new ArrayList<NewProductOrder>();
         halfPizzaList = new ArrayList<NewProductOrder>();
         createOwnPizzaList = new ArrayList<NewProductOrder>();
-        
+
         // separating whole & HnH pizza
         for (NewProductOrder order : pizzaList) {
             if(order.getIsCreateByOwn())
@@ -252,7 +254,8 @@ public class MyOrderActivity extends Activity{
                 double pizzaTotalPrice = toppingsPrice + Double.parseDouble(order.getPrice());
                 String itemPrice = "$" + Constants.twoDForm.format(pizzaTotalPrice); 
 
-                addItem(lout, false, false, order.getPrimaryId(), order.getDisplayName(), itemPrice, order.getQuantity());
+                addItem(lout, false, false, false, order.getPrimaryId(), order.getDisplayName(),
+                        itemPrice, order.getQuantity(), DUMMY_SECOND_HALF_ORDER_ID);
             }
         }
 
@@ -269,7 +272,17 @@ public class MyOrderActivity extends Activity{
                 double pizzaTotalPrice = toppingsPrice + Double.parseDouble(order.getPrice());
                 String itemPrice = "$" + Constants.twoDForm.format(pizzaTotalPrice);
 
-                addItem(lout, false, true, order.getPrimaryId(), order.getDisplayName(), itemPrice, order.getQuantity());
+                boolean isSecondHalf = false;
+                if(order.getSelection() == Constants.PRODUCT_SELECTION_RIGHT)
+                    isSecondHalf = true;
+                
+                int secondHalfOrderId = DUMMY_SECOND_HALF_ORDER_ID;
+                if(order.getSelection() == Constants.PRODUCT_SELECTION_LEFT){
+                    secondHalfOrderId = order.getSecondHalfProdId();
+                }
+
+                addItem(lout, false, true, isSecondHalf, order.getPrimaryId(), order.getDisplayName(),
+                        itemPrice, order.getQuantity(), secondHalfOrderId);
             }
         }
 
@@ -286,7 +299,8 @@ public class MyOrderActivity extends Activity{
                 double pizzaTotalPrice = toppingsPrice + Double.parseDouble(order.getPrice());
                 String itemPrice = "$" + Constants.twoDForm.format(pizzaTotalPrice); 
 
-                addItem(lout, false, false, order.getPrimaryId(), order.getDisplayName(), itemPrice, order.getQuantity());
+                addItem(lout, false, false, false, order.getPrimaryId(), order.getDisplayName(),
+                        itemPrice, order.getQuantity(), DUMMY_SECOND_HALF_ORDER_ID);
             }
         }
 
@@ -297,8 +311,8 @@ public class MyOrderActivity extends Activity{
 
             for (NewProductOrder order : drinksList) {
                 double pizzaTotalPrice = Double.parseDouble(order.getPrice());                
-                addItem(lout, false, false, order.getPrimaryId(), order.getDisplayName(),
-                        "$" + Constants.twoDForm.format(pizzaTotalPrice), order.getQuantity());
+                addItem(lout, false, false, false, order.getPrimaryId(), order.getDisplayName(),
+                        "$" + Constants.twoDForm.format(pizzaTotalPrice), order.getQuantity(), DUMMY_SECOND_HALF_ORDER_ID);
             }
 
         }
@@ -309,8 +323,8 @@ public class MyOrderActivity extends Activity{
 
             for (NewProductOrder order : pastaList) {
                 double pizzaTotalPrice = Double.parseDouble(order.getPrice());  
-                addItem(lout, false, false, order.getPrimaryId(), order.getDisplayName(),
-                        "$" + Constants.twoDForm.format(pizzaTotalPrice), order.getQuantity());
+                addItem(lout, false, false, false, order.getPrimaryId(), order.getDisplayName(),
+                        "$" + Constants.twoDForm.format(pizzaTotalPrice), order.getQuantity(), DUMMY_SECOND_HALF_ORDER_ID);
             }
 
         }
@@ -321,8 +335,8 @@ public class MyOrderActivity extends Activity{
 
             for (NewProductOrder order : sidesList) {
                 double pizzaTotalPrice = Double.parseDouble(order.getPrice());  
-                addItem(lout, false, false, order.getPrimaryId(), order.getDisplayName(),
-                        "$" + Constants.twoDForm.format(pizzaTotalPrice), order.getQuantity());
+                addItem(lout, false, false, false, order.getPrimaryId(), order.getDisplayName(),
+                        "$" + Constants.twoDForm.format(pizzaTotalPrice), order.getQuantity(), DUMMY_SECOND_HALF_ORDER_ID);
             }
 
         }
@@ -334,11 +348,11 @@ public class MyOrderActivity extends Activity{
 
             for (NewDealsOrder order : dealOrderList) {
                 double pizzaTotalPrice = Double.parseDouble(order.getTotalPrice());  
-                addItem(lout, true, false, order.getPrimaryId(), order.getCouponDesc(),
-                        "$" + Constants.twoDForm.format(pizzaTotalPrice), order.getQuantity());
+                addItem(lout, true, false, false, order.getPrimaryId(), order.getCouponDesc(),
+                        "$" + Constants.twoDForm.format(pizzaTotalPrice), order.getQuantity(), DUMMY_SECOND_HALF_ORDER_ID);
             }
         }
-        
+
     }
 
 
@@ -361,8 +375,9 @@ public class MyOrderActivity extends Activity{
     }
 
 
-    private void addItem(final LinearLayout lout, final boolean isDeal, boolean isHalf,
-            final int orderId, String itemName, String itemPrice, String itemQuantity) {
+    private void addItem(final LinearLayout lout, final boolean isDeal, boolean isHalf, boolean isSecondHalf,
+            final int orderId, String itemName, String itemPrice, String itemQuantity,
+            final int secHalfOrderId) {
         RelativeLayout ll = new RelativeLayout(this);
 
         if(isDeal){
@@ -381,15 +396,17 @@ public class MyOrderActivity extends Activity{
         ll.setBackgroundResource(R.drawable.kj_line);
 
         ImageView icon = new ImageView(this);
-        icon.setId(orderId + 1);
-        icon.setScaleType(ScaleType.FIT_XY);
-        icon.setImageResource(R.drawable.order_cross);
-        RelativeLayout.LayoutParams iocnLO = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        iocnLO.width=60;
-        iocnLO.height=60;
-        iocnLO.addRule(RelativeLayout.CENTER_VERTICAL);
-        iocnLO.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        ll.addView(icon, iocnLO);
+        if(!isSecondHalf){
+            icon.setId(orderId + 1);
+            icon.setScaleType(ScaleType.FIT_XY);
+            icon.setImageResource(R.drawable.order_cross);
+            RelativeLayout.LayoutParams iocnLO = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            iocnLO.width=60;
+            iocnLO.height=60;
+            iocnLO.addRule(RelativeLayout.CENTER_VERTICAL);
+            iocnLO.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            ll.addView(icon, iocnLO);
+        }
 
         TextView title=new TextView(this);
         title.setId(orderId + 2);
@@ -401,9 +418,10 @@ public class MyOrderActivity extends Activity{
         title.setTextSize(16);
         title.setMaxLines(2);
         RelativeLayout.LayoutParams titleLO = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        titleLO.setMargins(5, 5, 10, 5);
+        titleLO.setMargins(65, 5, 10, 5);
         titleLO.addRule(RelativeLayout.CENTER_VERTICAL);
-        titleLO.addRule(RelativeLayout.RIGHT_OF, icon.getId());
+        titleLO.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        //            titleLO.addRule(RelativeLayout.RIGHT_OF, icon.getId());
         ll.addView(title, titleLO);
 
 
@@ -427,8 +445,9 @@ public class MyOrderActivity extends Activity{
             public void onClick(View v) {
                 if(isDeal)
                     deleteFromDealOrder(lout, orderId);
-                else
-                    deleteFromOrder(lout, orderId);
+                else{
+                    deleteFromOrder(lout, orderId, secHalfOrderId);
+                }
 
             }
         });
@@ -443,12 +462,14 @@ public class MyOrderActivity extends Activity{
         showOrderList();
 
     }
-    
-    private void deleteFromOrder(final LinearLayout lout, int orderId){
+
+    private void deleteFromOrder(final LinearLayout lout, int orderId, int secHalfOrderId){
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(MyOrderActivity.this);
         dbInstance.open();
         dbInstance.deleteProductOrder(orderId);
+        if(secHalfOrderId != DUMMY_SECOND_HALF_ORDER_ID)
+            dbInstance.deleteProductOrder(secHalfOrderId);              // 2n-half of HnH
         dbInstance.close();
 
         List<String> orderInfo = Utils.OrderInfo(MyOrderActivity.this);
@@ -458,16 +479,16 @@ public class MyOrderActivity extends Activity{
         }
         lout.removeAllViews();
 
-//        RelativeLayout ll = (RelativeLayout)findViewById(orderId + 99);
-//        ll.setVisibility(View.GONE);
-//        for(Integer layoutId : layoutIds){
-//            if(layoutId < CREATE_YOUR_OWN_HEADER_ID){
-//                LinearLayout ll = (LinearLayout) findViewById(layoutId);
-//
-//            }
-//        }
-            
-        
+        //        RelativeLayout ll = (RelativeLayout)findViewById(orderId + 99);
+        //        ll.setVisibility(View.GONE);
+        //        for(Integer layoutId : layoutIds){
+        //            if(layoutId < CREATE_YOUR_OWN_HEADER_ID){
+        //                LinearLayout ll = (LinearLayout) findViewById(layoutId);
+        //
+        //            }
+        //        }
+
+
         showOrderList();
     }
 
@@ -484,12 +505,12 @@ public class MyOrderActivity extends Activity{
             String orderPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
             totalPrice.setText("TOTAL: $" + orderPrice);
         }
-        
+
         lout.removeAllViews();
 
-//        RelativeLayout ll = (RelativeLayout)findViewById(orderId + 999999);
-//        ll.setVisibility(View.GONE);   
-        
+        //        RelativeLayout ll = (RelativeLayout)findViewById(orderId + 999999);
+        //        ll.setVisibility(View.GONE);   
+
         showOrderList();
     }
 }

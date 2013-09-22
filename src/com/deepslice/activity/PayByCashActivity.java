@@ -94,27 +94,27 @@ public class PayByCashActivity extends Activity{
 				 */
 				
 				Intent intent = new Intent(PayByCashActivity.this, ThankYouActivity.class);
-				String location=getIntent().getStringExtra("location");
-				String store=getIntent().getStringExtra("store");
-				String suburbId=getIntent().getStringExtra("suburbId");
+//				String location=getIntent().getStringExtra("location");
+//				String store=getIntent().getStringExtra("store");
+//				String suburbId=getIntent().getStringExtra("suburbId");
 				
 				
 				
 				
-				Bundle bundle=new Bundle();
-				bundle.putString("location",location);
-				bundle.putString("store",store);
-				bundle.putString("suburbId",suburbId);
-				intent.putExtras(bundle);
+//				Bundle bundle=new Bundle();
+//				bundle.putString("location",location);
+//				bundle.putString("store",store);
+//				bundle.putString("suburbId",suburbId);
+//				intent.putExtras(bundle);
 
-                if (!AppProperties.isLoggedIn){
-                    AppSharedPreference.putData(PayByCashActivity.this, "customerName", "");
-                    AppSharedPreference.putData(PayByCashActivity.this, "customerEmail","");
-                    AppSharedPreference.putData(PayByCashActivity.this, "customerPhone", "");
-                }
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                if (!AppProperties.isLoggedIn){
+//                    AppSharedPreference.putData(PayByCashActivity.this, "customerName", "");
+//                    AppSharedPreference.putData(PayByCashActivity.this, "customerEmail","");
+//                    AppSharedPreference.putData(PayByCashActivity.this, "customerPhone", "");
+//                }
+//				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
-				finish();
+//				finish();
 				
 				 
 			}

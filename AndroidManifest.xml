@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.deepslice.activity"
-    android:versionCode="51"
-    android:versionName="0.51" >
+    android:versionCode="52"
+    android:versionName="0.52" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -267,6 +267,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name=".CreateYourOwnPizzaSelectionActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name=".PayByCardActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
@@ -282,8 +286,8 @@
         </activity>
         <activity
             android:name=".ThankYouActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
     </application>
 

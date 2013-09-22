@@ -338,6 +338,11 @@ public class DeepsliceDatabase {
     public List<NewProductOrder> getOrdersListWithCategory(String catName) {
         return NEW_ProductOrderDbManager.retrieve(this.db, catName);
     }
+    
+    // new 
+    public void setSecondHalfPrimaryId(int orderId, int secondHalfOrderId){
+        NEW_ProductOrderDbManager.setSecondHalfPrimaryId(this.db, orderId, secondHalfOrderId);
+    }
         
     
     // new

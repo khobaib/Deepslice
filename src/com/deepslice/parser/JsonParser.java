@@ -156,8 +156,7 @@ public class JsonParser {
 
         // try parse the string to a JSON object
         try {
-            jArray = new JSONArray(json);
-            jObj = jArray.getJSONObject(0);
+            jObj = new JSONObject(json);
             Log.d("jObj VALUE = ", jObj.toString());
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing data " + e.toString());

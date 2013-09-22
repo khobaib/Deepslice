@@ -118,9 +118,9 @@ public class PayByCardActivity extends Activity {
             setPaymentInfo();
 
             Intent intent = new Intent(PayByCardActivity.this, ThankYouActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
-            finish();
+//            finish();
             // continue
         }
     }
