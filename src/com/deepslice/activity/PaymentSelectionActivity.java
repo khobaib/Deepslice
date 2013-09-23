@@ -10,8 +10,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.AppDao;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.Customer;
@@ -26,6 +28,9 @@ import com.deepslice.utilities.Utils;
 public class PaymentSelectionActivity extends Activity{
 	
 	TextView tvTotalPrice;
+	ImageView Banner;
+	
+	ImageLoader imageLoader;
 	
 	DeepsliceApplication appInstance;
 //    TextView tvItemsPrice, tvFavCount;
@@ -38,6 +43,12 @@ public class PaymentSelectionActivity extends Activity{
 		tvTotalPrice = (TextView)findViewById(R.id.totalPrice);
 		
 		appInstance = (DeepsliceApplication) getApplication();
+		imageLoader = new ImageLoader(PaymentSelectionActivity.this, 400);
+		
+		Banner = (ImageView) findViewById(R.id.iv_banner);	
+		
+		String url = "http://apps.deepslice.com.au/banners/banner2.png";
+		imageLoader.DisplayImage(url, Banner);
 		
 		LocationDetails selectedLocation = AppProperties.getLocationObj(PaymentSelectionActivity.this);
 		Log.d(">>>>>>>>>>>", "street name = " + selectedLocation.getStreetName());

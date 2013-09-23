@@ -30,13 +30,22 @@ public class ImageLoader {
     MemoryCache memoryCache=new MemoryCache();
     FileCache fileCache;
     Context mContext;
+    int imageQuality;
     private Map<ImageView, String> imageViews=Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
     
     public ImageLoader(Context context){
         //Make the background thead low priority. This way it will not affect the UI performance
         photoLoaderThread.setPriority(Thread.NORM_PRIORITY-1);
         mContext = context;
-        
+        this.imageQuality = 70;
+        fileCache=new FileCache(context);
+    }
+    
+    public ImageLoader(Context context, int imageQuality){
+        //Make the background thead low priority. This way it will not affect the UI performance
+        photoLoaderThread.setPriority(Thread.NORM_PRIORITY-1);
+        mContext = context;
+        this.imageQuality = imageQuality;
         fileCache=new FileCache(context);
     }
     
@@ -58,7 +67,7 @@ public class ImageLoader {
             queuePhoto(url, imageView);
             imageView.setImageResource(stub_id);
         }    
-    }
+    }   
         
     private void queuePhoto(String url, ImageView imageView){
         //This ImageView may be used for other images before. So there may be some old tasks in the queue. We need to discard them. 
@@ -74,8 +83,7 @@ public class ImageLoader {
             photoLoaderThread.start();
     }
     
-    private Bitmap getBitmap(String url) 
-    {
+    private Bitmap getBitmap(String url) {
         File f=fileCache.getFile(url);
         
         //from SD cache
@@ -111,7 +119,7 @@ public class ImageLoader {
             BitmapFactory.decodeStream(new FileInputStream(f),null,o);
             
             //Find the correct scale value. It should be the power of 2.
-            final int REQUIRED_SIZE=70;
+            final int REQUIRED_SIZE = imageQuality;
             int width_tmp=o.outWidth, height_tmp=o.outHeight;
             int scale=1;
             while(true){
