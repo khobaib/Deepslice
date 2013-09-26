@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.Product;
@@ -43,6 +44,7 @@ public class DrinksMenuActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(DrinksMenuActivity.this, "92b170cf");
         setContentView(R.layout.sub_menu_drinks);
 
         Bundle b = this.getIntent().getExtras();
@@ -96,7 +98,7 @@ public class DrinksMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(DrinksMenuActivity.this,MainMenuActivity.class);
+                Intent intent=new Intent(DrinksMenuActivity.this, MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
@@ -107,17 +109,18 @@ public class DrinksMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(DrinksMenuActivity.this,MyOrderActivity.class);
+                Intent intent=new Intent(DrinksMenuActivity.this, MyOrderActivity.class);
                 startActivity(intent);
 
             }
         });	
     }
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////////////////////////
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(DrinksMenuActivity.this);
+    }
 
     private class MyListAdapterDrinks extends ArrayAdapter<ProductSubCategory> {
 

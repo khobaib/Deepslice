@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.Product;
@@ -72,6 +73,7 @@ public class ProductsListActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(ProductsListActivity.this, "92b170cf");
         setContentView(R.layout.sub_menu_products);
 
         pDialog = new ProgressDialog(ProductsListActivity.this);
@@ -185,7 +187,7 @@ public class ProductsListActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(ProductsListActivity.this,MainMenuActivity.class);
+                Intent intent=new Intent(ProductsListActivity.this, MainMenuActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
@@ -196,11 +198,17 @@ public class ProductsListActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(ProductsListActivity.this,MyOrderActivity.class);
+                Intent intent=new Intent(ProductsListActivity.this, MyOrderActivity.class);
                 startActivity(intent);
 
             }
         });	
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(ProductsListActivity.this);
     }
 
 

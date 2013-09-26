@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DealOrder;
 import com.deepslice.model.Product;
@@ -44,6 +45,7 @@ public class SidesMenuActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(SidesMenuActivity.this, "92b170cf");
         setContentView(R.layout.sub_menu_drinks);
 
         Bundle b = this.getIntent().getExtras();
@@ -108,17 +110,18 @@ public class SidesMenuActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(SidesMenuActivity.this,MyOrderActivity.class);
+                Intent intent=new Intent(SidesMenuActivity.this, MyOrderActivity.class);
                 startActivity(intent);
 
             }
         });
     }
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////////////////////////
-    // ////////////////////////////////////////////////////////////////////////////////////////////
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(SidesMenuActivity.this);
+    }
 
     private class MyListAdapterSides extends ArrayAdapter<ProductCategory> {
 

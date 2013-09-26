@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.adapter.DealListAdapter;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.Coupon;
@@ -54,6 +55,7 @@ public class DealsListActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(DealsListActivity.this, "92b170cf");
         setContentView(R.layout.deals_list);
 
         pDialog = new ProgressDialog(DealsListActivity.this);
@@ -111,6 +113,12 @@ public class DealsListActivity extends Activity {
                 startActivity(i);
             }
         });
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(DealsListActivity.this);
     }
 
     private void removeUnfinishedDeals(){

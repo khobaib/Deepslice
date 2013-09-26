@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.ProductSubCategory;
 import com.deepslice.utilities.Constants;
@@ -43,6 +44,7 @@ public class  PizzaMenuActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(PizzaMenuActivity.this, "92b170cf");
         setContentView(R.layout.sub_menu_pizza3);
 //        Bundle b = this.getIntent().getExtras();
 
@@ -139,6 +141,12 @@ public class  PizzaMenuActivity extends Activity{
                 startActivity(intent);
             }
         });
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(PizzaMenuActivity.this);
     }
 
     @Override

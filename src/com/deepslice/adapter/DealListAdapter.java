@@ -57,7 +57,9 @@ public class DealListAdapter extends ArrayAdapter<Coupon> {
 
         Coupon item = getItem(position);
         holder.dealName.setText(item.getCouponDesc());
-        holder.dealPrice.setText(item.getAmount());
+        
+        double price = Double.parseDouble(item.getAmount());
+        holder.dealPrice.setText(Constants.twoDForm.format(price));
         
         String imgPath = Constants.IMAGES_LOCATION_DEALS;
         if(AppProperties.isNull(item.getPic())){

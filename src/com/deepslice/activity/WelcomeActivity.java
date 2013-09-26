@@ -13,14 +13,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DeliveryLocation;
 import com.deepslice.model.LocationPoints;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.parser.JsonParser;
-import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
-import com.deepslice.utilities.DeepsliceApplication;
 
 public class WelcomeActivity extends Activity {
 
@@ -34,6 +33,7 @@ public class WelcomeActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(WelcomeActivity.this, "92b170cf");
         setContentView(R.layout.welcome);
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(WelcomeActivity.this);
@@ -44,6 +44,12 @@ public class WelcomeActivity extends Activity {
 
         new GetLocationPoints().execute();
 
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(WelcomeActivity.this);
     }
 
 

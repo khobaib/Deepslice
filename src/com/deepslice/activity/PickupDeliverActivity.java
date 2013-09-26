@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.model.Customer;
 import com.deepslice.utilities.AppProperties;
 import com.deepslice.utilities.Constants;
@@ -26,6 +27,7 @@ public class PickupDeliverActivity extends Activity implements OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        BugSenseHandler.initAndStartSession(PickupDeliverActivity.this, "92b170cf");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pick_up_or_delivery);
         
@@ -87,17 +89,23 @@ public class PickupDeliverActivity extends Activity implements OnClickListener {
             case R.id.pickUpButton:
                 appInstance.setOrderType(Constants.ORDER_TYPE_PICKUP);
 //                AppSharedPreference.putData(PickupDeliverActivity.this, "orderType", "Pickup");
-                startActivity(new Intent(this, MainMenuActivity.class));
+                startActivity(new Intent(PickupDeliverActivity.this, MainMenuActivity.class));
                 break;
             case R.id.deliveryButton:
                 appInstance.setOrderType(Constants.ORDER_TYPE_DELIVERY);
 //                AppSharedPreference.putData(PickupDeliverActivity.this, "orderType", "Delivery");
-                startActivity(new Intent(this, MainMenuActivity.class));
+                startActivity(new Intent(PickupDeliverActivity.this, MainMenuActivity.class));
                 break;
             default:
                 break;
         }
 
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(PickupDeliverActivity.this);
     }
 
     @Override
@@ -134,8 +142,10 @@ public class PickupDeliverActivity extends Activity implements OnClickListener {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) { // Back key pressed
             if(!appInstance.getIsRememberMe()){
                 Customer customer = new Customer(0, null, null, null, null, false);
-                appInstance.saveCustomer(customer);
+                appInstance.saveCustomer(customer);               
             }
+            BugSenseHandler.closeSession(PickupDeliverActivity.this);
+            finish();
             return true;
         }
         return super.onKeyDown(keyCode, event);
