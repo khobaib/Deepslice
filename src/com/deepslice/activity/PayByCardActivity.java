@@ -44,8 +44,11 @@ public class PayByCardActivity extends Activity {
         ExpireYear = (EditText) findViewById(R.id.et_year);
 
         tvTotalPrice = (TextView) findViewById(R.id.totalPrice);
-        List<String> orderInfo = Utils.OrderInfo(PayByCardActivity.this);
-        totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+//        List<String> orderInfo = Utils.OrderInfo(PayByCardActivity.this);
+//        totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+        
+        OrderInfo oInfo = ((DeepsliceApplication) getApplication()).loadOrderInfo();
+        totalPrice = Constants.twoDForm.format(oInfo.getTotalPrice());
 
         tvTotalPrice.setText("$" + totalPrice);
 

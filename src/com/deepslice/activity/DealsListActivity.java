@@ -145,7 +145,7 @@ public class DealsListActivity extends Activity {
 
             String url = Constants.ROOT_URL + "GetCoupons.aspx?CouponCode=0&Filter=Deals";
             long dataRetrieveStartTime = System.currentTimeMillis();
-            ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+            ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
 
             long dataRetrieveEndTime = System.currentTimeMillis();
             Log.d("TIME", "time to retrieve coupons from cloud = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");

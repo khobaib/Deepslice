@@ -67,7 +67,7 @@ public class  PizzaMenuActivity extends Activity{
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 ProductSubCategory subCat = (ProductSubCategory) parent.getItemAtPosition(position);
                 if (subCat != null) {
-                    Intent intent = new Intent(PizzaMenuActivity.this,ProductsListActivity.class);
+                    Intent intent = new Intent(PizzaMenuActivity.this, ProductsListActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("catId", subCat.getProdCatID());
                     bundle.putString("subCatId", subCat.getSubCatID());

@@ -192,7 +192,7 @@ public class DealsGroupListActivity extends Activity{
 
             String url = Constants.ROOT_URL + "GetCouponGroups.aspx?CouponID=" + selectedCouponID;
             long dataRetrieveStartTime = System.currentTimeMillis();
-            ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+            ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
 
             long dataRetrieveEndTime = System.currentTimeMillis();
             Log.d("TIME", "time to retrieve coupon-groups from cloud = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");
@@ -253,7 +253,7 @@ public class DealsGroupListActivity extends Activity{
 
             String url = Constants.ROOT_URL + "GetCouponDetail.aspx?CouponID=" + selectedCouponID;
             long dataRetrieveStartTime = System.currentTimeMillis();
-            ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+            ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
 
             long dataRetrieveEndTime = System.currentTimeMillis();
             Log.d("TIME", "time to retrieve coupon-details from cloud = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");

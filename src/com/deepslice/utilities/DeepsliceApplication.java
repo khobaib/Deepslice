@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
+import com.deepslice.model.AppInfo;
 import com.deepslice.model.CouponDetails;
 import com.deepslice.model.CreateOwnPizzaData;
 import com.deepslice.model.Customer;
@@ -30,7 +31,7 @@ public class DeepsliceApplication extends Application {
     private List<CreateOwnPizzaData> createPizzaDataList;
     
     private static Context context;
-    protected SharedPreferences spCustomer, spOrder;
+    protected SharedPreferences spCustomer, spOrder, appInfo;
     protected SharedPreferences spCustomerInfo, spPaymentInfo, spOrderInfo;
     
     @Override
@@ -39,6 +40,7 @@ public class DeepsliceApplication extends Application {
         context = getApplicationContext();
         spCustomer = PreferenceManager.getDefaultSharedPreferences(context);
         spOrder = PreferenceManager.getDefaultSharedPreferences(context);
+        appInfo = PreferenceManager.getDefaultSharedPreferences(context);
         spCustomerInfo = PreferenceManager.getDefaultSharedPreferences(context);
         spPaymentInfo = PreferenceManager.getDefaultSharedPreferences(context);
         spOrderInfo = PreferenceManager.getDefaultSharedPreferences(context);
@@ -79,6 +81,19 @@ public class DeepsliceApplication extends Application {
         Boolean isReady = spOrder.getBoolean(Constants.IS_ORDER_READY, false);
         return isReady;
     }
+    
+    
+    public void setPartialSelectionSurcharge(String surcharge){
+        Editor editor = spOrder.edit();
+        editor.putString(Constants.PARTIAL_SELECTION_SURCHARGE, surcharge);
+        editor.commit();
+    }
+    
+    
+    public String getPartialSelectionSurcharge(){
+        String surcharge = spOrder.getString(Constants.PARTIAL_SELECTION_SURCHARGE, "0.00");
+        return surcharge;
+    }    
     
     
     public void setRememberMe(Boolean isRememberMe){
@@ -192,6 +207,24 @@ public class DeepsliceApplication extends Application {
         CustomerInfo customerInfo = new CustomerInfo(customerId, customerPhone, phoneExt, customerName,
                 customerPass, suburbId, postalCode, unit, streetName, crossStreet, deliveryInstructions, customerEmail);
         return customerInfo;
+    }
+    
+    
+    public void saveAppInfo(AppInfo appInfo){
+        Editor editor = spCustomer.edit();
+        editor.putString(Constants.APP_INFO_CURRENCY_SIGN, appInfo.getCurrencySign());
+        editor.putString(Constants.APP_INFO_DELIVERY_CHARGES, appInfo.getDeliveryCharges());
+        editor.putString(Constants.APP_INFO_TAX_PER, appInfo.getTaxPer());
+        editor.commit();
+    }
+    
+    
+    public AppInfo loadAppInfo(){
+        String curSign = spCustomer.getString(Constants.APP_INFO_CURRENCY_SIGN, null);
+        String delCharge = spCustomer.getString(Constants.APP_INFO_DELIVERY_CHARGES, "0.00");
+        String tPer = spCustomer.getString(Constants.APP_INFO_TAX_PER, null);
+        AppInfo appInfo = new AppInfo(curSign, delCharge, tPer);
+        return appInfo;
     }
        
     

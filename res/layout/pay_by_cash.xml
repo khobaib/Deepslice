@@ -36,9 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/logoImageView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/calories" >
+        android:layout_margin="10dp" >
 
         <TextView
             android:id="@+id/textView1"
@@ -46,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_margin="7dip"
+            android:layout_margin="7dp"
             android:text=""
             android:textColor="#ffffff" />
     </RelativeLayout>
@@ -73,7 +71,7 @@
                 android:layout_marginLeft="15dip"
                 android:text="Order Total:"
                 android:textColor="#ffffff"
-                android:textSize="14dip"
+                android:textSize="18dip"
                 android:textStyle="bold" />
 
             <TextView
@@ -84,7 +82,8 @@
                 android:layout_marginRight="20dip"
                 android:text="$"
                 android:textColor="#ffffff"
-                android:textSize="15dip" />
+                android:textSize="20dip"
+                android:textStyle="bold" />
         </RelativeLayout>
 
         <!--
@@ -93,7 +92,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dip"
-        android:gravity="center_horizontal" >
+        android:gravity="center_horizontal" >
         -->
 
         <Button
@@ -109,13 +108,13 @@
 
     <TextView
         android:id="@+id/textUserName"
-        android:layout_width="134dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/logoImageView"
         android:layout_alignLeft="@+id/relativeLayout1"
         android:text="New Text"
         android:textColor="#fff266"
-        android:textSize="@dimen/padding_large"
+        android:textSize="20dp"
         android:textStyle="bold" />
 
 </RelativeLayout>

@@ -49,11 +49,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class CouponsActivity extends Activity {
-    SharedPreferences settings;
+//    SharedPreferences settings;
     EditText input_text ;
     ProgressDialog pd;
     ImageView searchIcon;
-    Coupon couponsVo;
+    Coupon selectedCoupon;
     String locationId="0";
     TextView resultShow;
     Button applyNow;
@@ -112,26 +112,26 @@ public class CouponsActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                if(couponsVo==null)
+                if(selectedCoupon==null)
                     return;
 
                 String couponType="N";
 
-                if("True".equalsIgnoreCase(couponsVo.getIsFixed()))
+                if("True".equalsIgnoreCase(selectedCoupon.getIsFixed()))
                     couponType=AppProperties.COUPON_TYPE_FIXED;
-                else if("True".equalsIgnoreCase(couponsVo.getIsPercentage()))
+                else if("True".equalsIgnoreCase(selectedCoupon.getIsPercentage()))
                     couponType=AppProperties.COUPON_TYPE_PERCENTAGE;
-                else if("True".equalsIgnoreCase(couponsVo.getIsDiscountedProduct()))
+                else if("True".equalsIgnoreCase(selectedCoupon.getIsDiscountedProduct()))
                     couponType=AppProperties.COUPON_TYPE_PRODUCTS;
 
-                AppSharedPreference.putData(CouponsActivity.this, "couponId", couponsVo.getCouponID());
-                AppSharedPreference.putData(CouponsActivity.this, "couponCode", couponsVo.getCouponCode());
+                AppSharedPreference.putData(CouponsActivity.this, "couponId", selectedCoupon.getCouponID());
+                AppSharedPreference.putData(CouponsActivity.this, "couponCode", selectedCoupon.getCouponCode());
                 AppSharedPreference.putData(CouponsActivity.this, "couponType", couponType);
-                AppSharedPreference.putData(CouponsActivity.this, "couponAmount", couponsVo.getAmount());
+                AppSharedPreference.putData(CouponsActivity.this, "couponAmount", selectedCoupon.getAmount());
 
                 if(AppProperties.COUPON_TYPE_PRODUCTS.equals(couponType))
                 {
-                    getCouponDetails(couponsVo.getCouponID());
+                    getCouponDetails(selectedCoupon.getCouponID());
                 }
                 else
                 {
@@ -265,9 +265,9 @@ public class CouponsActivity extends Activity {
             if (dataExists == true) {
                 JSONObject jsResult = resultsArray.getJSONObject(0);
                 String jsonString = jsResult.toString();
-                couponsVo = new Coupon();
-                couponsVo = gson.fromJson(jsonString, Coupon.class);
-                resultShow.setText(couponsVo.getDisplayText());
+                selectedCoupon = new Coupon();
+                selectedCoupon = gson.fromJson(jsonString, Coupon.class);
+                resultShow.setText(selectedCoupon.getDisplayText());
                 applyNow.setVisibility(View.VISIBLE);
             }
             // ////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP

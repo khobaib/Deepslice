@@ -1,6 +1,5 @@
 package com.deepslice.activity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -14,8 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.deepslice.cache.ImageLoader;
-import com.deepslice.database.AppDao;
-import com.deepslice.database.DeepsliceDatabase;
+import com.deepslice.model.AppInfo;
 import com.deepslice.model.Customer;
 import com.deepslice.model.CustomerInfo;
 import com.deepslice.model.LocationDetails;
@@ -27,10 +25,12 @@ import com.deepslice.utilities.Utils;
 
 public class PaymentSelectionActivity extends Activity{
 	
-	TextView tvTotalPrice;
+	TextView tvSubTotalPrice, tvDeliveryCharge, tvTotalPrice;
 	ImageView Banner;
 	
 	ImageLoader imageLoader;
+	double orderTotalPrice;
+	double deliveryCharges;
 	
 	DeepsliceApplication appInstance;
 //    TextView tvItemsPrice, tvFavCount;
@@ -38,9 +38,11 @@ public class PaymentSelectionActivity extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.payment_options);
+		setContentView(R.layout.payment_selection);
 		
-		tvTotalPrice = (TextView)findViewById(R.id.totalPrice);
+		tvSubTotalPrice = (TextView)findViewById(R.id.tv_subtotal_price);
+		tvDeliveryCharge = (TextView)findViewById(R.id.tv_delivery_price);
+		tvTotalPrice = (TextView)findViewById(R.id.tv_total_price);
 		
 		appInstance = (DeepsliceApplication) getApplication();
 		imageLoader = new ImageLoader(PaymentSelectionActivity.this, 400);
@@ -54,11 +56,18 @@ public class PaymentSelectionActivity extends Activity{
 		Log.d(">>>>>>>>>>>", "street name = " + selectedLocation.getStreetName());
 		
         int orderItemCount = 0;
-        String orderPrice = "0.0";
+        orderTotalPrice = 0.0;
         List<String> orderInfo = Utils.OrderInfo(PaymentSelectionActivity.this);
         if(orderInfo != null && orderInfo.size() == 2){
-            orderPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+            orderTotalPrice = Double.parseDouble(orderInfo.get(Constants.INDEX_ORDER_PRICE));
             orderItemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+        }
+        
+        deliveryCharges = 0.0;
+        if(appInstance.getOrderType() == Constants.ORDER_TYPE_DELIVERY){
+            AppInfo appInfo = appInstance.loadAppInfo();
+            deliveryCharges = Double.parseDouble(appInfo.getDeliveryCharges());
+            orderTotalPrice+= deliveryCharges;
         }
         
         
@@ -83,7 +92,7 @@ public class PaymentSelectionActivity extends Activity{
         oInfo.setLocationID(Integer.parseInt(selectedLocation.getLocationID()));
         oInfo.setCustomerID(customer.getCustomerID());
         oInfo.setServiceMethod(appInstance.getOrderType());
-        oInfo.setTotalPrice(Double.parseDouble(orderPrice));
+        oInfo.setTotalPrice(orderTotalPrice);
         oInfo.setNoOfItems(orderItemCount);
         
         appInstance.saveOrderInfo(oInfo);
@@ -145,29 +154,16 @@ public class PaymentSelectionActivity extends Activity{
     protected void onResume() {
         super.onResume();
         List<String> orderInfo = Utils.OrderInfo(PaymentSelectionActivity.this);
-        int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
-        String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
+//        int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
+        String subTotalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
         
-        tvTotalPrice.setText("$" + totalPrice);
+        tvSubTotalPrice.setText("$" + subTotalPrice);
+        tvTotalPrice.setText("$" + Constants.twoDForm.format(orderTotalPrice));
         
-//        if(itemCount > 0){
-//            tvItemsPrice.setVisibility(View.VISIBLE);
-//            tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
-//
-//        }
-//        else{
-//            tvItemsPrice.setVisibility(View.INVISIBLE);
-//        }
-//
-//        
-//        String favCount = Utils.FavCount(PaymentSelectionActivity.this);
-//        if (favCount != null && !favCount.equals("0")) {
-//            tvFavCount.setText(favCount);
-//            tvFavCount.setVisibility(View.VISIBLE);
-//        }
-//        else{
-//            tvFavCount.setVisibility(View.INVISIBLE);
-//        }
+//        AppInfo appInfo = appInstance.loadAppInfo();
+//        double deliveryCharges = Double.parseDouble(appInfo.getDeliveryCharges());
+        tvDeliveryCharge.setText("$" + Constants.twoDForm.format(deliveryCharges));
+        
     }
 
 }

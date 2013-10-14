@@ -16,6 +16,9 @@ public class Constants {
     public static String IMAGES_LOCATION_CRUSTS = "http://apps.deepslice.com.au/images/products/crust";
 
     public static final String METHOD_CREATE_OWN_PIZZA = "CreateOwnPizzaData.aspx";
+    
+    public static final int API_RESPONSE_TYPE_JSON_OBJECT = 187;
+    public static final int API_RESPONSE_TYPE_JSON_ARRAY = 188;
 
     public static final int RESPONSE_STATUS_CODE_SUCCESS = 200;
 
@@ -86,12 +89,17 @@ public class Constants {
     public static final String CUSTOMER_CROSS_STREET = "customer_cross_street";
     public static final String CUSTOMER_DELIVERY_INSTRUCTIONS = "customer_delivery_instructions";  
     
+    public static final String APP_INFO_CURRENCY_SIGN = "app_info_currency_sign";
+    public static final String APP_INFO_DELIVERY_CHARGES = "app_info_delivery_charges";
+    public static final String APP_INFO_TAX_PER = "app_info_tax_per";
+    
     public static final String ORDER_TYPE = "order_type";
     public static final int ORDER_TYPE_DELIVERY = 1;
     public static final int ORDER_TYPE_PICKUP = 2;
     
     public static final String IS_ORDER_READY = "is_order_ready";
     public static final String IS_REMEMBER_ME = "is_remember_me";
+    public static final String PARTIAL_SELECTION_SURCHARGE = "partial_selection_surcharge";
     
     
 }

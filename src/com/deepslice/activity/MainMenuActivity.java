@@ -189,7 +189,7 @@ public class MainMenuActivity extends Activity {
 
             dataRetrieveStartTime = System.currentTimeMillis();
             String url = Constants.ROOT_URL + "GetProductCategory.aspx?ProdCategoryID=0";
-            ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+            ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
 
             if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
                 JSONObject jsonObj = response.getjObj();
@@ -199,7 +199,7 @@ public class MainMenuActivity extends Activity {
                     JSONArray data = responseObj.getJSONArray("Data");
                     JSONObject errors = responseObj.getJSONObject("Errors");
 
-                    categoryList = ProductCategory.parseProductCategories(data);
+                    categoryList = ProductCategory.parseProductCategories(data, MainMenuActivity.this);
 
                     DeepsliceDatabase dbInstance = new DeepsliceDatabase(MainMenuActivity.this);
                     dbInstance.open();
@@ -234,7 +234,7 @@ public class MainMenuActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
 
             String url = Constants.ROOT_URL + "GetProductSubCategory.aspx?ProdCategoryID=0&ProdSubCategoryID=0";
-            ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+            ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
 
             if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
                 JSONObject jsonObj = response.getjObj();
@@ -286,7 +286,7 @@ public class MainMenuActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
 
             String url = Constants.ROOT_URL + "GetAllProducts.aspx";
-            ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+            ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
 
             dataRetrieveEndTime = System.currentTimeMillis();
             Log.d("TIME", "time to retrieve cloud data + parse cat+subcat = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");
@@ -376,7 +376,7 @@ public class MainMenuActivity extends Activity {
 
         String url = Constants.ROOT_URL + "GetToppingSizes.aspx";
         long dataRetrieveStartTime = System.currentTimeMillis();
-        ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+        ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
 
         long dataRetrieveEndTime = System.currentTimeMillis();
         Log.d("TIME", "time to retrieve topping SIZE data = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");
@@ -413,7 +413,7 @@ public class MainMenuActivity extends Activity {
     private void GetPizzaToppingsPrices(){
         String url = Constants.ROOT_URL + "GetToppingPrices.aspx";
         long dataRetrieveStartTime = System.currentTimeMillis();
-        ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+        ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
 
         long dataRetrieveEndTime = System.currentTimeMillis();
         Log.d("TIME", "time to retrieve topping PRICE data = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");

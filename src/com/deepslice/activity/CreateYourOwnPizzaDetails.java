@@ -505,7 +505,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
 
         String url = Constants.ROOT_URL + "GetPizzaToppingsAndSauces.aspx?prodID=" + prodId;
         long dataRetrieveStartTime = System.currentTimeMillis();
-        ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+        ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
 
         long dataRetrieveEndTime = System.currentTimeMillis();
         Log.d("TIME", "time to retrieve topping-sauce data for prodId " + prodId + " = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");

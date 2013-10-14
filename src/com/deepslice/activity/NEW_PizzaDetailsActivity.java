@@ -299,12 +299,11 @@ public class NEW_PizzaDetailsActivity extends Activity {
             public void onClick(View v) {
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
                 dbInstance.open();
-                boolean favAdded=dbInstance.favAlreadyAdded(selectedProduct.getProdID(),selectedProduct.getDisplayName());
+                boolean favAdded = dbInstance.favAlreadyAdded(selectedProduct.getProdID(),selectedProduct.getDisplayName());
                 if(favAdded){
                     Toast.makeText(NEW_PizzaDetailsActivity.this, "Already added to Favourites", Toast.LENGTH_LONG).show();
                 }
-                else
-                {
+                else{
                     dbInstance.insertFav(getFavBean());
                     doResumeWork();
                     Toast.makeText(NEW_PizzaDetailsActivity.this, "Successfully added to Favourites", Toast.LENGTH_LONG).show();

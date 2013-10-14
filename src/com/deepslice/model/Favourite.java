@@ -23,6 +23,8 @@ public class Favourite implements Serializable {
 	private String Thumbnail;
 	private String FullImage;
 	private String ProdCatName;
+	
+	
 	public String getCustomName() {
 		return customName;
 	}

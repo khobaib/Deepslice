@@ -64,65 +64,7 @@ public class MyOrderActivity extends Activity{
 
         appInstance = (DeepsliceApplication) getApplication();
 
-        /////////////////
-        /*
-		TextView moDeliveryStore=(TextView)findViewById(R.id.moDeliveryStore);
-		TextView moDeliveryAddress=(TextView)findViewById(R.id.moDeliveryAddress);
-		TextView moDeliveryTime=(TextView)findViewById(R.id.moDeliveryTime);
-		TextView moYourDetails=(TextView)findViewById(R.id.moYourDetails);
-		moDeliveryStore.setText("Delivery Store: "+AppProperties.NVL(locationObj.getLocName()));
-		moDeliveryAddress.setText(AppProperties.NVL(locationObj.getLocAddress())+" "+AppProperties.NVL(locationObj.getLocName())+", "+AppProperties.NVL(locationObj.getLocPhones()));
-		moDeliveryTime.setText(AppSharedPreference.getData(MyOrderActivity.this, "deliveryTime", ""));
-		if(dets.length()>5)
-			moYourDetails.setText(dets);
-		else
-			moYourDetails.setText("");
-		///////////////////////////////
-		ImageView startNewOrder=(ImageView)findViewById(R.id.startNewOrder);
-		startNewOrder.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(MyOrderActivity.this);
-				builder.setCancelable(true);
-				builder.setTitle("DeepSlice");
-				builder.setMessage("Are you want to clear current order and start new?");
-				builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-					}
-				});
-				builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-
-						AppDao dao=null;
-						try {
-							dao=AppDao.getSingleton(getApplicationContext());
-							dao.openConnection();
-
-							dao.cleanOrderTable();
-
-						} catch (Exception ex)
-						{
-							System.out.println(ex.getMessage());
-						}finally{
-							if(null!=dao)
-								dao.closeConnection();
-						}
-
-						AppSharedPreference.clearCouponInformation(MyOrderActivity.this);
-
-						finish();
-					}
-				});
-				AlertDialog alerta = builder.create();
-				alerta.show();
-			}
-		});
-         */
-
         TextView mOrderType = (TextView)findViewById(id.headerTextView);
-        //        LocationDetails locationObj = AppProperties.getLocationObj(MyOrderActivity.this);
 
         ///////////////////////////
 
@@ -140,10 +82,19 @@ public class MyOrderActivity extends Activity{
 
             @Override
             public void onClick(View v) {
-
-                Intent i=new Intent(MyOrderActivity.this, CouponsActivity.class);
-                startActivity(i);
-                finish();
+//                Intent i=new Intent(MyOrderActivity.this, CouponsActivity.class);
+//                startActivity(i);
+//                finish();
+                
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MyOrderActivity.this);
+                alertDialog.setTitle("Discount Coupons");
+                alertDialog.setMessage("Coming Soon");
+                alertDialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    } 
+                }); 
+                alertDialog.create().show(); 
             }
         });
 
@@ -152,7 +103,8 @@ public class MyOrderActivity extends Activity{
 
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(MyOrderActivity.this, MainMenuActivity.class);
+                Intent intent = new Intent(MyOrderActivity.this, MainMenuActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
             }
@@ -251,7 +203,8 @@ public class MyOrderActivity extends Activity{
                 dbInstance.open();
                 double toppingsPrice = dbInstance.retrieveProductToppingsPrice(order.getPrimaryId());
                 dbInstance.close();
-                double pizzaTotalPrice = toppingsPrice + Double.parseDouble(order.getPrice());
+                double pizzaTotalPrice = (toppingsPrice + Double.parseDouble(order.getPrice()))
+                        * Integer.parseInt(order.getQuantity());
                 String itemPrice = "$" + Constants.twoDForm.format(pizzaTotalPrice); 
 
                 addItem(lout, false, false, false, order.getPrimaryId(), order.getDisplayName(),
@@ -269,7 +222,8 @@ public class MyOrderActivity extends Activity{
                 dbInstance.open();
                 double toppingsPrice = dbInstance.retrieveProductToppingsPrice(order.getPrimaryId());
                 dbInstance.close();
-                double pizzaTotalPrice = toppingsPrice + Double.parseDouble(order.getPrice());
+                double pizzaTotalPrice = (toppingsPrice + Double.parseDouble(order.getPrice()))
+                        * Integer.parseInt(order.getQuantity());
                 String itemPrice = "$" + Constants.twoDForm.format(pizzaTotalPrice);
 
                 boolean isSecondHalf = false;
@@ -296,7 +250,8 @@ public class MyOrderActivity extends Activity{
                 dbInstance.open();
                 double toppingsPrice = dbInstance.retrieveProductToppingsPrice(order.getPrimaryId());
                 dbInstance.close();
-                double pizzaTotalPrice = toppingsPrice + Double.parseDouble(order.getPrice());
+                double pizzaTotalPrice = (toppingsPrice + Double.parseDouble(order.getPrice()))
+                        * Integer.parseInt(order.getQuantity());
                 String itemPrice = "$" + Constants.twoDForm.format(pizzaTotalPrice); 
 
                 addItem(lout, false, false, false, order.getPrimaryId(), order.getDisplayName(),
@@ -310,7 +265,7 @@ public class MyOrderActivity extends Activity{
             addCatHeader("Drinks", lout, DRINKS_HEADER_ID);
 
             for (NewProductOrder order : drinksList) {
-                double pizzaTotalPrice = Double.parseDouble(order.getPrice());                
+                double pizzaTotalPrice = Double.parseDouble(order.getPrice()) * Integer.parseInt(order.getQuantity());                
                 addItem(lout, false, false, false, order.getPrimaryId(), order.getDisplayName(),
                         "$" + Constants.twoDForm.format(pizzaTotalPrice), order.getQuantity(), DUMMY_SECOND_HALF_ORDER_ID);
             }
@@ -322,7 +277,7 @@ public class MyOrderActivity extends Activity{
             addCatHeader("Pasta", lout, PASTA_HEADER_ID);
 
             for (NewProductOrder order : pastaList) {
-                double pizzaTotalPrice = Double.parseDouble(order.getPrice());  
+                double pizzaTotalPrice = Double.parseDouble(order.getPrice()) * Integer.parseInt(order.getQuantity());  
                 addItem(lout, false, false, false, order.getPrimaryId(), order.getDisplayName(),
                         "$" + Constants.twoDForm.format(pizzaTotalPrice), order.getQuantity(), DUMMY_SECOND_HALF_ORDER_ID);
             }
@@ -334,7 +289,7 @@ public class MyOrderActivity extends Activity{
             addCatHeader("Sides", lout, SIDES_HEADER_ID);
 
             for (NewProductOrder order : sidesList) {
-                double pizzaTotalPrice = Double.parseDouble(order.getPrice());  
+                double pizzaTotalPrice = Double.parseDouble(order.getPrice()) * Integer.parseInt(order.getQuantity());  
                 addItem(lout, false, false, false, order.getPrimaryId(), order.getDisplayName(),
                         "$" + Constants.twoDForm.format(pizzaTotalPrice), order.getQuantity(), DUMMY_SECOND_HALF_ORDER_ID);
             }
@@ -425,7 +380,7 @@ public class MyOrderActivity extends Activity{
         ll.addView(title, titleLO);
 
 
-        TextView price=new TextView(this);
+        TextView price = new TextView(this);
         price.setId(orderId + 3);
         price.setText(itemPrice);
         price.setTextColor(Color.WHITE);
@@ -459,6 +414,10 @@ public class MyOrderActivity extends Activity{
     @Override
     protected void onResume(){
         super.onResume();
+        
+        LinearLayout lout = (LinearLayout) findViewById(R.id.wraperLayout);
+        lout.removeAllViews();
+        
         showOrderList();
 
     }

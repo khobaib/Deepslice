@@ -7,6 +7,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
+
+import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.DeepsliceApplication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -33,7 +37,7 @@ public class ProductCategory {
     }
 
 
-    public static List<ProductCategory> parseProductCategories(JSONArray catArray){
+    public static List<ProductCategory> parseProductCategories(JSONArray catArray, Activity activity){
         List<ProductCategory> categoryList = new ArrayList<ProductCategory>();
         GsonBuilder gsonb = new GsonBuilder();
         Gson gson = gsonb.create();
@@ -46,6 +50,12 @@ public class ProductCategory {
                     String jsonString = thisCategory.toString();
                     ProductCategory category =gson.fromJson(jsonString, ProductCategory.class);
                     categoryList.add(category);
+                    
+                    if(category.getProdCatCode().equals(Constants.PRODUCT_CATEGORY_PIZZA)
+                            && category.getAllowPartialSelection().equals("True")){
+                        DeepsliceApplication appInstance = (DeepsliceApplication) activity.getApplication();
+                        appInstance.setPartialSelectionSurcharge(category.getPartialSelectionSurcharge());
+                    }
                 }
 
 

@@ -237,7 +237,7 @@ public class ProductsListActivity extends Activity{
 
                 title.setText(Html.fromHtml(product.getDisplayName()));
 
-                if(PizzaMenuActivity.isHalf)
+                if(catType.equals(Constants.PRODUCT_CATEGORY_PIZZA) && PizzaMenuActivity.isHalf)
                     tvPrice.setVisibility(View.GONE);
                 else{
                     double price = Double.parseDouble(product.getPrice());
@@ -247,7 +247,7 @@ public class ProductsListActivity extends Activity{
                 if(catType.equals(Constants.PRODUCT_CATEGORY_SIDES))
                     tvCalories.setVisibility(View.INVISIBLE);
                 else{
-                    if(PizzaMenuActivity.isHalf){
+                    if(catType.equals(Constants.PRODUCT_CATEGORY_PIZZA) && PizzaMenuActivity.isHalf){
                         double hnhCal = Double.parseDouble(product.getCaloriesQty())/2.0; 
                         tvCalories.setText(Constants.twoDForm.format(hnhCal)+"kj");
                     }
@@ -326,7 +326,7 @@ public class ProductsListActivity extends Activity{
 
         String url = Constants.ROOT_URL + "GetPizzaToppingsAndSauces.aspx?prodID=" + prodId;
         long dataRetrieveStartTime = System.currentTimeMillis();
-        ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+        ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
 
         long dataRetrieveEndTime = System.currentTimeMillis();
         Log.d("TIME", "time to retrieve topping-sauce data for prodId " + prodId + " = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");
@@ -409,6 +409,7 @@ public class ProductsListActivity extends Activity{
         int itemCount = Integer.parseInt(orderInfo.get(Constants.INDEX_ORDER_ITEM_COUNT));
         String totalPrice = orderInfo.get(Constants.INDEX_ORDER_PRICE);
 
+        Log.d(">>>>>>>>>", "item count = " + itemCount);
         if(itemCount > 0){
             tvItemsPrice.setText(itemCount + " Items "+"\n$" + totalPrice);
             tvItemsPrice.setVisibility(View.VISIBLE);
@@ -446,7 +447,7 @@ public class ProductsListActivity extends Activity{
 
             String url = Constants.ROOT_URL + "GetDistinctPizzas.aspx";
             long dataRetrieveStartTime = System.currentTimeMillis();
-            ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+            ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
 
             long dataRetrieveEndTime = System.currentTimeMillis();
             Log.d("TIME", "time to retrieve distinct pizza from cloud = " + (dataRetrieveEndTime - dataRetrieveStartTime)/1000 + " second");

@@ -68,22 +68,13 @@ public class PickupDeliverActivity extends Activity implements OnClickListener {
                     Customer customer = new Customer(0, null, null, null, null, false);
                     appInstance.saveCustomer(customer);
                     appInstance.setRememberMe(false);
-                    //               // AppProperties.isLoogedIn=false;
-//                    HelperSharedPreferences.putSharedPreferencesString(PickupDeliverActivity.this,"emailName","");
-//                    HelperSharedPreferences.putSharedPreferencesString(PickupDeliverActivity.this,"userName","");
-//                    AppSharedPreference.putData(PickupDeliverActivity.this,"customerName","");
-//                    AppSharedPreference.putData(PickupDeliverActivity.this,"customerPhone","");
-//                    AppSharedPreference.putData(PickupDeliverActivity.this,"customerEmail","");
-//                    AppSharedPreference.removeUserSession(getApplicationContext());
                     AppProperties.isLoggedIn = false;
                     loginButton.setBackgroundResource(R.drawable.btn_login);
-//                    loginButton.setTag("0");
                     footerText.setVisibility(View.VISIBLE);
 
                 }  else {
                     appInstance.setOrderReady(false);
                     startActivity(new Intent(PickupDeliverActivity.this, LoginActivity.class));
-//                    loginButton.setTag("1");
                 }
                 break;
             case R.id.pickUpButton:

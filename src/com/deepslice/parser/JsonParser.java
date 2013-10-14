@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.deepslice.model.ServerResponse;
+import com.deepslice.utilities.Constants;
 
 public class JsonParser {
 
@@ -39,7 +40,7 @@ public class JsonParser {
 
     }
 
-    public ServerResponse retrieveGETResponse(String url, List<NameValuePair> params) {
+    public ServerResponse retrieveGETResponse(String url, List<NameValuePair> params, int responseType) {
         Log.d(TAG, "in retrieveGETResponse method, get url = " + url);
 
         int status = 0;
@@ -83,16 +84,18 @@ public class JsonParser {
             }
             is.close();
             json = sb.toString();
-            //          Log.d("test", sb.toString());
         } catch (Exception e) {
             Log.e("Buffer Error", "Error converting result " + e.toString());
         }
 
-        // try parse the string to a JSON object
         try {
-            //            jObj = new JSONObject(json);
-            jArray = new JSONArray(json);
-            jObj = jArray.getJSONObject(0);
+            if(responseType == Constants.API_RESPONSE_TYPE_JSON_ARRAY){
+                jArray = new JSONArray(json);
+                jObj = jArray.getJSONObject(0);
+            }
+            else{
+                jObj = new JSONObject(json);
+            }
             Log.d("in JSONPARSER, jObj VALUE = ", jObj.toString());
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing data " + e.toString());
@@ -118,8 +121,8 @@ public class JsonParser {
             StringEntity se = new StringEntity(content);
             se.setContentEncoding("UTF-8");
             se.setContentType("application/json");
-//            se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-//            se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "text/html"));
+            //            se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+            //            se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "text/html"));
             httpPost.setEntity(se);
 
             Log.d(TAG, "http-post final request = " + httpPost.toString());

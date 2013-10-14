@@ -179,7 +179,7 @@ public class LoginActivity extends Activity {
 
             String url = Constants.ROOT_URL + "Login.aspx?Mailing_Address=" + params[0] + "&Password=" + params[1];
             //            long reqSendingTime = System.currentTimeMillis();
-            ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+            ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
             //            long responseReceivedTime = System.currentTimeMillis();
             //            Log.d(">>>><<<", "time for cloud retrieve = " + (responseReceivedTime - reqSendingTime)/1000 + " second");
             if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){

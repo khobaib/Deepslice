@@ -57,9 +57,7 @@ public class ThankYouActivity extends Activity {
         Intent intent = new Intent(ThankYouActivity.this, PickupDeliverActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        finish(); 
-//        formOrder();
-//        sendOrder();     
+        finish();     
     }
 
     private void sendOrder() {
@@ -86,21 +84,16 @@ public class ThankYouActivity extends Activity {
         protected Integer doInBackground(Void... params) {
 
             String url = Constants.ROOT_URL + "SaveOrder.aspx";
-//            String url = "http://apps.deepslice.com.au/ReadJSON.aspx";
             long reqSendingTime = System.currentTimeMillis();
             ServerResponse response = jsonParser.retrievePostResponse(url, finalOrderData);
             long responseReceivedTime = System.currentTimeMillis();
-            Log.d(">>>><<<", "time for cloud retrieve = " + (responseReceivedTime - reqSendingTime)/1000 + " second");
             if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
                 JSONObject jsonObj = response.getjObj();
                 try {
                     int status = jsonObj.getInt("Status");
                     long arrayParsedTime = System.currentTimeMillis();
-                    Log.d(">>>><<<", "time for array parsing = " + (arrayParsedTime - responseReceivedTime)/1000 + " second");
-
                     return status;
                 } catch (JSONException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -114,12 +107,12 @@ public class ThankYouActivity extends Activity {
                 pDialog.dismiss();
             if(result == 1){
                 Log.d("SUCCESS", "success");
-                DeepsliceDatabase dbInstance = new DeepsliceDatabase(ThankYouActivity.this);
-                dbInstance.open();
-                dbInstance.cleanAllOrderTable();
-                dbInstance.close(); 
-                
-                appInstance.setOrderReady(false);
+//                DeepsliceDatabase dbInstance = new DeepsliceDatabase(ThankYouActivity.this);
+//                dbInstance.open();
+//                dbInstance.cleanAllOrderTable();
+//                dbInstance.close(); 
+//                
+//                appInstance.setOrderReady(false);
 
                 runOnUiThread(new Runnable() {
                     public void run() {

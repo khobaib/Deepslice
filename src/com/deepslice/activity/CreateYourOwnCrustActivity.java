@@ -97,7 +97,7 @@ public class CreateYourOwnCrustActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
 
             String url = Constants.ROOT_URL + Constants.METHOD_CREATE_OWN_PIZZA;
-            ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+            ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
 
             if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
                 JSONObject jsonObj = response.getjObj();

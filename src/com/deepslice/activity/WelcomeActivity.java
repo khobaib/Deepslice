@@ -15,11 +15,13 @@ import android.util.Log;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.database.DeepsliceDatabase;
+import com.deepslice.model.AppInfo;
 import com.deepslice.model.DeliveryLocation;
 import com.deepslice.model.LocationPoints;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.DeepsliceApplication;
 
 public class WelcomeActivity extends Activity {
 
@@ -43,6 +45,7 @@ public class WelcomeActivity extends Activity {
         dbInstance.close();
 
         new GetLocationPoints().execute();
+        new GetGlobalSettings().execute();
 
     }
     
@@ -50,6 +53,53 @@ public class WelcomeActivity extends Activity {
     protected void onStop() {
         super.onStop();
         BugSenseHandler.closeSession(WelcomeActivity.this);
+    }
+    
+    
+    
+    public class GetGlobalSettings extends AsyncTask<Void, Void, Boolean>{
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+
+            String url = Constants.ROOT_URL + "GlobalSettings.aspx";
+            ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
+
+            if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
+                JSONObject jsonObj = response.getjObj();
+                try {
+                    JSONObject responseObj = jsonObj.getJSONObject("Response");
+                    int status = responseObj.getInt("Status");
+                    JSONArray data = responseObj.getJSONArray("Data");
+                    JSONObject errors = responseObj.getJSONObject("Errors");
+
+                    AppInfo appInfo = AppInfo.parseAppInfo(data.getJSONObject(0));    
+                    
+                    DeepsliceApplication appInstance = (DeepsliceApplication) getApplication();
+                    appInstance.saveAppInfo(appInfo);
+
+                    return true;
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if(result){
+                Log.d(">>>>>>>", "AppInfo Saved successfully.");
+            }
+        }
     }
 
 
@@ -66,7 +116,7 @@ public class WelcomeActivity extends Activity {
 
             String url = Constants.ROOT_URL + "DeliveryLocation.aspx?SubQueryName=";
             long reqSendingTime = System.currentTimeMillis();
-            ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+            ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
             long responseReceivedTime = System.currentTimeMillis();
             Log.d(">>>><<<", "time for cloud retrieve = " + (responseReceivedTime - reqSendingTime)/1000 + " second");
             if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
@@ -140,7 +190,7 @@ public class WelcomeActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
 
             String url = Constants.ROOT_URL + "GetLocationsPoints.aspx";
-            ServerResponse response = jsonParser.retrieveGETResponse(url, null);
+            ServerResponse response = jsonParser.retrieveGETResponse(url, null, Constants.API_RESPONSE_TYPE_JSON_ARRAY);
 
             if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
                 JSONObject jsonObj = response.getjObj();

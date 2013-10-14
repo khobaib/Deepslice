@@ -42,7 +42,7 @@ public class FavoriteListActivity extends Activity{
     ProgressDialog pd;
 
     public ImageLoader imageLoader;
-    Favourite selectedBean;	
+    Favourite selectedFavorite;	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,28 +68,25 @@ public class FavoriteListActivity extends Activity{
         listview.setAdapter(myAdapter);
 
         listview.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position,
-                    long id) {
-                Favourite eBean = (Favourite) v.getTag();
-                if (eBean != null) {
-                    selectedBean = eBean;
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                Favourite favorite = (Favourite) v.getTag();
+                if (favorite != null) {
+                    selectedFavorite = favorite;
                     Intent i;
                     Bundle bundle=new Bundle();
 
-                    if("Pizza".equalsIgnoreCase(eBean.getProdCatName()))
-                    {
+                    if("Pizza".equalsIgnoreCase(favorite.getProdCatName())){
                         i=new Intent(FavoriteListActivity.this, NEW_PizzaDetailsActivity.class);
-                        bundle.putSerializable("selectedProduct",getProdBean(eBean));
+                        bundle.putSerializable("selectedProduct",getProdBean(favorite));
                     }
-                    else
-                    {
+                    else{
                         i=new Intent(FavoriteListActivity.this, AddToOrderActivity.class);
-                        bundle.putSerializable("prodBean",getProdBean(eBean));
+                        bundle.putSerializable("prodBean",getProdBean(favorite));
                     }
 
 
-                    bundle.putString("itemName",eBean.getDisplayName());
-                    bundle.putString("catType",eBean.getProdCatName());
+                    bundle.putString("itemName",favorite.getDisplayName());
+                    bundle.putString("catType",favorite.getProdCatName());
                     i.putExtras(bundle);
                     startActivityForResult(i, 112233);
                 }
