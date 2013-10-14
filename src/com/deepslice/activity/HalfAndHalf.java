@@ -139,7 +139,11 @@ public class HalfAndHalf extends Activity {
         else{
             tvFavCount.setVisibility(View.INVISIBLE);
         }
-
-
+    }
+    
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        PizzaMenuActivity.isHalf = false;
     }
 }

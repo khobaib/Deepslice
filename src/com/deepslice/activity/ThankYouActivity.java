@@ -107,12 +107,12 @@ public class ThankYouActivity extends Activity {
                 pDialog.dismiss();
             if(result == 1){
                 Log.d("SUCCESS", "success");
-//                DeepsliceDatabase dbInstance = new DeepsliceDatabase(ThankYouActivity.this);
-//                dbInstance.open();
-//                dbInstance.cleanAllOrderTable();
-//                dbInstance.close(); 
-//                
-//                appInstance.setOrderReady(false);
+                DeepsliceDatabase dbInstance = new DeepsliceDatabase(ThankYouActivity.this);
+                dbInstance.open();
+                dbInstance.cleanAllOrderTable();
+                dbInstance.close(); 
+                
+                appInstance.setOrderReady(false);
 
                 runOnUiThread(new Runnable() {
                     public void run() {

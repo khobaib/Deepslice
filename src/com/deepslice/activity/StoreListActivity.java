@@ -103,7 +103,7 @@ public class StoreListActivity extends Activity {
             }
         });
 
-        ImageView mapView= (ImageView)findViewById(R.id.imageView1);
+        ImageView mapView = (ImageView)findViewById(R.id.imageView1);
         mapView.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(StoreListActivity.this, CityMapActivity.class);
@@ -111,7 +111,7 @@ public class StoreListActivity extends Activity {
                 bundle.putDouble("cLongi", currentLatitude);
                 bundle.putDouble("cLati", currentLongitude);
                 intent.putExtras(bundle);
-                startActivityForResult(intent, 56);
+                startActivity(intent);
             }
         });
 
@@ -131,7 +131,7 @@ public class StoreListActivity extends Activity {
                 currentLongitude = Utils.mLocation.getLongitude();                
             }
             else{
-                alert("Can't get location.");
+//                alert("Can't get location.");
                 Utils.setMockLocation();
                 currentLatitude = Utils.mLocation.getLatitude();
                 currentLongitude = Utils.mLocation.getLongitude();

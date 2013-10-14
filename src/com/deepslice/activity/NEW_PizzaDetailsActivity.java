@@ -385,6 +385,12 @@ public class NEW_PizzaDetailsActivity extends Activity {
                     if(isHalf){                        
                         if(AppProperties.isFirstPizzaChosen){           // both half are chosen, so insert into DB
                             NewProductOrder tempOrder = getOrder(Constants.PRODUCT_SELECTION_RIGHT);
+                            
+                            // adding HnH surcharge for 2nd-half
+                            String partialSelectionSurcharge = appInstance.getPartialSelectionSurcharge();
+                            double halfPrice = Double.parseDouble(tempOrder.getPrice()) + Double.parseDouble(partialSelectionSurcharge)/2.0;
+                            tempOrder.setPrice(Constants.twoDForm.format(halfPrice));
+                            
                             Log.d("HALF PIZZA", "adding orders to cart");
                             NewProductOrder firstHalfOrder = appInstance.getHalfOder();
                             DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
@@ -466,8 +472,14 @@ public class NEW_PizzaDetailsActivity extends Activity {
                             thisSauceOrder.setIsDeal(false); 
                             
                             NewProductOrder tempOrder = getOrder(Constants.PRODUCT_SELECTION_LEFT);
+                            
+                            // adding HnH surcharge for 1st-half
+                            String partialSelectionSurcharge = appInstance.getPartialSelectionSurcharge();
+                            double halfPrice = Double.parseDouble(tempOrder.getPrice()) + Double.parseDouble(partialSelectionSurcharge)/2.0;
+                            tempOrder.setPrice(Constants.twoDForm.format(halfPrice));
+                            
                             Log.d("HALF PIZZA", "returning from NEW_PizzaDetailsActivity after set half-pizza");
-                            //                            String halfCrust = selectedCrusts.getText().toString();
+
                             appInstance.setHalfOder(tempOrder, selectedCrust, toppingsSelected, thisSauceOrder);
                             AppProperties.isFirstPizzaChosen = true;
                             finish();

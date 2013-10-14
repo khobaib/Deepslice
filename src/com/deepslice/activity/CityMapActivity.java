@@ -84,12 +84,14 @@ LocationListener, OnMarkerClickListener, OnInfoWindowClickListener {
         //			}
         //		});
         //
-        //		ImageView emgBack = (ImageView) findViewById(R.id.imageView1);
-        //		emgBack.setOnClickListener(new OnClickListener() {
-        //			public void onClick(View v) {
-        //				finish();
-        //			}
-        //		});
+        
+        
+        ImageView emgBack = (ImageView) findViewById(R.id.imageView1);
+        emgBack.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         Button navShowList = (Button) findViewById(R.id.navShowList);
         navShowList.setOnClickListener(new OnClickListener() {
@@ -232,7 +234,7 @@ LocationListener, OnMarkerClickListener, OnInfoWindowClickListener {
     public void onInfoWindowClick(Marker marker) {
         LocationDetails selectedLocation = storeMarkerMap.get(marker);
         Log.d("??????", "location name = " + selectedLocation.getLocName());
-        
+
         AppProperties.saveLocationObj(CityMapActivity.this, selectedLocation);
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(CityMapActivity.this);
