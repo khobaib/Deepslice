@@ -41,7 +41,7 @@ public class DeepsliceDatabase {
     private Context mContext;
 
     private static final String DATABASE_NAME = "deepslice_db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
@@ -340,8 +340,13 @@ public class DeepsliceDatabase {
     }
     
     // new 
-    public void setSecondHalfPrimaryId(int orderId, int secondHalfOrderId){
-        NEW_ProductOrderDbManager.setSecondHalfPrimaryId(this.db, orderId, secondHalfOrderId);
+    public void setOtherHalfPrimaryId(int orderId, int otherHalfOrderId){
+        NEW_ProductOrderDbManager.setOtherHalfPrimaryId(this.db, orderId, otherHalfOrderId);
+    }
+    
+    // new
+    public String getOrderPriceFromId(int primaryId){
+        return NEW_ProductOrderDbManager.getOrderPriceFromId(this.db, primaryId);
     }
         
     

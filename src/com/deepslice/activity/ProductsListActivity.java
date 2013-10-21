@@ -248,7 +248,8 @@ public class ProductsListActivity extends Activity{
                     tvCalories.setVisibility(View.INVISIBLE);
                 else{
                     if(catType.equals(Constants.PRODUCT_CATEGORY_PIZZA) && PizzaMenuActivity.isHalf){
-                        double hnhCal = Double.parseDouble(product.getCaloriesQty())/2.0; 
+                        String cal = product.getCaloriesQty().equals("") ? "0.00" : product.getCaloriesQty();
+                        double hnhCal = Double.parseDouble(cal)/2.0; 
                         tvCalories.setText(Constants.twoDForm.format(hnhCal)+"kj");
                     }
                     else

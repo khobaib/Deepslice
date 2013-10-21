@@ -17,7 +17,7 @@ public class NewProductOrder {
     private String prodCatName;                     // pizza/pasta/drinks etc
     private Boolean isCreateByOwn;                  // create_by_own? true : false
     private int selection;                          // whole/left/right
-    private int secondHalfProdId;                   // for HnH, primaryId for 2nd-halfOrder
+    private int otherHalfProdId;                   // for HnH, primaryId for 2nd-halfOrder
     
     
     public NewProductOrder() {
@@ -25,7 +25,7 @@ public class NewProductOrder {
     
     public NewProductOrder(int primaryId, String prodCatId, String subCatId1, String subCatId2, String prodId,
             String prodCode, String displayName, String caloriesQty, String price, String thumbnailImage,
-            String fullImage, String quantity, String prodCatName, Boolean isCreateByOwn, int selection, int secondHalfProdId) {
+            String fullImage, String quantity, String prodCatName, Boolean isCreateByOwn, int selection, int otherHalfProdId) {
         this.primaryId = primaryId;
         this.ProdCatId = prodCatId;
         this.subCatId1 = subCatId1;
@@ -41,15 +41,15 @@ public class NewProductOrder {
         this.prodCatName = prodCatName;
         this.isCreateByOwn = isCreateByOwn;
         this.selection = selection;
-        this.secondHalfProdId = secondHalfProdId;
+        this.otherHalfProdId = otherHalfProdId;
     }
     
     public NewProductOrder(String prodCatId, String subCatId1, String subCatId2, String prodId,
             String prodCode, String displayName, String caloriesQty, String price, String thumbnailImage,
-            String fullImage, String quantity, String prodCatName, Boolean isCreateByOwn, int selection, int secondHalfProdId) {
+            String fullImage, String quantity, String prodCatName, Boolean isCreateByOwn, int selection, int otherHalfProdId) {
         
         this(0, prodCatId, subCatId1, subCatId2, prodId, prodCode, displayName, caloriesQty, price,
-                thumbnailImage, fullImage, quantity, prodCatName, isCreateByOwn, selection, secondHalfProdId);
+                thumbnailImage, fullImage, quantity, prodCatName, isCreateByOwn, selection, otherHalfProdId);
     }
 
     public int getPrimaryId() {
@@ -172,11 +172,11 @@ public class NewProductOrder {
         this.selection = selection;
     }
 
-    public int getSecondHalfProdId() {
-        return secondHalfProdId;
+    public int getOtherHalfProdId() {
+        return otherHalfProdId;
     }
 
-    public void setSecondHalfProdId(int secondHalfProdId) {
-        this.secondHalfProdId = secondHalfProdId;
+    public void setOtherHalfProdId(int secondHalfProdId) {
+        this.otherHalfProdId = secondHalfProdId;
     }   
 }

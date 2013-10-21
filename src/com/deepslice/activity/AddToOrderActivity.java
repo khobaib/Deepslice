@@ -210,7 +210,7 @@ public class AddToOrderActivity extends Activity {
         order.setProdCatName(catType);
         order.setIsCreateByOwn(false);
         order.setSelection(selection);      
-        order.setSecondHalfProdId(0);               // default
+        order.setOtherHalfProdId(0);               // default
 
         return order;
     }

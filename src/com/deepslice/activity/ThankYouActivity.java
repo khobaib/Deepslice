@@ -40,6 +40,8 @@ public class ThankYouActivity extends Activity {
     
     String finalOrderData;
     
+    boolean isOrderSent;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +50,8 @@ public class ThankYouActivity extends Activity {
         pDialog = new ProgressDialog(ThankYouActivity.this);
         jsonParser = new JsonParser();
         appInstance = (DeepsliceApplication) getApplication();
+        
+        isOrderSent = false;
         
         formOrder();
         sendOrder(); 
@@ -63,6 +67,12 @@ public class ThankYouActivity extends Activity {
     private void sendOrder() {
         new SendOrderToServer().execute();
         
+    }
+    
+    @Override
+    public void onBackPressed() {
+        if(!isOrderSent)
+            super.onBackPressed();
     }
     
     
@@ -113,6 +123,7 @@ public class ThankYouActivity extends Activity {
                 dbInstance.close(); 
                 
                 appInstance.setOrderReady(false);
+                isOrderSent = true;
 
                 runOnUiThread(new Runnable() {
                     public void run() {
@@ -185,7 +196,9 @@ public class ThankYouActivity extends Activity {
                 thisProd.put("IsLeft", (selection == Constants.PRODUCT_SELECTION_LEFT));
                 thisProd.put("IsRight", (selection == Constants.PRODUCT_SELECTION_RIGHT));
                 thisProd.put("IsCreateByOwn", pOrder.getIsCreateByOwn());  
-                thisProd.put("CaloriesQty", Double.parseDouble(pOrder.getCaloriesQty()));
+                
+                String cal = pOrder.getCaloriesQty().equals("") ? "0.00" : pOrder.getCaloriesQty();
+                thisProd.put("CaloriesQty", Double.parseDouble(cal));
                 
                 thisProd.put("Qty", Integer.parseInt(pOrder.getQuantity()));
                 thisProd.put("Price", Double.parseDouble(pOrder.getPrice()));

@@ -32,7 +32,7 @@ public class NEW_ProductOrderDbManager {
     private static final String PROD_CAT_NAME = "prod_cat_name";
     private static final String IS_CREATE_BY_OWN = "is_create_by_own";
     private static final String SELECTION = "selection";
-    private static final String SECOND_HALF_PRIMARY_ID = "second_half_primary_id";
+    private static final String OTHER_HALF_PRIMARY_ID = "other_half_primary_id";
     
 
     private static final String CREATE_TABLE_PRODUCT_ORDER = "create table " + TABLE_PRODUCT_ORDER + " ( "
@@ -40,7 +40,7 @@ public class NEW_ProductOrderDbManager {
             + SUB_CAT_ID1 + " text, " + SUB_CAT_ID2 + " text, " + PROD_ID + " text, " + PROD_CODE + " text, "
             + DISPLAY_NAME + " text, " + CALORIES_QTY + " text, " + PRICE + " text, " + THUMBNAIL_IMAGE + " text, "
             + FULL_IMAGE + " text, " + QUANTITY + " text, " + PROD_CAT_NAME + " text, "
-            + IS_CREATE_BY_OWN + " integer, " + SELECTION + " integer, " + SECOND_HALF_PRIMARY_ID + " integer);";
+            + IS_CREATE_BY_OWN + " integer, " + SELECTION + " integer, " + OTHER_HALF_PRIMARY_ID + " integer);";
 
 
     public static void createTable(SQLiteDatabase db) {
@@ -75,7 +75,7 @@ public class NEW_ProductOrderDbManager {
         cv.put(PROD_CAT_NAME, productOrder.getProdCatName());
         cv.put(IS_CREATE_BY_OWN, (productOrder.getIsCreateByOwn() ? 1 : 0));
         cv.put(SELECTION, productOrder.getSelection());
-        cv.put(SECOND_HALF_PRIMARY_ID, productOrder.getSecondHalfProdId());
+        cv.put(OTHER_HALF_PRIMARY_ID, productOrder.getOtherHalfProdId());
         
         return db.insert(TABLE_PRODUCT_ORDER, null, cv);
     }
@@ -98,7 +98,7 @@ public class NEW_ProductOrderDbManager {
         String prodCatName = cursor.getString(cursor.getColumnIndex(PROD_CAT_NAME));
         Boolean isCreateByOwn = cursor.getInt(cursor.getColumnIndex(IS_CREATE_BY_OWN)) > 0;
         int selection = cursor.getInt(cursor.getColumnIndex(SELECTION));
-        int secondHalfId = cursor.getInt(cursor.getColumnIndex(SECOND_HALF_PRIMARY_ID));
+        int secondHalfId = cursor.getInt(cursor.getColumnIndex(OTHER_HALF_PRIMARY_ID));
         
         NewProductOrder thisProdOrder = new NewProductOrder(primaryId, prodCatId, subCatId1, subCatId2,
                 prodId, prodCode, displayName, caloriesQty, price, thumbnailImage, fullImage,
@@ -154,17 +154,28 @@ public class NEW_ProductOrderDbManager {
     }
     
     
-    public static void setSecondHalfPrimaryId(SQLiteDatabase db, int primaryId, int secondHafPrimaryId){
+    public static void setOtherHalfPrimaryId(SQLiteDatabase db, int primaryId, int otherHalfPrimaryId){
         Log.d(TAG, "setting  SecondHalfPrimaryId for product primary Id = " + primaryId);
         ContentValues cv = new ContentValues();
 
-        cv.put(SECOND_HALF_PRIMARY_ID, secondHafPrimaryId);
+        cv.put(OTHER_HALF_PRIMARY_ID, otherHalfPrimaryId);
         db.update(TABLE_PRODUCT_ORDER, cv, TABLE_PRIMARY_KEY + "=" + primaryId, null);
     }
     
     
+    public static String getOrderPriceFromId(SQLiteDatabase db, int primaryId){
+        Log.d(TAG, "retrieving order-price for order primary Id = " + primaryId);
+        
+        String orderPrice = null;
+        Cursor cursor = db.query(TABLE_PRODUCT_ORDER, null, TABLE_PRIMARY_KEY + "=" + primaryId, null, null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            orderPrice = cursor.getString(cursor.getColumnIndex(PRICE));           
+        }               
+        cursor.close(); 
+        return orderPrice;
+    }
     
-
     
     
 //    public static Cursor getOrdersListWithProdId(SQLiteDatabase db, String pid){

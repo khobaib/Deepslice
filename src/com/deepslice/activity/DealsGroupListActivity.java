@@ -344,7 +344,7 @@ public class DealsGroupListActivity extends Activity{
         dealOrder.setCouponID(selectedCoupon.getCouponID());
         dealOrder.setDealPrice(selectedCoupon.getAmount());
         dealOrder.setTotalPrice(selectedCoupon.getAmount());
-        dealOrder.setQuantity(couponGroupList.get(0).getQty());
+        dealOrder.setQuantity(String.valueOf(1));
         dealOrder.setDealItemCount(couponGroupList.size());
         dealOrder.setCouponCode(selectedCoupon.getCouponCode());
         dealOrder.setCouponDesc(selectedCoupon.getCouponDesc());

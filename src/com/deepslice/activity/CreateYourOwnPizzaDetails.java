@@ -588,7 +588,7 @@ public class CreateYourOwnPizzaDetails extends Activity {
         order.setProdCatName(Constants.PRODUCT_CATEGORY_PIZZA);
         order.setIsCreateByOwn(true);
         order.setSelection(selection);    
-        order.setSecondHalfProdId(0);               // default
+        order.setOtherHalfProdId(0);               // default
 
         return order;
     }

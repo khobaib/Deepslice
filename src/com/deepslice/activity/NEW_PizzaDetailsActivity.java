@@ -397,7 +397,8 @@ public class NEW_PizzaDetailsActivity extends Activity {
                             dbInstance.open();
                             long firstHalfOrderPId = dbInstance.insertOrder(firstHalfOrder);         // first half
                             long secondHalfOrderPId = dbInstance.insertOrder(tempOrder);             // 2nd half
-                            dbInstance.setSecondHalfPrimaryId((int)firstHalfOrderPId, (int)secondHalfOrderPId);
+                            dbInstance.setOtherHalfPrimaryId((int)firstHalfOrderPId, (int)secondHalfOrderPId);
+                            dbInstance.setOtherHalfPrimaryId((int)secondHalfOrderPId, (int)firstHalfOrderPId);
                             dbInstance.close();
                             AppProperties.isFirstPizzaChosen = false;
 
@@ -656,7 +657,7 @@ public class NEW_PizzaDetailsActivity extends Activity {
         }
         else
             order.setPrice(selectedProduct.getPrice());
-        order.setSecondHalfProdId(0);               // default
+        order.setOtherHalfProdId(0);               // default
 
         return order;
     }
