@@ -485,6 +485,7 @@ public class DealsGroupListActivity extends Activity{
             dbInstance.close();
 
             for(int couponGrpIndex = 0; couponGrpIndex < couponGroupIds.size(); couponGrpIndex++){
+                Log.e(">>>>>>>>> new tag", "couponGrpIndex = " + couponGrpIndex);
                 unfinishedDealPrice += (Double.parseDouble(dealOrderDetailsList.get(couponGrpIndex).getDiscountedPrice())
                         * Double.parseDouble(dealOrderDetailsList.get(couponGrpIndex).getQty()));            
             }

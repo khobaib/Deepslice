@@ -15,11 +15,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.CustomerInfo;
-import com.deepslice.model.DeliveryLocation;
 import com.deepslice.model.NewDealsOrder;
 import com.deepslice.model.NewDealsOrderDetails;
 import com.deepslice.model.NewProductOrder;
@@ -93,15 +91,12 @@ public class ThankYouActivity extends Activity {
         @Override
         protected Integer doInBackground(Void... params) {
 
-            String url = Constants.ROOT_URL + "SaveOrder.aspx";
-            long reqSendingTime = System.currentTimeMillis();
+            String url = Constants.ROOT_URL_SECURE + "SaveOrder.aspx";
             ServerResponse response = jsonParser.retrievePostResponse(url, finalOrderData);
-            long responseReceivedTime = System.currentTimeMillis();
             if(response.getStatus() == Constants.RESPONSE_STATUS_CODE_SUCCESS){
                 JSONObject jsonObj = response.getjObj();
                 try {
                     int status = jsonObj.getInt("Status");
-                    long arrayParsedTime = System.currentTimeMillis();
                     return status;
                 } catch (JSONException e) {
                     e.printStackTrace();

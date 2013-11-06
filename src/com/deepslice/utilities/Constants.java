@@ -9,7 +9,8 @@ public class Constants {
     public static final String REGISTRATION_URL = "http://apps.deepslice.com.au/Registration.aspx";
     public static final int PASSWORD_LENGTH = 8;
 
-    public static String ROOT_URL="http://apps.deepslice.com.au/";
+    public static String ROOT_URL = "http://apps.deepslice.com.au/";
+    public static String ROOT_URL_SECURE = "https://apps.deepslice.com.au/";
     public static String DEFAULT_IMAGE_URL = "noimage.png";
     public static String IMAGES_LOCATION_PRODUCTS = "http://apps.deepslice.com.au/images/products/";
     public static String IMAGES_LOCATION_DEALS = "http://apps.deepslice.com.au/images/products/deals/";

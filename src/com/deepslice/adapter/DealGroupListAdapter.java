@@ -48,6 +48,7 @@ public class DealGroupListAdapter extends ArrayAdapter<NewDealsOrderDetails> {
         TextView productName;
         Button bCustomize;
         ImageView Tick;
+        TextView Qty;
     }
     
     @Override
@@ -63,6 +64,7 @@ public class DealGroupListAdapter extends ArrayAdapter<NewDealsOrderDetails> {
             holder.productName = (TextView) convertView.findViewById(R.id.textView1);  
             holder.bCustomize = (Button) convertView.findViewById(R.id.b_customize);
             holder.Tick = (ImageView) convertView.findViewById(R.id.iv_tick_customized);
+            holder.Qty = (TextView) convertView.findViewById(R.id.tv_qty);  
 
             convertView.setTag(holder);
         } else {
@@ -72,6 +74,7 @@ public class DealGroupListAdapter extends ArrayAdapter<NewDealsOrderDetails> {
         NewDealsOrderDetails item = getItem(position);
 
         holder.productName.setText(item.getDisplayName());
+        holder.Qty.setText(item.getQty());
         
         String imgPath=Constants.IMAGES_LOCATION_PRODUCTS;
         if(AppProperties.isNull(item.getThumbnail())){
