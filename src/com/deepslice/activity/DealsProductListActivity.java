@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.adapter.DealProductListAdapter;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.Coupon;
@@ -49,6 +50,7 @@ public class DealsProductListActivity extends Activity {
     int selectedItemPosition;
     String selectedCouponID;
     String selectedCouponGroupID;
+    int selectedSequenceNo;
     Coupon selectedCoupon;
     int Qty;
     long dealOrderId;
@@ -76,6 +78,8 @@ public class DealsProductListActivity extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(this, "92b170cf");
+        
         setContentView(R.layout.deals_product_list);
 
         appInstance=(DeepsliceApplication)getApplication();  
@@ -83,6 +87,7 @@ public class DealsProductListActivity extends Activity {
 
         Bundle bundle=this.getIntent().getExtras();
         selectedCouponGroupID = bundle.getString("coupon_group_id");
+        selectedSequenceNo = bundle.getInt("sequence");
         selectedCoupon = (Coupon)bundle.getSerializable("selected_coupon");
         selectedCouponID = selectedCoupon.getCouponID();
         Qty = Integer.parseInt(bundle.getString("qty"));
@@ -158,6 +163,20 @@ public class DealsProductListActivity extends Activity {
             }
         });
 
+    }
+    
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(this);
     }
 
 
@@ -360,6 +379,7 @@ public class DealsProductListActivity extends Activity {
         dealOrderDetails.setDisplayName(selectedProduct.getDisplayName());
         dealOrderDetails.setThumbnail(selectedProduct.getThumbnail());
         dealOrderDetails.setQty(Qty + "");
+        dealOrderDetails.setSequence(selectedSequenceNo);
         
 //        dealOrder = new DealOrder();
 //        dealOrder.setCouponID(selectedCoupon.getCouponID());
@@ -483,9 +503,9 @@ public class DealsProductListActivity extends Activity {
         
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(DealsProductListActivity.this);
         dbInstance.open();
-        if(dbInstance.isDealGroupAlreadySelected((int) dealOrderId, selectedCouponGroupID)){
+        if(dbInstance.isDealGroupSeqAlreadySelected((int) dealOrderId, selectedSequenceNo)){
             Log.d(TAG, "YES, this deal group already selected");
-            boolean b = dbInstance.deleteAlreadySelectedDealGroup((int) dealOrderId, selectedCouponGroupID);
+            boolean b = dbInstance.deleteAlreadySelectedDealGroupSeq((int) dealOrderId, selectedSequenceNo);
             Log.d(TAG, "delete already selected deal? = " + b);
         }
         long dealOrderDetailsId = dbInstance.insertDealOrderDetails(dealOrderDetails);

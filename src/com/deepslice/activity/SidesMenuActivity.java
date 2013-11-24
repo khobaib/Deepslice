@@ -116,12 +116,21 @@ public class SidesMenuActivity extends Activity{
             }
         });
     }
-
+    
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
     @Override
     protected void onStop() {
         super.onStop();
-        BugSenseHandler.closeSession(SidesMenuActivity.this);
+        BugSenseHandler.closeSession(this);
     }
+
 
     private class MyListAdapterSides extends ArrayAdapter<ProductCategory> {
 

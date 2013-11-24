@@ -73,6 +73,7 @@ public class ProductsListActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         BugSenseHandler.initAndStartSession(ProductsListActivity.this, "92b170cf");
         setContentView(R.layout.sub_menu_products);
 
@@ -205,12 +206,21 @@ public class ProductsListActivity extends Activity{
         });	
     }
     
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
     @Override
     protected void onStop() {
         super.onStop();
-        BugSenseHandler.closeSession(ProductsListActivity.this);
+        BugSenseHandler.closeSession(this);
     }
-
+        
+    
 
     private class MyListAdapterProd extends ArrayAdapter<Product> {
 

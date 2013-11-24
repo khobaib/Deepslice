@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.activity.R.id;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.LocationDetails;
@@ -58,6 +59,8 @@ public class MyOrderActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(this, "92b170cf");
+        
         setContentView(R.layout.my_order);
 
         totalPrice = (TextView)findViewById(R.id.textTextView12);
@@ -153,6 +156,19 @@ public class MyOrderActivity extends Activity{
             }
         });        
     }
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(this);
+    }
 
 
 
@@ -166,7 +182,7 @@ public class MyOrderActivity extends Activity{
         drinksList = dbInstance.getOrdersListWithCategory(Constants.PRODUCT_CATEGORY_DRINKS);
         sidesList = dbInstance.getOrdersListWithCategory(Constants.PRODUCT_CATEGORY_SIDES);
         pastaList = dbInstance.getOrdersListWithCategory(Constants.PRODUCT_CATEGORY_PASTA);
-        dealOrderList=dbInstance.retrieveDealOrderList(true);
+        dealOrderList = dbInstance.retrieveDealOrderList(true);
         dbInstance.close();
 
         wholePizzaList = new ArrayList<NewProductOrder>();

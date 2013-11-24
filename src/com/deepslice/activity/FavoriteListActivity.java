@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.Favourite;
@@ -46,6 +47,8 @@ public class FavoriteListActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(this, "92b170cf");
+        
         setContentView(R.layout.fav_list);
         imageLoader=new ImageLoader(this);	
         
@@ -124,6 +127,21 @@ public class FavoriteListActivity extends Activity{
         //        Button buttonGetADeal=(Button)findViewById(R.id.buttonGetADeal);
         //        buttonGetADeal.setVisibility(View.INVISIBLE);
     }
+    
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(this);
+    }
+    
 
     // ////////////////////////////////////////////////////////////////////////////////////////////
     // ////////////////////////////////////////////////////////////////////////////////////////////

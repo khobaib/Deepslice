@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.cache.ImageLoader;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.CouponDetails.CrustProducts;
@@ -76,6 +77,8 @@ public class NEW_PizzaDetailsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(this, "92b170cf");
+        
         setContentView(R.layout.pizza_details);
 
         imageLoader = new ImageLoader(NEW_PizzaDetailsActivity.this);
@@ -346,9 +349,9 @@ public class NEW_PizzaDetailsActivity extends Activity {
 
                     DeepsliceDatabase dbInstance = new DeepsliceDatabase(NEW_PizzaDetailsActivity.this);
                     dbInstance.open();
-                    if(dbInstance.isDealGroupAlreadySelected(dealOrderDetails.getDealOrderId(), dealOrderDetails.getCouponGroupId())){
+                    if(dbInstance.isDealGroupSeqAlreadySelected(dealOrderDetails.getDealOrderId(), dealOrderDetails.getSequence())){
                         Log.d(TAG, "YES, this deal group already selected");
-                        boolean b = dbInstance.deleteAlreadySelectedDealGroup(dealOrderDetails.getDealOrderId(), dealOrderDetails.getCouponGroupId());
+                        boolean b = dbInstance.deleteAlreadySelectedDealGroupSeq(dealOrderDetails.getDealOrderId(), dealOrderDetails.getSequence());
                         Log.d(TAG, "delete already selected deal? = " + b);
                     }
                     long dealOrderDetailsId = dbInstance.insertDealOrderDetails(dealOrderDetails);
@@ -542,6 +545,19 @@ public class NEW_PizzaDetailsActivity extends Activity {
 
             }
         });
+    }
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(this);
     }
 
 

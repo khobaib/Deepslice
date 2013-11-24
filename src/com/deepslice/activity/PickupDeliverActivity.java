@@ -94,9 +94,16 @@ public class PickupDeliverActivity extends Activity implements OnClickListener {
     }
     
     @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
+    @Override
     protected void onStop() {
         super.onStop();
-        BugSenseHandler.closeSession(PickupDeliverActivity.this);
+        BugSenseHandler.closeSession(this);
     }
 
     @Override

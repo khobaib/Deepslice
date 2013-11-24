@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.adapter.CreateYourOwnPizzaListAdapter;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.CreateOwnPizzaData;
@@ -47,6 +48,8 @@ public class CreateYourOwnPizzaSelectionActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(this, "92b170cf");
+        
         setContentView(R.layout.crusts);
 
         pDialog = new ProgressDialog(CreateYourOwnPizzaSelectionActivity.this);
@@ -81,6 +84,20 @@ public class CreateYourOwnPizzaSelectionActivity extends Activity {
             }
         });
     }
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(this);
+    }
+    
     
     
     private void goBackToCreateYourOwnPizzaDetailsActivity() { 

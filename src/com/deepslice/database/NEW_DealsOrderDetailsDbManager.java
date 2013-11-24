@@ -27,12 +27,13 @@ public class NEW_DealsOrderDetailsDbManager {
     private static final String DISPLAY_NAME = "display_name";
     private static final String THUMBNAIL = "thumbnail";
     private static final String QTY = "qty";
+    private static final String SEQUENCE = "sequence";
 
 
     private static final String CREATE_TABLE_DEALS_ORDER_DETAILS = "create table " + TABLE_DEALS_ORDER_DETAILS + " ( "
             + TABLE_PRIMARY_KEY + " integer primary key autoincrement, " + DEAL_ORDER_ID + " integer, "
             + COUPON_GROUP_ID + " text, " + DISCOUNTED_PRICE + " text, " + PROD_ID +  " text, "
-            + DISPLAY_NAME + " text, " + THUMBNAIL + " text, " + QTY + " text);";
+            + DISPLAY_NAME + " text, " + THUMBNAIL + " text, " + QTY + " text, " + SEQUENCE + " integer);";
 
 
     public static void createTable(SQLiteDatabase db) {
@@ -78,6 +79,7 @@ public class NEW_DealsOrderDetailsDbManager {
         cv.put(DISPLAY_NAME, dealsOrderDetails.getDisplayName());
         cv.put(THUMBNAIL, dealsOrderDetails.getThumbnail());
         cv.put(QTY, dealsOrderDetails.getQty());
+        cv.put(SEQUENCE, dealsOrderDetails.getSequence());
 
         return db.insert(TABLE_DEALS_ORDER_DETAILS, null, cv);
     }
@@ -87,7 +89,7 @@ public class NEW_DealsOrderDetailsDbManager {
         Log.d(TAG, "retrieving dealOrder details list for deals OrderId = " + dealsOrderId);
         List<NewDealsOrderDetails> dealsOrderDetailsList = new ArrayList<NewDealsOrderDetails>();
 
-        Cursor cursor = db.query(TABLE_DEALS_ORDER_DETAILS, null, DEAL_ORDER_ID + "=" + dealsOrderId, null, null, null, COUPON_GROUP_ID);
+        Cursor cursor = db.query(TABLE_DEALS_ORDER_DETAILS, null, DEAL_ORDER_ID + "=" + dealsOrderId, null, null, null, SEQUENCE + " ASC");
 
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -99,9 +101,10 @@ public class NEW_DealsOrderDetailsDbManager {
                 String displayName = cursor.getString(cursor.getColumnIndex(DISPLAY_NAME));
                 String thumbnail = cursor.getString(cursor.getColumnIndex(THUMBNAIL));
                 String qty = cursor.getString(cursor.getColumnIndex(QTY));
+                int seq = cursor.getInt(cursor.getColumnIndex(SEQUENCE));
 
                 NewDealsOrderDetails dealOrderDetails = new NewDealsOrderDetails(primaryId, dealsOrderId,
-                        couponGrpId, discountedPrice, prodId, displayName, thumbnail, qty);
+                        couponGrpId, discountedPrice, prodId, displayName, thumbnail, qty, seq);
                 dealsOrderDetailsList.add(dealOrderDetails);                     
                 cursor.moveToNext();
             }
@@ -127,11 +130,11 @@ public class NEW_DealsOrderDetailsDbManager {
     }
 
 
-    public static boolean deleteAlreadySelectedDealGroup(SQLiteDatabase db, int dealOrderId, String CouponGroupID) {
-        Log.d(TAG, "deleting dealorder for dealsOrderId = " + dealOrderId + " and couponGrpId = " + CouponGroupID);
+    public static boolean deleteAlreadySelectedDealGroupSeq(SQLiteDatabase db, int dealOrderId, int seq) {
+        Log.d(TAG, "deleting dealorder for dealsOrderId = " + dealOrderId + " and sequence = " + seq);
         
         Cursor cursor = db.query(TABLE_DEALS_ORDER_DETAILS, null, DEAL_ORDER_ID + "=" + dealOrderId + " AND "
-                + COUPON_GROUP_ID + "= ?", new String[] {CouponGroupID}, null, null, null, null);
+                + SEQUENCE + "=" + seq, null, null, null, null, null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
@@ -143,14 +146,14 @@ public class NEW_DealsOrderDetailsDbManager {
         cursor.close();
                 
         return db.delete(TABLE_DEALS_ORDER_DETAILS, DEAL_ORDER_ID + "=" + dealOrderId + " AND "
-                + COUPON_GROUP_ID + "= ?", new String[] {CouponGroupID}) > 0;
+                + SEQUENCE + "=" + seq, null) > 0;
     }
 
 
-    public static boolean isDealGroupAlreadySelected(SQLiteDatabase db, int dealOrderId, String CouponGroupID){
-        Log.d(TAG, "isDealGroupAlreadySelected for dealsOrderId = " + dealOrderId + " and couponGrpId = " + CouponGroupID);
+    public static boolean isDealGroupSeqAlreadySelected(SQLiteDatabase db, int dealOrderId, int seq){
+        Log.d(TAG, "isDealGroupAlreadySelected for dealsOrderId = " + dealOrderId + " and sequence = " + seq);
         Cursor c = db.query(TABLE_DEALS_ORDER_DETAILS, null, DEAL_ORDER_ID + "=" + dealOrderId + " AND "
-                + COUPON_GROUP_ID + "= ?", new String[] {CouponGroupID}, null, null, null);
+                + SEQUENCE + "=" + seq, null, null, null, null);
         if(c!= null && c.getCount() > 0){
             c.close();
             return true;

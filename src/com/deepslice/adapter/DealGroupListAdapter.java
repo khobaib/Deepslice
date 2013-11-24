@@ -103,6 +103,7 @@ public class DealGroupListAdapter extends ArrayAdapter<NewDealsOrderDetails> {
                 bundle.putString("coupon_group_id", item.getCouponGroupId());
                 bundle.putString("qty", item.getQty());
                 bundle.putLong("dealOrderId", dealOrderId);
+                bundle.putInt("sequence", item.getSequence());
                 bundle.putSerializable("selected_coupon", selectedCoupon);
                 i.putExtras(bundle);
                 

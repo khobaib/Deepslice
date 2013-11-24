@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.utilities.AppProperties;
@@ -54,6 +55,8 @@ LocationListener, OnMarkerClickListener, OnInfoWindowClickListener {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(this, "92b170cf");
+        
         setContentView(R.layout.store_location_map);
         // mapView = (MapView) findViewById(R.id.mapview);
 
@@ -145,6 +148,19 @@ LocationListener, OnMarkerClickListener, OnInfoWindowClickListener {
         //		locationManager.requestLocationUpdates(
         //				LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
 
+    }
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(this);
     }
 
     @Override

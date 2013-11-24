@@ -11,6 +11,7 @@ public class CouponGroupIdComparator implements Comparator<CouponGroup> {
 
     @Override
     public int compare(CouponGroup lhs, CouponGroup rhs) {
-        return Integer.parseInt(lhs.getCouponGroupID()) - Integer.parseInt(rhs.getCouponGroupID());
+        return lhs.getSequenceNo() - rhs.getSequenceNo();
+//        return Integer.parseInt(lhs.getCouponGroupID()) - Integer.parseInt(rhs.getCouponGroupID());
     }
 }

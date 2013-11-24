@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.adapter.CreateYourOwnCrustAdapter;
 import com.deepslice.model.CreateOwnPizzaData;
 import com.deepslice.model.ServerResponse;
@@ -39,6 +40,8 @@ public class CreateYourOwnCrustActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(this, "92b170cf");
+        
         setContentView(R.layout.crusts);
 
         crustList = (ListView) findViewById(R.id.listView1);
@@ -78,6 +81,19 @@ public class CreateYourOwnCrustActivity extends Activity {
             crustAdapter = new CreateYourOwnCrustAdapter(CreateYourOwnCrustActivity.this, pizzaArray);
             crustList.setAdapter(crustAdapter);
         }
+    }
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(this);
     }
 
 

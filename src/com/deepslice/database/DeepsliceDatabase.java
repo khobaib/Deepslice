@@ -41,7 +41,7 @@ public class DeepsliceDatabase {
     private Context mContext;
 
     private static final String DATABASE_NAME = "deepslice_db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 60;
 
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
@@ -433,52 +433,64 @@ public class DeepsliceDatabase {
 
     /////////////////// Deals-order & Deals-Order Details ///////////////////
     
+    // passed
     public void cleanDealsOrderTable(){
         NEW_DealsOrderDbManager.cleanDealsOrderTable(this.db);
     }
     
+    // passed
     public void finalizedDealOrder(int dealOrderId){        
         NEW_DealsOrderDbManager.completeDealOrder(this.db, dealOrderId);
     }
     
-    public double updateTotalPrice(int dealOrderId){
+    // passed
+    public double updateDealTotalPrice(int dealOrderId){
         return NEW_DealsOrderDbManager.updateTotalPrice(this.db, dealOrderId);
     }
     
+    // passed
     public List<NewDealsOrder> retrieveDealOrderList(boolean isComplete) {
         return NEW_DealsOrderDbManager.retrieve(this.db, isComplete);
     }
     
+    // passed
     public long insertDealOrder(NewDealsOrder dealOrder){
         return NEW_DealsOrderDbManager.insert(this.db, dealOrder);
     }    
 
+    // passed
     public boolean deleteDealsOrder(int orderId){
         return NEW_DealsOrderDbManager.delete(this.db, orderId);
     }
     
+    // passed
     public boolean deleteUnfinishedDealOrder( ) {
         return NEW_DealsOrderDbManager.deleteUnfinishedDealOrder(this.db);
     }
 
+    // passed
     public void cleanDealsOrderDetailsTable(){
         NEW_DealsOrderDetailsDbManager.cleanDealsOrderDetailsTable(this.db);
     }
     
-    public boolean deleteAlreadySelectedDealGroup(int dealOrderId, String couponGroupId){
-        return NEW_DealsOrderDetailsDbManager.deleteAlreadySelectedDealGroup(this.db, dealOrderId, couponGroupId);
+    // passed
+    public boolean deleteAlreadySelectedDealGroupSeq(int dealOrderId, int seq){
+        return NEW_DealsOrderDetailsDbManager.deleteAlreadySelectedDealGroupSeq(this.db, dealOrderId, seq);
     }
     
+    // passed
     public long insertDealOrderDetails(NewDealsOrderDetails dealsOrderDetails){
         return NEW_DealsOrderDetailsDbManager.insert(this.db, dealsOrderDetails);
     }    
     
+    // passed
     public List<NewDealsOrderDetails> retrieveDealOrderDetailsList(int dealsOrderId){
         return NEW_DealsOrderDetailsDbManager.retrieve(this.db, dealsOrderId);
     }
     
-    public boolean isDealGroupAlreadySelected(int dealOrderId, String CouponGroupID){
-        return NEW_DealsOrderDetailsDbManager.isDealGroupAlreadySelected(this.db, dealOrderId, CouponGroupID);
+    // passed
+    public boolean isDealGroupSeqAlreadySelected(int dealOrderId, int seq){
+        return NEW_DealsOrderDetailsDbManager.isDealGroupSeqAlreadySelected(this.db, dealOrderId, seq);
     }
        
     /////////////////////////////////////////////////////////////////////////////////////////////

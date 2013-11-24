@@ -30,6 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.utilities.Constants;
 import com.deepslice.utilities.Utils;
 import com.google.gson.Gson;
@@ -50,6 +51,8 @@ public class ForgotPassActivity extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(this, "92b170cf");
+        
         setContentView(R.layout.forgot);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setDisplay(getWindowManager().getDefaultDisplay());
@@ -96,6 +99,22 @@ public class ForgotPassActivity extends Activity {
 	        });        
         
     }
+	
+	
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(this);
+    }
+    
+	
 //creating subscriber thread
 	
 	String serverResponse;

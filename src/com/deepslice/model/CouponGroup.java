@@ -26,6 +26,7 @@ public class CouponGroup {
     String Qty;
     String DiscountedPrice;
     String IsAddProductWithCoupon;
+    int SequenceNo;
     
     public CouponGroup() {
     }
@@ -98,4 +99,13 @@ public class CouponGroup {
     public void setIsAddProductWithCoupon(String isAddProductWithCoupon) {
         IsAddProductWithCoupon = isAddProductWithCoupon;
     }
+
+    public int getSequenceNo() {
+        return SequenceNo;
+    }
+
+    public void setSequenceNo(int sequenceNo) {
+        SequenceNo = sequenceNo;
+    }
+  
 }

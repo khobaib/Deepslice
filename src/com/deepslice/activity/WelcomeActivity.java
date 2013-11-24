@@ -36,6 +36,7 @@ public class WelcomeActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         BugSenseHandler.initAndStartSession(WelcomeActivity.this, "92b170cf");
+        
         setContentView(R.layout.welcome);
 
         DeepsliceDatabase dbInstance = new DeepsliceDatabase(WelcomeActivity.this);
@@ -49,10 +50,18 @@ public class WelcomeActivity extends Activity {
 
     }
     
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
     @Override
     protected void onStop() {
         super.onStop();
-        BugSenseHandler.closeSession(WelcomeActivity.this);
+        BugSenseHandler.closeSession(this);
     }
     
     

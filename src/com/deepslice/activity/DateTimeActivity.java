@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.database.HelperSharedPreferences;
 import com.deepslice.model.LocationDetails;
 import com.deepslice.model.OrderInfo;
@@ -54,6 +55,8 @@ public class DateTimeActivity extends Activity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(this, "92b170cf");
+        
         setContentView(R.layout.date_time_select);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -107,6 +110,19 @@ public class DateTimeActivity extends Activity implements OnClickListener {
         initializeAllViews();
         firstTime = true;
 
+    }
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(this);
     }
 
     private void initializeAllViews() {

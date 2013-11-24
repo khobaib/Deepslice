@@ -20,13 +20,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/logoImageView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@+id/logoImageView"
         android:text="Deals name"
-        android:textColor="@color/white"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white" />
 
     <!--
              <TextView
@@ -36,39 +36,45 @@
             android:layout_centerHorizontal="true"
             android:text="Deals name"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-    </RelativeLayout>
+    </RelativeLayout>
     -->
 
-    <LinearLayout
+
+    <!--
+         <LinearLayout
         android:id="@+id/zouterLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/navBar"
+        android:layout_above="@+id/getDeal"
         android:layout_below="@+id/headerRelativeLayout"
-        android:layout_marginBottom="45dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginTop="50dp"
         android:orientation="vertical" >
+    -->
 
-        <ListView
-            android:id="@+id/listView1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:background="@android:color/transparent"
-            android:cacheColorHint="@android:color/transparent"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="3dp"
-            android:fastScrollEnabled="true" >
-        </ListView>
-    </LinearLayout>
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/getDeal"
+        android:layout_below="@+id/headerRelativeLayout"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="50dp"
+        android:background="@android:color/transparent"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="3dp"
+        android:fastScrollEnabled="true" >
+    </ListView>
+    <!-- </LinearLayout> -->
 
     <RelativeLayout
         android:id="@+id/getDeal"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/navBar"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:background="@drawable/pizza_det_line" >
@@ -102,7 +108,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="5dp"
-                android:text="New Text"
+                android:text="0.00"
                 android:textColor="#ffffff" />
 
             <ImageView
@@ -130,7 +136,7 @@
         android:text=" GET A DEAL"
         android:textColor="#f9fbff"
         android:textStyle="bold"
-        android:visibility="gone" />
+        android:visibility="gone" />
     -->
 
 
@@ -146,7 +152,7 @@
         android:text="CANCEL"
         android:textColor="#f9fbff"
         android:textStyle="bold"
-        android:visibility="visible" />
+        android:visibility="visible" />
     -->
 
     <LinearLayout

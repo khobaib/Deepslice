@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.adapter.ToppingsListAdapter;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.DealOrder;
@@ -38,6 +39,8 @@ public class PizzaToppingsActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(this, "92b170cf");
+        
         setContentView(R.layout.toppings);
         Bundle b = this.getIntent().getExtras();
 
@@ -80,6 +83,19 @@ public class PizzaToppingsActivity extends Activity{
                 finish();
             }
         });
+    }
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(this);
     }
 
 

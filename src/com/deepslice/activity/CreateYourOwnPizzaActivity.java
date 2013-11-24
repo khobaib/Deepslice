@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.adapter.PizzaTypeMenuAdapter;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.CreateOwnPizzaData;
@@ -40,6 +41,8 @@ public class CreateYourOwnPizzaActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(this, "92b170cf");
+        
         setContentView(R.layout.sub_menu_pizza3);
         
         tvItemsPrice = (TextView) findViewById(R.id.itemPrice);
@@ -119,6 +122,20 @@ public class CreateYourOwnPizzaActivity extends Activity {
         pizzaTypeMenuAdapter = new PizzaTypeMenuAdapter(CreateYourOwnPizzaActivity.this, crustSpecificPizzaArray);
         pizzaTypeList.setAdapter(pizzaTypeMenuAdapter);
     }
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(this);
+    }
+    
     
     
     @Override

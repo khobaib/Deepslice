@@ -13,12 +13,13 @@ public class NewDealsOrderDetails implements Serializable{
     private String displayName;
     private String thumbnail;
     private String qty;
+    private int sequence;
     
     public NewDealsOrderDetails() {
     }
 
     public NewDealsOrderDetails(int primaryId, int dealOrderId, String couponGroupId, String discountedPrice,
-            String prodId, String displayName, String thumbnail, String qty) {
+            String prodId, String displayName, String thumbnail, String qty, int seq) {
         this.primaryId = primaryId;
         this.dealOrderId = dealOrderId;
         this.couponGroupId = couponGroupId;
@@ -27,13 +28,14 @@ public class NewDealsOrderDetails implements Serializable{
         this.displayName = displayName;
         this.thumbnail = thumbnail;
         this.qty = qty;
+        this.sequence = seq;
     }
     
     
     public NewDealsOrderDetails(int dealOrderId, String couponGroupId, String discountedPrice,
-            String prodId, String displayName, String thumbnail, String qty) {
+            String prodId, String displayName, String thumbnail, String qty, int seq) {
      
-        this(0, dealOrderId, couponGroupId, discountedPrice, prodId, displayName, thumbnail, qty);
+        this(0, dealOrderId, couponGroupId, discountedPrice, prodId, displayName, thumbnail, qty, seq);
     }
 
     public int getPrimaryId() {
@@ -98,5 +100,13 @@ public class NewDealsOrderDetails implements Serializable{
 
     public void setQty(String qty) {
         this.qty = qty;
-    } 
+    }
+
+    public int getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(int sequence) {
+        this.sequence = sequence;
+    }     
 }

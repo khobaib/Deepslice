@@ -2,8 +2,8 @@ package com.deepslice.activity;
 
 
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -31,10 +31,10 @@ import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.adapter.DealListAdapter;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.Coupon;
-import com.deepslice.model.DealOrder;
 import com.deepslice.model.ServerResponse;
 import com.deepslice.parser.JsonParser;
 import com.deepslice.utilities.Constants;
+import com.deepslice.utilities.DeepsliceApplication;
 import com.deepslice.utilities.Utils;
 
 public class DealsListActivity extends Activity {
@@ -44,7 +44,7 @@ public class DealsListActivity extends Activity {
     ProgressDialog pDialog;
     JsonParser jsonParser = new JsonParser();
 
-    List<Coupon> couponsList;
+    List<Coupon> todaysCouponsList;
 
     ListView lvCpuponList;
     TextView tvItemsPrice, tvFavCount;
@@ -55,7 +55,7 @@ public class DealsListActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BugSenseHandler.initAndStartSession(DealsListActivity.this, "92b170cf");
+        BugSenseHandler.initAndStartSession(this, "92b170cf");
         setContentView(R.layout.deals_list);
 
         pDialog = new ProgressDialog(DealsListActivity.this);
@@ -115,10 +115,18 @@ public class DealsListActivity extends Activity {
         });
     }
     
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
     @Override
     protected void onStop() {
         super.onStop();
-        BugSenseHandler.closeSession(DealsListActivity.this);
+        BugSenseHandler.closeSession(this);
     }
 
     private void removeUnfinishedDeals(){
@@ -158,8 +166,10 @@ public class DealsListActivity extends Activity {
                     int status = responseObj.getInt("Status");
                     JSONArray data = responseObj.getJSONArray("Data");
                     JSONObject errors = responseObj.getJSONObject("Errors");
+                    
+                    List<Coupon> initialCouponList = Coupon.parseCoupons(data);
 
-                    couponsList = Coupon.parseCoupons(data);
+                    todaysCouponsList = getTodaysCouponList(initialCouponList);
 
                     long productParseEndTime = System.currentTimeMillis();
                     Log.d("TIME", "time to parse coupons = " + (productParseEndTime - dataRetrieveEndTime)/1000 + " second");
@@ -186,7 +196,7 @@ public class DealsListActivity extends Activity {
 //                }
 //                dbInstance.close();
 
-                dealListAdapter = new DealListAdapter(DealsListActivity.this, couponsList);
+                dealListAdapter = new DealListAdapter(DealsListActivity.this, todaysCouponsList);
                 lvCpuponList.setAdapter(dealListAdapter);
             }
             else{
@@ -203,6 +213,113 @@ public class DealsListActivity extends Activity {
             }
         }
     }  
+    
+    
+    /*
+     * This method will filter on order type (pickup/delivery)
+     * & then weekday's deal - if that deal is true for today
+     */
+    private List<Coupon> getTodaysCouponList(List<Coupon> initialCouponList){
+        List<Coupon> todaysCoupon = new ArrayList<Coupon>();
+        
+        int orderType = ((DeepsliceApplication) getApplication()).getOrderType();
+        
+        Calendar cal = Calendar.getInstance();
+        int weekDay = cal.get(Calendar.DAY_OF_WEEK);
+        
+        if(weekDay == Calendar.SUNDAY){
+            Log.e("TODAY", "Today is Sunday");
+            for(Coupon coupon : initialCouponList){
+                if(coupon.getIsOnSunday().equals("True")){
+                    if(orderType == Constants.ORDER_TYPE_DELIVERY && coupon.getIsOnDelivery().equals("True")){
+                        todaysCoupon.add(coupon);
+                    }
+                    else if(orderType == Constants.ORDER_TYPE_PICKUP && coupon.getIsOnPickup().equals("True")){
+                        todaysCoupon.add(coupon);
+                    }
+                }
+            }
+        }
+        else if(weekDay == Calendar.MONDAY){
+            Log.e("TODAY", "Today is Monday");
+            for(Coupon coupon : initialCouponList){
+                if(coupon.getIsOnMonday().equals("True")){
+                    if(orderType == Constants.ORDER_TYPE_DELIVERY && coupon.getIsOnDelivery().equals("True")){
+                        todaysCoupon.add(coupon);
+                    }
+                    else if(orderType == Constants.ORDER_TYPE_PICKUP && coupon.getIsOnPickup().equals("True")){
+                        todaysCoupon.add(coupon);
+                    }
+                }
+            }
+        }
+        else if(weekDay == Calendar.TUESDAY){
+            Log.e("TODAY", "Today is Tuesday");
+            for(Coupon coupon : initialCouponList){
+                if(coupon.getIsOnTuesday().equals("True")){
+                    if(orderType == Constants.ORDER_TYPE_DELIVERY && coupon.getIsOnDelivery().equals("True")){
+                        todaysCoupon.add(coupon);
+                    }
+                    else if(orderType == Constants.ORDER_TYPE_PICKUP && coupon.getIsOnPickup().equals("True")){
+                        todaysCoupon.add(coupon);
+                    }
+                }
+            }
+        }
+        else if(weekDay == Calendar.WEDNESDAY){
+            Log.e("TODAY", "Today is Wednesday");
+            for(Coupon coupon : initialCouponList){
+                if(coupon.getIsOnWednesday().equals("True")){
+                    if(orderType == Constants.ORDER_TYPE_DELIVERY && coupon.getIsOnDelivery().equals("True")){
+                        todaysCoupon.add(coupon);
+                    }
+                    else if(orderType == Constants.ORDER_TYPE_PICKUP && coupon.getIsOnPickup().equals("True")){
+                        todaysCoupon.add(coupon);
+                    }
+                }
+            }
+        }
+        else if(weekDay == Calendar.THURSDAY){
+            Log.e("TODAY", "Today is Thursday");
+            for(Coupon coupon : initialCouponList){
+                if(coupon.getIsOnThursday().equals("True")){
+                    if(orderType == Constants.ORDER_TYPE_DELIVERY && coupon.getIsOnDelivery().equals("True")){
+                        todaysCoupon.add(coupon);
+                    }
+                    else if(orderType == Constants.ORDER_TYPE_PICKUP && coupon.getIsOnPickup().equals("True")){
+                        todaysCoupon.add(coupon);
+                    }
+                }
+            }
+        }
+        else if(weekDay == Calendar.FRIDAY){
+            Log.e("TODAY", "Today is Friday");
+            for(Coupon coupon : initialCouponList){
+                if(coupon.getIsOnFriday().equals("True")){
+                    if(orderType == Constants.ORDER_TYPE_DELIVERY && coupon.getIsOnDelivery().equals("True")){
+                        todaysCoupon.add(coupon);
+                    }
+                    else if(orderType == Constants.ORDER_TYPE_PICKUP && coupon.getIsOnPickup().equals("True")){
+                        todaysCoupon.add(coupon);
+                    }
+                }
+            }
+        }
+        else{
+            for(Coupon coupon : initialCouponList){
+                Log.e("TODAY", "Today is Saturday");
+                if(coupon.getIsOnSaturday().equals("True")){
+                    if(orderType == Constants.ORDER_TYPE_DELIVERY && coupon.getIsOnDelivery().equals("True")){
+                        todaysCoupon.add(coupon);
+                    }
+                    else if(orderType == Constants.ORDER_TYPE_PICKUP && coupon.getIsOnPickup().equals("True")){
+                        todaysCoupon.add(coupon);
+                    }
+                }
+            }
+        }        
+        return todaysCoupon;
+    }
 
 
     @Override

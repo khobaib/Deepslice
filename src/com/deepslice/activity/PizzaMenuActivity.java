@@ -144,9 +144,16 @@ public class  PizzaMenuActivity extends Activity{
     }
     
     @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
+    @Override
     protected void onStop() {
         super.onStop();
-        BugSenseHandler.closeSession(PizzaMenuActivity.this);
+        BugSenseHandler.closeSession(this);
     }
 
     @Override

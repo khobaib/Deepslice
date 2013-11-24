@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.database.DeepsliceDatabase;
 import com.deepslice.model.CustomerInfo;
 import com.deepslice.model.NewDealsOrder;
@@ -43,6 +44,8 @@ public class ThankYouActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BugSenseHandler.initAndStartSession(this, "92b170cf");
+        
         setContentView(R.layout.thank_you);
         
         pDialog = new ProgressDialog(ThankYouActivity.this);
@@ -53,6 +56,19 @@ public class ThankYouActivity extends Activity {
         
         formOrder();
         sendOrder(); 
+    }   
+    
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        BugSenseHandler.startSession(this);
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BugSenseHandler.closeSession(this);
     }
     
     public void onClickProceed(View v){
