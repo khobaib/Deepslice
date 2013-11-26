@@ -48,8 +48,12 @@ public class StoreLocationDbManager {
     }
     
     
-    public static long insert(SQLiteDatabase db, LocationPoints lPoint) throws SQLException {
+    public static long insertIfNotExist(SQLiteDatabase db, LocationPoints lPoint) throws SQLException {
         Log.d(TAG, "inserting location-point with location_Id = " + lPoint.getLocationID());
+        
+        if(isExist(db, lPoint.getLocationID()))
+            return -1;
+        
         ContentValues cv = new ContentValues();
 
         cv.put(LOCATION_ID, lPoint.getLocationID());
@@ -60,6 +64,19 @@ public class StoreLocationDbManager {
         cv.put(CLOSING_TIME, lPoint.getClosingTime());
         
         return db.insert(TABLE_STORE_LOCATIONS, null, cv);
+    }
+    
+    
+    public static boolean isExist(SQLiteDatabase db, String locationId) throws SQLException {
+        Log.d(TAG, "checking if location already exists for locationId = " + locationId);
+
+        Cursor cursor = db.query(TABLE_STORE_LOCATIONS, null, LOCATION_ID + " = ?", new String[] {locationId}, null, null, null);
+
+        if(cursor != null && cursor.getCount() > 0){
+            cursor.close();
+            return true;
+        }
+        return false;
     }
     
     

@@ -43,17 +43,18 @@ public class Utils{
             mLocation = mGps.getLocation();
             return true;
         } else {
-//            setMockLocation();
+            mLocation = setMockLocation();
             return false;
         }
 
         //        return mLocation;
     }
 
-    public static void setMockLocation() {
-        mLocation = new Location("test location");
-        mLocation.setLatitude(22.30954893);
-        mLocation.setLongitude(114.22330331);
+    public static Location setMockLocation() {
+        Location location = new Location("test location");
+        location.setLatitude(22.30954893);
+        location.setLongitude(114.22330331);
+        return location;
     }
 
     public static void checkLocationAccess(Context mContext){

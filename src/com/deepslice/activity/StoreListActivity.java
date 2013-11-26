@@ -58,7 +58,7 @@ public class StoreListActivity extends Activity {
     //	static String cityName="";
     //	static String stName="";
     //	EditText input_text ;
-//    MyLocation myLocation = null;
+    //    MyLocation myLocation = null;
     ProgressDialog pd;
     //	ImageView searchIcon;
     double currentLongitude,currentLatitude;
@@ -69,11 +69,11 @@ public class StoreListActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         BugSenseHandler.initAndStartSession(this, "92b170cf");
-        
+
         setContentView(R.layout.store_location_list);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         listview = (ListView) findViewById(R.id.listView1);
-//        myLocation = new MyLocation();
+        //        myLocation = new MyLocation();
         searchedList = new ArrayList<LocationDetails>();
         myAdapter = new MyListAdapter(this,R.layout.line_item, searchedList);
         listview.setAdapter(myAdapter);
@@ -91,9 +91,9 @@ public class StoreListActivity extends Activity {
 
                     Intent intent = new Intent(StoreListActivity.this,DateTimeActivity.class);
                     Bundle bundle = new Bundle();
-//                    bundle.putString("location",eBean.getLocSuburb()+" "+eBean.getLocPostalCode());
+                    //                    bundle.putString("location",eBean.getLocSuburb()+" "+eBean.getLocPostalCode());
                     bundle.putString("store",selectedLocDetails.getLocName());
-//                    bundle.putString("suburbId",eBean.getLocationID());
+                    //                    bundle.putString("suburbId",eBean.getLocationID());
                     intent.putExtras(bundle);
                     startActivity(intent);
 
@@ -119,27 +119,28 @@ public class StoreListActivity extends Activity {
         });
 
 
-//        ImageView emgBack= (ImageView)findViewById(R.id.farwordImageView);
-//        emgBack.setOnClickListener(new OnClickListener() {
-//            public void onClick(View v) {
-//                finish();
-//            }
-//        });
-     
+        //        ImageView emgBack= (ImageView)findViewById(R.id.farwordImageView);
+        //        emgBack.setOnClickListener(new OnClickListener() {
+        //            public void onClick(View v) {
+        //                finish();
+        //            }
+        //        });
+
         if (Utils.hasInternet(StoreListActivity.this)) {
             Log.d("TAG", "internet available!");
-            Utils.checkLocationAccess(StoreListActivity.this);
-            if(Utils.getLocation()){
-                currentLatitude = Utils.mLocation.getLatitude();
-                currentLongitude = Utils.mLocation.getLongitude();                
-            }
-            else{
-//                alert("Can't get location.");
-                Utils.setMockLocation();
-                currentLatitude = Utils.mLocation.getLatitude();
-                currentLongitude = Utils.mLocation.getLongitude();
-            }
-            Log.d(">>>>>", "latitude = " + currentLatitude + " AND longitude = " + currentLongitude);
+            //            Utils.checkLocationAccess(StoreListActivity.this);
+            Utils.getLocation();
+            //            if(Utils.getLocation()){
+            currentLatitude = Utils.mLocation.getLatitude();
+            currentLongitude = Utils.mLocation.getLongitude();                
+            //            }
+            //            else{
+            ////                alert("Can't get location.");
+            //                Utils.setMockLocation();
+            //                currentLatitude = Utils.mLocation.getLatitude();
+            //                currentLongitude = Utils.mLocation.getLongitude();
+            //            }
+            Log.e(">>>>>", "latitude = " + currentLatitude + " AND longitude = " + currentLongitude);
             pd = ProgressDialog.show(StoreListActivity.this, "", "Searching...", true, false);
             locationFetched = false;   
             getDeliveryLocations();
@@ -147,41 +148,41 @@ public class StoreListActivity extends Activity {
             alert("Please check your internet connection.");
         }
 
-//        final LocationResult locationResult = new LocationResult(){
-//            @Override
-//            public void gotLocation(final Location location){
-//                //			    	pd.dismiss();
-//                try{
-//                    if(locationFetched==true)
-//                        return;
-//                    currentLatitude=location.getLatitude();
-//                    currentLongitude=location.getLongitude();
-//
-//                    System.out.println(location.getLatitude()+"::"+location.getLongitude());
-//
-//                    getDeliveryLocations(location.getLatitude(),location.getLongitude());
-//
-//                }catch(Exception e){
-//                    e.printStackTrace();	
-//
-//                }
-//
-//            }
-//
-//        };
-        
+        //        final LocationResult locationResult = new LocationResult(){
+        //            @Override
+        //            public void gotLocation(final Location location){
+        //                //			    	pd.dismiss();
+        //                try{
+        //                    if(locationFetched==true)
+        //                        return;
+        //                    currentLatitude=location.getLatitude();
+        //                    currentLongitude=location.getLongitude();
+        //
+        //                    System.out.println(location.getLatitude()+"::"+location.getLongitude());
+        //
+        //                    getDeliveryLocations(location.getLatitude(),location.getLongitude());
+        //
+        //                }catch(Exception e){
+        //                    e.printStackTrace();	
+        //
+        //                }
+        //
+        //            }
+        //
+        //        };
 
-//        myLocation.getLocation(StoreListActivity.this, locationResult);
+
+        //        myLocation.getLocation(StoreListActivity.this, locationResult);
     }
-    
-    
+
+
     @Override
     protected void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
         BugSenseHandler.startSession(this);
     }
-    
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -222,8 +223,8 @@ public class StoreListActivity extends Activity {
                 if(dist <= 10000*1000)
                     nearestLocPoints.add(lPoint);
 
-//                if(nearestLocPoints.size()>=10)
-//                    break;
+                //                if(nearestLocPoints.size()>=10)
+                //                    break;
             }
 
 
@@ -337,7 +338,7 @@ public class StoreListActivity extends Activity {
                 }
 
                 AppProperties.locationPointsSearched = searchedList;
-                System.out.println("Got delivery locations: "+searchedList.size());
+                Log.e(">>>>>>>", "Got delivery locations: " + searchedList.size());
 
                 //////////////////////////// LOOOOOOOOOOOOPPPPPPPPPPPPPPP
                 //////////////////////////////////////////////////////////
@@ -404,8 +405,8 @@ public class StoreListActivity extends Activity {
 
     }
     ///////////////////////// END LIST ADAPTER	
-    
-    
+
+
     void alert(String message) {
         AlertDialog.Builder bld = new AlertDialog.Builder(StoreListActivity.this, AlertDialog.THEME_HOLO_LIGHT);
         bld.setTitle("Deepslice");

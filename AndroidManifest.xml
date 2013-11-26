@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.deepslice.activity"
-    android:versionCode="60"
-    android:versionName="0.60" >
+    android:versionCode="62"
+    android:versionName="0.62" >
 
     <uses-sdk
         android:minSdkVersion="8"

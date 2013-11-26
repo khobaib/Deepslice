@@ -231,7 +231,7 @@ public class WelcomeActivity extends Activity {
                 
                 DeepsliceDatabase dbInstance = new DeepsliceDatabase(WelcomeActivity.this);
                 dbInstance.open();
-                dbInstance.insertStoreLocations(locPoints);
+                dbInstance.insertStoreLocationsIfNotExist(locPoints);
                 dbInstance.close();
                 
                 

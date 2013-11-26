@@ -29,6 +29,9 @@ public class LocationHistoryDbManager {
 
     public static long insert(SQLiteDatabase db, String... values) { 
         Log.d(TAG, "in LocationHistoryDbManager, insert history");
+        
+        if(isLocationAlreadyAdded(db, values[0], values[11]))
+            return -1;
         ContentValues cv = new ContentValues();
         for (int i = 0; i < values.length; i++) {
             cv.put(table_locations_history_columns[i + 1], values[i]);
@@ -46,8 +49,8 @@ public class LocationHistoryDbManager {
             return null;
         }
     }
-    
-    
+
+
     public static Cursor getLocationById(SQLiteDatabase db, String locationId) {
         Log.d(TAG, "retrieving cursor of location-history for locationId - " + locationId);
         try {
@@ -58,16 +61,20 @@ public class LocationHistoryDbManager {
         }
     }
 
-
-    public static boolean isLocationAlreadyAdded(SQLiteDatabase db, String LocationID, String SuburbID) {
-        Log.d(TAG, "in LocationHistoryDbManager, isLocationAlreadyAdded SuburbID = " + SuburbID);
-        String[] selectionArgs={LocationID,SuburbID};
+    public static boolean isLocationAlreadyAdded(SQLiteDatabase db, String LocationID, String isDelivery) {
+        Log.d(TAG, "in LocationHistoryDbManager, isLocationAlreadyAdded LocationID = " + LocationID);
+        
+        // if delivery, then add anything, no checking
+        if(isDelivery.equals("True"))
+            return false;
+        
+        String[] selectionArgs={LocationID};
         boolean recExists = false;
         int count = -1;
         try {
             Cursor cursor = db.rawQuery(
                     "SELECT COUNT(*) AS num_rows FROM "
-                            + TABLE_LOCATIONS_HISTORY+ " where LocationID=? AND SuburbID=? ", selectionArgs);
+                            + TABLE_LOCATIONS_HISTORY+ " where LocationID=?", selectionArgs);
 
             if (cursor.moveToFirst()) {
                 count = cursor.getInt(0);
@@ -86,31 +93,59 @@ public class LocationHistoryDbManager {
         }
     }
 
-    public static boolean locationHistoryExists(SQLiteDatabase db, String isDelivery) {
-        Log.d(TAG, "in LocationHistoryDbManager, locationHistoryExists?");
-        String[] selectionArgs={isDelivery};
-        boolean recExists = false;
-        int count = -1;
-        try {
-            Cursor cursor = db.rawQuery(
-                    "SELECT COUNT(*) AS num_rows FROM "
-                            + TABLE_LOCATIONS_HISTORY+ " where isDelivery=? ", selectionArgs);
 
-            if (cursor.moveToFirst()) {
-                count = cursor.getInt(0);
-            }
+    //    public static boolean isLocationAlreadyAdded(SQLiteDatabase db, String LocationID, String SuburbID) {
+    //        Log.d(TAG, "in LocationHistoryDbManager, isLocationAlreadyAdded SuburbID = " + SuburbID);
+    //        String[] selectionArgs={LocationID,SuburbID};
+    //        boolean recExists = false;
+    //        int count = -1;
+    //        try {
+    //            Cursor cursor = db.rawQuery(
+    //                    "SELECT COUNT(*) AS num_rows FROM "
+    //                            + TABLE_LOCATIONS_HISTORY+ " where LocationID=? AND SuburbID=? ", selectionArgs);
+    //
+    //            if (cursor.moveToFirst()) {
+    //                count = cursor.getInt(0);
+    //            }
+    //
+    //            if (count > 0)
+    //                recExists = true;
+    //
+    //            if (cursor != null && !cursor.isClosed()) {
+    //                cursor.close();
+    //            }
+    //            return recExists;
+    //
+    //        } catch (Exception e) {
+    //            return recExists;
+    //        }
+    //    }
 
-            if (count > 0)
-                recExists = true;
-
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-            return recExists;
-
-        } catch (Exception e) {
-            return recExists;
-        }
-    }
+    //    public static boolean locationHistoryExists(SQLiteDatabase db, String isDelivery) {
+    //        Log.d(TAG, "in LocationHistoryDbManager, locationHistoryExists?");
+    //        String[] selectionArgs={isDelivery};
+    //        boolean recExists = false;
+    //        int count = -1;
+    //        try {
+    //            Cursor cursor = db.rawQuery(
+    //                    "SELECT COUNT(*) AS num_rows FROM "
+    //                            + TABLE_LOCATIONS_HISTORY+ " where isDelivery=? ", selectionArgs);
+    //
+    //            if (cursor.moveToFirst()) {
+    //                count = cursor.getInt(0);
+    //            }
+    //
+    //            if (count > 0)
+    //                recExists = true;
+    //
+    //            if (cursor != null && !cursor.isClosed()) {
+    //                cursor.close();
+    //            }
+    //            return recExists;
+    //
+    //        } catch (Exception e) {
+    //            return recExists;
+    //        }
+    //    }
 
 }

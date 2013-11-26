@@ -52,13 +52,16 @@ public class GPSTracker extends Service implements LocationListener {
 
             // getting GPS status
             isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            Log.d("is GPS enabled?", "" + isGPSEnabled);
+            Log.e("is GPS enabled?", "" + isGPSEnabled);
 
             // getting network status
             isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-            Log.d("is network enabled?", "" + isNetworkEnabled);
+            Log.e("is network enabled?", "" + isNetworkEnabled);
 
             if (!isGPSEnabled && !isNetworkEnabled) {
+                Log.e("GPSTRacker", "No Location available.");
+                this.canGetLocation = false;
+                location = null;
             } else {
                 this.canGetLocation = true;
                 // First get location from Network Provider
@@ -68,7 +71,7 @@ public class GPSTracker extends Service implements LocationListener {
                             MIN_TIME_BW_UPDATES,
                             MIN_DISTANCE_CHANGE_FOR_UPDATES,
                             this);
-                    Log.d("Network", "Network");
+                    Log.e("Network", "Network");
                     if (locationManager != null) {
                         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                         if (location != null) {
@@ -85,7 +88,7 @@ public class GPSTracker extends Service implements LocationListener {
                                 MIN_TIME_BW_UPDATES,
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES,
                                 this);
-                        Log.d("GPS Enabled", "GPS Enabled");
+                        Log.e("GPS Enabled", "GPS Enabled");
                         if (locationManager != null) {
                             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                             if (location != null) {

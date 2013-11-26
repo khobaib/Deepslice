@@ -124,9 +124,9 @@ public class DeepsliceDatabase {
     
     // store-location
     
-    public boolean insertStoreLocations(List<LocationPoints> lPointsList){
+    public boolean insertStoreLocationsIfNotExist(List<LocationPoints> lPointsList){
         for(LocationPoints lPoint : lPointsList){
-            StoreLocationDbManager.insert(this.db, lPoint);
+            StoreLocationDbManager.insertIfNotExist(this.db, lPoint);
         }
         return true;
     }
@@ -627,9 +627,9 @@ public class DeepsliceDatabase {
 //        return LocationHistoryDbManager.isLocationAlreadyAdded(this.db, LocationID, SuburbID);
 //    }
     
-    public boolean locationHistoryExists(String isDelivery) {
-        return LocationHistoryDbManager.locationHistoryExists(this.db, isDelivery);
-    }
+//    public boolean locationHistoryExists(String isDelivery) {
+//        return LocationHistoryDbManager.locationHistoryExists(this.db, isDelivery);
+//    }
 
 
     public boolean insertLocationHistory(LocationDetails f,String isDelivery) {
