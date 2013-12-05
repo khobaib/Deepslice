@@ -65,7 +65,7 @@ public class DeepsliceApplication extends Application {
     
     
     public int getOrderType(){
-        int type = spOrder.getInt(Constants.ORDER_TYPE, 0);
+        int type = spOrder.getInt(Constants.ORDER_TYPE, Constants.ORDER_TYPE_NOT_SELECTED);
         return type;
     }
     

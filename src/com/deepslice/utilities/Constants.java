@@ -95,8 +95,9 @@ public class Constants {
     public static final String APP_INFO_TAX_PER = "app_info_tax_per";
     
     public static final String ORDER_TYPE = "order_type";
-    public static final int ORDER_TYPE_DELIVERY = 1;
-    public static final int ORDER_TYPE_PICKUP = 2;
+    public static final int ORDER_TYPE_DELIVERY = 741;
+    public static final int ORDER_TYPE_PICKUP = 742;
+    public static final int ORDER_TYPE_NOT_SELECTED = 743;
     
     public static final String IS_ORDER_READY = "is_order_ready";
     public static final String IS_REMEMBER_ME = "is_remember_me";

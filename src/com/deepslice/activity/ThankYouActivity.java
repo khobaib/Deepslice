@@ -134,6 +134,7 @@ public class ThankYouActivity extends Activity {
                 dbInstance.close(); 
                 
                 appInstance.setOrderReady(false);
+                appInstance.setOrderType(Constants.ORDER_TYPE_NOT_SELECTED);
                 isOrderSent = true;
 
                 runOnUiThread(new Runnable() {

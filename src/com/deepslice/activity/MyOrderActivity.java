@@ -18,6 +18,7 @@ import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.activity.R.id;
@@ -145,9 +146,12 @@ public class MyOrderActivity extends Activity{
                         int orderType = appInstance.getOrderType();
                         if(orderType == Constants.ORDER_TYPE_DELIVERY) {
                             startActivity(new Intent(new Intent(MyOrderActivity.this, LocationFromHistoryActivity.class)));
-                        }else {
+                        }else if(orderType == Constants.ORDER_TYPE_PICKUP){
                             startActivity(new Intent(new Intent(MyOrderActivity.this, StoreFromHistoryActivity.class)));
                         }   
+                        else{
+                            Toast.makeText(MyOrderActivity.this, "Order method is not selected yet, please choose pickup or delivery.",  Toast.LENGTH_SHORT).show();
+                        }
                     }
                     else{
                         startActivity(new Intent(new Intent(MyOrderActivity.this, CustomerDetailsActivity.class)));

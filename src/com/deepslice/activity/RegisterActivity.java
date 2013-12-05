@@ -103,9 +103,12 @@ public class RegisterActivity extends Activity implements OnClickListener {
                         if(orderType == Constants.ORDER_TYPE_DELIVERY) {
                             startActivity(new Intent(new Intent(this, LocationFromHistoryActivity.class)));
                             finish();
-                        }else {
+                        }else if(orderType == Constants.ORDER_TYPE_PICKUP){
                             startActivity(new Intent(new Intent(this, StoreFromHistoryActivity.class)));
                             finish();
+                        }
+                        else{
+                            Toast.makeText(this, "Order method is not selected yet, please choose pickup or delivery.",  Toast.LENGTH_SHORT).show();
                         }
 
                     }  else {                       

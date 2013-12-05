@@ -35,6 +35,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.deepslice.model.Customer;
@@ -260,8 +261,11 @@ public class LoginActivity extends Activity {
             //            String orderType=AppSharedPreference.getData(LoginActivity.this, "orderType", null);
             if(orderType == Constants.ORDER_TYPE_DELIVERY) {
                 startActivity(new Intent(new Intent(this, LocationFromHistoryActivity.class)));
-            }else {
+            }else if(orderType == Constants.ORDER_TYPE_PICKUP){
                 startActivity(new Intent(new Intent(this, StoreFromHistoryActivity.class)));
+            }
+            else{
+                Toast.makeText(this, "Order method is not selected yet, please choose pickup or delivery.",  Toast.LENGTH_SHORT).show();
             }
         }
         finish();
